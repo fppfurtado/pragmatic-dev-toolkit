@@ -9,8 +9,10 @@ Claude Code plugin para o workflow **flat & pragmatic**: skills genéricas, revi
 | `/new-feature` | Skill | Alinha intenção, levanta gaps e decide qual artefato (linha de backlog, plano, ADR, atualização de domínio/design) é necessário antes de implementar. |
 | `/new-adr` | Skill | Cria um novo ADR em `docs/decisions/` com numeração automática e template padronizado. |
 | `/run-plan` | Skill | Executa um plano de `docs/plans/<slug>.md` em worktree isolada, micro-commits Conventional Commits, revisão dirigida por bloco e gate de validação manual quando aplicável. |
+| `/gen-tests-python` | Skill | Gera testes pytest para um módulo/função de um projeto Python (pytest + respx + asyncio_mode auto + tmp_path para SQLite). |
 | `code-reviewer` | Agent | Rubrica YAGNI: flagra abstrações prematuras, comentários redundantes, defensividade desnecessária e backwards-compat fantasma. |
 | `block_env` | Hook | `PreToolUse` que bloqueia edição direta a `.env` (e variantes), aceitando apenas `.env.example`. |
+| `run_pytest_python` | Hook | `PostToolUse` auto-gated (`.py` + ancestral `pyproject.toml`) que roda pytest após edits e imprime saída só em falha. |
 
 ## Instalação
 

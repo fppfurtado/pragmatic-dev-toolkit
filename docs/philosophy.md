@@ -26,10 +26,25 @@ As skills deste plugin assumem que o projeto segue estas convenções de path:
 
 Se o projeto não segue alguma dessas convenções, a skill correspondente reporta o gap em vez de tentar adivinhar. O caminho mais simples para adoção é gerar o projeto com o template companion [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit), mas qualquer projeto pode adotar as convenções manualmente.
 
+## Convenção de naming
+
+Skills e hooks stack-specific convivem no mesmo plugin com componentes genéricos sem precisar de sub-plugin. O nome carrega o contrato:
+
+| Tipo | Genérico | Stack-specific |
+|------|----------|----------------|
+| Hook (script) | `<purpose>.py\|.sh` (ex.: `block_env.py`) | `<purpose>_<stack>.py\|.sh` (ex.: `run_pytest_python.py`) |
+| Skill (frontmatter `name`) | `<verb>-<artifact>` (ex.: `new-feature`) | `<verb>-<artifact>-<stack>` (ex.: `gen-tests-python`) |
+
+A diferença operacional: **skill é invocada pelo usuário**, então o sufixo de stack é declaração explícita de acoplamento ("não me chame em projeto Java"). **Hook dispara sozinho** em todo projeto onde o plugin está instalado, então precisa de **auto-gating triplo** para silenciar em projetos da stack errada:
+
+1. **Extensão do arquivo** — `if not file_path.endswith(".py"): exit 0` filtra a maioria dos casos sem custo.
+2. **Marcador de stack** — caminhar pelos ancestrais procurando `pyproject.toml` (Python), `build.gradle*`/`pom.xml` (JVM), etc. Sem marcador, exit 0.
+3. **Toolchain** — só executar a ferramenta (`uv run pytest`, `gradle test`) com fallback razoável; se a toolchain não existe, exit 0.
+
+Isso torna seguro shipar `run_pytest_python.py` no mesmo plugin que `run_gradle_test_java.sh`: cada hook é silente em projetos fora da sua stack, sem flags nem env vars para desligar.
+
 ## O que **não** está incluso (e por quê)
 
-- **`gen-test` skill e regras `tests.md` Python-pytest-specific.** Stack-específicos. Adicionar como sub-plugin Python (`pragmatic-dev-toolkit-python`) só quando 2+ projetos pragmatic-Python pedirem.
-- **Hook `PostToolUse` rodando testes automaticamente.** Stack-específico (assume `uv run pytest` e `tests/unit/`). Disponível como snippet em `docs/install.md` para colar em `.claude/settings.json` do projeto.
 - **`qa-reviewer`, `security-reviewer`.** Saturados de invariantes e contratos específicos; tirar isso deixa pouco. Ficam project-level. `/run-plan` os invoca via fallback de path quando existem em `.claude/agents/` do projeto.
 
 ## Companion
