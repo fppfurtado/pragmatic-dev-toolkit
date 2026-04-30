@@ -18,7 +18,14 @@ def main() -> int:
     file_path = event.get("tool_input", {}).get("file_path", "")
     name = file_path.rsplit("/", 1)[-1]
 
-    if name == ".env" or (name.startswith(".env.") and name != ".env.example"):
+    # Strip template suffixes so .env.example.jinja / .env.example.tmpl pass through.
+    base = name
+    for suffix in (".jinja", ".tmpl"):
+        if base.endswith(suffix):
+            base = base[: -len(suffix)]
+            break
+
+    if base == ".env" or (base.startswith(".env.") and base != ".env.example"):
         sys.stderr.write(
             f"Blocked: direct edit of {name} is not allowed. "
             f"Use .env.example as the versioned template; keep secrets out of git.\n"
