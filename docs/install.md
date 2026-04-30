@@ -35,6 +35,8 @@ git clone git@github.com:fppfurtado/pragmatic-dev-toolkit.git
 1. Confirmar `.claude-plugin/plugin.json` válido como JSON.
 2. Após instalar, abrir o Claude Code no workspace e confirmar que `/new-feature`, `/new-adr`, `/run-plan`, `/gen-tests-python` aparecem em `/help` ou `/plugin list`.
 3. Smoke das skills + edição direta de `.env` (verifica `block_env`) + edição de um `.py` num projeto Python (verifica `run_pytest_python`).
+4. Invocar `qa-reviewer` num diff que adiciona função pública sem teste correspondente → flag esperado de "caminho feliz sem teste".
+5. Invocar `security-reviewer` num diff que faz `logger.info(f"token={token}")` → flag esperado de "credencial em log".
 
 ## Pré-requisitos no projeto consumidor
 

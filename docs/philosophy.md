@@ -34,6 +34,9 @@ Skills e hooks stack-specific convivem no mesmo plugin com componentes genérico
 |------|----------|----------------|
 | Hook (script) | `<purpose>.py\|.sh` (ex.: `block_env.py`) | `<purpose>_<stack>.py\|.sh` (ex.: `run_pytest_python.py`) |
 | Skill (frontmatter `name`) | `<verb>-<artifact>` (ex.: `new-feature`) | `<verb>-<artifact>-<stack>` (ex.: `gen-tests-python`) |
+| Agent (frontmatter `name`) | `<role>` (ex.: `code-reviewer`, `qa-reviewer`, `security-reviewer`) | `<role>-<stack>` (apenas se os princípios mudarem com a stack) |
+
+Componentes que **geram ou executam** algo da stack (skills geradoras de código, hooks que invocam toolchain) precisam de sufixo — sintaxe ou comando concreto não tem versão neutra. Componentes que **revisam princípios** lidos do diff não precisam — o stack está no próprio diff.
 
 A diferença operacional: **skill é invocada pelo usuário**, então o sufixo de stack é declaração explícita de acoplamento ("não me chame em projeto Java"). **Hook dispara sozinho** em todo projeto onde o plugin está instalado, então precisa de **auto-gating triplo** para silenciar em projetos da stack errada:
 
@@ -42,10 +45,6 @@ A diferença operacional: **skill é invocada pelo usuário**, então o sufixo d
 3. **Toolchain** — só executar a ferramenta (`uv run pytest`, `gradle test`) com fallback razoável; se a toolchain não existe, exit 0.
 
 Isso torna seguro shipar `run_pytest_python.py` no mesmo plugin que `run_gradle_test_java.sh`: cada hook é silente em projetos fora da sua stack, sem flags nem env vars para desligar.
-
-## O que **não** está incluso (e por quê)
-
-- **`qa-reviewer`, `security-reviewer`.** Saturados de invariantes e contratos específicos; tirar isso deixa pouco. Ficam project-level. `/run-plan` os invoca via fallback de path quando existem em `.claude/agents/` do projeto.
 
 ## Companion
 
