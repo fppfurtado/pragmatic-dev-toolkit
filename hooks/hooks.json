@@ -1,5 +1,5 @@
 {
-  "description": "Block direct edits to .env files (use .env.example as the only versioned template).",
+  "description": "Block direct edits to .env files; run pytest after Python edits in projects with a pyproject.toml ancestor.",
   "hooks": {
     "PreToolUse": [
       {
@@ -9,6 +9,18 @@
             "type": "command",
             "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/block_env.py",
             "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/run_pytest_python.py",
+            "timeout": 60
           }
         ]
       }
