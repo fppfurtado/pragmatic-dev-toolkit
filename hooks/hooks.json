@@ -1,0 +1,17 @@
+{
+  "description": "Block direct edits to .env files (use .env.example as the only versioned template).",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/block_env.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

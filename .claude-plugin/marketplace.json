@@ -1,0 +1,29 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "fppfurtado-pragmatic-dev-toolkit",
+  "description": "Personal marketplace exposing pragmatic-dev-toolkit — a Claude Code plugin for the flat & pragmatic development workflow.",
+  "owner": {
+    "name": "Fernando Furtado",
+    "email": "fppfurtado@outlook.com"
+  },
+  "plugins": [
+    {
+      "name": "pragmatic-dev-toolkit",
+      "description": "Generic skills (/new-feature, /new-adr, /run-plan), YAGNI code-reviewer, and .env protection hook for flat & pragmatic projects.",
+      "author": {
+        "name": "Fernando Furtado",
+        "email": "fppfurtado@outlook.com",
+        "url": "https://github.com/fppfurtado"
+      },
+      "category": "development",
+      "source": {
+        "source": "github",
+        "repo": "fppfurtado/pragmatic-dev-toolkit",
+        "ref": "main"
+      },
+      "homepage": "https://github.com/fppfurtado/pragmatic-dev-toolkit",
+      "version": "0.1.0",
+      "tags": ["yagni", "workflow", "adr", "code-review"]
+    }
+  ]
+}
