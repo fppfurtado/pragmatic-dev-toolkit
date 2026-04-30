@@ -2,6 +2,13 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.2.0] - 2026-04-30
+
+### Added
+- Skill: `/gen-tests-python` — gera testes pytest para módulos/funções de um projeto Python.
+- Hook: `run_pytest_python` — auto-gated PostToolUse (extensão `.py` + ancestral `pyproject.toml`); roda pytest e imprime saída só em falha.
+- Naming convention para skills e hooks stack-specific (em `docs/philosophy.md`).
+
 ## [0.1.0] - 2026-04-30
 
 Initial release.
