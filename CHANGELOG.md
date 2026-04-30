@@ -2,6 +2,11 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.2.1] - 2026-04-30
+
+### Changed
+- `plugin.json` and `marketplace.json` metadata refreshed to mention `/gen-tests-python` and the pytest hook; keywords/tags now include `python`, `pytest`, `testing` for marketplace discovery.
+
 ## [0.2.0] - 2026-04-30
 
 ### Added

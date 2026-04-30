@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "pragmatic-dev-toolkit",
-      "description": "Generic skills (/new-feature, /new-adr, /run-plan), YAGNI code-reviewer, and .env protection hook for flat & pragmatic projects.",
+      "description": "Workflow skills (/new-feature, /new-adr, /run-plan), Python testing skill (/gen-tests-python), YAGNI code-reviewer, and self-gated hooks (.env protection + pytest) for flat & pragmatic projects.",
       "author": {
         "name": "Fernando Furtado",
         "email": "fppfurtado@outlook.com",
@@ -22,8 +22,8 @@
         "ref": "main"
       },
       "homepage": "https://github.com/fppfurtado/pragmatic-dev-toolkit",
-      "version": "0.2.0",
-      "tags": ["yagni", "workflow", "adr", "code-review"]
+      "version": "0.2.1",
+      "tags": ["yagni", "workflow", "adr", "code-review", "python", "pytest", "testing"]
     }
   ]
 }
