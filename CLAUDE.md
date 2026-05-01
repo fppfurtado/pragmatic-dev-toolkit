@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A **Claude Code plugin** (not an app, not a library). It ships skills, agents, and hooks that codify the "flat & pragmatic" workflow described in `docs/philosophy.md`. There is no build step and no test suite — the artifacts are markdown frontmatter (skills/agents) and short Python scripts (hooks). Validation is manual: install the plugin into a consumer project and smoke-test the components.
 
-The companion repo is [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit), a Copier template that generates the project layout these skills assume. They are designed to be used together but are independently usable.
+The companion repo is [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit), a Copier template that generates the canonical default layout the skills assume. They are designed to be used together but are independently usable — projects with a different layout declare role variants in their `CLAUDE.md` (see `docs/philosophy.md` → "Resolução de papéis").
 
 ## Plugin layout (what loads what)
 
@@ -17,18 +17,18 @@ Three component types, each with its own discovery mechanism:
 - **Hooks** — `hooks/hooks.json` declares lifecycle bindings; the bound scripts (`hooks/*.py`) run on every matching tool call in any project that has the plugin installed. Therefore hooks **must auto-gate** (see below).
 
 Manifests:
-- `.claude-plugin/plugin.json` — plugin name/version/description (currently `0.3.0`).
+- `.claude-plugin/plugin.json` — plugin name/version/description.
 - `.claude-plugin/marketplace.json` — exposes the plugin to `/plugin marketplace add fppfurtado/pragmatic-dev-toolkit`.
 
 When bumping a release, update the version in **both** manifests **and** add a `CHANGELOG.md` entry in the existing format.
 
-## The path contract (load-bearing)
+## The role contract (load-bearing)
 
-Skills here assume the consumer project follows the path contract in `docs/philosophy.md`:
+Skills consume **roles**, not literal paths. Each role has a canonical default; consumer projects declare variants via the `<!-- pragmatic-toolkit:config -->` YAML block in their `CLAUDE.md`. Full protocol in `docs/philosophy.md` → "Resolução de papéis".
 
-`IDEA.md`, `BACKLOG.md`, `docs/domain.md`, `docs/design.md`, `docs/decisions/ADR-NNN-*.md`, `docs/plans/<slug>.md`, `Makefile` with a `test` target, optional `.worktreeinclude`, optional project-level `.claude/agents/qa-reviewer.md` / `security-reviewer.md`.
+Roles and canonical defaults: `product_direction` → `IDEA.md`, `ubiquitous_language` → `docs/domain.md`, `design_notes` → `docs/design.md`, `decisions_dir` → `docs/decisions/`, `plans_dir` → `docs/plans/`, `backlog` → `BACKLOG.md`, `test_command` → `make test`. Plugin-internal: `.worktreeinclude` (consumed by `/run-plan`) and project-level `.claude/agents/qa-reviewer.md` / `security-reviewer.md` follow Claude Code conventions.
 
-Skills must **report a gap rather than guess** when an expected file is missing. This is non-negotiable — fabricating context defeats the alignment-first workflow.
+Resolution order (per role): probe canonical → consult config block in consumer's `CLAUDE.md` → ask the operator with tri-state response (`path | "não temos" | <other path>`). Skills must **report a gap rather than guess** when a required role resolves to "não temos". This is non-negotiable — fabricating context defeats the alignment-first workflow.
 
 ## Naming convention (stack-specific vs generic)
 
@@ -56,9 +56,9 @@ Hooks fire in every project where the plugin is installed, so a stack-specific h
 
 The three workflow skills compose in a deliberate order:
 
-1. **`/new-feature <intent>`** — alignment only, no implementation. Reads `IDEA.md` → `docs/domain.md` → `BACKLOG.md` → `docs/design.md` → `docs/decisions/`. Decides which artifact to produce (backlog line / plan / ADR / domain update) and stops. Plan blocks may be annotated `{revisor: code|qa|security}` to direct `/run-plan`.
-2. **`/new-adr "<title>"`** — auto-numbers from existing `ADR-NNN-*.md` files (3-digit zero-padded), generates slug, writes template skeleton with placeholders. Has `disable-model-invocation: true` — only invoked explicitly.
-3. **`/run-plan <slug>`** — the only execution skill. Creates `.worktrees/<slug>/`, replicates files listed in `.worktreeinclude`, requires green `make test` baseline, then loops per `## Arquivos a alterar` block: implement → `make test` → invoke the block's reviewer (default `code-reviewer`; `qa`/`security` annotations resolve to project-level agents in `.claude/agents/`) → micro-commit (Conventional Commits, English, no `--amend`). Blocks final "done" until the operator confirms `## Verificação manual` if the plan has that section.
+1. **`/new-feature <intent>`** — alignment only, no implementation. Reads roles in order: `product_direction` → `ubiquitous_language` → `backlog` → `design_notes` → `decisions_dir`. Decides which artifact to produce (backlog line / plan / ADR / domain update) and stops. Plan blocks may be annotated `{revisor: code|qa|security}` to direct `/run-plan`.
+2. **`/new-adr "<title>"`** — auto-numbers within the resolved `decisions_dir` by **inferring** the format from existing ADRs (3-digit padded canonical, 4-digit padded, or no padding); generates slug, writes template skeleton with placeholders. Has `disable-model-invocation: true` — only invoked explicitly.
+3. **`/run-plan <slug>`** — the only execution skill. Creates `.worktrees/<slug>/`, replicates files listed in `.worktreeinclude`, requires the resolved `test_command` (default `make test`) to be green as baseline, then loops per "files to change" block (canonical PT-BR `## Arquivos a alterar`, matched semantically): implement → run `test_command` → invoke the block's reviewer (default `code-reviewer`; `qa`/`security` annotations resolve to project-level agents in `.claude/agents/`) → micro-commit (Conventional Commits, English, no `--amend`). Blocks final "done" until the operator confirms the manual-verification section if the plan has one.
 
 When editing these skills, preserve the **alignment → plan → execute** separation. Don't let `/new-feature` start writing code; don't let `/run-plan` skip the reviewer.
 
@@ -67,8 +67,8 @@ When editing these skills, preserve the **alignment → plan → execute** separ
 All three are invoked on a diff and report only real problems (no "consider" hedging):
 
 - **`code-reviewer`** — YAGNI rubric: premature abstractions, redundant comments, unnecessary defensiveness, phantom backwards-compat.
-- **`qa-reviewer`** — coverage of happy path + invariants from `docs/domain.md` (RNxx) + edge cases declared in `docs/design.md`; flags mocked persistence layer in integration tests.
-- **`security-reviewer`** — credentials/tokens, input validation at boundaries, external HTTP timeouts, sensitive data in logs, ADR-defined post-error invariants.
+- **`qa-reviewer`** — coverage of happy path + invariants documented by the project's `ubiquitous_language` role (RNxx) + edge cases declared by the `design_notes` role; flags mocked persistence layer in integration tests.
+- **`security-reviewer`** — credentials/tokens, input validation at boundaries, external HTTP timeouts, sensitive data in logs, post-error invariants defined by ADRs in the `decisions_dir` role.
 
 The two reviewers added in 0.3 are intentionally **stack-agnostic** — they read principles from the diff. Don't add stack suffixes unless the principles themselves change.
 
