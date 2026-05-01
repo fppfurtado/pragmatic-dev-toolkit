@@ -2,6 +2,15 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.10.0] - 2026-05-01
+
+### Changed
+- Agent `code-reviewer` ganha rubric específico para `.claude/settings.json` e `.claude/settings.local.json` na seção "Infra e configuração": flagga drift/duplicação entre arquivos shared e local, vazamento de entries pessoais para o compartilhado, hooks com paths não-portáveis, env vars literais em vez de `${VAR}`, e `permissions.allow` só-em-local sem racional explícito. Reaproveita o reviewer default de `/run-plan` — qualquer bloco que toque `.claude/settings*.json` é coberto sem precisar anotar `{revisor: ...}`.
+
+### Notes
+- `security-reviewer` não foi estendido: capability grants amplos em `permissions.allow` já caem em "Privilégios e permissões" (broad ACL / manifest permissions) — duplicar seria ruído.
+- Sem princípio novo em `docs/philosophy.md`: higiene de settings é checklist mecânico, não tensão de design durável.
+
 ## [0.9.0] - 2026-05-01
 
 ### Added

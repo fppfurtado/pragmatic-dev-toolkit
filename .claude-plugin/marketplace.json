@@ -22,7 +22,7 @@
         "ref": "main"
       },
       "homepage": "https://github.com/fppfurtado/pragmatic-dev-toolkit",
-      "version": "0.9.0",
+      "version": "0.10.0",
       "tags": ["yagni", "workflow", "adr", "code-review", "debugging", "diagnosis", "python", "pytest", "testing"]
     }
   ]
