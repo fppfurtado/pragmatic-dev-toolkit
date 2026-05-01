@@ -57,7 +57,7 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
    - Sem anotação, default = `code-reviewer`.
    - Bloco com perfis mistos: invocar o mais sensível (`security` > `qa` > `code`).
 4. **Aplicar correções** levantadas pelo revisor antes de prosseguir.
-5. **Micro-commit** Conventional Commits (`feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`, `style:`). **Um commit por bloco**, mensagem em inglês. **Nunca** `--amend` ou rebase de commits anteriores do `/run-plan`.
+5. **Micro-commit** seguindo a **convenção de commits do projeto consumidor** (ver `docs/philosophy.md` → "Convenção de commits"): política explícita declarada → padrão observado no histórico (`git log`) → default canonical Conventional Commits em inglês. **Um commit por bloco**. **Nunca** `--amend` ou rebase de commits anteriores do `/run-plan`.
 
 ### 4. Gate final
 
