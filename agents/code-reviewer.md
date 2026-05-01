@@ -43,6 +43,13 @@ Analise o diff fornecido **e apenas o diff**.
 - `.env.example`: comentário curto antes de cada bloco descrevendo o propósito; pares de variáveis relacionadas (ex.: token emitido por um lado, esperado pelo outro) com referência cruzada explícita.
 - READMEs de infra: se a feature acrescenta workflow ou env, o README deve listá-lo — não deixar implícito.
 
+### `.claude/settings.json` e `.claude/settings.local.json`
+- **Drift e duplicação:** mesma entry presente em `settings.json` (compartilhado) e `settings.local.json` (pessoal). Local deveria conter **apenas overrides** — duplicar é redundância que diverge silenciosamente.
+- **Vazamento pessoal em arquivo compartilhado:** entries de cara idiossincrática (paths absolutos com username, permissões claramente de um único usuário, env vars de máquina específica) em `settings.json` quando pertencem a `settings.local.json`.
+- **Hook com path não-portável:** comando de hook em `settings.json` referenciando path absoluto da máquina do autor. Hooks compartilhados precisam ser portáveis — path relativo ao repo (`${CLAUDE_PLUGIN_ROOT}` quando aplicável) ou via PATH.
+- **Env vars com valor literal em arquivo compartilhado:** mesma filosofia que `.env.example` e `docker-compose.yml` — usar `${VAR:-}` (nunca literal) para qualquer valor sensível ou específico de ambiente.
+- **`permissions.allow` aparecendo só em `settings.local.json`:** pode indicar (a) permissão útil ao time que deveria estar no compartilhado, ou (b) permissão arriscada o bastante para ficar isolada. Reviewer flagga para o autor ser explícito sobre qual dos dois.
+
 ## O que NÃO flagrar
 
 - Três linhas similares (preferir duplicação a abstração prematura).
