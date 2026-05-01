@@ -18,21 +18,65 @@ Operacionalização concreta no checklist de gaps de `/new-feature`. Sem nomear,
 
 ## Path contract
 
-As skills deste plugin assumem que o projeto segue estas convenções de path:
+As skills consomem **papéis**, não paths. A tabela abaixo lista a convenção default por papel — projetos com layout diferente declaram variantes via bloco de config (ver `## Bloco de configuração no CLAUDE.md`).
 
-| Path | Papel |
-|------|-------|
-| `IDEA.md` | O que estamos construindo e por quê. Direção de produto. |
-| `docs/domain.md` | Linguagem ubíqua, agregados, invariantes (RNxx) — quando o domínio merece formalização. |
-| `docs/design.md` | Peculiaridades de integrações externas que não estão na doc oficial. |
-| `docs/decisions/ADR-NNN-*.md` | Decisões estruturais imutáveis. Numeradas a partir de `001`, slug em kebab-case. |
-| `docs/plans/<slug>.md` | Planos multi-fase para mudanças que exigem alinhamento prévio. |
-| `BACKLOG.md` | Lista exploratória curta — `## Próximos`, `## Em andamento`, `## Concluídos`. |
-| `Makefile` (com alvo `test`) | Gate automático nos passos de execução. |
-| `.worktreeinclude` (opcional) | Lista de gitignored a replicar em worktrees novas. Consumido por `/run-plan`. |
-| `.claude/agents/qa-reviewer.md`, `.claude/agents/security-reviewer.md` (opcional) | Revisores project-level invocados por `/run-plan` quando o bloco do plano anota `{revisor: qa}` ou `{revisor: security}`. |
+| Papel | Default | Descrição |
+|-------|---------|-----------|
+| `product_direction` | `IDEA.md` | O que estamos construindo e por quê. Direção de produto. |
+| `ubiquitous_language` | `docs/domain.md` | Linguagem ubíqua, agregados, invariantes (RNxx) — quando o domínio merece formalização. |
+| `design_notes` | `docs/design.md` | Peculiaridades de integrações externas que não estão na doc oficial. |
+| `decisions_dir` | `docs/decisions/ADR-NNN-*.md` | Decisões estruturais imutáveis. Numeradas a partir de `001`, slug em kebab-case. |
+| `plans_dir` | `docs/plans/<slug>.md` | Planos multi-fase para mudanças que exigem alinhamento prévio. |
+| `backlog` | `BACKLOG.md` | Lista exploratória curta — `## Próximos`, `## Em andamento`, `## Concluídos`. |
+| `test_command` | `make test` (com `Makefile`) | Gate automático nos passos de execução. |
+| (interno do plugin) | `.worktreeinclude` | Lista opcional de gitignored a replicar em worktrees novas. Consumido por `/run-plan`. |
+| (convenção Claude Code) | `.claude/agents/qa-reviewer.md`, `.claude/agents/security-reviewer.md` | Revisores project-level invocados por `/run-plan` quando o bloco do plano anota `{revisor: qa}` ou `{revisor: security}`. |
 
-Se o projeto não segue alguma dessas convenções, a skill correspondente reporta o gap em vez de tentar adivinhar. O caminho mais simples para adoção é gerar o projeto com o template companion [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit), mas qualquer projeto pode adotar as convenções manualmente.
+Para cada papel configurável, a skill aplica **Resolução de papéis** (próxima seção): probe do default → consultar bloco de config no CLAUDE.md → perguntar ao operador. Projeto que segue os defaults funciona zero-config; projeto com layout diferente declara variantes uma vez no CLAUDE.md. O caminho mais simples para começar com os defaults é gerar o projeto com o template companion [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit), mas qualquer layout alinhado à filosofia funciona.
+
+## Resolução de papéis
+
+Cada skill resolve os papéis que precisa antes de agir, seguindo um protocolo único para evitar drift:
+
+1. **Probe canonical.** Testar se o filename default existe (ex.: `docs/domain.md` para `ubiquitous_language`). Probe é exato, sem fuzzy: `README.md` não é assumido como `IDEA.md`.
+2. **Consultar CLAUDE.md.** Se o canonical não existe, ler o CLAUDE.md do projeto consumidor procurando o bloco `<!-- pragmatic-toolkit:config -->` (próxima seção). Valor declarado vence o canonical ausente.
+3. **Perguntar ao operador.** Se ainda ausente e o papel é necessário pra skill, pergunta com resposta tri-state: **path concreto** (skill usa esse path) | **`não temos`** (skill segue sem o input se o papel é informacional, ou para com gap report se é obrigatório) | **outro path** (operador aponta arquivo equivalente).
+4. **Oferta única de memorização.** Ao final da invocação, propor uma vez "registrar essa resolução no CLAUDE.md? (s/n)". `n` = perguntará de novo na próxima invocação. Operador mantém autonomia sobre o que fica memorizado.
+
+**Drift detection.** Se o canonical existe E o CLAUDE.md declara variante diferente, skill flagga a inconsistência ao operador antes de prosseguir — provável renome esquecido.
+
+**Papel obrigatório vs informacional.** Skills tratam diferente conforme o papel é necessário pra ação ou só pra contexto:
+
+- **Obrigatórios** (gap report se ausente sem alternativa): `plans_dir` (onde `/run-plan` lê e `/new-feature` grava planos), `backlog` em `/new-feature` (onde grava linhas), `test_command` em `/run-plan` quando o plano não tem `## Verificação end-to-end`.
+- **Informacionais** (skill segue sem o input): `product_direction`, `ubiquitous_language`, `design_notes`, ADRs, `test_command` quando o plano traz `## Verificação end-to-end`.
+
+## Bloco de configuração no CLAUDE.md
+
+Projeto consumidor declara variantes do path contract num bloco fenced no `CLAUDE.md` raiz, marcado por comentário HTML reservado. Skills procuram esse bloco; ausência total = todos os defaults.
+
+````markdown
+## Pragmatic Toolkit
+<!-- pragmatic-toolkit:config -->
+```yaml
+paths:
+  product_direction: IDEA.md          # default: IDEA.md
+  ubiquitous_language: docs/domain.md # default: docs/domain.md
+  design_notes: docs/design.md        # default: docs/design.md
+  decisions_dir: docs/decisions/      # default: docs/decisions/
+  plans_dir: docs/plans/              # default: docs/plans/
+  backlog: BACKLOG.md                 # default: BACKLOG.md
+test_command: make test               # default: make test
+```
+````
+
+**Semântica:**
+
+- Chave ausente = canonical default.
+- Valor `null` (ou explicitamente `false`) = "não usamos esse papel". Skill trata como "não temos" sem perguntar de novo.
+- Chaves desconhecidas no bloco são ignoradas (forward-compat para releases que adicionem papéis novos).
+- Chaves reservadas em v0.4.0: `paths.product_direction`, `paths.ubiquitous_language`, `paths.design_notes`, `paths.decisions_dir`, `paths.plans_dir`, `paths.backlog`, `test_command`.
+
+O marcador HTML `<!-- pragmatic-toolkit:config -->` é o que a skill procura — sem ele, o bloco YAML não é interpretado mesmo que esteja sob o cabeçalho `## Pragmatic Toolkit`.
 
 ## Convenção de naming
 
