@@ -50,6 +50,7 @@ Sem sintoma operacionalizável, não avançar.
 
 - Sintoma é teste: rodar o `test_command` resolvido restringindo ao teste alvo conforme a sintaxe da stack (filtro por nome em pytest, cargo, jest, go test, etc.).
 - Sintoma é runtime error: identificar input/comando mínimo que dispara o erro.
+- Sintoma intermitente (race condition, flaky test, dependência externa instável): reproduzir N vezes (default 5) e reportar a taxa observada. Análise prossegue mesmo sem reprodução determinística — diagnóstico fica sinalizado como **estatístico**, não determinístico.
 - Não-reprodutível localmente: enumerar os artefatos disponíveis (stack trace, logs, métricas, screenshot), prosseguir com base em evidência indireta e **sinalizar explicitamente** que a análise é especulativa.
 
 Evitar pular para hipótese antes de ver o sintoma com os próprios olhos quando a reprodução é viável.
@@ -74,7 +75,7 @@ Para cada hipótese plausível:
 3. **Observar**: rodar teste, ler código, sugerir instrumentação ao operador (não aplicar).
 4. **Atualizar status**: confirmada / refutada / inconclusiva.
 
-Limite: parar após 2-3 ciclos sem progresso e reportar o status da investigação ao operador (passo 5, ramo "nenhuma hipótese fechou").
+Limite: **parar quando duas hipóteses consecutivas forem refutadas sem ganho de evidência nova** (mesmo erro, mesmo escopo, nenhuma pista nova) e reportar o status da investigação ao operador (passo 5, ramo "nenhuma hipótese fechou").
 
 ### 5. Causa-raiz
 
@@ -84,7 +85,7 @@ Quando uma hipótese é confirmada com evidência, formular o diagnóstico em ci
 - **Causa-raiz:** arquivo:linha + mecanismo (por que o código se comporta assim).
 - **Evidência:** o que foi observado/rodado que comprova (output do teste, log, comparação git diff, etc.).
 - **Escopo de impacto:** quem mais é afetado pelo mesmo bug? Há outros call-sites, outras invariantes correlacionadas?
-- **Caminhos de correção (não execução):** opções concretas para o operador escolher — revert do commit X, patch local pequeno (apontar mudança mínima), ou `/new-feature` se virar mudança maior. Não recomendar um único caminho como "o correto" sem trade-off; o operador decide.
+- **Caminhos de correção (não execução):** **um ou mais caminhos** com trade-off explícito — revert do commit X, patch local pequeno (apontar mudança mínima), ou `/new-feature` se virar mudança maior. Se a investigação revelar caminho único razoável, declarar **"caminho único razoável"** com motivo (ex.: "revert é a única opção segura porque o commit X introduziu corrupção de dados que se acumula"). Operador decide.
 
 Se nenhuma hipótese fechou ao fim do passo 4: reportar o status — hipóteses testadas, refutadas, inconclusivas, e o melhor palpite atual com nível de confiança baixa explicitado. Evidência incompleta é resultado válido; chute disfarçado de causa-raiz, não.
 

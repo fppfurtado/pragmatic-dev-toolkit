@@ -7,6 +7,10 @@ description: Gera testes pytest para um módulo de um projeto Python, seguindo a
 
 Workflow de scaffolding de testes para projetos Python. Gera arquivo de teste para um alvo (módulo, função, ou descrição livre), respeitando a stack pytest e separando unit/integration.
 
+Princípio: **não exigir TDD estrito; exigir confiança no que vai pra produção**. Cobertura de teste serve à confiança, não a métricas.
+
+Esta skill **gera arquivo de teste** e devolve o controle ao operador. **Não faz commit** — o operador (ou `/run-plan` num plano que inclui a geração de testes) commita conforme a Convenção de commits do projeto.
+
 Esta skill **não** descobre regras de negócio sozinha — quando o projeto declara o papel `ubiquitous_language` (default: `docs/domain.md`; resolução em `docs/philosophy.md`), consulte-o para identificar invariantes (RNxx) que o código alvo exerce. Quando o papel resolve para "não temos", cubra caminho feliz + edge cases que o código realmente trata.
 
 ## Stack assumida
@@ -54,7 +58,6 @@ Se ambíguo ou ausente, perguntar antes de gerar.
 - Para identificadores externos repetidos (ex.: FITID OFX), gerar chave determinística (hash de campos estáveis).
 - Nomes de teste no idioma do projeto consumidor, alinhados ao vocabulário ubíquo (ver "Convenção de idioma" em `docs/philosophy.md`). Exemplos: PT `test_pareamento_recusa_movimentos_sem_data_liquidacao`, EN `test_matching_rejects_entries_without_settlement_date`.
 - Asserts diretos: `assert resultado == esperado`. Evitar pytest-mock e libs auxiliares.
-- Não exigir TDD estrito; exigir **confiança** no que vai pra produção.
 
 ## Validação
 
@@ -68,8 +71,6 @@ Não entregar teste vermelho. Se falhar por bug no código alvo (não no teste),
 
 ## O que NÃO fazer
 
-- Não testar invariantes que o código alvo não exerce. RN só entra se a função tocada a usa.
-- Não cobrir caminhos hipotéticos — só comportamento real do código.
+- Não testar invariantes que o código alvo não exerce — só comportamento real do código (cobre tanto "RN não usada" quanto "caminho hipotético").
 - Não mockar SQLite — usar `tmp_path`.
 - Não usar `unittest.mock` para HTTP — usar `respx`.
-- Não criar fixtures globais sem confirmação.

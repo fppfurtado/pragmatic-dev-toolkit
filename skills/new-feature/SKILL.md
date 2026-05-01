@@ -15,6 +15,8 @@ Para cada papel necessário (`product_direction`, `ubiquitous_language`, `design
 
 Resposta `não temos` é válida para papéis informacionais (`product_direction`, `ubiquitous_language`, `design_notes`, `decisions_dir`) — a skill segue sem aquele input. Skill **para com gap report** apenas se `plans_dir` ou `backlog` resolvem para `não temos` (são onde a skill grava saída). Nesse caso, indicar ao operador o caminho de adoção mínimo antes de prosseguir.
 
+Quando o caminho do passo 3 escolhido **for** "atualizar `ubiquitous_language`/`design_notes`" e o papel resolveu para `não temos`, a skill **propõe criar** o arquivo no caminho default (`docs/domain.md` ou `docs/design.md`) e pergunta uma vez. Resposta `não, não usamos` registra `paths.<role>: null` no bloco de config (oferta única de memorização) — papel desativado para invocações futuras sem perguntar de novo.
+
 ## Argumentos
 
 O usuário fornece a **intenção** da funcionalidade em linguagem natural. Pode ser:
@@ -32,11 +34,11 @@ Os paths abaixo são as convenções default por papel; quando o projeto declara
 
 Ler, **nesta ordem** (e só o que o pedido tocar):
 
-1. `IDEA.md` (papel: `product_direction`) — para verificar se a intenção está alinhada à direção de produto.
-2. `docs/domain.md` (papel: `ubiquitous_language`) — linguagem ubíqua e invariantes (RNxx) se houver. Identificar quais o pedido toca.
-3. `BACKLOG.md` (papel: `backlog`) — verificar se já existe item equivalente em **Próximos**, **Em andamento** ou **Concluídos**. Se existir, parar e reportar ao usuário.
-4. `docs/design.md` (papel: `design_notes`) — só se a funcionalidade tocar uma das integrações externas listadas ali.
-5. `docs/decisions/` (papel: `decisions_dir`) — listar ADRs cujo título seja relacionado; ler na íntegra apenas os que o pedido potencialmente contradiz ou estende.
+1. Papel `product_direction` (default canonical `IDEA.md`) — para verificar se a intenção está alinhada à direção de produto.
+2. Papel `ubiquitous_language` (default canonical `docs/domain.md`) — linguagem ubíqua e invariantes (RNxx) se houver. Identificar quais o pedido toca.
+3. Papel `backlog` (default canonical `BACKLOG.md`) — verificar se já existe item equivalente em **Próximos**, **Em andamento** ou **Concluídos**. Se existir, parar e reportar ao usuário.
+4. Papel `design_notes` (default canonical `docs/design.md`) — só se a funcionalidade tocar uma das integrações externas listadas ali.
+5. Papel `decisions_dir` (default canonical `docs/decisions/`) — listar ADRs cujo título seja relacionado; ler na íntegra apenas os que o pedido potencialmente contradiz ou estende.
 
 Não ler arquivos de código nesta etapa. Esta é uma fase de alinhamento de intenção, não de design técnico.
 
@@ -55,7 +57,7 @@ Antes de qualquer artefato, identificar lacunas e perguntar **só o que for bloq
 
 Se o usuário já forneceu o necessário, pular as perguntas. Se houver 1–2 gaps reais, perguntar de forma direta e curta. **Não fazer entrevista exaustiva** — o projeto é exploratório, decisões podem evoluir no fluxo.
 
-Quando bifurcação é detectada, **uma pergunta nominal-comparativa é obrigatória** antes do plano, mesmo passando do limite de 1-2 perguntas. Forma canônica: *"Para X, prefere (a) caminho-default-barato ou (b) caminho-rico? Trade-off: (a) é mais simples e mais barato; (b) entrega <virtude-B> ao custo de <custo-B>."* A escolha vai para o `## Contexto` ou `## Resumo da mudança` do plano produzido — sem nomear, o caminho barato vence por omissão.
+Quando bifurcação é detectada, **uma pergunta nominal-comparativa é obrigatória** antes do plano. Forma canônica: *"Para X, prefere (a) caminho-default-barato ou (b) caminho-rico? Trade-off: (a) é mais simples e mais barato; (b) entrega <virtude-B> ao custo de <custo-B>."* A escolha vai para o `## Contexto` ou `## Resumo da mudança` do plano produzido — sem nomear, o caminho barato vence por omissão. **Se o operador já citou explicitamente uma das opções** na frase original (`/new-feature exportar CSV usando streaming`), pular a pergunta nominal-comparativa e registrar a escolha no plano direto.
 
 ### 3. Decidir o artefato
 
@@ -76,7 +78,7 @@ Combinações são comuns: um item pode virar **linha no backlog + ADR**, ou **p
 Idioma de saída: **espelhar o idioma já em uso pelo projeto consumidor** (ver "Convenção de idioma" em `docs/philosophy.md`). Headers e prosa abaixo estão em PT-BR canonical; em projeto que usa outro idioma, traduzir headers e linhas para esse idioma e seguir o padrão dos artefatos existentes.
 
 - **BACKLOG (papel: `backlog`):** adicionar **uma linha** em `## Próximos` (ou `## Em andamento` se já vai começar). Frase de intenção, sem detalhamento.
-- **Plano (papel: `plans_dir`):** criar `<plans_dir>/<slug>.md` (default: `docs/plans/<slug>.md`). Estrutura recomendada: `## Contexto` → `## Resumo da mudança` → `## Arquivos a alterar` → `## Verificação end-to-end` → (`## Verificação manual`, **se** a resposta ao gap "Validação manual necessária?" foi sim) → `## Notas operacionais`. Não inventar seções vazias. Em `## Arquivos a alterar`, anotação `{revisor: code}` no título de cada subseção orienta o `/run-plan` na escolha do revisor; sem anotação, o fallback é `code-reviewer`.
+- **Plano (papel: `plans_dir`):** criar `<plans_dir>/<slug>.md` (default: `docs/plans/<slug>.md`). Estrutura recomendada: `## Contexto` → `## Resumo da mudança` → `## Arquivos a alterar` → `## Verificação end-to-end` → (`## Verificação manual`, **se** a resposta ao gap "Validação manual necessária?" foi sim) → `## Notas operacionais`. Não inventar seções vazias. Em `## Arquivos a alterar`, anotação `{reviewer: <perfil>}` no header de cada subseção orienta o `/run-plan` na escolha do revisor — exemplo canônico: `### Bloco 1 — auth.py {reviewer: security}`. Schema completo (perfis, múltiplos perfis, alias deprecado) em `docs/philosophy.md` → "Anotação de revisor em planos". Sem anotação, default `code-reviewer`.
 - **ADR:** invocar a skill `/new-adr "<título>"` (não duplicar a lógica dela aqui). Reportar ao usuário e seguir.
 - **`docs/domain.md` / `docs/design.md` (papéis: `ubiquitous_language` / `design_notes`):** edit cirúrgico no arquivo existente. Preservar tom e estrutura.
 
@@ -98,5 +100,4 @@ Não começar a implementar. Quem decide o salto para código é o operador.
 - Não criar plano para mudança que cabe em uma linha do backlog. Plano é exceção, não regra.
 - Não criar ADR para escolha tática (nome de função, organização interna de um módulo). ADR é decisão estrutural duradoura.
 - Não duplicar conteúdo de `CLAUDE.md`, `domain.md` ou `design.md` no plano — referenciar.
-- Não fazer entrevista exaustiva de requisitos. 1–2 perguntas bloqueantes, no máximo — **exceto** quando bifurcação arquitetural for detectada (ver passo 2).
 - Não preencher conteúdo de ADR — delegar para `/new-adr`.

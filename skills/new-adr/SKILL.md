@@ -8,6 +8,8 @@ disable-model-invocation: true
 
 Cria um novo Architecture Decision Record no papel `decisions_dir` do projeto (default: `docs/decisions/`; resolução em `docs/philosophy.md`) seguindo o template do toolkit.
 
+Esta skill cria o arquivo e devolve o controle ao operador. **Não faz commit** — o operador (ou `/run-plan` num plano que inclui o ADR) commita conforme a Convenção de commits do projeto.
+
 ## Argumentos
 
 O usuário fornece o **título** da decisão (string curta e descritiva). Exemplo: `/new-adr "Política de retentativas para chamadas HTTP externas"`.
@@ -27,6 +29,7 @@ Se o usuário não fornecer título, peça antes de prosseguir.
      - Se todos batem `ADR-\d{3}-` → 3-dígitos com padding (`006`, `007`, …) — formato canonical do toolkit.
      - Se há `ADR-\d+-` sem zero à esquerda em ao menos um (ex.: `ADR-1-`, `ADR-12-`) → sem padding (`6`, `7`, …).
      - Formatos mistos (alguns padded, outros não) → flagar ao operador antes de prosseguir; provável drift histórico que merece decisão antes de continuar.
+     - **Formatos atípicos** (ex.: `ADR-007a-`, `ADR-DRAFT-`, sufixos com letra) → flagar ao operador e perguntar antes de prosseguir; default não-fatal (skill espera resposta, não aborta).
      - **Diretório vazio**: default 3-dígitos com padding (canonical do toolkit).
    - Extrair o maior número numérico (independente do padding) e somar 1; aplicar o formato inferido.
 
@@ -46,7 +49,7 @@ Esqueleto mínimo (sempre presente, headers em PT-BR canonical):
 # ADR-NNN: <Título>
 
 **Data:** <YYYY-MM-DD>
-**Status:** Aceito
+**Status:** Proposto
 
 ## Origem
 
@@ -80,14 +83,13 @@ Padrões úteis: `### Benefícios`, `### Trade-offs`, `### Limitações`, `### M
 
 ### Bullets de Origem (escolha conforme o caso)
 
-Variantes úteis: `**Investigação:**`, `**Decisão base:**` (link a ADR anterior), `**Direção de produto:**` (link ao papel `product_direction` do projeto, default `IDEA.md`), `**Regra de domínio:**` (link a RN no papel `ubiquitous_language`). Use o rótulo que melhor descreve o gatilho real.
+Variantes úteis: `**Investigação:**`, `**Decisão base:**` (link a ADR anterior), `**Direção de produto:**` (link ao papel `product_direction` do projeto, default `IDEA.md`), `**Regra de domínio:**` (link a RN no papel `ubiquitous_language`). Use o rótulo que melhor descreve o gatilho real. **Critério de escolha** quando múltiplos gatilhos parecem aplicáveis: pelo mais específico — ADR anterior > Direção de produto > Investigação > Regra de domínio.
 
 ## Validação
 
 Após criar o arquivo:
-- Confirmar que o número é o próximo livre (não duplicar).
 - Confirmar que o slug não colide com nenhum ADR existente.
-- Reportar ao usuário o caminho do arquivo criado. Se a decisão for revisada futuramente, o `Status` pode mudar para `Substituído` (com link para o sucessor) ou `Revogado`.
+- Reportar ao usuário o caminho do arquivo criado. Status default `Proposto` reflete que o ADR ainda não passou por revisão; após aprovação, vira `Aceito`. Se a decisão for revisada futuramente, o `Status` pode mudar para `Substituído` (com link para o sucessor) ou `Revogado`.
 
 ## O que NÃO fazer
 
