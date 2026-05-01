@@ -7,7 +7,7 @@ description: Gera testes pytest para um módulo de um projeto Python, seguindo a
 
 Workflow de scaffolding de testes para projetos Python. Gera arquivo de teste para um alvo (módulo, função, ou descrição livre), respeitando a stack pytest e separando unit/integration.
 
-Esta skill **não** descobre regras de negócio sozinha — quando o projeto tem `docs/domain.md` (path contract do toolkit), consulte-o para identificar invariantes (RNxx) que o código alvo exerce. Quando não tem, cubra caminho feliz + edge cases que o código realmente trata.
+Esta skill **não** descobre regras de negócio sozinha — quando o projeto declara o papel `ubiquitous_language` (default: `docs/domain.md`; resolução em `docs/philosophy.md`), consulte-o para identificar invariantes (RNxx) que o código alvo exerce. Quando o papel resolve para "não temos", cubra caminho feliz + edge cases que o código realmente trata.
 
 ## Stack assumida
 
@@ -36,13 +36,13 @@ Se ambíguo ou ausente, perguntar antes de gerar.
 
 1. **Ler o alvo:** `Read` no arquivo, identificar funções públicas e suas assinaturas. Para descrição livre, localizar o entry point com `grep`.
 
-2. **Mapear invariantes aplicáveis:** consulte `docs/domain.md` do projeto e identifique RNs (ou invariantes nomeadas equivalentes) que o código alvo exerce. Para cada invariante exercida, gerar **dois testes**: caminho feliz (invariante satisfeita) e caminho de violação (deve falhar/recusar). Se o projeto não tem `docs/domain.md`, derive invariantes do próprio código (asserts, raises, validações).
+2. **Mapear invariantes aplicáveis:** consulte o papel `ubiquitous_language` do projeto (default: `docs/domain.md`) e identifique RNs (ou invariantes nomeadas equivalentes) que o código alvo exerce. Para cada invariante exercida, gerar **dois testes**: caminho feliz (invariante satisfeita) e caminho de violação (deve falhar/recusar). Se o papel resolve para "não temos", derive invariantes do próprio código (asserts, raises, validações).
 
 3. **Decidir unit vs integration:**
    - Unit se não tocar SQLite nem rede real.
    - Integration se tocar SQLite ou exercitar pipeline ponta-a-ponta.
 
-4. **Identificar edge cases típicos por domínio:** revisar `docs/design.md` do projeto (peculiaridades de integrações externas) e cobrir tanto caminho feliz quanto violação de invariante. Sem `docs/design.md`, cobrir os edge cases que o próprio código alvo trata explicitamente (raises, branches de erro, validações).
+4. **Identificar edge cases típicos por domínio:** revisar o papel `design_notes` do projeto (default: `docs/design.md`; peculiaridades de integrações externas) e cobrir tanto caminho feliz quanto violação de invariante. Quando o papel resolve para "não temos", cobrir os edge cases que o próprio código alvo trata explicitamente (raises, branches de erro, validações).
 
 5. **Gerar arquivo** em `tests/unit/test_<módulo>.py` ou `tests/integration/test_<módulo>.py`.
 
