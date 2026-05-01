@@ -11,7 +11,9 @@ Esta skill **não implementa**. Ela produz os artefatos de alinhamento e devolve
 
 ## Pré-condições
 
-O projeto deve seguir as convenções de path do toolkit: `IDEA.md`, `BACKLOG.md`, `docs/domain.md`, `docs/design.md`, `docs/decisions/`, `docs/plans/`. Se algum não existe, parar e reportar — provavelmente o projeto não foi inicializado pelo `scaffold-kit` (ou equivalente manual). Indicar ao operador o caminho de adoção mínimo antes de prosseguir.
+Para cada papel necessário (`product_direction`, `ubiquitous_language`, `design_notes`, `decisions_dir`, `plans_dir`, `backlog`), aplicar **Resolução de papéis** (ver `docs/philosophy.md`): probe do canonical default → consultar bloco `<!-- pragmatic-toolkit:config -->` no CLAUDE.md → perguntar ao operador com resposta tri-state.
+
+Resposta `não temos` é válida para papéis informacionais (`product_direction`, `ubiquitous_language`, `design_notes`, `decisions_dir`) — a skill segue sem aquele input. Skill **para com gap report** apenas se `plans_dir` ou `backlog` resolvem para `não temos` (são onde a skill grava saída). Nesse caso, indicar ao operador o caminho de adoção mínimo antes de prosseguir.
 
 ## Argumentos
 
@@ -26,13 +28,15 @@ Se o input estiver vazio ou genericamente "o que vamos fazer hoje?", peça ao us
 
 ### 1. Carregar contexto mínimo
 
+Os paths abaixo são as convenções default por papel; quando o projeto declara variantes (ver Resolução de papéis em `docs/philosophy.md`), usar os paths declarados.
+
 Ler, **nesta ordem** (e só o que o pedido tocar):
 
-1. `IDEA.md` — para verificar se a intenção está alinhada à direção de produto.
-2. `docs/domain.md` — linguagem ubíqua e invariantes (RNxx) se houver. Identificar quais o pedido toca.
-3. `BACKLOG.md` — verificar se já existe item equivalente em **Próximos**, **Em andamento** ou **Concluídos**. Se existir, parar e reportar ao usuário.
-4. `docs/design.md` — só se a funcionalidade tocar uma das integrações externas listadas ali.
-5. `docs/decisions/` — listar ADRs cujo título seja relacionado; ler na íntegra apenas os que o pedido potencialmente contradiz ou estende.
+1. `IDEA.md` (papel: `product_direction`) — para verificar se a intenção está alinhada à direção de produto.
+2. `docs/domain.md` (papel: `ubiquitous_language`) — linguagem ubíqua e invariantes (RNxx) se houver. Identificar quais o pedido toca.
+3. `BACKLOG.md` (papel: `backlog`) — verificar se já existe item equivalente em **Próximos**, **Em andamento** ou **Concluídos**. Se existir, parar e reportar ao usuário.
+4. `docs/design.md` (papel: `design_notes`) — só se a funcionalidade tocar uma das integrações externas listadas ali.
+5. `docs/decisions/` (papel: `decisions_dir`) — listar ADRs cujo título seja relacionado; ler na íntegra apenas os que o pedido potencialmente contradiz ou estende.
 
 Não ler arquivos de código nesta etapa. Esta é uma fase de alinhamento de intenção, não de design técnico.
 
@@ -69,10 +73,10 @@ Combinações são comuns: um item pode virar **linha no backlog + ADR**, ou **p
 
 ### 4. Produzir os artefatos
 
-- **BACKLOG:** adicionar **uma linha** em `## Próximos` (ou `## Em andamento` se já vai começar). Frase de intenção, sem detalhamento.
-- **Plano:** criar `docs/plans/<slug>.md`. Estrutura recomendada: `## Contexto` → `## Resumo da mudança` → `## Arquivos a alterar` → `## Verificação end-to-end` → (`## Verificação manual`, **se** a resposta ao gap "Validação manual necessária?" foi sim) → `## Notas operacionais`. Não inventar seções vazias. Em `## Arquivos a alterar`, anotação `{revisor: code}` no título de cada subseção orienta o `/run-plan` na escolha do revisor; sem anotação, o fallback é `code-reviewer`.
+- **BACKLOG (papel: `backlog`):** adicionar **uma linha** em `## Próximos` (ou `## Em andamento` se já vai começar). Frase de intenção, sem detalhamento.
+- **Plano (papel: `plans_dir`):** criar `<plans_dir>/<slug>.md` (default: `docs/plans/<slug>.md`). Estrutura recomendada: `## Contexto` → `## Resumo da mudança` → `## Arquivos a alterar` → `## Verificação end-to-end` → (`## Verificação manual`, **se** a resposta ao gap "Validação manual necessária?" foi sim) → `## Notas operacionais`. Não inventar seções vazias. Em `## Arquivos a alterar`, anotação `{revisor: code}` no título de cada subseção orienta o `/run-plan` na escolha do revisor; sem anotação, o fallback é `code-reviewer`.
 - **ADR:** invocar a skill `/new-adr "<título>"` (não duplicar a lógica dela aqui). Reportar ao usuário e seguir.
-- **`docs/domain.md` / `docs/design.md`:** edit cirúrgico no arquivo existente. Preservar tom e estrutura.
+- **`docs/domain.md` / `docs/design.md` (papéis: `ubiquitous_language` / `design_notes`):** edit cirúrgico no arquivo existente. Preservar tom e estrutura.
 
 Para slug de plano: lowercase, espaços/acentos→hífens, curto e descritivo (ex.: `exportar-movimentos-csv`).
 
