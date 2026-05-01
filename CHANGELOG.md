@@ -2,6 +2,11 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.11.1] - 2026-05-01
+
+### Changed
+- `skills/new-feature/SKILL.md`: limite de gaps a esclarecer relaxado de "1–2" para "1–3" — duas perguntas podia ser pouco em pedidos com mais de uma área de gap real.
+
 ## [0.11.0] - 2026-05-01
 
 ### Changed
