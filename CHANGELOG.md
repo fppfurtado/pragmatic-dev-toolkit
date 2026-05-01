@@ -2,6 +2,15 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.9.0] - 2026-05-01
+
+### Added
+- Skill `/debug <sintoma>` — diagnostica causa-raiz por método científico (precisar sintoma → reproduzir → isolar → testar hipóteses → causa-raiz com evidência). Produz **diagnóstico, não fix**: o operador escolhe o caminho de correção depois (revert, patch direto, ou `/new-feature` se virar mudança maior). Stack-agnóstico — orquestra método, não toolchain de debugger. Roles consumidos (todos informacionais): `test_command`, `ubiquitous_language`, `decisions_dir`, `design_notes`.
+
+### Notes
+- Skill enforca o paralelo de `/new-feature` no eixo de bug-fixing: "não corrigir sem isolar a causa". Sem essa disciplina explícita, debug em chat free-form pula etapas e regressões voltam.
+- Não cria worktree, não escreve artefato no repo, não aplica instrumentação. Propor instrumentação ao operador é parte do passo "hipotetizar e testar"; aplicar fica com o operador no workspace dele.
+
 ## [0.8.0] - 2026-05-01
 
 ### Changed
