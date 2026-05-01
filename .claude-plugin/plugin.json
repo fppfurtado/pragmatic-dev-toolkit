@@ -1,6 +1,6 @@
 {
   "name": "pragmatic-dev-toolkit",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Claude Code plugin for the flat & pragmatic development workflow — workflow skills (/new-feature, /new-adr, /run-plan), Python testing skill (/gen-tests-python), YAGNI/QA/security reviewers, and self-gated hooks (.env protection + pytest).",
   "author": {
     "name": "Fernando Furtado",

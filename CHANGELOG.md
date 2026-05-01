@@ -2,6 +2,12 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.3.1] - 2026-05-01
+
+### Added
+- Skill `/new-feature`: gap "Bifurcação arquitetural" no checklist + exceção à regra "1-2 perguntas" quando o pedido admite múltiplas implementações materialmente diferentes.
+- Princípio "Nomear bifurcações arquiteturais" em `docs/philosophy.md`.
+
 ## [0.3.0] - 2026-04-30
 
 ### Added
