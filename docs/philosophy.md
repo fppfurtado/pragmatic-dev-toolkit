@@ -114,7 +114,7 @@ Quando `/run-plan` produz micro-commits, segue a **política de mensagens de com
 2. **Padrão observado no histórico** — `git log` recente. Se há predomínio claro (Conventional Commits, gitmoji, prefixos custom tipo `[FEAT]`, idioma específico), adotar esse padrão.
 3. **Default canonical** — [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`, `style:`) com mensagens em **inglês**. Aplicado quando não há política explícita e o histórico não revela padrão extraível (repo novo, commits ad-hoc).
 
-A regra "um micro-commit por bloco do plano" e a proibição de `--amend`/rebase de commits anteriores do `/run-plan` permanecem invariantes — pertencem à mecânica de execução, não à política de mensagem.
+A regra "um micro-commit por bloco do plano" permanece invariante — pertence à mecânica de execução, não à política de mensagem. `--amend` e rebase de commits de blocos já fechados ficam proibidos pelo mesmo motivo; emendar o último commit do bloco corrente quando faz sentido (typo, arquivo esquecido) é exceção localizada, não regra.
 
 ## Companion
 

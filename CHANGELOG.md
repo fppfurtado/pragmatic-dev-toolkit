@@ -11,7 +11,7 @@ All notable changes to this plugin are documented here. Format inspired by [Keep
 - Princípio "Convenção de commits" em `docs/philosophy.md`: protocolo de detecção em três níveis, espelhando o pattern da Convenção de idioma.
 
 ### Notes
-- Política de "um micro-commit por bloco" e proibição de `--amend`/rebase em commits anteriores do `/run-plan` permanecem invariantes — pertencem à mecânica de execução, não à política de mensagem.
+- Política de "um micro-commit por bloco" permanece invariante. `--amend`/rebase de commits de blocos já fechados continuam proibidos; emendar o último commit do bloco corrente passa a ser exceção localizada (typo, arquivo esquecido), não regra.
 
 ## [0.6.0] - 2026-05-01
 
