@@ -7,7 +7,7 @@ Triple auto-gating so this is safe to ship in a multi-stack plugin:
      `pyproject.toml`.
   3. toolchain: prefer `uv run pytest`; fall back to `python -m pytest`.
 
-Output ergonomics: silent on green; print the last 10 lines of pytest
+Output ergonomics: silent on green; print the last TAIL_LINES lines of pytest
 output (stdout+stderr) only when pytest exits non-zero. PostToolUse must
 not block subsequent hooks, so we always exit 0.
 """
@@ -16,6 +16,10 @@ import os
 import shutil
 import subprocess
 import sys
+
+# Empirical limit — pytest's useful tail fits in 10 lines; larger values
+# pollute the transcript when many tests fail at once.
+TAIL_LINES = 10
 
 
 def find_project_root(file_path: str) -> str | None:
@@ -64,7 +68,7 @@ def main() -> int:
         return 0
 
     if res.returncode != 0:
-        tail = "\n".join((res.stdout + res.stderr).splitlines()[-10:])
+        tail = "\n".join((res.stdout + res.stderr).splitlines()[-TAIL_LINES:])
         sys.stderr.write(tail + "\n")
 
     return 0

@@ -8,6 +8,10 @@ to stderr and exit 2 (block). Otherwise exit 0 (continue).
 import json
 import sys
 
+# Common template suffixes across the ecosystem; new ones can be appended
+# without changing the loop below.
+TEMPLATE_SUFFIXES = (".jinja", ".tmpl", ".j2", ".erb", ".mustache")
+
 
 def main() -> int:
     try:
@@ -20,7 +24,7 @@ def main() -> int:
 
     # Strip template suffixes so .env.example.jinja / .env.example.tmpl pass through.
     base = name
-    for suffix in (".jinja", ".tmpl"):
+    for suffix in TEMPLATE_SUFFIXES:
         if base.endswith(suffix):
             base = base[: -len(suffix)]
             break

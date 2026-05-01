@@ -4,6 +4,7 @@
     "PreToolUse": [
       {
         "matcher": "Edit|Write",
+        "description": "Timeout 10s — block_env is a fast filename-only triage; anything slower is a bug.",
         "hooks": [
           {
             "type": "command",
@@ -16,6 +17,7 @@
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
+        "description": "Timeout 60s — fits a typical suite; slower projects let the hook expire silently (PostToolUse must exit 0).",
         "hooks": [
           {
             "type": "command",
