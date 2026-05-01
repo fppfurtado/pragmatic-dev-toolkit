@@ -1,12 +1,12 @@
 ---
 name: new-adr
-description: Cria um novo ADR em docs/decisions/ com numeração automática e template padronizado. Use quando o usuário pedir um novo ADR ou registrar uma decisão estrutural duradoura.
+description: Cria um novo ADR no diretório de decisões do projeto com numeração automática (formato inferido dos ADRs existentes) e template padronizado. Use quando o usuário pedir um novo ADR ou registrar uma decisão estrutural duradoura.
 disable-model-invocation: true
 ---
 
 # new-adr
 
-Cria um novo Architecture Decision Record em `docs/decisions/` seguindo o template do toolkit.
+Cria um novo Architecture Decision Record no papel `decisions_dir` do projeto (default: `docs/decisions/`; resolução em `docs/philosophy.md`) seguindo o template do toolkit.
 
 ## Argumentos
 
@@ -16,17 +16,25 @@ Se o usuário não fornecer título, peça antes de prosseguir.
 
 ## Passos
 
-1. **Listar ADRs existentes** para descobrir o próximo número:
+1. **Resolver `decisions_dir`** seguindo a Resolução de papéis (default: `docs/decisions/`). Se o papel resolve para "não temos", parar e reportar — ADR sem diretório de decisões não tem onde morar.
+
+2. **Listar ADRs existentes** no `decisions_dir` resolvido para descobrir o próximo número e o formato de numeração:
    ```bash
-   ls docs/decisions/ADR-*.md 2>/dev/null
+   ls <decisions_dir>/ADR-*.md 2>/dev/null
    ```
-   Extrair o maior número da listagem (formato `ADR-NNN-slug.md`). O próximo é `maior + 1`, sempre com 3 dígitos (`006`, `007`, ...).
+   - **Inferir o formato** a partir dos arquivos existentes (não hardcode):
+     - Se todos batem `ADR-\d{4}-` → 4-dígitos com padding (`0006`, `0007`, …).
+     - Se todos batem `ADR-\d{3}-` → 3-dígitos com padding (`006`, `007`, …) — formato canonical do toolkit.
+     - Se há `ADR-\d+-` sem zero à esquerda em ao menos um (ex.: `ADR-1-`, `ADR-12-`) → sem padding (`6`, `7`, …).
+     - Formatos mistos (alguns padded, outros não) → flagar ao operador antes de prosseguir; provável drift histórico que merece decisão antes de continuar.
+     - **Diretório vazio**: default 3-dígitos com padding (canonical do toolkit).
+   - Extrair o maior número numérico (independente do padding) e somar 1; aplicar o formato inferido.
 
-2. **Gerar slug** do título: lowercase, espaços/acentos para hífens, remover caracteres especiais. Exemplo: `"Política de retentativas para chamadas HTTP externas"` → `politica-de-retentativas-chamadas-http-externas`.
+3. **Gerar slug** do título: lowercase, espaços/acentos para hífens, remover caracteres especiais. Exemplo: `"Política de retentativas para chamadas HTTP externas"` → `politica-de-retentativas-chamadas-http-externas`.
 
-3. **Obter data de hoje** em formato `YYYY-MM-DD` (use a `currentDate` do contexto se disponível, senão `date +%Y-%m-%d`).
+4. **Obter data de hoje** em formato `YYYY-MM-DD` (use a `currentDate` do contexto se disponível, senão `date +%Y-%m-%d`).
 
-4. **Criar arquivo** `docs/decisions/ADR-NNN-<slug>.md` com o template abaixo. Não preencher o conteúdo das seções — deixar placeholders explícitos para o operador completar.
+5. **Criar arquivo** `<decisions_dir>/ADR-<NNN>-<slug>.md` (onde `<NNN>` segue o formato inferido) com o template abaixo. Não preencher o conteúdo das seções — deixar placeholders explícitos para o operador completar.
 
 ## Template
 
@@ -70,7 +78,7 @@ Padrões úteis: `### Benefícios`, `### Trade-offs`, `### Limitações`, `### M
 
 ### Bullets de Origem (escolha conforme o caso)
 
-Variantes úteis: `**Investigação:**`, `**Decisão base:**` (link a ADR anterior), `**Direção de produto:**` (link a IDEA.md), `**Regra de domínio:**` (link a RN). Use o rótulo que melhor descreve o gatilho real.
+Variantes úteis: `**Investigação:**`, `**Decisão base:**` (link a ADR anterior), `**Direção de produto:**` (link ao papel `product_direction` do projeto, default `IDEA.md`), `**Regra de domínio:**` (link a RN no papel `ubiquitous_language`). Use o rótulo que melhor descreve o gatilho real.
 
 ## Validação
 
