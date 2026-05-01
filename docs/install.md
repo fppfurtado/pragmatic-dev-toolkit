@@ -33,11 +33,12 @@ git clone git@github.com:fppfurtado/pragmatic-dev-toolkit.git
 `claude plugin validate` ainda **não existe** como subcomando estável (até abril de 2026). Para validar localmente:
 
 1. Confirmar `.claude-plugin/plugin.json` válido como JSON.
-2. Após instalar, abrir o Claude Code no workspace e confirmar que `/new-feature`, `/new-adr`, `/run-plan`, `/gen-tests-python` aparecem em `/help` ou `/plugin list`.
+2. Após instalar, abrir o Claude Code no workspace e confirmar que `/new-feature`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests-python` aparecem em `/help` ou `/plugin list`.
 3. Smoke das skills + edição direta de `.env` (verifica `block_env`) + edição de um `.py` num projeto Python (verifica `run_pytest_python`).
 4. Invocar `qa-reviewer` num diff que adiciona função pública sem teste correspondente → flag esperado de "caminho feliz sem teste".
 5. Invocar `security-reviewer` num diff que faz `logger.info(f"token={token}")` → flag esperado de "credencial em log".
-6. Em projeto com bloco de config declarado, invocar `/new-feature` num pedido que toque domínio e confirmar que a skill consulta o path declarado (ex.: `docs/glossary.md`), não o canonical (`docs/domain.md`).
+6. Invocar `/debug` com um sintoma operacionalizável (ex.: teste que sabidamente falha) → skill produz diagnóstico estruturado (sintoma, causa-raiz, evidência, impacto, caminhos de correção) **sem aplicar fix nem fazer commit**.
+7. Em projeto com bloco de config declarado, invocar `/new-feature` num pedido que toque domínio e confirmar que a skill consulta o path declarado (ex.: `docs/glossary.md`), não o canonical (`docs/domain.md`).
 
 ## Pré-requisitos no projeto consumidor
 
