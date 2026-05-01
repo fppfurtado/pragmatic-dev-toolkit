@@ -2,6 +2,18 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.8.0] - 2026-05-01
+
+### Changed
+- Agent `security-reviewer` generalizado para qualquer tipo de sistema (web, CLI, desktop, mobile, embedded, library, pipeline, IaC). Critérios passam a ser tratados como **princípios** que se manifestam diferente conforme stack: "Chamadas HTTP externas" vira "I/O externo" (qualquer I/O bloqueante — RPC, DB, file lock, socket, subprocess); "Tokens em URLs em vez de headers" generaliza para segredos em qualquer canal inseguro (argv visível, env herdada, query string); validação de entrada cobre fronteiras adicionais (IPC, deserialização, callback de SDK, stdin) e classes de injeção além de SQL (shell, path traversal, format string, deserialização unsafe, log injection).
+
+### Added
+- Nova seção "Privilégios e permissões" no `security-reviewer`: least-privilege em escalation, capability grants, scopes OAuth, roles IAM, manifest permissions, ACLs e entitlements.
+- Frontmatter `description` do agent ganha pista explícita de aplicabilidade ("qualquer tipo de sistema") para evitar leitura como agent só-web. CLAUDE.md atualizado em paralelo.
+
+### Notes
+- Backwards compat preservado: diffs antes cobertos continuam cobertos. A superfície de detecção apenas expandiu.
+
 ## [0.7.0] - 2026-05-01
 
 ### Changed
