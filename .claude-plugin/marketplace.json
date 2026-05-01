@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "pragmatic-dev-toolkit",
-      "description": "Workflow skills (/new-feature, /new-adr, /run-plan, /debug), Python testing skill (/gen-tests-python), YAGNI/QA/security reviewers, and self-gated hooks (.env protection + pytest) for flat & pragmatic projects. Configurable path contract via CLAUDE.md.",
+      "description": "Workflow skills for alignment, execution and diagnosis; YAGNI/QA/security reviewers; Python testing scaffolder; self-gated hooks; configurable path contract via CLAUDE.md. For flat & pragmatic projects.",
       "author": {
         "name": "Fernando Furtado",
         "email": "fppfurtado@outlook.com",
@@ -23,7 +23,7 @@
       },
       "homepage": "https://github.com/fppfurtado/pragmatic-dev-toolkit",
       "version": "0.10.0",
-      "tags": ["yagni", "workflow", "adr", "code-review", "debugging", "diagnosis", "python", "pytest", "testing"]
+      "tags": ["workflow", "yagni", "scaffold", "adr", "planning", "code-review", "debugging", "diagnosis", "python", "pytest", "testing"]
     }
   ]
 }

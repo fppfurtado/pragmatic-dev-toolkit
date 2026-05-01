@@ -32,23 +32,11 @@ Resolution order (per role): probe canonical → consult config block in consume
 
 ## Naming convention (stack-specific vs generic)
 
-Documented in `docs/philosophy.md` and enforced by review:
-
-| Type | Generic | Stack-specific |
-|------|---------|----------------|
-| Hook script | `<purpose>.py` | `<purpose>_<stack>.py` (e.g. `run_pytest_python.py`) |
-| Skill | `<verb>-<artifact>` | `<verb>-<artifact>-<stack>` (e.g. `gen-tests-python`) |
-| Agent | `<role>` | `<role>-<stack>` (only if principles change with stack) |
-
-**Components that generate or execute stack-specific things require the suffix** (concrete syntax/commands have no neutral form). **Components that review principles from a diff do not** (the stack is in the diff itself) — that's why `qa-reviewer` and `security-reviewer` ship without suffixes.
+See `docs/philosophy.md` → "Convenção de naming" for the full table and rationale (suffix-required for components that generate/execute stack-specific things; no suffix for components that review principles from a diff).
 
 ## Hook auto-gating triple (mandatory)
 
-Hooks fire in every project where the plugin is installed, so a stack-specific hook must silently no-op outside its stack. Triple gate (see `hooks/run_pytest_python.py` for the canonical example):
-
-1. **Extension** — `if not file_path.endswith(".py"): return 0`.
-2. **Stack marker** — walk ancestors looking for `pyproject.toml` (or equivalent). No marker → exit 0.
-3. **Toolchain** — prefer the modern tool (e.g. `uv run pytest`), fall back to `python -m pytest`. If the toolchain is missing, exit 0.
+See `docs/philosophy.md` → "Convenção de naming" for the full triple gate (extension → stack marker → toolchain). `hooks/run_pytest_python.py` is the canonical example.
 
 `PostToolUse` hooks must always exit 0 (do not block subsequent hooks). Use exit 2 only for `PreToolUse` blocking (see `block_env.py`).
 
@@ -56,9 +44,9 @@ Hooks fire in every project where the plugin is installed, so a stack-specific h
 
 The workflow skills compose in a deliberate order:
 
-1. **`/new-feature <intent>`** — alignment only, no implementation. Reads roles in order: `product_direction` → `ubiquitous_language` → `backlog` → `design_notes` → `decisions_dir`. Decides which artifact to produce (backlog line / plan / ADR / domain update) and stops. Plan blocks may be annotated `{revisor: code|qa|security}` to direct `/run-plan`.
+1. **`/new-feature <intent>`** — alignment only, no implementation. Reads roles in order: `product_direction` → `ubiquitous_language` → `backlog` → `design_notes` → `decisions_dir`. Decides which artifact to produce (backlog line / plan / ADR / domain update) and stops. Plan blocks may be annotated `{reviewer: code|qa|security}` (multiple profiles allowed: `{reviewer: code,qa,security}`) to direct `/run-plan`. Schema documented in `docs/philosophy.md` → "Anotação de revisor em planos".
 2. **`/new-adr "<title>"`** — auto-numbers within the resolved `decisions_dir` by **inferring** the format from existing ADRs (3-digit padded canonical, 4-digit padded, or no padding); generates slug, writes template skeleton with placeholders. Has `disable-model-invocation: true` — only invoked explicitly.
-3. **`/run-plan <slug>`** — the only execution skill. Creates `.worktrees/<slug>/`, replicates files listed in `.worktreeinclude`, requires the resolved `test_command` (default `make test`) to be green as baseline, then loops per "files to change" block (canonical PT-BR `## Arquivos a alterar`, matched semantically): implement → run `test_command` → invoke the block's reviewer (default `code-reviewer`; `qa`/`security` annotations resolve to project-level agents in `.claude/agents/`) → micro-commit following the project's commit convention (see `docs/philosophy.md` → "Convenção de commits"; canonical default is Conventional Commits in English; `--amend` reserved for localized fixes within the current block). Blocks final "done" until the operator confirms the manual-verification section if the plan has one.
+3. **`/run-plan <slug>`** — the only execution skill. Creates `.worktrees/<slug>/`, replicates files listed in `.worktreeinclude` (see `docs/philosophy.md` → "Convenção `.worktreeinclude`"), requires the resolved `test_command` (default `make test`) to be green as baseline, then loops per "files to change" block (canonical PT-BR `## Arquivos a alterar`, matched semantically): implement → run `test_command` → invoke **all** reviewers listed in `{reviewer: ...}` (default `code-reviewer`; `qa`/`security` resolve to project-level agents in `.claude/agents/`; multiple profiles aggregate reports) → micro-commit following the project's commit convention (see `docs/philosophy.md` → "Convenção de commits"; canonical default is Conventional Commits in English; `--amend` reserved for localized fixes within the current block). Blocks final "done" until the operator confirms the manual-verification section if the plan has one.
 4. **`/debug <symptom>`** — diagnose phase, the bug-fix-axis counterpart to `/new-feature`'s alignment. Walks the scientific method (precisar → reproduzir → isolar → hypothesis-test → root cause) and produces a five-field diagnostic (sintoma, causa-raiz, evidência, escopo, caminhos de correção). Stack-agnostic. **Produces no code, no commit, no instrumentation** — the operator routes the diagnosis to revert / direct patch / `/new-feature` for a larger change. Roles consumed are all informational (`test_command`, `ubiquitous_language`, `decisions_dir`, `design_notes`); none block the skill.
 
 When editing these skills, preserve the separations: **alignment → plan → execute** for new work, and **diagnose ≠ fix** on the bug-fix axis. Don't let `/new-feature` start writing code; don't let `/run-plan` skip the reviewer; don't let `/debug` apply fixes.
