@@ -2,6 +2,17 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.7.0] - 2026-05-01
+
+### Changed
+- Skill `/run-plan` passa a seguir a **convenção de commits do projeto consumidor** ao gerar micro-commits. Detecção em três níveis: política explícita no projeto (CLAUDE.md, `CONTRIBUTING.md`, etc.) → padrão observado em `git log` → default canonical Conventional Commits em inglês. Backwards compat preservado: projetos sem política explícita e com histórico já em CC inglês mantêm comportamento idêntico ao v0.6.0.
+
+### Added
+- Princípio "Convenção de commits" em `docs/philosophy.md`: protocolo de detecção em três níveis, espelhando o pattern da Convenção de idioma.
+
+### Notes
+- Política de "um micro-commit por bloco" e proibição de `--amend`/rebase em commits anteriores do `/run-plan` permanecem invariantes — pertencem à mecânica de execução, não à política de mensagem.
+
 ## [0.6.0] - 2026-05-01
 
 ### Changed
