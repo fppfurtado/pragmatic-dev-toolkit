@@ -11,7 +11,7 @@ Analise o diff fornecido **e apenas o diff**.
 
 ### Abstrações prematuras
 - Diretórios `application/`, `domain/`, `infrastructure/` dentro de módulos de negócio (proibidos — arquivos planos por módulo).
-- Interfaces / Protocols / classes abstratas para fronteiras **estáveis**. Adapters dedicados só para fronteiras instáveis declaradas pelo projeto (em `docs/design.md`).
+- Interfaces / Protocols / classes abstratas para fronteiras **estáveis**. Adapters dedicados só para fronteiras instáveis declaradas pelo papel `design_notes` do projeto (default: `docs/design.md`).
 - Mappers em cascata (DTO → Domain → Persistence → Wire) quando uma função já basta.
 - Inversão de dependência onde encapsulamento (função privada `_xxx`) resolveria.
 - Factory / Builder / Strategy criados para um único uso.

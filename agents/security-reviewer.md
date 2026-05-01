@@ -27,7 +27,7 @@ Você é um revisor de segurança. Analise o diff fornecido **e apenas o diff** 
 - Logs em DEBUG que vazam para INFO em produção.
 
 ### Invariantes pós-erro
-- ADRs que definem comportamento de rollback, retry com efeito colateral, ou divergência entre estado local e externo: verificar se o diff respeita essas invariantes.
+- ADRs do projeto (papel `decisions_dir`, default: `docs/decisions/`) que definem comportamento de rollback, retry com efeito colateral, ou divergência entre estado local e externo: verificar se o diff respeita essas invariantes.
 
 ## Como reportar
 

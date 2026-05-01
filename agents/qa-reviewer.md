@@ -9,7 +9,7 @@ Analise o diff fornecido **e os testes associados** (existentes + novos). Identi
 
 ## Mapeamento de invariantes
 
-Quando o diff toca lógica que exerce invariantes documentadas em `docs/domain.md` (RNxx ou equivalentes), verifique cobertura para cada uma — tanto satisfeita quanto violada.
+Quando o diff toca lógica que exerce invariantes documentadas pelo papel `ubiquitous_language` do projeto (default: `docs/domain.md`; RNxx ou equivalentes), verifique cobertura para cada uma — tanto satisfeita quanto violada.
 
 ## Padrões esperados
 
@@ -21,7 +21,7 @@ Quando o diff toca lógica que exerce invariantes documentadas em `docs/domain.m
 
 1. **Caminho feliz** da mudança tem teste?
 2. **Invariantes** tocadas têm cobertura — tanto satisfeita quanto violada?
-3. **Edge cases** que o diff/código alvo trata explicitamente (raises, branches de erro) e os declarados em `docs/design.md` quando relevantes?
+3. **Edge cases** que o diff/código alvo trata explicitamente (raises, branches de erro) e os declarados pelo papel `design_notes` do projeto (default: `docs/design.md`) quando relevantes?
 4. **Mock vs real:**
    - Camada de persistência mockada em integration → bug. Mock/prod divergence é o caso clássico de teste verde com produção quebrada.
    - HTTP externo: usar a ferramenta de mock idiomática da stack, não bibliotecas genéricas tipo `unittest.mock`.
