@@ -57,7 +57,7 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
    - Sem anotação, default = `code-reviewer`.
    - Bloco com perfis mistos: invocar o mais sensível (`security` > `qa` > `code`).
 4. **Aplicar correções** levantadas pelo revisor antes de prosseguir.
-5. **Micro-commit** seguindo a **convenção de commits do projeto consumidor** (ver `docs/philosophy.md` → "Convenção de commits"): política explícita declarada → padrão observado no histórico (`git log`) → default canonical Conventional Commits em inglês. **Um commit por bloco**. **Nunca** `--amend` ou rebase de commits anteriores do `/run-plan`.
+5. **Micro-commit** seguindo a **convenção de commits do projeto consumidor** (ver `docs/philosophy.md` → "Convenção de commits"): política explícita declarada → padrão observado no histórico (`git log`) → default canonical Conventional Commits em inglês. **Um commit por bloco**. Como regra, evitar `--amend` e rebase — micro-commits revertíveis são o ponto. Exceção localizada: corrigir o último commit ainda dentro do bloco corrente quando faz sentido (typo na mensagem, arquivo esquecido no stage, footer faltando). Commits de blocos já fechados ficam intocados.
 
 ### 4. Gate final
 
@@ -71,7 +71,7 @@ A skill termina na worktree com branch da feature. Caminho de fechamento (PR, me
 
 - Não declarar done sem confirmação humana **quando o plano exige validação manual**.
 - Não pular revisor, mesmo em bloco trivial.
-- Não fazer `git commit --amend` ou rebase de commits anteriores do `/run-plan` — micro-commits revertíveis são o ponto.
+- Não emendar nem fazer rebase de commits de blocos já fechados do `/run-plan` — micro-commits revertíveis são o ponto. `--amend` no último commit do bloco corrente é exceção localizada (ver passo 5), não regra.
 - Não tentar resolver merge/rebase no fim — a skill não fecha o branch.
 - Não rodar a skill sem o plano revisado e aprovado pelo operador.
 
