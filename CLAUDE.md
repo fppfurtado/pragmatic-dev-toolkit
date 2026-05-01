@@ -74,7 +74,7 @@ The two reviewers added in 0.3 are intentionally **stack-agnostic** — they rea
 
 ## Editing conventions
 
-- Documentation and skill prose are written in **Portuguese**; agent names, frontmatter keys, file paths, code, and commit messages stay in English. Don't translate cosmetically.
+- The plugin adapts to the consumer project's language at runtime (see `docs/philosophy.md` → "Convenção de idioma"). For **this** repo specifically the canonical default applies: documentation and skill/agent prose are in **Portuguese**; agent names, frontmatter keys, file paths, code, and commit messages stay in English. Don't translate cosmetically.
 - Skills/agents end with an explicit `## O que NÃO fazer` section listing scope guards. Preserve that section when editing — it's load-bearing for tight skill focus.
 - Don't introduce a build system, package manager, or test runner for this repo itself. The hooks are runnable Python scripts (`python3 ${CLAUDE_PLUGIN_ROOT}/hooks/<script>.py`); the rest is markdown.
 
