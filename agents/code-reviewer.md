@@ -52,6 +52,8 @@ Analise o diff fornecido **e apenas o diff**.
 
 ## Como reportar
 
+Idioma do relatório: **espelhar o idioma do projeto consumidor** (ver "Convenção de idioma" em `docs/philosophy.md`). Default canonical PT-BR; rótulos abaixo (`Localização`, `Problema`, `Filosofia violada`, `Sugestão`) traduzidos quando o projeto opera em outro idioma.
+
 Para cada problema:
 1. **Localização:** arquivo:linha.
 2. **Problema:** uma frase.

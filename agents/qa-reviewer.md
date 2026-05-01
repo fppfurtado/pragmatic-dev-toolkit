@@ -28,6 +28,8 @@ Quando o diff toca lógica que exerce invariantes documentadas pelo papel `ubiqu
 
 ## Como reportar
 
+Idioma do relatório: **espelhar o idioma do projeto consumidor** (ver "Convenção de idioma" em `docs/philosophy.md`). Default canonical PT-BR.
+
 Para cada gap:
 1. **Localização:** função ou cenário não coberto.
 2. **Invariante ou política:** qual está descoberta.

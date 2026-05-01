@@ -31,6 +31,8 @@ Você é um revisor de segurança. Analise o diff fornecido **e apenas o diff** 
 
 ## Como reportar
 
+Idioma do relatório: **espelhar o idioma do projeto consumidor** (ver "Convenção de idioma" em `docs/philosophy.md`). Default canonical PT-BR.
+
 Para cada problema encontrado:
 1. **Localização:** arquivo:linha (do diff).
 2. **Problema:** uma frase direta.
