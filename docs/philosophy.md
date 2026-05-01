@@ -98,6 +98,14 @@ A diferença operacional: **skill é invocada pelo usuário**, então o sufixo d
 
 Isso torna seguro shipar `run_pytest_python.py` no mesmo plugin que `run_gradle_test_java.sh`: cada hook é silente em projetos fora da sua stack, sem flags nem env vars para desligar.
 
+## Convenção de idioma
+
+Skills e agents adaptam-se ao idioma do projeto consumidor — prosa dirigida ao operador, relatórios de revisores, headers de templates (planos, ADRs, backlog) e nomes de teste seguem o idioma já em uso. A pista é o conteúdo existente (`IDEA.md`, plans anteriores, ADRs, vocabulário ubíquo); sem sinal claro, o default canonical é PT-BR (origem do toolkit).
+
+O que **não** muda com idioma: nomes de agents, chaves de frontmatter, paths, identificadores de código e mensagens de commit. Esses elementos pertencem à mecânica do toolkit, não ao discurso do projeto, e ficam sempre em inglês para legibilidade cross-stack.
+
+`/run-plan` faz **matching semântico** dos headers de plano — canonical PT-BR é `## Arquivos a alterar`, `## Verificação end-to-end`, `## Verificação manual`, `## Contexto`, `## Resumo da mudança`; equivalentes em outro idioma do projeto (`## Files to change`, `## End-to-end verification`, etc.) são aceitos contanto que a estrutura informacional bata.
+
 ## Companion
 
 [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit) é o template Copier que produz a estrutura inicial de um projeto novo já alinhada ao path contract acima. Os dois artefatos são desacoplados — você pode usar um sem o outro, mas a sinergia é clara: bootstrap com `scaffold-kit`, automação com este plugin.
