@@ -38,7 +38,9 @@ Se o usuário não fornecer título, peça antes de prosseguir.
 
 ## Template
 
-Esqueleto mínimo (sempre presente):
+Idioma do template: **espelhar ADRs existentes no projeto consumidor**. Se o `decisions_dir` resolvido tem ADRs prévios, usar o idioma deles (headers, status, rótulos de bullets). Se está vazio, default canonical PT-BR mostrado abaixo. Ver "Convenção de idioma" em `docs/philosophy.md`.
+
+Esqueleto mínimo (sempre presente, headers em PT-BR canonical):
 
 ```markdown
 # ADR-NNN: <Título>

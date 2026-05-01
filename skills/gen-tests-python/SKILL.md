@@ -52,7 +52,7 @@ Se ambíguo ou ausente, perguntar antes de gerar.
 
 - Para tempo, injetar data de referência explícita — não depender de `datetime.now()`.
 - Para identificadores externos repetidos (ex.: FITID OFX), gerar chave determinística (hash de campos estáveis).
-- Nomes de teste em PT alinhados ao vocabulário ubíquo do projeto: `test_pareamento_recusa_movimentos_sem_data_liquidacao`.
+- Nomes de teste no idioma do projeto consumidor, alinhados ao vocabulário ubíquo (ver "Convenção de idioma" em `docs/philosophy.md`). Exemplos: PT `test_pareamento_recusa_movimentos_sem_data_liquidacao`, EN `test_matching_rejects_entries_without_settlement_date`.
 - Asserts diretos: `assert resultado == esperado`. Evitar pytest-mock e libs auxiliares.
 - Não exigir TDD estrito; exigir **confiança** no que vai pra produção.
 

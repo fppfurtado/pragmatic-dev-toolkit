@@ -73,6 +73,8 @@ Combinações são comuns: um item pode virar **linha no backlog + ADR**, ou **p
 
 ### 4. Produzir os artefatos
 
+Idioma de saída: **espelhar o idioma já em uso pelo projeto consumidor** (ver "Convenção de idioma" em `docs/philosophy.md`). Headers e prosa abaixo estão em PT-BR canonical; em projeto que usa outro idioma, traduzir headers e linhas para esse idioma e seguir o padrão dos artefatos existentes.
+
 - **BACKLOG (papel: `backlog`):** adicionar **uma linha** em `## Próximos` (ou `## Em andamento` se já vai começar). Frase de intenção, sem detalhamento.
 - **Plano (papel: `plans_dir`):** criar `<plans_dir>/<slug>.md` (default: `docs/plans/<slug>.md`). Estrutura recomendada: `## Contexto` → `## Resumo da mudança` → `## Arquivos a alterar` → `## Verificação end-to-end` → (`## Verificação manual`, **se** a resposta ao gap "Validação manual necessária?" foi sim) → `## Notas operacionais`. Não inventar seções vazias. Em `## Arquivos a alterar`, anotação `{revisor: code}` no título de cada subseção orienta o `/run-plan` na escolha do revisor; sem anotação, o fallback é `code-reviewer`.
 - **ADR:** invocar a skill `/new-adr "<título>"` (não duplicar a lógica dela aqui). Reportar ao usuário e seguir.
