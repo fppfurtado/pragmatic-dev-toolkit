@@ -8,6 +8,14 @@
 
 Refatorar mais tarde costuma ser mais barato do que abstrair cedo.
 
+## Nomear bifurcações arquiteturais
+
+Há pedidos que admitem dois ou mais caminhos com custo, manutenção ou modelo mental significativamente diferentes — verbos abertos ("registrar", "validar", "notificar", "processar", "armazenar", "interagir") são sintoma frequente. A frase do operador satisfaz ambos os caminhos; o plano não. Quando isso acontece, o caminho default-barato vence por inércia se a alternativa não for nomeada.
+
+Em workflow YAGNI essa tensão é real, não cosmética: o viés natural é o caminho mais simples, e nem sempre é o que o operador tinha em mente. A correção é leve — antes do plano, nomear as opções concretas e pedir escolha. A decisão registra-se em `## Contexto` ou `## Resumo da mudança` do plano produzido, para que reviewers e execução posterior saibam por que aquele caminho.
+
+Operacionalização concreta no checklist de gaps de `/new-feature`. Sem nomear, a bifurcação fica baked-in no plano sem ter sido discutida.
+
 ## Path contract
 
 As skills deste plugin assumem que o projeto segue estas convenções de path:
