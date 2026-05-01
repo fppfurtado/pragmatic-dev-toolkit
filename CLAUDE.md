@@ -68,7 +68,7 @@ All three are invoked on a diff and report only real problems (no "consider" hed
 
 - **`code-reviewer`** — YAGNI rubric: premature abstractions, redundant comments, unnecessary defensiveness, phantom backwards-compat.
 - **`qa-reviewer`** — coverage of happy path + invariants documented by the project's `ubiquitous_language` role (RNxx) + edge cases declared by the `design_notes` role; flags mocked persistence layer in integration tests.
-- **`security-reviewer`** — credentials/tokens, input validation at boundaries, external HTTP timeouts, sensitive data in logs, post-error invariants defined by ADRs in the `decisions_dir` role.
+- **`security-reviewer`** — secrets handling, boundary input validation, external I/O hygiene (timeouts, silent errors, side-effect retries), sensitive data exposure, privilege/permission scope, post-error invariants defined by ADRs in the `decisions_dir` role. Stack-agnostic — applies to web, CLI, desktop, mobile, embedded, libraries, pipelines and IaC.
 
 The two reviewers added in 0.3 are intentionally **stack-agnostic** — they read principles from the diff. Don't add stack suffixes unless the principles themselves change.
 
