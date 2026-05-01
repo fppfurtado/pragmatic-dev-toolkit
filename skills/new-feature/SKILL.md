@@ -47,8 +47,11 @@ Antes de qualquer artefato, identificar lacunas e perguntar **só o que for bloq
 - **Persistência:** precisa estado novo? Migra schema? (gatilho potencial de ADR — ver passo 4.)
 - **Aprendizado de domínio:** o pedido revela algo que ainda não está em `docs/domain.md`?
 - **Validação manual necessária?** A feature tem comportamento perceptível ao usuário final, fluxo crítico de produção ou integração externa frágil? Se sim, o plano deve incluir uma seção `## Verificação manual` (gate de "ok, vai pra produção"). Refactors puros, mudanças internas, ajustes de teste e doc-only não precisam — `make test` é gate suficiente.
+- **Bifurcação arquitetural:** o pedido pode ser resolvido por dois ou mais caminhos com custo, manutenção ou modelo mental significativamente diferentes? Heurística: ao tentar mentalmente esboçar o plano, você consegue redigir dois planos distintos que ambos satisfazem a frase do operador, mas levam a estruturas, dependências ou UX diferentes? Verbos abertos ("registrar", "validar", "notificar", "processar", "armazenar", "interagir") são sintoma frequente. Ver `docs/philosophy.md`.
 
 Se o usuário já forneceu o necessário, pular as perguntas. Se houver 1–2 gaps reais, perguntar de forma direta e curta. **Não fazer entrevista exaustiva** — o projeto é exploratório, decisões podem evoluir no fluxo.
+
+Quando bifurcação é detectada, **uma pergunta nominal-comparativa é obrigatória** antes do plano, mesmo passando do limite de 1-2 perguntas. Forma canônica: *"Para X, prefere (a) caminho-default-barato ou (b) caminho-rico? Trade-off: (a) é mais simples e mais barato; (b) entrega <virtude-B> ao custo de <custo-B>."* A escolha vai para o `## Contexto` ou `## Resumo da mudança` do plano produzido — sem nomear, o caminho barato vence por omissão.
 
 ### 3. Decidir o artefato
 
@@ -89,5 +92,5 @@ Não começar a implementar. Quem decide o salto para código é o operador.
 - Não criar plano para mudança que cabe em uma linha do backlog. Plano é exceção, não regra.
 - Não criar ADR para escolha tática (nome de função, organização interna de um módulo). ADR é decisão estrutural duradoura.
 - Não duplicar conteúdo de `CLAUDE.md`, `domain.md` ou `design.md` no plano — referenciar.
-- Não fazer entrevista exaustiva de requisitos. 1–2 perguntas bloqueantes, no máximo.
+- Não fazer entrevista exaustiva de requisitos. 1–2 perguntas bloqueantes, no máximo — **exceto** quando bifurcação arquitetural for detectada (ver passo 2).
 - Não preencher conteúdo de ADR — delegar para `/new-adr`.
