@@ -2,6 +2,39 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.11.0] - 2026-05-01
+
+### Changed
+- `docs/philosophy.md` consolidada como single source of truth: cobre todas as skills em "Papel obrigatório vs informacional"; critérios mecânicos para "sinal claro" (idioma) e "predomínio claro" (commits) — ambos a ≥70%; contrato `{reviewer: ...}` formalizado com schema, idioma e suporte a múltiplos perfis; `.worktreeinclude` centralizado aqui; política de hooks vs idioma declarada (mecânica universal, sempre em inglês).
+- `/run-plan` invoca **todos** os perfis listados em `{reviewer: ...}` (era "mais sensível vence"); aceita `{reviewer: code,qa,security}` agregando relatórios.
+- `agents/qa-reviewer.md` deixa de assumir layout `tests/unit/`+`tests/integration/`; reviewer infere categoria por marker, não por path. Nova seção "Qualidade dos testes" com critério mecânico de caminho feliz.
+- `agents/code-reviewer.md` ganha exemplos por categoria na rubric `.claude/settings*.json`; regra `application/`/`domain/`/`infrastructure/` aplicada apenas a código novo introduzido pelo diff (legacy não é flag); typing trivial sai do "NÃO flagrar" puro e ganha critério de exceção (motivo explicitável).
+- `skills/new-adr/SKILL.md` template default `**Status:** Proposto` (era `Aceito`); reflexão dos workflows reais — ADR aprovado vira `Aceito` após revisão.
+- `CLAUDE.md` deixa de duplicar "Naming convention" e "Hook auto-gating triple" — vira ponteiro para `docs/philosophy.md`.
+
+### Added
+- Anotação `{reviewer: ...}` em inglês como mecânica canônica; alias `{revisor: ...}` aceito com warning durante v0.11–v0.12, removido em v1.0.
+- Chave reservada `language` no bloco YAML de config (`<!-- pragmatic-toolkit:config -->`) para forçar idioma do projeto consumidor.
+- `qa-reviewer` e `security-reviewer` declaram divisão de trabalho explícita com `code-reviewer` (settings hygiene) e entre si.
+- `security-reviewer` ganha fast-path para diffs doc-only e fallback heurístico quando `decisions_dir` resolve "não temos".
+- `/debug` ganha critério de parada mecânico (duas hipóteses consecutivas refutadas sem ganho de evidência) e caminho dedicado para sintomas intermitentes (reprodução estatística).
+- `/new-adr` e `/gen-tests-python` declaram explicitamente que **não fazem commit** — handoff ao operador.
+
+### Fixed
+- Tabela do path contract — `decisions_dir` é diretório, não pattern (pattern de filename migrou para `/new-adr`).
+- Repetições removidas em `/new-feature`, `/run-plan`, `/debug`, `/gen-tests-python`.
+- Keywords sincronizadas entre `plugin.json` e `marketplace.json`.
+- `block_env` aceita lista expandida de template suffixes (`.j2`, `.erb`, `.mustache`, além dos antigos `.jinja`, `.tmpl`); constante `TEMPLATE_SUFFIXES` documentada.
+- `run_pytest_python` extrai constante `TAIL_LINES` com racional empírico; literal `10` deixa de ser mágico.
+- `hooks.json` ganha `description` por entry com racional dos timeouts (10s pre, 60s post).
+- Description de manifests desacoplada de nomes de skills.
+- Removido "sub-plugin" órfão do parágrafo introdutório de "Convenção de naming".
+
+### Notes
+- Bump minor: formaliza schema da anotação `{reviewer: ...}` (era convenção implícita), introduz chave reservada `language` e marca `{revisor: ...}` como alias deprecado. Backwards compat mecânico preservado durante v0.11–v0.12.
+- v1.0 fica reservada para o release que **remove** o alias `{revisor: ...}`.
+- Plugin é meta-tool (não aplica strict-mode suas próprias pré-condições) — `CLAUDE.md` continua em inglês como operating instructions.
+
 ## [0.10.0] - 2026-05-01
 
 ### Changed
