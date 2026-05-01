@@ -102,9 +102,19 @@ Isso torna seguro shipar `run_pytest_python.py` no mesmo plugin que `run_gradle_
 
 Skills e agents adaptam-se ao idioma do projeto consumidor — prosa dirigida ao operador, relatórios de revisores, headers de templates (planos, ADRs, backlog) e nomes de teste seguem o idioma já em uso. A pista é o conteúdo existente (`IDEA.md`, plans anteriores, ADRs, vocabulário ubíquo); sem sinal claro, o default canonical é PT-BR (origem do toolkit).
 
-O que **não** muda com idioma: nomes de agents, chaves de frontmatter, paths, identificadores de código e mensagens de commit. Esses elementos pertencem à mecânica do toolkit, não ao discurso do projeto, e ficam sempre em inglês para legibilidade cross-stack.
+O que **não** muda com idioma: nomes de agents, chaves de frontmatter, paths e identificadores de código. Esses elementos pertencem à mecânica do toolkit, não ao discurso do projeto, e ficam sempre em inglês para legibilidade cross-stack. Mensagens de commit têm convenção própria — ver "Convenção de commits".
 
 `/run-plan` faz **matching semântico** dos headers de plano — canonical PT-BR é `## Arquivos a alterar`, `## Verificação end-to-end`, `## Verificação manual`, `## Contexto`, `## Resumo da mudança`; equivalentes em outro idioma do projeto (`## Files to change`, `## End-to-end verification`, etc.) são aceitos contanto que a estrutura informacional bata.
+
+## Convenção de commits
+
+Quando `/run-plan` produz micro-commits, segue a **política de mensagens de commit do projeto consumidor**. A pista de qual política usar é, em ordem:
+
+1. **Política explícita** declarada no projeto — bloco no CLAUDE.md, `CONTRIBUTING.md`, `.gitmessage`, hook de commitlint, ou equivalente.
+2. **Padrão observado no histórico** — `git log` recente. Se há predomínio claro (Conventional Commits, gitmoji, prefixos custom tipo `[FEAT]`, idioma específico), adotar esse padrão.
+3. **Default canonical** — [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`, `style:`) com mensagens em **inglês**. Aplicado quando não há política explícita e o histórico não revela padrão extraível (repo novo, commits ad-hoc).
+
+A regra "um micro-commit por bloco do plano" e a proibição de `--amend`/rebase de commits anteriores do `/run-plan` permanecem invariantes — pertencem à mecânica de execução, não à política de mensagem.
 
 ## Companion
 
