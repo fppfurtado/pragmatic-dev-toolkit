@@ -12,7 +12,7 @@ The companion repo is [`scaffold-kit`](https://github.com/fppfurtado/scaffold-ki
 
 Three component types, each with its own discovery mechanism:
 
-- **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/new-feature`, `/new-adr`, `/run-plan`, `/gen-tests-python`). Skills only act when invoked by the user.
+- **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/new-feature`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests-python`). Skills only act when invoked by the user.
 - **Agents** — `agents/<name>.md` with frontmatter. Subagents called by name (`code-reviewer`, `qa-reviewer`, `security-reviewer`). Reviewers analyze a diff and return findings.
 - **Hooks** — `hooks/hooks.json` declares lifecycle bindings; the bound scripts (`hooks/*.py`) run on every matching tool call in any project that has the plugin installed. Therefore hooks **must auto-gate** (see below).
 
@@ -54,13 +54,14 @@ Hooks fire in every project where the plugin is installed, so a stack-specific h
 
 ## Skill workflow contract
 
-The three workflow skills compose in a deliberate order:
+The workflow skills compose in a deliberate order:
 
 1. **`/new-feature <intent>`** — alignment only, no implementation. Reads roles in order: `product_direction` → `ubiquitous_language` → `backlog` → `design_notes` → `decisions_dir`. Decides which artifact to produce (backlog line / plan / ADR / domain update) and stops. Plan blocks may be annotated `{revisor: code|qa|security}` to direct `/run-plan`.
 2. **`/new-adr "<title>"`** — auto-numbers within the resolved `decisions_dir` by **inferring** the format from existing ADRs (3-digit padded canonical, 4-digit padded, or no padding); generates slug, writes template skeleton with placeholders. Has `disable-model-invocation: true` — only invoked explicitly.
 3. **`/run-plan <slug>`** — the only execution skill. Creates `.worktrees/<slug>/`, replicates files listed in `.worktreeinclude`, requires the resolved `test_command` (default `make test`) to be green as baseline, then loops per "files to change" block (canonical PT-BR `## Arquivos a alterar`, matched semantically): implement → run `test_command` → invoke the block's reviewer (default `code-reviewer`; `qa`/`security` annotations resolve to project-level agents in `.claude/agents/`) → micro-commit following the project's commit convention (see `docs/philosophy.md` → "Convenção de commits"; canonical default is Conventional Commits in English; `--amend` reserved for localized fixes within the current block). Blocks final "done" until the operator confirms the manual-verification section if the plan has one.
+4. **`/debug <symptom>`** — diagnose phase, the bug-fix-axis counterpart to `/new-feature`'s alignment. Walks the scientific method (precisar → reproduzir → isolar → hypothesis-test → root cause) and produces a five-field diagnostic (sintoma, causa-raiz, evidência, escopo, caminhos de correção). Stack-agnostic. **Produces no code, no commit, no instrumentation** — the operator routes the diagnosis to revert / direct patch / `/new-feature` for a larger change. Roles consumed are all informational (`test_command`, `ubiquitous_language`, `decisions_dir`, `design_notes`); none block the skill.
 
-When editing these skills, preserve the **alignment → plan → execute** separation. Don't let `/new-feature` start writing code; don't let `/run-plan` skip the reviewer.
+When editing these skills, preserve the separations: **alignment → plan → execute** for new work, and **diagnose ≠ fix** on the bug-fix axis. Don't let `/new-feature` start writing code; don't let `/run-plan` skip the reviewer; don't let `/debug` apply fixes.
 
 ## Reviewer agents
 
