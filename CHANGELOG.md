@@ -2,6 +2,15 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.2.0] - 2026-05-02
+
+### Changed
+- `/new-feature`: passo 1 (leitura do papel `ubiquitous_language`), passo 2 (gap "Aprendizado de domínio") e passo 3 (tabela de decisão "Atualizar `docs/domain.md`") agora prompta explicitamente bounded contexts e agregados/entidades, além de linguagem ubíqua e invariantes (RNxx). Alinha a skill com a frase-tese da filosofia (`docs/philosophy.md` linha 7) — bounded contexts e DDD estratégico são pilares e merecem registro em `docs/domain.md` ao mesmo título dos demais elementos.
+- `docs/philosophy.md`: descrição do papel `ubiquitous_language` na tabela do path contract amplia para cobrir bounded contexts e agregados/entidades, fechando o gap entre a frase-tese e o contrato de papel.
+
+### Notes
+- Mudança aditiva. Projetos cujo `docs/domain.md` hoje contém apenas linguagem ubíqua e invariantes seguem válidos — registro de bounded contexts e agregados/entidades é orientação, não obrigatoriedade. A heurística age **a partir** da próxima invocação de `/new-feature`.
+
 ## [1.1.0] - 2026-05-02
 
 ### Added
