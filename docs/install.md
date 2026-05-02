@@ -40,6 +40,7 @@ git clone git@github.com:fppfurtado/pragmatic-dev-toolkit.git
 6. Invocar `/debug` com um sintoma operacionalizável (ex.: teste que sabidamente falha) → skill produz diagnóstico estruturado (sintoma, causa-raiz, evidência, impacto, caminhos de correção) **sem aplicar fix nem fazer commit**.
 7. Em projeto com bloco de config declarado, invocar `/new-feature` num pedido que toque domínio e confirmar que a skill consulta o path declarado (ex.: `docs/glossary.md`), não o canonical (`docs/domain.md`).
 8. Em projeto com plano contendo `### Bloco 1 — exemplo {revisor: code}` (alias PT removido em v1.0), invocar `/run-plan` → confirmar recusa explícita (não silenciosa, sem fallback) com mensagem indicando o bloco e a anotação ofensora, sugerindo migrar para `{reviewer:}`.
+9. Em projeto com `docs/domain.md` declarando ao menos uma RNxx, invocar `/new-feature` com pedido que toca essa RN → confirmar que o plano resultante inclui bloco de teste em `## Arquivos a alterar` com `{reviewer: qa}`, **ou** justifica ausência via `## Verificação end-to-end` textual (heurística "Cobertura de teste em planos").
 
 ## Pré-requisitos no projeto consumidor
 
