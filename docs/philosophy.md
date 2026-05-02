@@ -136,6 +136,20 @@ Planos podem direcionar a revisão de cada bloco em `## Arquivos a alterar` anot
 - **Um perfil** → `/run-plan` invoca o agent correspondente (`code-reviewer`, `qa-reviewer`, `security-reviewer`).
 - **Múltiplos perfis** → `/run-plan` invoca **todos** os perfis listados, em qualquer ordem, agregando relatórios. Substitui regra antiga "mais sensível vence" — security/qa/code revisam objetos diferentes do mesmo diff, faz sentido invocar todos quando o bloco toca múltiplos eixos.
 
+## Cobertura de teste em planos
+
+Testes servem à **confiança**, não à métrica — o plugin não exige TDD estrito nem persegue percentual de cobertura. Em fluxo assistido por IA, no entanto, ausência de teste é fragilidade ampliada: humano segura regressão lendo código; agente regride com mais facilidade. A regra é cobertura **proporcional ao risco da mudança**.
+
+`/new-feature` trata cobertura como gap próprio no checklist do passo 2 (análogo a "Validação manual necessária?"). O planner escolhe entre três saídas:
+
+- (i) **Bloco de teste prescrito em `## Arquivos a alterar` com `{reviewer: qa}`** — quando a feature toca invariante (RNxx do `ubiquitous_language`), integração externa (`design_notes`), persistência, ou comportamento observável novo passível de regressão. Bug fix roteado via `/new-feature` (após `/debug`) é default forte para regression test.
+- (ii) **Só `## Verificação end-to-end` textual** — quando o gate automático (`test_command`) já cobre o caminho tocado e a mudança não introduz invariante nova (ex.: ajuste cosmético, log, performance interna sem mudança de contrato).
+- (iii) **Nada novo em testes** — refactor puro sem mudança comportamental observável, doc-only.
+
+A anotação `{reviewer: qa}` aplica-se ao bloco que **contém** os testes — `/run-plan` invoca o `qa-reviewer` ao final desse bloco, e ele revisa qualidade do teste recém-escrito (caminho feliz, invariantes, edge cases, mock vs real). Para código de produção que mereça olhar combinado de YAGNI + cobertura no mesmo bloco, usar `{reviewer: code,qa}` — composição já documentada em "Anotação de revisor em planos", sem schema novo.
+
+Scaffolders stack-specific (ex.: `/gen-tests-python`) **complementam** a prescrição — geram o esqueleto do arquivo de teste; não substituem a decisão do gap nem o micro-commit, que ficam no `/run-plan`. Projetos fora de stacks com scaffolder dedicado escrevem o teste manualmente — a saída (i) continua valendo.
+
 ## Convenção `.worktreeinclude`
 
 `.worktreeinclude` lista paths de arquivos gitignored que `/run-plan` deve replicar para a worktree nova. É plugin-internal — não interage com `git worktree` diretamente, é lido apenas pela skill.
