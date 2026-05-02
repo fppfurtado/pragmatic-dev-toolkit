@@ -57,7 +57,6 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
    - `{reviewer: qa}` ou `{reviewer: security}` → agent project-level correspondente em `.claude/agents/<role>-reviewer.md`.
    - `{reviewer: code,qa,security}` (múltiplos perfis) → invocar **todos** os perfis listados, em qualquer ordem, agregando relatórios.
    - Exemplo canônico: `### Bloco 1 — auth.py {reviewer: security}`.
-   - Alias deprecado `{revisor: ...}` (PT) é aceito durante v0.11–v0.12 com warning amigável recomendando migrar para `{reviewer: ...}`. Removido em v1.0.
 4. **Aplicar correções** levantadas pelo(s) revisor(es) antes de prosseguir.
 5. **Micro-commit** seguindo a **convenção de commits do projeto consumidor** (ver `docs/philosophy.md` → "Convenção de commits"): política explícita declarada → padrão observado no histórico (`git log`) → default canonical Conventional Commits em inglês. **Um commit por bloco**. Como regra, evitar `--amend` e rebase — micro-commits revertíveis são o ponto. Exceção localizada: corrigir o último commit ainda dentro do bloco corrente quando faz sentido (typo na mensagem, arquivo esquecido no stage, footer faltando). Commits de blocos já fechados ficam intocados.
 
@@ -75,6 +74,7 @@ A skill termina na worktree com branch da feature. Caminho de fechamento (PR, me
 - Não pular revisor, mesmo em bloco trivial.
 - Não tentar resolver merge/rebase no fim — a skill não fecha o branch.
 - Não rodar a skill sem o plano revisado e aprovado pelo operador.
+- Não interpretar `{revisor: ...}` (PT) — schema canônico é `{reviewer: ...}` em inglês. Recusar antes de começar o bloco, mensagem indicando o bloco e a anotação ofensora, sugerindo migrar para `{reviewer:}`.
 
 ## Convenção: `.worktreeinclude`
 
