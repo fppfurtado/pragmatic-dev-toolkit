@@ -2,6 +2,16 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.1.0] - 2026-05-02
+
+### Added
+- `/new-feature`: novo bullet "Cobertura de teste necessária?" no checklist de gaps (passo 2), com heurística tri-state codificada em `docs/philosophy.md` → "Cobertura de teste em planos". Eleva a probabilidade de planos prescreverem bloco de teste com `{reviewer: qa}` quando a feature toca invariantes (RNxx), integrações externas, persistência ou comportamento observável novo — sem TDD obrigatório, mantendo cerimônia proporcional ao risco. Refactor puro e doc-only seguem sem cerimônia adicional.
+- `docs/philosophy.md`: nova seção "Cobertura de teste em planos" entre "Anotação de revisor em planos" e "Convenção `.worktreeinclude`". Codifica princípio (testes servem à confiança, não à métrica; ausência é fragilidade ampliada em fluxo assistido por IA), heurística tri-state operacionalizada por `/new-feature`, e relação com `qa-reviewer` (revisão do bloco que contém os testes) e scaffolders stack-specific (`/gen-tests-python` complementa, não substitui).
+- `docs/install.md`: smoke test cobrindo a prescrição de bloco de teste em projeto com RNxx declarada.
+
+### Notes
+- Bump minor: convenção é additive — projetos consumidores não precisam mudar nada para continuar funcionando como antes; planos preexistentes seguem válidos. A heurística age **a partir** da próxima invocação de `/new-feature`.
+
 ## [1.0.0] - 2026-05-02
 
 ### Removed
