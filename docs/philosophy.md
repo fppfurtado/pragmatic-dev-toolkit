@@ -150,6 +150,20 @@ A anotação `{reviewer: qa}` aplica-se ao bloco que **contém** os testes — `
 
 Scaffolders stack-specific (ex.: `/gen-tests-python`) **complementam** a prescrição — geram o esqueleto do arquivo de teste; não substituem a decisão do gap nem o micro-commit, que ficam no `/run-plan`. Projetos fora de stacks com scaffolder dedicado escrevem o teste manualmente — a saída (i) continua valendo.
 
+## Linguagem ubíqua na implementação
+
+`docs/domain.md` (papel `ubiquitous_language`) é base **de interpretação E de desenvolvimento**: bounded contexts e linguagem ubíqua só são pilares se chegarem ao código. Vocabulário registrado no domínio mas ausente nos identificadores produzidos vira ornamento de alinhamento — exatamente o que a frase-tese da filosofia rejeita.
+
+O contrato é um pipeline de três estágios, espelho do pipeline de invariantes do `qa-reviewer`:
+
+1. **`/new-feature` (alignment) extrai termos tocados.** O passo 1 já lê `ubiquitous_language` e identifica bounded contexts, agregados/entidades, RNs e conceitos ubíquos que o pedido toca. O passo 4 grava esse subconjunto no `## Contexto` do plano como `**Termos ubíquos tocados:** <Termo> (<categoria>), ...`. Pedidos que não tocam o domínio (refactor puro, doc-only) seguem sem a linha.
+2. **`/run-plan` (execução) lê o plano.** Não relê `docs/domain.md` — o plano é o ponto único de transferência entre alinhamento e execução; releitura duplicaria responsabilidade e adicionaria cerimônia. Plano sem a linha = mudança não toca domínio = nada a carregar.
+3. **`code-reviewer` (revisão) valida no diff.** Regra prescritiva na seção "Identificadores": identificador novo que representa conceito declarado em `ubiquitous_language` deve usar o termo declarado, não sinônimo improvisado. Complementa a regra defensiva pré-existente ("renomeação cosmética não").
+
+**Quando o pipeline silencia.** Papel `ubiquitous_language` resolveu para "não temos" → `/new-feature` não lista termos, plano sai sem a linha, `code-reviewer` não flagga. Toda a cadeia segue funcional sem fricção em projetos que ainda não formalizaram domínio.
+
+**Por que não tocar `/run-plan`.** Adicionar releitura de `docs/domain.md` na execução violaria a separação alinhamento → plano → execução. O plano carrega o subconjunto relevante; a defesa contra drift entre código e domínio fica no reviewer, que age sobre o diff — onde a divergência efetivamente aparece.
+
 ## Convenção `.worktreeinclude`
 
 `.worktreeinclude` lista paths de arquivos gitignored que `/run-plan` deve replicar para a worktree nova. É plugin-internal — não interage com `git worktree` diretamente, é lido apenas pela skill.
