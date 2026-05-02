@@ -2,6 +2,16 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.3.0] - 2026-05-02
+
+### Added
+- `/new-feature`: passo 4 (produção de plano) agora prescreve linha **"Termos ubíquos tocados"** em `## Contexto` quando o passo 1 identificou termos do `ubiquitous_language` que o pedido toca (bounded context, agregado/entidade, RN, conceito ubíquo). O plano vira mensageiro explícito do vocabulário entre alinhamento e execução, sem onerar `/run-plan` com releitura de `docs/domain.md`. Planos para mudanças que não tocam domínio (refactor puro, doc-only, papel resolvido para "não temos") seguem sem a linha — silente.
+- `agents/code-reviewer.md`: nova regra prescritiva na seção "Identificadores" — identificador novo que representa conceito declarado em `ubiquitous_language` deve usar o termo declarado, não sinônimo improvisado. Complementa a regra defensiva pré-existente ("renomeação cosmética não"); reviewer flagga apenas quando há termo declarado E identificador novo divergente, gracefully silente em projetos sem `docs/domain.md`.
+- `docs/philosophy.md`: nova seção curta **"Linguagem ubíqua na implementação"** (entre "Cobertura de teste em planos" e "Convenção `.worktreeinclude`") codificando o pipeline `domain.md` → plano → review em três estágios e a decisão deliberada de não tocar `/run-plan` (plano é mensageiro, releitura duplicaria responsabilidade). Espelha o pipeline de invariantes do `qa-reviewer`.
+
+### Notes
+- Mudança aditiva. Planos pré-existentes seguem válidos; reviewer flagga apenas em divergência real. A heurística age **a partir** da próxima invocação de `/new-feature`.
+
 ## [1.2.0] - 2026-05-02
 
 ### Changed
