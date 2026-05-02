@@ -35,7 +35,7 @@ Os paths abaixo são as convenções default por papel; quando o projeto declara
 Ler, **nesta ordem** (e só o que o pedido tocar):
 
 1. Papel `product_direction` (default canonical `IDEA.md`) — para verificar se a intenção está alinhada à direção de produto.
-2. Papel `ubiquitous_language` (default canonical `docs/domain.md`) — linguagem ubíqua e invariantes (RNxx) se houver. Identificar quais o pedido toca.
+2. Papel `ubiquitous_language` (default canonical `docs/domain.md`) — bounded contexts, linguagem ubíqua, agregados/entidades e invariantes (RNxx) se houver. Identificar quais o pedido toca.
 3. Papel `backlog` (default canonical `BACKLOG.md`) — verificar se já existe item equivalente em **Próximos**, **Em andamento** ou **Concluídos**. Se existir, parar e reportar ao usuário.
 4. Papel `design_notes` (default canonical `docs/design.md`) — só se a funcionalidade tocar uma das integrações externas listadas ali.
 5. Papel `decisions_dir` (default canonical `docs/decisions/`) — listar ADRs cujo título seja relacionado; ler na íntegra apenas os que o pedido potencialmente contradiz ou estende.
@@ -51,7 +51,7 @@ Antes de qualquer artefato, identificar lacunas e perguntar **só o que for bloq
 - **Invariantes envolvidas:** alguma RN do `docs/domain.md` é tocada? Se sim, como o fluxo a respeita?
 - **Integrações:** alguma das integrações externas listadas em `docs/design.md` entra? Há peculiaridade já documentada ali?
 - **Persistência:** precisa estado novo? Migra schema? (gatilho potencial de ADR — ver passo 4.)
-- **Aprendizado de domínio:** o pedido revela algo que ainda não está em `docs/domain.md`?
+- **Aprendizado de domínio:** o pedido revela algo que ainda não está em `docs/domain.md` — bounded context novo, aggregate/entity novo, RN/invariante nova, conceito ubíquo novo, ou semântica alterada de algo já registrado?
 - **Validação manual necessária?** A feature tem comportamento perceptível ao usuário final, fluxo crítico de produção ou integração externa frágil? Se sim, o plano deve incluir uma seção `## Verificação manual` (gate de "ok, vai pra produção"). Refactors puros, mudanças internas, ajustes de teste e doc-only não precisam — `make test` é gate suficiente.
 - **Cobertura de teste necessária?** Heurística tri-state: (i) bloco de teste prescrito em `## Arquivos a alterar` com `{reviewer: qa}` quando a feature toca invariante (RNxx do `ubiquitous_language`), integração externa (`design_notes`), persistência, comportamento observável novo, ou é fix de bug com risco de regressão; (ii) só `## Verificação end-to-end` textual quando o gate automático cobre e nada de invariante novo entra; (iii) nada novo em testes para refactor puro ou doc-only. Convenção completa em `docs/philosophy.md` → "Cobertura de teste em planos".
 - **Bifurcação arquitetural:** o pedido pode ser resolvido por dois ou mais caminhos com custo, manutenção ou modelo mental significativamente diferentes? Heurística: ao tentar mentalmente esboçar o plano, você consegue redigir dois planos distintos que ambos satisfazem a frase do operador, mas levam a estruturas, dependências ou UX diferentes? Verbos abertos ("registrar", "validar", "notificar", "processar", "armazenar", "interagir") são sintoma frequente. Ver `docs/philosophy.md`.
@@ -69,7 +69,7 @@ Com base no esclarecimento, escolher **um** dos caminhos. Em caso de dúvida, pr
 | **Só linha no BACKLOG** | Mudança pequena, foco claro, sem decisão estrutural nem integração nova. Maioria dos casos. |
 | **Plano em `docs/plans/`** | Multi-arquivo, multi-fase, ou exige alinhamento prévio sobre a abordagem. |
 | **ADR via `/new-adr`** | Decisão estrutural duradoura (persistência, biblioteca core, contrato de integração, política do sistema). Ver ADRs existentes para calibre. |
-| **Atualizar `docs/domain.md`** | Apareceu RN nova, conceito ubíquo novo, ou mudou semântica de algo do glossário. **Antes** de implementar. |
+| **Atualizar `docs/domain.md`** | Apareceu bounded context novo, aggregate/entity novo, RN nova, conceito ubíquo novo, ou mudou semântica de algo do glossário. **Antes** de implementar. |
 | **Atualizar `docs/design.md`** | Peculiaridade nova de integração descoberta na conversa (não no código). |
 
 Combinações são comuns: um item pode virar **linha no backlog + ADR**, ou **plano + atualização de domain.md**. Não são mutuamente exclusivos.

@@ -23,7 +23,7 @@ As skills consomem **papéis**, não paths. A tabela abaixo lista a convenção 
 | Papel | Default | Descrição |
 |-------|---------|-----------|
 | `product_direction` | `IDEA.md` | O que estamos construindo e por quê. Direção de produto. |
-| `ubiquitous_language` | `docs/domain.md` | Linguagem ubíqua, agregados, invariantes (RNxx) — quando o domínio merece formalização. |
+| `ubiquitous_language` | `docs/domain.md` | Bounded contexts, linguagem ubíqua, agregados/entidades, invariantes (RNxx) — quando o domínio merece formalização. |
 | `design_notes` | `docs/design.md` | Peculiaridades de integrações externas que não estão na doc oficial. |
 | `decisions_dir` | `docs/decisions/` | Diretório de decisões estruturais imutáveis. Numeração e slug do filename são responsabilidade de `/new-adr`. |
 | `plans_dir` | `docs/plans/<slug>.md` | Planos multi-fase para mudanças que exigem alinhamento prévio. |
