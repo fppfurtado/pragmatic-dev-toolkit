@@ -2,6 +2,19 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.0.0] - 2026-05-02
+
+### Removed
+- Alias deprecado `{revisor: ...}` (PT) em headers de blocos de plano. `/run-plan` agora recusa essa anotação antes de começar o bloco, indicando o bloco e a anotação ofensora. Migrar para `{reviewer: ...}` (EN).
+
+### Fixed
+- `docs/philosophy.md` (tabela path contract, linha de "convenção Claude Code"): exemplo de anotação migrado de `{revisor: qa}` / `{revisor: security}` para `{reviewer: qa}` / `{reviewer: security}` — escapou da migração de v0.11.0.
+
+### Notes
+- A coexistência prometida em v0.11.0 (`v0.11–v0.12`) foi reduzida para `v0.11.x` apenas. Cutover direto v0.11.x → v1.0 sem shipar v0.12 sentinel. Justificativa: v0.12 sem mudanças reais seria overhead sem ganho dada a baixa expectativa de uso externo do alias.
+- Operadores com planos externos contendo `{revisor:}` precisam editar para `{reviewer:}` antes de invocar `/run-plan` (find/replace trivial).
+- Bump major: primeira release com remoção breaking. Toda a história anterior (v0.1.0–v0.11.1) foi aditiva.
+
 ## [0.11.1] - 2026-05-01
 
 ### Changed
