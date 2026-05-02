@@ -30,7 +30,7 @@ As skills consomem **papéis**, não paths. A tabela abaixo lista a convenção 
 | `backlog` | `BACKLOG.md` | Lista exploratória curta — `## Próximos`, `## Em andamento`, `## Concluídos`. |
 | `test_command` | `make test` (com `Makefile`) | Gate automático nos passos de execução. |
 | (interno do plugin) | `.worktreeinclude` | Lista opcional de gitignored a replicar em worktrees novas. Consumido por `/run-plan`. |
-| (convenção Claude Code) | `.claude/agents/qa-reviewer.md`, `.claude/agents/security-reviewer.md` | Revisores project-level invocados por `/run-plan` quando o bloco do plano anota `{revisor: qa}` ou `{revisor: security}`. |
+| (convenção Claude Code) | `.claude/agents/qa-reviewer.md`, `.claude/agents/security-reviewer.md` | Revisores project-level invocados por `/run-plan` quando o bloco do plano anota `{reviewer: qa}` ou `{reviewer: security}`. |
 
 Para cada papel configurável, a skill aplica **Resolução de papéis** (próxima seção): probe do default → consultar bloco de config no CLAUDE.md → perguntar ao operador. Projeto que segue os defaults funciona zero-config; projeto com layout diferente declara variantes uma vez no CLAUDE.md. O caminho mais simples para começar com os defaults é gerar o projeto com o template companion [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit), mas qualquer layout alinhado à filosofia funciona.
 
@@ -135,8 +135,6 @@ Planos podem direcionar a revisão de cada bloco em `## Arquivos a alterar` anot
 - **Sem anotação** → default `code` (não precisa anotar `{reviewer: code}` explicitamente).
 - **Um perfil** → `/run-plan` invoca o agent correspondente (`code-reviewer`, `qa-reviewer`, `security-reviewer`).
 - **Múltiplos perfis** → `/run-plan` invoca **todos** os perfis listados, em qualquer ordem, agregando relatórios. Substitui regra antiga "mais sensível vence" — security/qa/code revisam objetos diferentes do mesmo diff, faz sentido invocar todos quando o bloco toca múltiplos eixos.
-
-**Alias deprecado.** `{revisor: ...}` (PT) é aceito durante v0.11–v0.12 com warning amigável recomendando migrar para `{reviewer: ...}`. Removido em v1.0. A coexistência permite que planos pré-v0.11 continuem funcionando sem edição.
 
 ## Convenção `.worktreeinclude`
 
