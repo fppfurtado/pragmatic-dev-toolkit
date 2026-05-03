@@ -66,8 +66,12 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
 ### 4. Gate final
 
 1. Rodar o `test_command` resolvido integralmente (gate automático sempre que houver). Quando `test_command` é "não temos", o gate é a inspeção textual de `## Verificação end-to-end` do plano.
-2. **Plano com `## Verificação manual`**: ler os passos ao operador e **aguardar confirmação explícita** ("ok, valido") antes de declarar done. Sem confirmação, a skill não fecha.
-3. **Plano sem `## Verificação manual`**: gate automático verde (ou inspeção textual completa de `## Verificação end-to-end`) é gate suficiente. Declarar done.
+2. **Plano com `## Verificação manual`**: ler os passos ao operador e **aguardar confirmação explícita** ("ok, valido") antes de prosseguir. Sem confirmação, a skill não fecha.
+3. **Sanity check de documentação** — antes de declarar done, validar consistência das docs `.md` user-facing com o que foi implementado:
+   - **Skip silente** se o plano já listou arquivos `.md` em `## Arquivos a alterar` e o diff agregado dos blocos os tocou — documentação fez parte do plano, gate cumprido.
+   - **Skip silente** se o plano **não** tem `## Verificação manual` **e** o `## Resumo da mudança` não menciona superfície user-facing (CLI/flag nova, env var nova, endpoint novo, comportamento perceptível, integração externa, alteração de instalação/configuração). Refactor puro / internal-only não precisa do check.
+   - Caso contrário, **cutucar** (não bloquear) com pergunta direta ao operador: *"Diff introduziu <superfície user-facing inferida do plano>. README / docs de install / CHANGELOG / outras `.md` consistentes? Sim → declarar done. Não → listar arquivos a atualizar."*. Se o operador listar updates, tratá-los como **bloco extra** (implementar → `test_command` → revisor `code` → micro-commit) e só então declarar done.
+4. **Declarar done**.
 
 A skill termina na worktree com branch da feature. Caminho de fechamento (PR, merge, descarte) é decisão do operador.
 
@@ -79,6 +83,7 @@ A skill termina na worktree com branch da feature. Caminho de fechamento (PR, me
 - Não rodar a skill sem o plano revisado e aprovado pelo operador.
 - Não interpretar `{revisor: ...}` (PT) — schema canônico é `{reviewer: ...}` em inglês. Recusar antes de começar o bloco, mensagem indicando o bloco e a anotação ofensora, sugerindo migrar para `{reviewer:}`.
 - Não contornar plano sujo copiando o conteúdo manualmente para dentro da worktree. O bloqueio na pré-condição 2 existe para forçar o commit no branch correto — burlar quebra o histórico do branch da feature.
+- Não pular o sanity check de documentação quando ele se aplica (passo 4.3) — skip só nas duas condições prescritas (`.md` já no plano e tocados, ou plano sem superfície user-facing). Em dúvida, perguntar.
 
 ## Convenção: `.worktreeinclude`
 
