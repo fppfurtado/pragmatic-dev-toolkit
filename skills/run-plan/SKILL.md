@@ -71,7 +71,8 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
    - **Skip silente** se o plano já listou arquivos `.md` em `## Arquivos a alterar` e o diff agregado dos blocos os tocou — documentação fez parte do plano, gate cumprido.
    - **Skip silente** se o plano **não** tem `## Verificação manual` **e** o `## Resumo da mudança` não menciona superfície user-facing (CLI/flag nova, env var nova, endpoint novo, comportamento perceptível, integração externa, alteração de instalação/configuração). Refactor puro / internal-only não precisa do check.
    - Caso contrário, **cutucar** (não bloquear) com pergunta direta ao operador: *"Diff introduziu <superfície user-facing inferida do plano>. README / docs de install / CHANGELOG / outras `.md` consistentes? Sim → declarar done. Não → listar arquivos a atualizar."*. Se o operador listar updates, tratá-los como **bloco extra** (implementar → `test_command` → revisor `code` → micro-commit) e só então declarar done.
-4. **Declarar done**.
+4. **Backlog harvest** — antes de declarar done, **cutucar** (não bloquear) com pergunta direta: *"Durante a execução, emergiu algo fora do escopo deste plano que deveria virar item separado no backlog (TODO adjacente, tech-debt revelado pela leitura, bug menor avistado de passagem, melhoria não-essencial)?"*. Se o operador listar itens, tratá-los como **bloco extra** (atualizar arquivo do papel `backlog` adicionando uma linha por item em `## Próximos` → revisor `code` → micro-commit) antes de declarar done. Resposta "nada" é válida e fecha o gate. Itens já incorporados ao plano corrente (escopo creep contido) **não** entram aqui — só itens deliberadamente deferidos.
+5. **Declarar done**.
 
 A skill termina na worktree com branch da feature. Caminho de fechamento (PR, merge, descarte) é decisão do operador.
 
@@ -84,6 +85,8 @@ A skill termina na worktree com branch da feature. Caminho de fechamento (PR, me
 - Não interpretar `{revisor: ...}` (PT) — schema canônico é `{reviewer: ...}` em inglês. Recusar antes de começar o bloco, mensagem indicando o bloco e a anotação ofensora, sugerindo migrar para `{reviewer:}`.
 - Não contornar plano sujo copiando o conteúdo manualmente para dentro da worktree. O bloqueio na pré-condição 2 existe para forçar o commit no branch correto — burlar quebra o histórico do branch da feature.
 - Não pular o sanity check de documentação quando ele se aplica (passo 4.3) — skip só nas duas condições prescritas (`.md` já no plano e tocados, ou plano sem superfície user-facing). Em dúvida, perguntar.
+- Não pular o backlog harvest (passo 4.4) — sempre perguntar antes de declarar done. Resposta "nada" é fechamento válido; silenciar é perder itens.
+- Não capturar itens no harvest que já foram absorvidos pelo plano corrente (escopo creep contido) — backlog é para deferimento deliberado, não para registrar tudo que apareceu.
 
 ## Convenção: `.worktreeinclude`
 
