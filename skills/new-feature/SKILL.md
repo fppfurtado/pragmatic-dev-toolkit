@@ -85,13 +85,18 @@ Idioma de saída: **espelhar o idioma já em uso pelo projeto consumidor** (ver 
 
 Para slug de plano: lowercase, espaços/acentos→hífens, curto e descritivo (ex.: `exportar-movimentos-csv`).
 
-### 5. Reportar e devolver controle
+### 5. Reportar, propor commit e devolver controle
 
 Ao final, reportar ao usuário em formato curto:
 
 - O que foi registrado (linha de backlog, plano, ADR, atualização de domínio).
 - Caminhos dos arquivos criados/alterados.
-- **Próximo passo sugerido** (uma frase): "implementar agora", "validar o plano antes de codar", "preencher o ADR e voltar".
+
+Em seguida, **propor um commit único** agrupando todos os artefatos de alinhamento produzidos no passo 4. Mensagem deve seguir a **convenção de commits do projeto consumidor** (ver `docs/philosophy.md` → "Convenção de commits"; default canonical Conventional Commits em inglês, tipo `docs:` ou `chore:` conforme o conteúdo). Aguardar confirmação explícita do operador antes de commitar — o operador pode querer revisar/editar antes. Se não houver alterações novas para commitar (ex.: caminho escolhido foi delegar para `/new-adr` que já fez seu próprio commit, ou nada foi alterado em arquivos versionados), pular esta etapa.
+
+Por que o commit importa aqui: `/run-plan` cria worktree a partir do HEAD do branch atual. Artefatos uncommitted ficam fora da worktree — o próprio plano que `/run-plan` tentaria executar não estaria visível lá. Commitar agora fecha esse gap antes do salto para execução.
+
+Por fim, sugerir o **próximo passo** (uma frase): "implementar agora via /run-plan <slug>", "validar o plano antes de codar", "preencher o ADR e voltar".
 
 Não começar a implementar. Quem decide o salto para código é o operador.
 
@@ -102,3 +107,4 @@ Não começar a implementar. Quem decide o salto para código é o operador.
 - Não criar ADR para escolha tática (nome de função, organização interna de um módulo). ADR é decisão estrutural duradoura.
 - Não duplicar conteúdo de `CLAUDE.md`, `domain.md` ou `design.md` no plano — referenciar.
 - Não preencher conteúdo de ADR — delegar para `/new-adr`.
+- Não commitar os artefatos de alinhamento sem confirmação explícita do operador — propor mensagem e aguardar.
