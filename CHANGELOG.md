@@ -2,6 +2,14 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.5.0] - 2026-05-03
+
+### Added
+- `/run-plan`: nova **pré-condição 2** com checagem em duas camadas via `git status --porcelain` sobre o estado git dos artefatos de alinhamento. **Bloqueia** quando o próprio plano (`<plans_dir>/<slug>.md`) está modificado ou untracked — broken-by-construction, já que a worktree saída do HEAD não veria o plano que deveria executar; mensagem direciona para o commit explícito (e referencia o passo 5 do `/new-feature`). **Cutuca** (não bloqueia) quando papéis de alinhamento (`backlog`, `ubiquitous_language`, `design_notes`, arquivos sob `decisions_dir`) têm alterações uncommitted — a worktree perde esse contexto e reviewers podem não ver invariantes/ADRs que o plano assume documentados; operador decide commitar agora ou prosseguir. Outras alterações uncommitted no working tree (código de exploração/debug) **não** geram aviso — o operador as isolou intencionalmente, é o ponto da worktree. Nova entrada em `## O que NÃO fazer` veda contornar o bloqueio copiando o plano manualmente para dentro da worktree.
+
+### Notes
+- Complemento simétrico ao bump 1.4.0: `/new-feature` propõe o commit dos artefatos no passo 5; `/run-plan` agora valida que esse commit aconteceu (ou força a decisão explícita) antes de criar a worktree. A heurística age **a partir** da próxima invocação de `/run-plan`.
+
 ## [1.4.0] - 2026-05-03
 
 ### Changed
