@@ -26,8 +26,11 @@ Paths e comandos abaixo seguem a **Resolução de papéis** (ver `docs/philosoph
 Headers de plano (`## Arquivos a alterar`, `## Verificação end-to-end`, `## Verificação manual`, `## Contexto`, `## Resumo da mudança`) são citados em PT-BR canonical. Em planos escritos em outro idioma, fazer **matching semântico** pelo equivalente lingüístico (`## Files to change`, `## End-to-end verification`, etc.) — ver "Convenção de idioma" em `docs/philosophy.md`.
 
 1. `<plans_dir>/<slug>.md` existe e tem `## Arquivos a alterar` (papel: `plans_dir`, default: `docs/plans/`).
-2. O gate automático de testes do projeto está verde no branch atual (rodar antes de começar). Default: `make test`. Variante: `test_command` declarado no CLAUDE.md (ex.: `uv run pytest`, `npm test`, `cargo test`). Caminho de decisão: se canonical (`make test`) ausente E operador ainda não declarou `test_command: null` no bloco de config, perguntar uma vez (oferta única de memorização). Em projetos sem suite automatizada (meta-tools, doc-only), `## Verificação end-to-end` do plano substitui o gate — caso de exceção, sinalizado pela ausência de `test_command` resolvido **e** por o plano explicitar essa verificação textual.
-3. A worktree `.worktrees/<slug>/` ainda não existe.
+2. **Estado git dos artefatos de alinhamento** — checagem em duas camadas via `git status --porcelain`:
+   - **Bloquear** se `<plans_dir>/<slug>.md` estiver modificado ou untracked. Broken-by-construction: worktree é criada a partir do HEAD e não veria o plano que deveria executar. Mensagem direta ao operador: commitar o plano antes de prosseguir (ou usar `/new-feature` que já propõe o commit no passo 5). Não tentar contornar copiando o plano manualmente para a worktree.
+   - **Cutucar** (não bloquear) se papéis de alinhamento — arquivos resolvidos pelos papéis `backlog`, `ubiquitous_language`, `design_notes`, ou qualquer arquivo sob `decisions_dir` — tiverem alterações uncommitted. A worktree perde esse contexto e reviewers podem não ver invariantes/ADRs que o plano assume documentados. Mensagem canônica: *"Alinhamento sujo: <lista>. Worktree não verá essas alterações. Commitar agora ou continuar mesmo assim?"*. Outras alterações uncommitted no working tree (código de exploração, debug) **não** geram aviso — o operador as isolou intencionalmente, é o ponto da worktree.
+3. O gate automático de testes do projeto está verde no branch atual (rodar antes de começar). Default: `make test`. Variante: `test_command` declarado no CLAUDE.md (ex.: `uv run pytest`, `npm test`, `cargo test`). Caminho de decisão: se canonical (`make test`) ausente E operador ainda não declarou `test_command: null` no bloco de config, perguntar uma vez (oferta única de memorização). Em projetos sem suite automatizada (meta-tools, doc-only), `## Verificação end-to-end` do plano substitui o gate — caso de exceção, sinalizado pela ausência de `test_command` resolvido **e** por o plano explicitar essa verificação textual.
+4. A worktree `.worktrees/<slug>/` ainda não existe.
 
 Se qualquer pré-condição falhar, parar e reportar ao operador.
 
@@ -75,6 +78,7 @@ A skill termina na worktree com branch da feature. Caminho de fechamento (PR, me
 - Não tentar resolver merge/rebase no fim — a skill não fecha o branch.
 - Não rodar a skill sem o plano revisado e aprovado pelo operador.
 - Não interpretar `{revisor: ...}` (PT) — schema canônico é `{reviewer: ...}` em inglês. Recusar antes de começar o bloco, mensagem indicando o bloco e a anotação ofensora, sugerindo migrar para `{reviewer:}`.
+- Não contornar plano sujo copiando o conteúdo manualmente para dentro da worktree. O bloqueio na pré-condição 2 existe para forçar o commit no branch correto — burlar quebra o histórico do branch da feature.
 
 ## Convenção: `.worktreeinclude`
 
