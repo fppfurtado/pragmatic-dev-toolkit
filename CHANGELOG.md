@@ -2,6 +2,14 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.4.0] - 2026-05-03
+
+### Changed
+- `/new-feature`: passo 5 renomeado para **"Reportar, propor commit e devolver controle"**. Após o report dos artefatos produzidos, a skill agora **propõe um commit único** agrupando linha de backlog, plano, atualização de `domain.md`/`design.md` etc. — mensagem segue a convenção de commits do projeto consumidor (default canonical Conventional Commits em inglês, tipo `docs:`/`chore:`). Confirmação explícita do operador é exigida antes do commit; etapa pulada quando não há alterações novas (ex.: caminho foi delegar para `/new-adr` que já fez commit próprio). Fecha o gap operacional em que `/run-plan`, ao criar worktree a partir do HEAD, não encontrava o plano que deveria executar porque os artefatos de alinhamento haviam ficado uncommitted. Nova entrada em `## O que NÃO fazer` codifica o guard ("não commitar sem confirmação").
+
+### Notes
+- Mudança aditiva no comportamento da skill. Operadores que preferem commitar manualmente ainda podem declinar a proposta; a skill apenas torna a etapa explícita em vez de silente. A heurística age **a partir** da próxima invocação de `/new-feature`.
+
 ## [1.3.0] - 2026-05-02
 
 ### Added
