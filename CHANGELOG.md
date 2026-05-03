@@ -2,6 +2,14 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.6.0] - 2026-05-03
+
+### Added
+- `/run-plan`: novo **passo 4.3 "Sanity check de documentação"** no gate final, entre confirmação de `## Verificação manual` e declarar done. Valida consistência de docs `.md` user-facing (README, install, CHANGELOG, outras `.md`) com o que foi implementado. Heurística tri-state: (i) **skip silente** quando o plano já listou `.md` em `## Arquivos a alterar` e o diff agregado os tocou — gate cumprido pelo plano; (ii) **skip silente** em refactor puro / internal-only — sinalizado por ausência de `## Verificação manual` E ausência de menção a superfície user-facing no `## Resumo da mudança`; (iii) caso contrário, **cutucar** (não bloquear) com pergunta direta ao operador. Updates levantados pelo operador são tratados como **bloco extra** (implementar → `test_command` → revisor `code` → micro-commit) antes de declarar done. Nova entrada em `## O que NÃO fazer` veda pular o check fora das duas condições de skip prescritas.
+
+### Notes
+- Mudança aditiva. Plano que naturalmente não toca user-facing surface (refactor, doc-only, cleanup interno) segue declarando done sem pergunta extra — nada de cerimônia onde claramente não se aplica. A heurística age **a partir** da próxima invocação de `/run-plan`.
+
 ## [1.5.0] - 2026-05-03
 
 ### Added
