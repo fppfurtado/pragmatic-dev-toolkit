@@ -2,6 +2,15 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.8.0] - 2026-05-03
+
+### Added
+- `/run-plan` passo 1.2: novo **gatilho cruzado de validação manual**, independente do estado prévio do `.worktreeinclude`. Quando o plano corrente tem `## Verificação manual` (matching semântico) E a raiz do repo tem gitignored típicos de credencial/config local (`.env`, `*.local.yaml`, `*.local.yml`, `secrets.*`) **não cobertos** pelo `.worktreeinclude` aplicado, a skill cutuca o operador antes do baseline: *"Plano tem `## Verificação manual` e `<credencial>` não está replicada na worktree. Validação manual provavelmente vai precisar do serviço real. Replicar agora? (s/n)"*. Os 3 casos do mundo real (`.worktreeinclude` ausente / com mas sem a credencial / vazio porque operador disse "não preciso" antes) viram instâncias da mesma cláusula — fio condutor é "credencial necessária para validação manual não está replicada", não estado prévio. Nova entrada em `## O que NÃO fazer` codifica que a cutucada **não pode ser silenciada** por resposta "não preciso" antiga quando o contexto mudou (plano corrente exige serviço real). Fecha o gap de "worktree sobe sem credencial necessária e validação manual quebra na primeira tentativa".
+- `/new-feature` passo 2: gap existente *"Validação manual necessária?"* ganha **sub-bullet condicional** (não item top-level — refinamento de heurística > expansão da lista, alinhado a YAGNI). Quando o sim do gap vem de **surface não-determinística** (parsing, matching de strings, ou comportamento de agente LLM), exigir antes do plano: (a) **forma do dado real** — pedir 1-2 exemplos concretos do formato em produção (separadores, prefixos, capitalização inconsistente, ids internos que não devem vazar); (b) **cenários enumerados** — `## Verificação manual` deve listar passos concretos que exercitem essas formas, não direção genérica tipo "validar via interface real". Sub-bullet **não dispara** quando a primeira pergunta do gap resolveu "não" (refactor puro, doc-only). Fecha o gap de "matching contra dado sintético passa, dado real não" e "prompt vaza id interno descoberto por sorte".
+
+### Notes
+- Mudança aditiva. Fecha o quarteto de releases consecutivos no eixo **gate de validação manual**: 1.5 (gate git dos artefatos de alinhamento), 1.6 (sanity check de documentação), 1.7 (backlog harvest), 1.8 (cenários enumerados + credenciais replicadas). Dois bugs reais motivaram o 1.8 (matching falhou em formato de produção; agente LLM vazou id interno) — ambos passaram pelos reviewers automáticos e só foram pegos pela validação manual após o operador improvisar cenários por sorte. Decisões deliberadas de **não** propor: agente `prompt-reviewer` novo (uma sessão não justifica papel — YAGNI), seção `## Cenários do agente` no template de plano (criaria precedente para seção por tipo de feature), mudar mandato do `qa-reviewer` (reviewer age sobre diff, não conhece "dado real"; defesa fica upstream em `/new-feature`). A heurística age **a partir** da próxima invocação das skills.
+
 ## [1.7.0] - 2026-05-03
 
 ### Added
