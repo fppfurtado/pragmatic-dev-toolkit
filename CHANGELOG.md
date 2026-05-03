@@ -2,6 +2,15 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.7.0] - 2026-05-03
+
+### Added
+- `/new-feature` passo 2 (esclarecimento de gaps): nova diretiva **"Itens fora de escopo emergidos na conversa"** instrui a skill a manter atenção para coisas mencionadas pelo operador que não pertencem ao escopo da feature em curso (TODO adjacente, tech-debt revelado, bug menor avistado, melhoria não-essencial). Itens capturados são propostos como linhas separadas em `## Próximos` no backlog, distintas do artefato principal. Operador pode descartar com "deixa pra lá" — captura é sugestão, não imposição. Passo 4 (produção) clarifica que o backlog ganha linhas independentes da escolha de artefato principal: feature com plano/ADR/atualização de domínio também recebe linhas de itens fora-de-escopo em `## Próximos`.
+- `/run-plan`: novo **passo 4.4 "Backlog harvest"** entre o sanity check de documentação e declarar done. Pergunta direta ao operador se algo emergiu durante a execução que deveria virar item separado no backlog (TODO adjacente, tech-debt revelado pela leitura, bug menor de passagem, melhoria não-essencial). Itens listados são tratados como **bloco extra** (atualizar `backlog` → revisor `code` → micro-commit) antes do done. Resposta "nada" fecha o gate. Escopo creep já absorvido pelo plano **não** entra aqui — harvest é para deferimento deliberado. Duas novas entradas em `## O que NÃO fazer` codificam: não pular o harvest (sempre perguntar), e não capturar itens que já foram absorvidos pelo plano corrente.
+
+### Notes
+- Mudança aditiva. Complementa simétricamente os bumps anteriores: 1.4.0 (commit dos artefatos de alinhamento em `/new-feature`), 1.5.0 (gate git em `/run-plan`), 1.6.0 (sanity check de documentação). Fecha o gap de **perda silenciosa de itens adjacentes** que emergem durante o fluxo. Cerimônia adicional é uma pergunta no fim do `/run-plan` ("nada" como resposta válida) e atenção passiva durante o gap analysis do `/new-feature` — custo desprezível frente à perda evitada. A heurística age **a partir** da próxima invocação das skills.
+
 ## [1.6.0] - 2026-05-03
 
 ### Added
