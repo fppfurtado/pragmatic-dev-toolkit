@@ -2,6 +2,20 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.11.0] - 2026-05-04
+
+### Added
+- Nova skill `/release`: bump de versão coordenado em `version_files`, entrada de changelog em `changelog`, commit unificado e tag anotada local. Mecaniza release a partir do log Conventional Commits desde a última tag — inferência de bump (≥70% CC), proposta enum, bifurcação para histórico ambíguo / primeira release / argumento explícito (`/release minor|patch|major|X.Y.Z`). Pré-condições: working tree limpo (bloqueia), branch default (cutuca). Detecção de formato de tag em três níveis (política → padrão observado ≥70% → SemVer canonical `vX.Y.Z`). Skill **não** faz push — release é local; publicação é decisão deliberada (`git push --follow-tags`).
+
+### Changed
+- `/release`: aplicado feedback do `code-reviewer` no draft inicial (justificativas redundantes removidas; caminho per-file da confirmação de diff restaurado com batch como otimização; alternativa `git push && git push origin <tag>` adicionada ao handoff).
+
+### Notes
+- `docs/philosophy.md`: novos papéis `version_files` (opt-in, sem default canonical) e `changelog` (canonical `CHANGELOG.md`) no contrato de papéis.
+- `CLAUDE.md`: descrição do `/release` e nota de dogfood — o próprio repo passa a usar `/release` para subir versões a partir de v1.11.0.
+- `docs/install.md`: smoke test do `/release` (cenário 10) e enumeração atualizada dos papéis.
+- `docs/plans/v1.11-skill-release-tagueamento.md`: plano que motivou a release.
+
 ## [1.10.0] - 2026-05-04
 
 ### Added
