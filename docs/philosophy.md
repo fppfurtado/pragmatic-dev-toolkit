@@ -165,6 +165,27 @@ A anotação `{reviewer: qa}` aplica-se ao bloco que **contém** os testes — `
 
 Scaffolders stack-specific (ex.: `/gen-tests-python`) **complementam** a prescrição — geram o esqueleto do arquivo de teste; não substituem a decisão do gap nem o micro-commit, que ficam no `/run-plan`. Projetos fora de stacks com scaffolder dedicado escrevem o teste manualmente — a saída (i) continua valendo.
 
+## Ciclo de vida do backlog
+
+As três seções de `BACKLOG.md` representam **estados** no ciclo de vida do item, não rótulos cosméticos:
+
+- `## Próximos` — proposto/candidato. Linha existe; decisão de executar pode ainda não ter sido tomada.
+- `## Em andamento` — committed para fazer agora. Plano associado existe (no `plans_dir`) ou execução está em curso.
+- `## Concluídos` — feature done localmente (gate de `/run-plan` fechou). Push e merge são decisão do operador — `## Concluídos` não significa "em produção".
+
+O toolkit move linhas entre seções via cutucada explícita ao operador, nunca por inferência textual. Os dois pontos de transição:
+
+- **`Próximos → Em andamento`** — cutucado por `/new-feature` no passo 4 quando o caminho escolhido inclui plano (a feature será executada). Cutucado também por `/run-plan` no início, se a linha ainda está em `## Próximos` (defesa contra estado inconsistente — operador pulou a transição no `/new-feature` ou rodou `/run-plan` sobre plano antigo que recebeu a anotação em sessão posterior).
+- **`Em andamento → Concluídos`** — cutucado por `/run-plan` no gate final, antes do backlog harvest. Eixos distintos: transição da feature corrente vs. captura de novos itens deferidos. Ordem importa — fechar a linha corrente primeiro, depois colher o que emergiu durante execução.
+
+### Anotação de matching
+
+O mensageiro entre alinhamento e execução é o campo `**Linha do backlog:** <texto exato>` no `## Contexto` do plano. `/new-feature` grava quando produz plano com linha; `/run-plan` lê no parsing inicial. Match é por **texto exato**, não substring fuzzy — anotação rota com edição manual da linha, mas o caso é raro e a recuperação trivial (operador edita o plano para refletir o novo texto, ou aceita que aquela transição vai ser feita manualmente).
+
+### Quando o ciclo silencia
+
+Plano sem `**Linha do backlog:**` (caminho ADR-only sem linha acompanhante, refactor puro com plano sem item no backlog, plano antigo criado antes desta convenção); papel `backlog` resolvido para "não temos"; linha não localizada no arquivo do backlog (operador removeu/consolidou desde o registro). Em todos os casos, ambas as skills procedem **sem mencionar o ciclo** — sem warning, sem oferta de adoção. O ciclo é opcional na prática.
+
 ## Linguagem ubíqua na implementação
 
 `docs/domain.md` (papel `ubiquitous_language`) é base **de interpretação E de desenvolvimento**: bounded contexts e linguagem ubíqua só são pilares se chegarem ao código. Vocabulário registrado no domínio mas ausente nos identificadores produzidos vira ornamento de alinhamento — exatamente o que a frase-tese da filosofia rejeita.
