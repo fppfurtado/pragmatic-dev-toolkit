@@ -2,7 +2,14 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
-## [1.9.0] - 2026-05-04
+## [1.10.0] - 2026-05-04
+
+### Added
+- `docs/philosophy.md`: nova seção **"Convenção de pergunta ao operador"** define os dois modos complementares de coleta de input — `AskUserQuestion` (escolhas discretas) e prosa livre (explicação/justificativa) — com critério mecânico para optar.
+- Skills migradas para `AskUserQuestion` nos pontos enum-naturais: resolução de papéis tri-state e oferta de memorização (philosophy + todas as skills); bifurcação arquitetural (`/new-feature` passo 2); `/new-feature` passos 5 (revisão de backlog), 6 (commit) e proposta de criação de `domain.md`/`design.md`; `/new-adr` passo 2 (formato atípico/misto); `/run-plan` pré-cond 2 (alinhamento sujo), passo 1.2 (`.worktreeinclude` multiSelect + gatilho cruzado de credencial), passo 2 (sanity escopo), passo 4.3 (sanity doc), passo 4.4 (backlog harvest).
+- `CLAUDE.md`: ponteiro à nova convenção para preservar o modo de cada touchpoint ao editar skills.
+
+
 
 ### Added
 - `/new-feature`: novo **passo 5 "Revisão do backlog"** entre o passo 4 (produção dos artefatos) e o passo de commit (renumerado para passo 6). Gate condicional — dispara apenas quando o passo 4 modificou o arquivo do papel `backlog` (linha da feature em curso, linhas de fora-de-escopo capturadas no passo 2, ou ambas); caminho que não tocou backlog (atualização pura de `domain.md`/`design.md`, ADR delegada sem linha de backlog acompanhante, papel `backlog` resolvido para "não temos") pula silenciosamente. Quando dispara: relê o arquivo do backlog após as edições do passo 4, flaga duplicatas entre linhas recém-adicionadas (incluindo itens fora-de-escopo do passo 2) e linhas pré-existentes nas três seções, flaga obsolescência conservadora (sobreposição nítida no texto, não similaridade vaga), mostra ao operador o estado atual de `## Próximos` (com `## Em andamento`/`## Concluídos` apenas se um flag tocar essas seções) e pergunta uma vez se algo precisa ser consolidado, reordenado ou removido antes do commit. Versão mínima da pergunta no caso frequente (sem flags + uma linha adicionada): "Backlog atualizado com `<linha>`. Ok?". Edits aprovados pelo operador entram no mesmo commit unificado proposto no passo 6. Duas novas entradas em `## O que NÃO fazer` codificam: não pular o gate quando o passo 4 modificou o backlog, e não consolidar/remover/reordenar linhas sem confirmação explícita do operador.
