@@ -5,7 +5,7 @@ description: Executa um plano de docs/plans/<slug>.md em worktree isolada, com m
 
 # run-plan
 
-Executa um plano produzido por `/new-feature` (ou escrito à mão) seguindo a disciplina **worktree isolada → micro-commit por bloco → revisão dirigida → gate final**. Importa a parte boa de execução disciplinada (worktree, commits granulares, gate antes de declarar done) sem o overhead documental (spec separado, two-stage review universal, plano gigante).
+Executa um plano produzido por `/triage` (ou escrito à mão) seguindo a disciplina **worktree isolada → micro-commit por bloco → revisão dirigida → gate final**. Importa a parte boa de execução disciplinada (worktree, commits granulares, gate antes de declarar done) sem o overhead documental (spec separado, two-stage review universal, plano gigante).
 
 Esta skill **executa** mudanças. Deve ser chamada explicitamente pelo operador, após o plano estar revisado.
 
@@ -27,7 +27,7 @@ Headers de plano (`## Arquivos a alterar`, `## Verificação end-to-end`, `## Ve
 
 1. `<plans_dir>/<slug>.md` existe e tem `## Arquivos a alterar` (papel: `plans_dir`, default: `docs/plans/`).
 2. **Estado git dos artefatos de alinhamento** — checagem em duas camadas via `git status --porcelain`:
-   - **Bloquear** se `<plans_dir>/<slug>.md` estiver modificado ou untracked. Broken-by-construction: worktree é criada a partir do HEAD e não veria o plano que deveria executar. Mensagem direta ao operador: commitar o plano antes de prosseguir (ou usar `/new-feature` que já propõe o commit no passo 6). Não tentar contornar copiando o plano manualmente para a worktree.
+   - **Bloquear** se `<plans_dir>/<slug>.md` estiver modificado ou untracked. Broken-by-construction: worktree é criada a partir do HEAD e não veria o plano que deveria executar. Mensagem direta ao operador: commitar o plano antes de prosseguir (ou usar `/triage` que já propõe o commit no passo 6). Não tentar contornar copiando o plano manualmente para a worktree.
    - **Cutucar** (não bloquear) se papéis de alinhamento — arquivos resolvidos pelos papéis `backlog`, `ubiquitous_language`, `design_notes`, ou qualquer arquivo sob `decisions_dir` — tiverem alterações uncommitted. A worktree perde esse contexto e reviewers podem não ver invariantes/ADRs que o plano assume documentados. Modo: enum via `AskUserQuestion` (header `Alinhamento`) com opções `Commitar agora` (skill aguarda commit antes de prosseguir) e `Continuar mesmo assim` (skill segue, registrando que o operador foi avisado). Mostrar a lista de arquivos sujos na pergunta. Outras alterações uncommitted no working tree (código de exploração, debug) **não** geram aviso — o operador as isolou intencionalmente, é o ponto da worktree.
 3. O gate automático de testes do projeto está verde no branch atual (rodar antes de começar). Default: `make test`. Variante: `test_command` declarado no CLAUDE.md (ex.: `uv run pytest`, `npm test`, `cargo test`). Caminho de decisão: se canonical (`make test`) ausente E operador ainda não declarou `test_command: null` no bloco de config, perguntar uma vez (oferta única de memorização). Em projetos sem suite automatizada (meta-tools, doc-only), `## Verificação end-to-end` do plano substitui o gate — caso de exceção, sinalizado pela ausência de `test_command` resolvido **e** por o plano explicitar essa verificação textual.
 4. A worktree `.worktrees/<slug>/` ainda não existe.
