@@ -2,6 +2,17 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.13.0] - 2026-05-04
+
+### Added
+- `BACKLOG.md`: ciclo de vida formalizado — `## Próximos`, `## Em andamento` e `## Concluídos` viram estados reais com cutucadas em pontos de transição naturais. `/new-feature` decide a seção inicial quando a feature gera plano (enum `Próximos` (recomendado) / `Em andamento`); sem plano, vai direto para `## Próximos`. `/run-plan` cutuca `Próximos → Em andamento` antes do primeiro bloco e `Em andamento → Concluídos` no gate final, antes do harvest. Anotação `**Linha do backlog:** <texto>` no `## Contexto` do plano é o mecanismo de matching entre alinhamento e execução; ausência (plano sem o campo, papel `backlog` "não temos", linha não localizada) é skip silente — mudança aditiva, planos antigos sem a anotação seguem rodando sem alteração de comportamento.
+
+### Notes
+- `docs/philosophy.md`: nova seção "Ciclo de vida do backlog" entre "Cobertura de teste em planos" e "Linguagem ubíqua na implementação", com subsections "Anotação de matching" e "Quando o ciclo silencia".
+- `skills/new-feature/SKILL.md`: passo 4 sub-bullet `backlog` distingue caminho-com-plano (enum de seção) vs caminho-sem-plano (default `Próximos`); sub-bullet `plans_dir` registra `**Linha do backlog:**` no `## Contexto` quando aplicável; `## O que NÃO fazer` ganha duas guardas.
+- `skills/run-plan/SKILL.md`: passo 3 captura a referência antes do primeiro bloco e cutuca a transição inicial; passo 4.4 nova "Transição final do backlog" antes do harvest (renumerações 4.4→4.5, 4.5→4.6); `## O que NÃO fazer` ganha três guardas (sem matching heurístico, sem silenciar transição final, sem inverter ordem 4.4↔4.5).
+- `docs/plans/v1.13-transicao-estado-backlog.md`: plano que motivou a release.
+
 ## [1.12.1] - 2026-05-04
 
 ### Notes
