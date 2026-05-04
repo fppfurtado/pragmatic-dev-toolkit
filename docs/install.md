@@ -33,7 +33,7 @@ git clone git@github.com:fppfurtado/pragmatic-dev-toolkit.git
 `claude plugin validate` ainda **não existe** como subcomando estável (até abril de 2026). Para validar localmente:
 
 1. Confirmar `.claude-plugin/plugin.json` válido como JSON.
-2. Após instalar, abrir o Claude Code no workspace e confirmar que `/new-feature`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests-python` aparecem em `/help` ou `/plugin list`.
+2. Após instalar, abrir o Claude Code no workspace e confirmar que `/new-feature`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests-python`, `/release` aparecem em `/help` ou `/plugin list`.
 3. Smoke das skills + edição direta de `.env` (verifica `block_env`) + edição de um `.py` num projeto Python (verifica `run_pytest_python`).
 4. Invocar `qa-reviewer` num diff que adiciona função pública sem teste correspondente → flag esperado de "caminho feliz sem teste".
 5. Invocar `security-reviewer` num diff que faz `logger.info(f"token={token}")` → flag esperado de "credencial em log".
@@ -41,10 +41,11 @@ git clone git@github.com:fppfurtado/pragmatic-dev-toolkit.git
 7. Em projeto com bloco de config declarado, invocar `/new-feature` num pedido que toque domínio e confirmar que a skill consulta o path declarado (ex.: `docs/glossary.md`), não o canonical (`docs/domain.md`).
 8. Em projeto com plano contendo `### Bloco 1 — exemplo {revisor: code}` (alias PT removido em v1.0), invocar `/run-plan` → confirmar recusa explícita (não silenciosa, sem fallback) com mensagem indicando o bloco e a anotação ofensora, sugerindo migrar para `{reviewer:}`.
 9. Em projeto com `docs/domain.md` declarando ao menos uma RNxx, invocar `/new-feature` com pedido que toca essa RN → confirmar que o plano resultante inclui bloco de teste em `## Arquivos a alterar` com `{reviewer: qa}`, **ou** justifica ausência via `## Verificação end-to-end` textual (heurística "Cobertura de teste em planos").
+10. Em projeto com tag prévia (ex.: `v0.1.0`), `paths.version_files` declarado (ex.: `["package.json"]`) e `CHANGELOG.md` em formato Keep-a-Changelog, invocar `/release patch` → confirmar (a) bump da versão em `version_files`, (b) entrada `## [0.1.1] - YYYY-MM-DD` no topo do changelog agrupando commits por tipo CC, (c) commit local `chore(release): bump version to 0.1.1`, (d) tag anotada `v0.1.1` criada localmente, (e) **nenhum push** disparado pela skill — mensagem final orienta `git push --follow-tags`.
 
 ## Pré-requisitos no projeto consumidor
 
-As skills consomem **papéis** (`product_direction`, `ubiquitous_language`, `design_notes`, `decisions_dir`, `plans_dir`, `backlog`, `test_command`), não paths literais. A convenção default por papel é o canonical (`IDEA.md`, `BACKLOG.md`, `docs/domain.md`, `docs/design.md`, `docs/decisions/`, `docs/plans/`, `make test`). Projeto que segue os defaults funciona zero-config — o caminho mais simples é gerar com [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit).
+As skills consomem **papéis** (`product_direction`, `ubiquitous_language`, `design_notes`, `decisions_dir`, `plans_dir`, `backlog`, `version_files`, `changelog`, `test_command`), não paths literais. A convenção default por papel é o canonical (`IDEA.md`, `BACKLOG.md`, `docs/domain.md`, `docs/design.md`, `docs/decisions/`, `docs/plans/`, `CHANGELOG.md`, `make test`; `version_files` é opt-in sem default). Projeto que segue os defaults funciona zero-config — o caminho mais simples é gerar com [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit).
 
 Projeto com layout diferente declara variantes uma vez no `CLAUDE.md` raiz, sob o marcador HTML `<!-- pragmatic-toolkit:config -->`:
 
