@@ -88,7 +88,22 @@ Idioma de saída: **espelhar o idioma já em uso pelo projeto consumidor** (ver 
 
 Para slug de plano: lowercase, espaços/acentos→hífens, curto e descritivo (ex.: `exportar-movimentos-csv`).
 
-### 5. Reportar, propor commit e devolver controle
+### 5. Revisão do backlog
+
+Disparar **apenas** se o passo 4 modificou o arquivo do papel `backlog` (linha da feature em curso, linhas de fora-de-escopo emergidas no passo 2, ou ambas). Caminho que não tocou o backlog (ex.: atualização pura de `ubiquitous_language`/`design_notes`, ADR delegada a `/new-adr` sem linha de backlog acompanhante, papel `backlog` resolvido para "não temos") **pula este passo silenciosamente**.
+
+Quando dispara:
+
+1. **Reler** o arquivo do backlog na íntegra após as edições do passo 4.
+2. **Flagar** (não decidir):
+   - **Duplicatas** entre linhas recém-adicionadas (incluindo itens fora-de-escopo do passo 2) e linhas pré-existentes em `## Próximos`/`## Em andamento`/`## Concluídos`.
+   - **Obsolescência**: linha em `## Próximos` que vira redundante pela feature recém-registrada (ex.: nova linha "exportar movimentos em CSV" cobre item antigo "exportar movimentos como planilha"). Inferência conservadora — só flagar quando a sobreposição é nítida no texto, não em similaridade vaga.
+3. **Mostrar** ao operador o estado atual de `## Próximos` (e `## Em andamento`/`## Concluídos` apenas se um flag tocar essas seções), com as linhas recém-adicionadas marcadas para contexto.
+4. **Perguntar uma vez**, de forma direta: *"Backlog após registro: \<síntese curta dos flags + estado>. Algo a consolidar, reordenar ou remover antes do commit?"*. Operador pode responder "está bom assim" — gate fecha. Se pedir edits (consolidar duplicatas, remover obsoletos, reordenar), aplicar no arquivo do backlog. Edits ficam parte do mesmo commit unificado proposto no passo 6.
+
+Sem flags **e** com apenas uma linha adicionada (caso frequente — feature simples sem fora-de-escopo), versão mínima da pergunta basta: *"Backlog atualizado com `<linha>`. Ok?"*. Resposta "ok" fecha sem mostrar o resto do backlog.
+
+### 6. Reportar, propor commit e devolver controle
 
 Ao final, reportar ao usuário em formato curto:
 
@@ -111,3 +126,5 @@ Não começar a implementar. Quem decide o salto para código é o operador.
 - Não duplicar conteúdo de `CLAUDE.md`, `domain.md` ou `design.md` no plano — referenciar.
 - Não preencher conteúdo de ADR — delegar para `/new-adr`.
 - Não commitar os artefatos de alinhamento sem confirmação explícita do operador — propor mensagem e aguardar.
+- Não pular a revisão do backlog (passo 5) quando o passo 4 modificou o arquivo do papel `backlog`.
+- Não consolidar, remover ou reordenar linhas do backlog sem confirmação explícita do operador na pergunta do passo 5.
