@@ -2,6 +2,16 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.12.0] - 2026-05-04
+
+### Changed
+- `/new-feature`: papel `backlog` reclassificado de obrigatório para informacional. Projeto sem `BACKLOG.md` no canonical e sem declaração no bloco `<!-- pragmatic-toolkit:config -->` deixa de receber gap report e passa a usar a skill normalmente — pré-condição que bloqueia agora cita apenas `plans_dir` (único output não-fungível da skill). Oferta de criação enum (header `Backlog`, opções `Criar em BACKLOG.md` / `Não usamos esse papel`) dispara apenas no passo 4 quando estaria prestes a gravar linha; espelha o padrão já usado por `ubiquitous_language`/`design_notes`. Segunda opção registra `paths.backlog: null` no bloco de config — papel desativado para invocações futuras. Itens fora-de-escopo capturados no passo 2 passam a ser reportados ao operador no passo 6 sob "Itens não registrados (papel backlog desativado):" quando o papel resolve para "não temos", sem editorialização adicional.
+
+### Notes
+- `docs/philosophy.md`: `backlog` movido da lista Obrigatórios para Informacionais; nota curta explicando o comportamento do `/new-feature` quando o papel resolve para "não temos".
+- `docs/install.md`: lista de gap report no exemplo do bloco `<!-- pragmatic-toolkit:config -->` passa a citar apenas `plans_dir` em `/new-feature`/`/run-plan` e `decisions_dir` em `/new-adr`.
+- `docs/plans/v1.12-backlog-informacional-new-feature.md`: plano que motivou a release.
+
 ## [1.11.0] - 2026-05-04
 
 ### Added
