@@ -91,8 +91,10 @@ Skills e hooks stack-specific convivem no mesmo plugin com componentes genérico
 | Tipo | Genérico | Stack-specific |
 |------|----------|----------------|
 | Hook (script) | `<purpose>.py\|.sh` (ex.: `block_env.py`) | `<purpose>_<stack>.py\|.sh` (ex.: `run_pytest_python.py`) |
-| Skill (frontmatter `name`) | `<verb>-<artifact>` (ex.: `new-feature`) | `<verb>-<artifact>-<stack>` (ex.: `gen-tests-python`) |
+| Skill (frontmatter `name`) | `<verb>-<artifact>` (ex.: `new-adr`) **ou** `<verb>` quando o artefato emerge da decisão da skill (ex.: `triage`) | `<verb>-<artifact>-<stack>` (ex.: `gen-tests-python`) |
 | Agent (frontmatter `name`) | `<role>` (ex.: `code-reviewer`, `qa-reviewer`, `security-reviewer`) | `<role>-<stack>` (apenas se os princípios mudarem com a stack) |
+
+Skill cujo output é fixo (sempre produz um ADR, sempre executa um plano) carrega `<verb>-<artifact>` — o nome promete o output. Skill cujo output é decidido a cada invocação entre múltiplas opções (ex.: `/triage` decide entre linha de backlog, plano, ADR ou atualização de domínio) carrega só `<verb>` — sufixo fixo seria mentira sobre o que sai.
 
 Componentes que **geram ou executam** algo da stack (skills geradoras de código, hooks que invocam toolchain) precisam de sufixo — sintaxe ou comando concreto não tem versão neutra. Componentes que **revisam princípios** lidos do diff não precisam — o stack está no próprio diff.
 
