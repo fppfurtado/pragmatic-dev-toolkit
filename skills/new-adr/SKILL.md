@@ -28,8 +28,8 @@ Se o usuário não fornecer título, peça antes de prosseguir.
      - Se todos batem `ADR-\d{4}-` → 4-dígitos com padding (`0006`, `0007`, …).
      - Se todos batem `ADR-\d{3}-` → 3-dígitos com padding (`006`, `007`, …) — formato canonical do toolkit.
      - Se há `ADR-\d+-` sem zero à esquerda em ao menos um (ex.: `ADR-1-`, `ADR-12-`) → sem padding (`6`, `7`, …).
-     - Formatos mistos (alguns padded, outros não) → flagar ao operador antes de prosseguir; provável drift histórico que merece decisão antes de continuar.
-     - **Formatos atípicos** (ex.: `ADR-007a-`, `ADR-DRAFT-`, sufixos com letra) → flagar ao operador e perguntar antes de prosseguir; default não-fatal (skill espera resposta, não aborta).
+     - Formatos mistos (alguns padded, outros não) → flagar ao operador via enum (`AskUserQuestion`, header `Numeração`) com opções nomeando os formatos detectados (ex.: `Padding 4-dígitos`, `Sem padding`); a escolha rege apenas este ADR — saneamento histórico, se desejado, é decisão separada do operador. Provável drift que merece nomear antes de continuar.
+     - **Formatos atípicos** (ex.: `ADR-007a-`, `ADR-DRAFT-`, sufixos com letra) → flagar ao operador via enum (`AskUserQuestion`, header `Numeração`) com opções `Seguir o formato canonical 3-dígitos` e `Manter o formato atípico detectado` (Other → especificar formato customizado). Default não-fatal — skill espera resposta, não aborta.
      - **Diretório vazio**: default 3-dígitos com padding (canonical do toolkit).
    - Extrair o maior número numérico (independente do padding) e somar 1; aplicar o formato inferido.
 

@@ -51,6 +51,10 @@ The workflow skills compose in a deliberate order:
 
 When editing these skills, preserve the separations: **alignment → plan → execute** for new work, and **diagnose ≠ fix** on the bug-fix axis. Don't let `/new-feature` start writing code; don't let `/run-plan` skip the reviewer; don't let `/debug` apply fixes.
 
+## Asking the operator (enum vs prose)
+
+Skills collect operator input via `AskUserQuestion` (discrete choices) or free prose (explanation/justification). Criterion in `docs/philosophy.md` → "Convenção de pergunta ao operador". Preserve the mode of each touchpoint when editing skills.
+
 ## Reviewer agents
 
 All three are invoked on a diff and report only real problems (no "consider" hedging):

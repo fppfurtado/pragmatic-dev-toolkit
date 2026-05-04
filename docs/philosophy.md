@@ -14,6 +14,8 @@ Há pedidos que admitem dois ou mais caminhos com custo, manutenção ou modelo 
 
 Em workflow YAGNI essa tensão é real, não cosmética: o viés natural é o caminho mais simples, e nem sempre é o que o operador tinha em mente. A correção é leve — antes do plano, nomear as opções concretas e pedir escolha. A decisão registra-se em `## Contexto` ou `## Resumo da mudança` do plano produzido, para que reviewers e execução posterior saibam por que aquele caminho.
 
+Modo de coleta: **enum** via `AskUserQuestion` (ver "Convenção de pergunta ao operador") — opções nomeadas como `(a) caminho-default-barato` e `(b) caminho-rico`, com `description` carregando o trade-off concreto (custo, manutenção, virtude entregue). Operador escolhe um caminho ou usa "Other" para nomear uma terceira via que a skill não previu. Quando o operador já citou explicitamente uma das opções na frase original (`/new-feature exportar CSV usando streaming`), pular a pergunta e registrar a escolha no plano direto.
+
 Operacionalização concreta no checklist de gaps de `/new-feature`. Sem nomear, a bifurcação fica baked-in no plano sem ter sido discutida.
 
 ## Path contract
@@ -40,8 +42,8 @@ Cada skill resolve os papéis que precisa antes de agir, seguindo um protocolo �
 
 1. **Probe canonical.** Testar se o filename default existe (ex.: `docs/domain.md` para `ubiquitous_language`). Probe é exato, sem fuzzy: `README.md` não é assumido como `IDEA.md`.
 2. **Consultar CLAUDE.md.** Se o canonical não existe, ler o CLAUDE.md do projeto consumidor procurando o bloco `<!-- pragmatic-toolkit:config -->` (próxima seção). Valor declarado vence o canonical ausente.
-3. **Perguntar ao operador.** Se ainda ausente e o papel é necessário pra skill, pergunta com resposta tri-state: **path concreto** (skill usa esse path) | **`não temos`** (skill segue sem o input se o papel é informacional, ou para com gap report se é obrigatório) | **outro path** (operador aponta arquivo equivalente).
-4. **Oferta única de memorização.** Ao final da invocação, propor uma vez "registrar essa resolução no CLAUDE.md? (s/n)". `n` = perguntará de novo na próxima invocação. Operador mantém autonomia sobre o que fica memorizado.
+3. **Perguntar ao operador.** Se ainda ausente e o papel é necessário pra skill, pergunta com resposta tri-state: **path concreto** (skill usa esse path) | **`não temos`** (skill segue sem o input se o papel é informacional, ou para com gap report se é obrigatório) | **outro path** (operador aponta arquivo equivalente). Modo de coleta: **enum** via `AskUserQuestion` (ver "Convenção de pergunta ao operador") — duas opções nomeadas (`Não usamos esse papel`, `Existe em outro path`) e "Other" automático recebendo o path concreto digitado pelo operador. Header curto sugerido: nome do papel (`product_direction`, `backlog`, etc.).
+4. **Oferta única de memorização.** Ao final da invocação, propor uma vez registrar a resolução no bloco `<!-- pragmatic-toolkit:config -->` do CLAUDE.md. `n` = perguntará de novo na próxima invocação. Operador mantém autonomia sobre o que fica memorizado. Modo: **enum** binário (`Sim, registrar` / `Não, perguntar de novo`).
 
 **Drift detection.** Se o canonical existe E o CLAUDE.md declara variante diferente, skill flagga a inconsistência ao operador antes de prosseguir — provável renome esquecido.
 
@@ -117,6 +119,15 @@ Quando `/run-plan` produz micro-commits, segue a **política de mensagens de com
 3. **Default canonical** — [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`, `style:`) com mensagens em **inglês**. Aplicado quando não há política explícita e o histórico não revela padrão extraível (repo novo, commits ad-hoc).
 
 A regra "um micro-commit por bloco do plano" permanece invariante — pertence à mecânica de execução, não à política de mensagem. `--amend` e rebase de commits de blocos já fechados ficam proibidos pelo mesmo motivo; emendar o último commit do bloco corrente quando faz sentido (typo, arquivo esquecido) é exceção localizada, não regra.
+
+## Convenção de pergunta ao operador
+
+Skills perguntam ao operador em dois modos complementares — `AskUserQuestion` (tool nativa do Claude Code) e prosa livre — e a escolha entre eles não é estética: errar o modo gera ou cerimônia (enum em pergunta livre) ou improviso (prosa em escolha discreta).
+
+- **Enum** via `AskUserQuestion`: opções discretas e mutualmente exclusivas, header curto (≤12 chars), 2-4 opções por pergunta, "Other" automático como válvula para nuance imprevista. Use quando a resposta esperada é um nome/escolha concreto — bifurcação A vs B, tri-state estruturado (`path | "não temos" | <other path>`), confirmação `(s/n)`, multi-seleção de lista discreta (com `multiSelect: true`). Múltiplas perguntas relacionadas podem entrar numa única chamada (até 4). Skills carregam trade-offs concretos (custo, manutenção, virtude entregue) no `description` de cada opção; descrição-óbvia tipo "escolha A" é sintoma de enum cosmético.
+- **Prosa** (texto livre na conversa): use quando a resposta exige explicação, exemplo, justificativa, ou descrição naturalmente aberta — relato de sintoma em `/debug`, forma de dado real em validação manual não-determinística, especificação de cenário, gap report, confirmação "ok, valido" após validação manual, listagem de itens fora-de-escopo emergidos. Quando a maioria das respostas reais cairia em "Other" do enum, o modo certo era prosa desde o início.
+
+Pontos do toolkit onde a convenção aplica (resolução de papéis, oferta de memorização, bifurcação arquitetural em `/new-feature`, alinhamento sujo e gatilhos do gate final em `/run-plan`, flag de formato atípico em `/new-adr`) referenciam esta seção sem repetir critério.
 
 ## Anotação de revisor em planos
 
