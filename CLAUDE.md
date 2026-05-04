@@ -12,7 +12,7 @@ The companion repo is [`scaffold-kit`](https://github.com/fppfurtado/scaffold-ki
 
 Three component types, each with its own discovery mechanism:
 
-- **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/new-feature`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests-python`). Skills only act when invoked by the user.
+- **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/new-feature`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests-python`, `/release`). Skills only act when invoked by the user.
 - **Agents** — `agents/<name>.md` with frontmatter. Subagents called by name (`code-reviewer`, `qa-reviewer`, `security-reviewer`). Reviewers analyze a diff and return findings.
 - **Hooks** — `hooks/hooks.json` declares lifecycle bindings; the bound scripts (`hooks/*.py`) run on every matching tool call in any project that has the plugin installed. Therefore hooks **must auto-gate** (see below).
 
@@ -20,13 +20,13 @@ Manifests:
 - `.claude-plugin/plugin.json` — plugin name/version/description.
 - `.claude-plugin/marketplace.json` — exposes the plugin to `/plugin marketplace add fppfurtado/pragmatic-dev-toolkit`.
 
-When bumping a release, update the version in **both** manifests **and** add a `CHANGELOG.md` entry in the existing format.
+From v1.11.0 onward, version bumps go through `/release` (dogfood). The skill resolves `version_files` from this repo's config to update **both** manifests, composes the `CHANGELOG.md` entry from the CC log since the last tag, commits and tags locally. Push remains manual.
 
 ## The role contract (load-bearing)
 
 Skills consume **roles**, not literal paths. Each role has a canonical default; consumer projects declare variants via the `<!-- pragmatic-toolkit:config -->` YAML block in their `CLAUDE.md`. Full protocol in `docs/philosophy.md` → "Resolução de papéis".
 
-Roles and canonical defaults: `product_direction` → `IDEA.md`, `ubiquitous_language` → `docs/domain.md`, `design_notes` → `docs/design.md`, `decisions_dir` → `docs/decisions/`, `plans_dir` → `docs/plans/`, `backlog` → `BACKLOG.md`, `test_command` → `make test`. Plugin-internal: `.worktreeinclude` (consumed by `/run-plan`) and project-level `.claude/agents/qa-reviewer.md` / `security-reviewer.md` follow Claude Code conventions.
+Roles and canonical defaults: `product_direction` → `IDEA.md`, `ubiquitous_language` → `docs/domain.md`, `design_notes` → `docs/design.md`, `decisions_dir` → `docs/decisions/`, `plans_dir` → `docs/plans/`, `backlog` → `BACKLOG.md`, `version_files` → _(no default — opt-in list)_, `changelog` → `CHANGELOG.md`, `test_command` → `make test`. Plugin-internal: `.worktreeinclude` (consumed by `/run-plan`) and project-level `.claude/agents/qa-reviewer.md` / `security-reviewer.md` follow Claude Code conventions.
 
 Resolution order (per role): probe canonical → consult config block in consumer's `CLAUDE.md` → ask the operator with tri-state response (`path | "não temos" | <other path>`). Skills must **report a gap rather than guess** when a required role resolves to "não temos". This is non-negotiable — fabricating context defeats the alignment-first workflow.
 
@@ -48,8 +48,9 @@ The workflow skills compose in a deliberate order:
 2. **`/new-adr "<title>"`** — auto-numbers within the resolved `decisions_dir` by **inferring** the format from existing ADRs (3-digit padded canonical, 4-digit padded, or no padding); generates slug, writes template skeleton with placeholders. Has `disable-model-invocation: true` — only invoked explicitly.
 3. **`/run-plan <slug>`** — the only execution skill. Creates `.worktrees/<slug>/`, replicates files listed in `.worktreeinclude` (see `docs/philosophy.md` → "Convenção `.worktreeinclude`"), requires the resolved `test_command` (default `make test`) to be green as baseline, then loops per "files to change" block (canonical PT-BR `## Arquivos a alterar`, matched semantically): implement → run `test_command` → invoke **all** reviewers listed in `{reviewer: ...}` (default `code-reviewer`; `qa`/`security` resolve to project-level agents in `.claude/agents/`; multiple profiles aggregate reports) → micro-commit following the project's commit convention (see `docs/philosophy.md` → "Convenção de commits"; canonical default is Conventional Commits in English; `--amend` reserved for localized fixes within the current block). Blocks final "done" until the operator confirms the manual-verification section if the plan has one.
 4. **`/debug <symptom>`** — diagnose phase, the bug-fix-axis counterpart to `/new-feature`'s alignment. Walks the scientific method (precisar → reproduzir → isolar → hypothesis-test → root cause) and produces a five-field diagnostic (sintoma, causa-raiz, evidência, escopo, caminhos de correção). Stack-agnostic. **Produces no code, no commit, no instrumentation** — the operator routes the diagnosis to revert / direct patch / `/new-feature` for a larger change. Roles consumed are all informational (`test_command`, `ubiquitous_language`, `decisions_dir`, `design_notes`); none block the skill.
+5. **`/release [<bump>|<version>]`** — version bump in declared `version_files`, generates a `changelog` entry from the CC log since the last tag, unified commit and annotated tag (format detected in 3 levels: explicit policy → observed pattern ≥70% → SemVer canonical). Roles consumed are informational (`version_files`, `changelog`); release with neither degenerates to commit + tag only. **Does not push** — handoff to the operator. Operational convention is embedded in the skill itself (`skills/release/SKILL.md`), not mirrored in `docs/philosophy.md` (single consumer).
 
-When editing these skills, preserve the separations: **alignment → plan → execute** for new work, and **diagnose ≠ fix** on the bug-fix axis. Don't let `/new-feature` start writing code; don't let `/run-plan` skip the reviewer; don't let `/debug` apply fixes.
+When editing these skills, preserve the separations: **alignment → plan → execute** for new work, **diagnose ≠ fix** on the bug-fix axis, and **release ≠ publish** (skill stops at local commit + tag; push is the operator's call).
 
 ## Asking the operator (enum vs prose)
 
@@ -71,6 +72,7 @@ The two reviewers added in 0.3 are intentionally **stack-agnostic** — they rea
 - Commit messages follow the consumer project's commit convention (see `docs/philosophy.md` → "Convenção de commits"). For **this** repo the git log shows a stable pattern of Conventional Commits in English — keep it.
 - Skills/agents end with an explicit `## O que NÃO fazer` section listing scope guards. Preserve that section when editing — it's load-bearing for tight skill focus.
 - Don't introduce a build system, package manager, or test runner for this repo itself. The hooks are runnable Python scripts (`python3 ${CLAUDE_PLUGIN_ROOT}/hooks/<script>.py`); the rest is markdown.
+- From v1.11.0 onward, version bumps in **this** repo go through `/release` — keep the loop closed by dogfooding rather than editing manifests by hand.
 
 ## Local install for iteration
 
