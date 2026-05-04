@@ -74,6 +74,12 @@ The two reviewers added in 0.3 are intentionally **stack-agnostic** — they rea
 - Don't introduce a build system, package manager, or test runner for this repo itself. The hooks are runnable Python scripts (`python3 ${CLAUDE_PLUGIN_ROOT}/hooks/<script>.py`); the rest is markdown.
 - From v1.11.0 onward, version bumps in **this** repo go through `/release` — keep the loop closed by dogfooding rather than editing manifests by hand.
 
+## Pragmatic Toolkit
+<!-- pragmatic-toolkit:config -->
+```yaml
+test_command: null  # repo has no test suite; /run-plan falls back to plan's `## Verificação manual`
+```
+
 ## Local install for iteration
 
 ```
