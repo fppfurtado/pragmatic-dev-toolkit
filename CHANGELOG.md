@@ -2,6 +2,13 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.12.1] - 2026-05-04
+
+### Notes
+- `CLAUDE.md`, `docs/philosophy.md`, `skills/run-plan/SKILL.md`: descrição dos reviewers `qa-reviewer`/`security-reviewer` alinhada à realidade — agents shipados pelo plugin com override project-level via `.claude/agents/<nome>.md` (convenção Claude Code, project-level vence colisão de nome). Frases corrigem drift que descrevia os reviewers como "project-level only" e contradizia `CLAUDE.md:16`, que já listava os três reviewers como agents do plugin.
+- `README.md`: adicionada linha de `/release` na tabela "O que vem". Skill chegou na v1.11.0; a tabela ficou para trás.
+- `docs/plans/corrigir-docs-reviewers-e-release-no-readme.md`: plano que motivou a release.
+
 ## [1.12.0] - 2026-05-04
 
 ### Changed
