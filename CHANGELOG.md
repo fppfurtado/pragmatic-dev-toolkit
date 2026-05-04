@@ -2,6 +2,14 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.9.0] - 2026-05-04
+
+### Added
+- `/new-feature`: novo **passo 5 "Revisão do backlog"** entre o passo 4 (produção dos artefatos) e o passo de commit (renumerado para passo 6). Gate condicional — dispara apenas quando o passo 4 modificou o arquivo do papel `backlog` (linha da feature em curso, linhas de fora-de-escopo capturadas no passo 2, ou ambas); caminho que não tocou backlog (atualização pura de `domain.md`/`design.md`, ADR delegada sem linha de backlog acompanhante, papel `backlog` resolvido para "não temos") pula silenciosamente. Quando dispara: relê o arquivo do backlog após as edições do passo 4, flaga duplicatas entre linhas recém-adicionadas (incluindo itens fora-de-escopo do passo 2) e linhas pré-existentes nas três seções, flaga obsolescência conservadora (sobreposição nítida no texto, não similaridade vaga), mostra ao operador o estado atual de `## Próximos` (com `## Em andamento`/`## Concluídos` apenas se um flag tocar essas seções) e pergunta uma vez se algo precisa ser consolidado, reordenado ou removido antes do commit. Versão mínima da pergunta no caso frequente (sem flags + uma linha adicionada): "Backlog atualizado com `<linha>`. Ok?". Edits aprovados pelo operador entram no mesmo commit unificado proposto no passo 6. Duas novas entradas em `## O que NÃO fazer` codificam: não pular o gate quando o passo 4 modificou o backlog, e não consolidar/remover/reordenar linhas sem confirmação explícita do operador.
+
+### Notes
+- Mudança aditiva. Fecha a simetria do eixo **gates de qualidade no fim do fluxo**: `/run-plan` 4.4 (Backlog harvest, 1.7.0) captura **novos** itens emergidos durante execução; `/new-feature` 5 valida itens **recém-registrados** durante alinhamento. Sequência completa do eixo: 1.4 (commit dos artefatos), 1.5 (gate git no `/run-plan`), 1.6 (sanity check de documentação), 1.7 (backlog harvest + fora-de-escopo capture), 1.8 (cenários enumerados em validação manual), 1.9 (revisão do backlog em `/new-feature`). A heurística age **a partir** da próxima invocação da skill.
+
 ## [1.8.0] - 2026-05-03
 
 ### Added
