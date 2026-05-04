@@ -34,7 +34,7 @@ As skills consomem **papéis**, não paths. A tabela abaixo lista a convenção 
 | `changelog` | `CHANGELOG.md` | Histórico de releases. `/release` insere novo bloco no topo a cada bump. |
 | `test_command` | `make test` (com `Makefile`) | Gate automático nos passos de execução. |
 | (interno do plugin) | `.worktreeinclude` | Lista opcional de gitignored a replicar em worktrees novas. Consumido por `/run-plan`. |
-| (convenção Claude Code) | `.claude/agents/qa-reviewer.md`, `.claude/agents/security-reviewer.md` | Revisores project-level invocados por `/run-plan` quando o bloco do plano anota `{reviewer: qa}` ou `{reviewer: security}`. |
+| (agents shipados pelo plugin) | `qa-reviewer`, `security-reviewer` | Baseline genérico invocado por `/run-plan` quando o bloco do plano anota `{reviewer: qa}` ou `{reviewer: security}`. Projeto consumidor pode sobrescrever via `.claude/agents/<nome>.md` (convenção Claude Code; project-level vence colisão de nome). |
 
 Para cada papel configurável, a skill aplica **Resolução de papéis** (próxima seção): probe do default → consultar bloco de config no CLAUDE.md → perguntar ao operador. Projeto que segue os defaults funciona zero-config; projeto com layout diferente declara variantes uma vez no CLAUDE.md. O caminho mais simples para começar com os defaults é gerar o projeto com o template companion [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit), mas qualquer layout alinhado à filosofia funciona.
 

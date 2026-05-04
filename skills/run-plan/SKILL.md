@@ -58,7 +58,7 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
 3. **Escolher o(s) revisor(es)** lendo a anotação `{reviewer: ...}` no header do bloco. Schema completo em `docs/philosophy.md` → "Anotação de revisor em planos". Resumo operacional:
    - Sem anotação → `code-reviewer` (incluído neste plugin).
    - `{reviewer: code}` → `code-reviewer`.
-   - `{reviewer: qa}` ou `{reviewer: security}` → agent project-level correspondente em `.claude/agents/<role>-reviewer.md`.
+   - `{reviewer: qa}` ou `{reviewer: security}` → `qa-reviewer` ou `security-reviewer` (incluídos neste plugin; projeto consumidor pode sobrescrever com `.claude/agents/<nome>.md`, que vence por convenção Claude Code).
    - `{reviewer: code,qa,security}` (múltiplos perfis) → invocar **todos** os perfis listados, em qualquer ordem, agregando relatórios.
    - Exemplo canônico: `### Bloco 1 — auth.py {reviewer: security}`.
 4. **Aplicar correções** levantadas pelo(s) revisor(es) antes de prosseguir.
