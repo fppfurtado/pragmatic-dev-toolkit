@@ -60,7 +60,7 @@ test_command: uv run pytest               # em vez do default make test
 ```
 ````
 
-Chave ausente = canonical default. Valor `null` = "não usamos esse papel" (skill segue sem o input para papéis informacionais; gap report para `plans_dir` ou `backlog` em skills que gravam saída ali). Detalhe completo do protocolo em [`philosophy.md`](./philosophy.md#resolução-de-papéis).
+Chave ausente = canonical default. Valor `null` = "não usamos esse papel" (skill segue sem o input para papéis informacionais; gap report para `plans_dir` em `/new-feature`/`/run-plan` e `decisions_dir` em `/new-adr`). Detalhe completo do protocolo em [`philosophy.md`](./philosophy.md#resolução-de-papéis).
 
 Pré-requisitos de runtime dos hooks: `python3` no `PATH`. `run_pytest_python` é auto-gated — só dispara em arquivos `.py` que estão sob um diretório com `pyproject.toml`; usa `uv run pytest` quando `uv` está disponível, senão `python -m pytest`.
 
