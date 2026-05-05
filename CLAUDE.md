@@ -77,6 +77,8 @@ The two reviewers added in 0.3 are intentionally **stack-agnostic** — they rea
 ## Pragmatic Toolkit
 <!-- pragmatic-toolkit:config -->
 ```yaml
+paths:
+  version_files: [".claude-plugin/plugin.json", ".claude-plugin/marketplace.json"]
 test_command: null  # repo has no test suite; /run-plan falls back to plan's `## Verificação manual`
 ```
 
