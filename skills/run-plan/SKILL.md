@@ -53,6 +53,8 @@ Releia `## Contexto` e `## Resumo da mudança` do plano. Se houver menção a su
 
 **Antes do primeiro bloco:** capturar `**Linha do backlog:** <texto>` do `## Contexto` do plano se presente. Se a linha está em `## Próximos` do arquivo do papel `backlog`, mover automaticamente para `## Em andamento`, informar o operador, e aplicar o edit no arquivo do backlog antes do primeiro bloco (edit entra no commit do primeiro bloco). Plano sem o campo, linha não localizada, papel `backlog` "não temos" → skip silente sem mencionar (vale para esta transição e para a do passo 4.4). Ver `docs/philosophy.md` → "Ciclo de vida do backlog".
 
+**Captura automática durante a execução:** ao longo de todo o passo 3 (e estendendo-se ao passo 4.2), o agente observa gatilhos de **imprevistos detectados automaticamente**. Lista, gatilhos e materialização final em 4.5.
+
 Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento lógico):
 
 1. **Implementar** as mudanças descritas no bloco.
@@ -69,15 +71,31 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
 ### 4. Gate final
 
 1. Rodar o `test_command` resolvido integralmente (gate automático sempre que houver). Quando `test_command` é "não temos", o gate é a inspeção textual de `## Verificação end-to-end` do plano.
-2. **Plano com `## Verificação manual`**: ler os passos ao operador e **aguardar confirmação explícita** ("ok, valido") antes de prosseguir. Sem confirmação, a skill não fecha.
+2. **Plano com `## Verificação manual`**: ler os passos ao operador e **aguardar confirmação explícita** ("ok, valido") antes de prosseguir. Sem confirmação, a skill não fecha. Durante o diálogo, observar gatilhos de captura automática conforme passo 4.5 (alimentando a mesma lista do passo 3) sem interromper a validação.
 3. **Sanity check de documentação** — antes de declarar done, validar consistência das docs `.md` user-facing com o que foi implementado:
    - **Skip silente** se o plano já listou arquivos `.md` em `## Arquivos a alterar` e o diff agregado dos blocos os tocou — documentação fez parte do plano, gate cumprido.
    - **Skip silente** se o plano **não** tem `## Verificação manual` **e** o `## Resumo da mudança` não menciona superfície user-facing (CLI/flag nova, env var nova, endpoint novo, comportamento perceptível, integração externa, alteração de instalação/configuração). Refactor puro / internal-only não precisa do check.
    - Caso contrário, **cutucar** (não bloquear) via enum (`AskUserQuestion`, header `Docs`) com opções `Sim, consistente` (skill declara done) e `Atualizar arquivos .md` (Other → operador lista os arquivos em prosa). A pergunta cita a superfície user-facing inferida do plano e os candidatos típicos (README, install, CHANGELOG). Se o operador listar updates, tratá-los como **bloco extra** (implementar → `test_command` → revisor `code` → micro-commit) e só então declarar done.
 4. **Transição final do backlog** — se a referência `**Linha do backlog:**` foi capturada no início do passo 3 E a linha está em `## Em andamento` (ou ainda em `## Próximos`, caso a transição inicial não tenha ocorrido), mover automaticamente para `## Concluídos`, informar o operador, e aplicar como **bloco extra** (atualizar arquivo do papel `backlog` → revisor `code` → micro-commit) antes de seguir para o passo 4.5. Linha não localizada (sumiu desde o registro) → skip silente. Sem referência capturada (plano sem o campo, papel `backlog` "não temos") → skip silente. Ver `docs/philosophy.md` → "Ciclo de vida do backlog".
-5. **Backlog harvest** — durante a execução dos blocos (passo 3), capturar itens que **emergiram explicitamente** via sinal do operador ("isso fica pra depois", "registra no backlog", "deferir") ou via finding de revisor marcado como fora-de-escopo deste plano. A skill mantém essa lista enquanto progride. No gate final:
+5. **Captura automática de imprevistos** — materializar a lista mantida desde o início do passo 3 (alimentada também durante a validação manual no passo 4.2). Gatilhos prescritos:
+
+   **Durante a execução dos blocos (passo 3):**
+   - **Falha contornada** — `test_command` (ou verificação textual equivalente) falha e o agente segue contornando (skip de teste, retry frágil, fallback ad-hoc) sem solucionar a causa-raiz.
+   - **Finding fora-do-escopo** — reviewer (`code`, `qa`, `security`) levanta problema real que não pertence ao bloco corrente nem ao plano corrente.
+   - **Hook bloqueando** — hook do plugin retorna exit ≠ 0 sinalizando gap real (não bloqueio esperado já absorvido pela mecânica do hook); agente pivota e segue.
+   - **Superfície faltante** — sanity check de escopo do passo 2 detecta menção a superfície externa em `## Contexto`/`## Resumo da mudança` que não aparece em `## Arquivos a alterar`, e o operador escolhe `Continuar mesmo assim`.
+
+   **Durante a validação manual (passo 4.2):**
+   - **Divergência do plano** — operador reporta comportamento que diverge do esperado por `## Verificação manual`.
+   - **Bug colateral** — operador menciona bug menor não relacionado ao gate corrente.
+
+   **Política de gravação:** a cada captura, o agente **informa o operador** com mensagem curta ("capturei no backlog: <linha>"; redação curta, descritiva do problema, não do gatilho) e segue sem aguardar resposta. O intervalo entre o aviso e a materialização final é a janela onde o operador pode dizer em prosa "descarta esse" — agente respeita e remove da lista.
+
+   **No gate final:**
    - **Lista vazia** → skip silente (ver `docs/philosophy.md` → "Convenção de pergunta ao operador").
-   - **Lista não-vazia** → mostrar os itens capturados ao operador em prosa e perguntar (livre): "Capturei estes itens durante a execução. Confirma o registro como está, ajusta a redação, ou descarta algum?". Após confirmação, tratar como **bloco extra** (atualizar arquivo do papel `backlog` adicionando uma linha por item em `## Próximos` → revisor `code` → micro-commit) antes de declarar done.
+   - **Lista não-vazia** → bloco extra: (a) escrever uma linha por item em `## Próximos` do arquivo do papel `backlog`; (b) **aplicar consolidação** seguindo `docs/philosophy.md` → "Consolidação do backlog" (única pergunta admitida no passo é o enum `Backlog` da consolidação, condicional a flags); (c) revisor `code`; (d) micro-commit. Sem pergunta de confirmação sobre as capturas em si — operador já foi informado a cada detecção.
+
+   **Caso especial:** papel `backlog` resolveu para "não temos" → skip silente do bloco extra; capturas viram apenas relato final ao operador (sem registro persistido).
 6. **Declarar done**.
 
 A skill termina na worktree com branch da feature. Caminho de fechamento (PR, merge, descarte) é decisão do operador.
@@ -91,12 +109,13 @@ A skill termina na worktree com branch da feature. Caminho de fechamento (PR, me
 - Não interpretar `{revisor: ...}` (PT) — schema canônico é `{reviewer: ...}` em inglês. Recusar antes de começar o bloco, mensagem indicando o bloco e a anotação ofensora, sugerindo migrar para `{reviewer:}`.
 - Não contornar plano sujo copiando o conteúdo manualmente para dentro da worktree. O bloqueio na pré-condição 2 existe para forçar o commit no branch correto — burlar quebra o histórico do branch da feature.
 - Não pular o sanity check de documentação quando ele se aplica (passo 4.3) — skip só nas duas condições prescritas (`.md` já no plano e tocados, ou plano sem superfície user-facing). Em dúvida, perguntar.
-- Não fabricar itens no harvest a partir de leitura tardia do diff — o critério é sinal explícito (operador ou revisor) durante a execução, não inferência retroativa do que "poderia" ter sido capturado.
-- Não capturar itens no harvest que já foram absorvidos pelo plano corrente (escopo creep contido) — backlog é para deferimento deliberado, não para registrar tudo que apareceu.
+- Não capturar com base em inferência tardia do diff — captura ocorre no momento do gatilho (passo 3 ou 4.2), não em pós-leitura.
+- Não capturar itens que já foram absorvidos pelo plano corrente (escopo creep contido) — backlog é para imprevistos detectados, não para registrar tudo que apareceu.
+- Não pedir confirmação ao operador sobre as capturas em si — política é "informar e seguir".
 - Não silenciar o gatilho cruzado de validação manual (passo 1.2) por estado prévio do `.worktreeinclude` — quando o plano corrente tem `## Verificação manual` e há credencial gitignored típica não coberta, a cutucada é obrigatória independente da cláusula original "uma vez por projeto" ter sido respondida no passado.
 - Não inferir a linha do backlog por matching textual heurístico — `**Linha do backlog:**` ausente é skip silente; presença é match exato. Slug do plano vs. frase da linha não conta como evidência.
 - Não silenciar a transição final (passo 4.4) quando a linha está presente e localizada — a transição é automática; informar o operador é obrigatório.
-- Não inverter a ordem entre transição final (4.4) e harvest (4.5) — fechar a linha corrente da feature antes de colher novos itens deferidos. Eixos distintos, ordem importa.
+- Não inverter a ordem entre transição final (4.4) e captura automática (4.5) — fechar a linha corrente da feature antes de materializar capturas. Eixos distintos, ordem importa.
 
 ## Convenção: `.worktreeinclude`
 

@@ -93,18 +93,11 @@ Idioma de saída: **espelhar o idioma já em uso pelo projeto consumidor** (ver 
 
 Para slug de plano: lowercase, espaços/acentos→hífens, curto e descritivo (ex.: `exportar-movimentos-csv`).
 
-### 5. Revisão do backlog
+### 5. Consolidação do backlog
 
-Disparar **apenas** se o passo 4 modificou o arquivo do papel `backlog` (linha da feature em curso, linhas de fora-de-escopo emergidas no passo 2, ou ambas). Caminho que não tocou o backlog (ex.: atualização pura de `ubiquitous_language`/`design_notes`, ADR delegada a `/new-adr` sem linha de backlog acompanhante, papel `backlog` resolvido para "não temos") **pula este passo silenciosamente**.
+Aplicar a regra de `docs/philosophy.md` → "Consolidação do backlog" se o passo 4 modificou o arquivo do papel `backlog` (linha da feature em curso, linhas de fora-de-escopo emergidas no passo 2, ou ambas). Caminho que não tocou o backlog (ex.: atualização pura de `ubiquitous_language`/`design_notes`, ADR delegada a `/new-adr` sem linha de backlog acompanhante, papel `backlog` resolvido para "não temos") → skip silente conforme a própria regra.
 
-Quando dispara:
-
-1. **Reler** o arquivo do backlog na íntegra após as edições do passo 4.
-2. **Flagar** (não decidir):
-   - **Duplicatas** entre linhas recém-adicionadas (incluindo itens fora-de-escopo do passo 2) e linhas pré-existentes em `## Próximos`/`## Em andamento`/`## Concluídos`.
-   - **Obsolescência**: linha em `## Próximos` que vira redundante pela feature recém-registrada (ex.: nova linha "exportar movimentos em CSV" cobre item antigo "exportar movimentos como planilha"). Inferência conservadora — só flagar quando a sobreposição é nítida no texto, não em similaridade vaga.
-3. **Sem flags** → skip silente. As linhas adicionadas no passo 4 já foram decididas pelo operador; perguntar `Ok?` para confirmá-las novamente é cerimônia (ver `docs/philosophy.md` → "Convenção de pergunta ao operador"). Gate fecha sem ruído.
-4. **Com flags** → mostrar ao operador a síntese dos flags e o estado atual de `## Próximos` (e `## Em andamento`/`## Concluídos` apenas se um flag tocar essas seções), com as linhas recém-adicionadas marcadas. Perguntar uma vez via enum (`AskUserQuestion`, header `Backlog`, opções `Está bom, prosseguir` e `Aplicar edits` — Other → operador descreve em prosa quais edits, ex.: consolidar duplicatas X+Y, remover linha obsoleta Z, reordenar). Edits descritos pelo operador são aplicados ao arquivo do backlog e ficam parte do mesmo commit unificado proposto no passo 6.
+Edits que o operador descrever (caminho "Aplicar edits" do enum) ficam parte do **mesmo commit unificado** proposto no passo 6.
 
 ### 6. Reportar, propor commit e devolver controle
 
@@ -131,8 +124,6 @@ Não começar a implementar. Quem decide o salto para código é o operador.
 - Não duplicar conteúdo de `CLAUDE.md`, `domain.md` ou `design.md` no plano — referenciar.
 - Não preencher conteúdo de ADR — delegar para `/new-adr`.
 - Não commitar os artefatos de alinhamento sem confirmação explícita do operador — propor mensagem e aguardar.
-- Não pular a checagem do passo 5 (releitura + flagar) quando o passo 4 modificou o arquivo do papel `backlog` — a checagem sempre roda; só a pergunta ao operador é condicional.
-- Não perguntar ao operador no passo 5 quando a checagem não levantou flags — confirmação de linhas já decididas no passo 4 é cerimônia.
-- Não consolidar, remover ou reordenar linhas do backlog sem confirmação explícita do operador na pergunta do passo 5.
+- Não pular o passo 5 quando o passo 4 modificou o arquivo do papel `backlog`, nem consolidar/remover/reordenar linhas sem confirmação explícita do operador — regra única em `docs/philosophy.md` → "Consolidação do backlog".
 - Não gravar `**Linha do backlog:**` no plano quando o papel `backlog` resolveu para "não temos" ou quando o caminho não produziu linha — ausência da anotação é o sinal de skip silente para `/run-plan`.
 - Não cutucar escolha de seção — caminho com plano vai direto para `## Em andamento`; caminho sem plano vai direto para `## Próximos`.
