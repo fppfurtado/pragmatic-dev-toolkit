@@ -210,6 +210,30 @@ Sempre que uma skill grava nova(s) linha(s) no arquivo do papel `backlog` durant
 - `/triage` passo 5 — após gravar linhas no passo 4 (feature em curso e itens fora-de-escopo emergidos).
 - `/run-plan` passo 4.5 — após o agente acumular capturas durante execução e validação manual, antes de materializar como bloco extra.
 
+## Classificação de capturas automáticas
+
+Toda captura detectada pelo `/run-plan` (passo 4.5) é classificada em dois tipos antes de ser roteada:
+
+**Validação** — item cuja resolução é pré-requisito para declarar a feature done:
+- Cenário não exercitado descoberto na execução
+- Divergência do plano (comportamento observado diferente do esperado por `## Verificação manual`)
+- Gap de passo de verificação manual
+- Reviewer pulado sem justificativa
+
+Destino: seção `## Pendências de validação` no arquivo do plano corrente (criada ao final se não existe). Independe do estado do papel `backlog`.
+
+**Backlog** — item independente do gate corrente:
+- Feature/fix/doc/regra nova, requisito novo
+- Bug colateral (não relacionado ao gate corrente)
+- Finding fora-do-escopo do plano (reviewer encontrou problema em outro módulo)
+- Gap operacional sinalizado por hook
+
+Destino: `## Próximos` do papel `backlog`. Sujeito à regra de "Consolidação do backlog".
+
+**Sinal explícito do operador** vence a heurística — se o operador instruir o destino, obedecer sem questionar.
+
+**Por quê separar:** o backlog é radar de produto/engenharia (o que vem depois). Misturar pendências de validação da feature corrente dilui o sinal e confunde priorização. Cada contêiner recebe o que lhe pertence.
+
 ## Linguagem ubíqua na implementação
 
 `docs/domain.md` (papel `ubiquitous_language`) é base **de interpretação E de desenvolvimento**: bounded contexts e linguagem ubíqua só são pilares se chegarem ao código. Vocabulário registrado no domínio mas ausente nos identificadores produzidos vira ornamento de alinhamento — exatamente o que a frase-tese da filosofia rejeita.

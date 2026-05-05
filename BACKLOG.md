@@ -6,9 +6,9 @@
 
 ## Em andamento
 
-- /run-plan + philosophy.md: distinguir capturas de validação (plano) de capturas de feature/correção (backlog) na regra de captura automática
-
 ## Concluídos
+
+- /run-plan + philosophy.md: distinguir capturas de validação (plano) de capturas de feature/correção (backlog) na regra de captura automática
 
 - /triage + /run-plan: merge artifact eliminado — triage empurra main ao remote após commit; run-plan bloqueia se main estiver à frente do remote com Em andamento no backlog
 - /triage: guarda explícita contra inclusão de BACKLOG.md em ## Arquivos a alterar — transições gerenciadas pelo campo Linha do backlog
