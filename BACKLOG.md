@@ -8,10 +8,9 @@
 
 ## Em andamento
 
-- skill /next: orientação de sessão — analisa backlog, verifica implementados e sugere top 3 por impacto; /triage delega a /next quando invocada sem argumento
-
 ## Concluídos
 
+- skill /next: orientação de sessão — analisa backlog, verifica implementados e sugere top 3 por impacto; /triage delega a /next quando invocada sem argumento
 - /run-plan: refinar sanity check de documentação no passo 4.3
 - release: colapsar gates de version_files, changelog e commit/tag num único review final consolidado
 - captura automática de imprevistos durante /run-plan e validação manual
