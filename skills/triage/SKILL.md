@@ -103,10 +103,8 @@ Quando dispara:
 2. **Flagar** (não decidir):
    - **Duplicatas** entre linhas recém-adicionadas (incluindo itens fora-de-escopo do passo 2) e linhas pré-existentes em `## Próximos`/`## Em andamento`/`## Concluídos`.
    - **Obsolescência**: linha em `## Próximos` que vira redundante pela feature recém-registrada (ex.: nova linha "exportar movimentos em CSV" cobre item antigo "exportar movimentos como planilha"). Inferência conservadora — só flagar quando a sobreposição é nítida no texto, não em similaridade vaga.
-3. **Mostrar** ao operador o estado atual de `## Próximos` (e `## Em andamento`/`## Concluídos` apenas se um flag tocar essas seções), com as linhas recém-adicionadas marcadas para contexto.
-4. **Perguntar uma vez**, de forma direta: enum via `AskUserQuestion` com header `Backlog`, opções `Está bom, prosseguir` e `Aplicar edits` (Other → operador descreve em prosa quais edits — consolidar duplicatas X+Y, remover linha obsoleta Z, reordenar). Mostrar a síntese dos flags e o estado atual de `## Próximos` na pergunta. Edits descritos pelo operador são aplicados ao arquivo do backlog e ficam parte do mesmo commit unificado proposto no passo 6.
-
-Sem flags **e** com apenas uma linha adicionada (caso frequente — feature simples sem fora-de-escopo), versão mínima basta: enum binário `Ok` / `Ajustar` (Other → edits) com header `Backlog` e a linha recém-adicionada na pergunta. Sem mostrar o resto do backlog. `Ok` fecha o gate.
+3. **Sem flags** → skip silente. As linhas adicionadas no passo 4 já foram decididas pelo operador; perguntar `Ok?` para confirmá-las novamente é cerimônia (ver `docs/philosophy.md` → "Convenção de pergunta ao operador"). Gate fecha sem ruído.
+4. **Com flags** → **mostrar** ao operador a síntese dos flags e o estado atual de `## Próximos` (e `## Em andamento`/`## Concluídos` apenas se um flag tocar essas seções), com as linhas recém-adicionadas marcadas. **Perguntar uma vez** via enum (`AskUserQuestion`, header `Backlog`, opções `Está bom, prosseguir` e `Aplicar edits` — Other → operador descreve em prosa quais edits, ex.: consolidar duplicatas X+Y, remover linha obsoleta Z, reordenar). Edits descritos pelo operador são aplicados ao arquivo do backlog e ficam parte do mesmo commit unificado proposto no passo 6.
 
 ### 6. Reportar, propor commit e devolver controle
 
@@ -133,7 +131,8 @@ Não começar a implementar. Quem decide o salto para código é o operador.
 - Não duplicar conteúdo de `CLAUDE.md`, `domain.md` ou `design.md` no plano — referenciar.
 - Não preencher conteúdo de ADR — delegar para `/new-adr`.
 - Não commitar os artefatos de alinhamento sem confirmação explícita do operador — propor mensagem e aguardar.
-- Não pular a revisão do backlog (passo 5) quando o passo 4 modificou o arquivo do papel `backlog`.
+- Não pular a revisão do backlog (passo 5) quando o passo 4 modificou o arquivo do papel `backlog` — releitura e flag de duplicatas/obsolescência sempre rodam. O que pula com flags vazios é a **pergunta**, não a checagem.
+- Não perguntar no passo 5 quando nenhum flag de duplicata/obsolescência disparou — linhas já confirmadas no passo 4 não precisam de re-confirm.
 - Não consolidar, remover ou reordenar linhas do backlog sem confirmação explícita do operador na pergunta do passo 5.
 - Não gravar `**Linha do backlog:**` no plano quando o papel `backlog` resolveu para "não temos" ou quando o caminho não produziu linha — ausência da anotação é o sinal de skip silente para `/run-plan`.
 - Não cutucar a escolha de seção (`Próximos` / `Em andamento`) quando o caminho não inclui plano — sem decisão de execução iminente, default `Próximos` direto.
