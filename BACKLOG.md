@@ -4,10 +4,9 @@
 
 ## Em andamento
 
-- /run-plan: conflito recorrente em BACKLOG.md ao fundir PR — transição final (Em andamento → Concluídos) conflita com estado divergente de main; ocorreu duas vezes; investigar se guarda pré-condição 2b cobre todos os cenários
-
 ## Concluídos
 
+- /run-plan: conflito recorrente em BACKLOG.md ao fundir PR — transição final (Em andamento → Concluídos) conflita com estado divergente de main; ocorreu duas vezes; investigar se guarda pré-condição 2b cobre todos os cenários
 - /run-plan: captura automática de bloqueios em pré-condição de worktree (fase anterior ao loop de arquivos)
 - /triage: push pós-commit determinístico — caminho-com-plano consolida commit + push num único shell call (gate Commit cobre a unidade)
 - /run-plan: sugerir push e abertura de PR ao final, além do commit (quando aplicável)
