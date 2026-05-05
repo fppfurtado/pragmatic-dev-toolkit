@@ -2,6 +2,17 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.15.0] - 2026-05-05
+
+### Changed
+- `/release` passos 4 (commit) e 5 (tag) fundidos num único passo "Aplicar commit + tag (gate único)". Mensagem de commit e tag são derivados mecânicos do bump confirmado no passo 1 — confirmar separadamente é cerimônia. Renumera "Reportar" passo 6 → 5.
+- `/run-plan` passo 4.5 (Backlog harvest): pergunta vira condicional. Skill mantém lista de itens emergidos durante execução via sinal explícito do operador ("isso fica pra depois") ou finding fora-de-escopo de revisor. Lista vazia → skip silente; lista não-vazia → mostra itens em prosa.
+- `/triage` passo 5 (Revisão do backlog): pergunta vira condicional. Releitura + flagar duplicatas/obsolescência sempre rodam. Sem flags → skip silente (linhas adicionadas no passo 4 não precisam de re-confirm); com flags → enum dispara mostrando síntese.
+
+### Notes
+- `docs/philosophy.md`: novo parágrafo "Não perguntar por valor único derivado" em "Convenção de pergunta ao operador". Princípio: quando o valor é 100% derivado de decisão já confirmada upstream, pular o confirm; janela de "abort tardio" vem de tornar visível antes de aplicar (`git status` antes do commit, diff antes do write), não de cerimônia adicional. Skills que aplicam N valores derivados consolidam num gate único.
+- `docs/plans/reduce-ceremonial-prompts.md`: plano que motivou a release. Construído via dogfooding — `/triage` produziu o plano, `/run-plan` executou os 4 blocos com revisor `code` em cada um e micro-commits. Primeira release que dogfooda o gate único do `/release` em si.
+
 ## [1.14.0] - 2026-05-04
 
 ### Changed
