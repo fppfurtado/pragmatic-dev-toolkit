@@ -8,10 +8,9 @@
 
 ## Em andamento
 
-- /run-plan: condição de skip do sanity check de docs (4.3) não distingue arquivos de implementação .md de documentação user-facing — restringir a arquivos README/install/changelog/guias ou adicionar critério negativo para arquivos de skill/agent
-
 ## Concluídos
 
+- /run-plan: condição de skip do sanity check de docs (4.3) restrita a padrões user-facing (positive list: README*, CHANGELOG*, install.md, docs/guides/**)
 - skill /next: orientação de sessão — analisa backlog, verifica implementados e sugere top 3 por impacto; /triage delega a /next quando invocada sem argumento
 - /run-plan: refinar sanity check de documentação no passo 4.3
 - release: colapsar gates de version_files, changelog e commit/tag num único review final consolidado
