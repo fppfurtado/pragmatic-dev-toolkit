@@ -8,6 +8,8 @@
 
 ## Em andamento
 
+- /run-plan: refinar sanity check de documentação no passo 4.3
+
 ## Concluídos
 
 - release: colapsar gates de version_files, changelog e commit/tag num único review final consolidado
