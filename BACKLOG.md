@@ -7,8 +7,6 @@
 
 ## Em andamento
 
-- /triage: não listar BACKLOG.md como bloco em "Arquivos a alterar" quando a transição Próximos → Em andamento já é executada no passo 4 do triage
-
 ## Concluídos
 
 - /triage: guarda explícita contra inclusão de BACKLOG.md em ## Arquivos a alterar — transições gerenciadas pelo campo Linha do backlog
