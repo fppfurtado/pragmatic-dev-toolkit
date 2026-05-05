@@ -2,6 +2,19 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.16.0] - 2026-05-05
+
+### Added
+- `/run-plan` ganha **captura automática de imprevistos** (passo 4.5, substitui o "backlog harvest"): seis gatilhos prescritos — quatro durante execução (falha contornada, finding fora-do-escopo, hook bloqueando, superfície faltante) e dois durante validação manual (divergência do plano, bug colateral). Política unificada: agente informa o operador a cada detecção e materializa as linhas como bloco extra antes do `done` — sem `AskUserQuestion` de confirmação. Janela de override em prosa entre aviso e materialização. Sinal explícito do operador continua valendo como entrada do mesmo eixo.
+
+### Changed
+- `docs/philosophy.md` ganha seção `## Consolidação do backlog` extraída do passo 5 do `/triage`. Mecânica única (releitura + flag de duplicatas/obsolescência + pergunta condicional única quando há flags) consumida pelo passo 5 do `/triage` e pelo passo 4.5 do `/run-plan` — DRY entre as duas skills.
+- `docs/philosophy.md` → "Ciclo de vida do backlog": referência ao "backlog harvest" substituída por "captura automática de imprevistos"; "captura de novos itens deferidos" vira "captura de imprevistos detectados pelo agente".
+
+### Notes
+- `skills/triage/SKILL.md`: passo 5 ("Consolidação do backlog") encurtado para referenciar `philosophy.md` em vez de duplicar a regra inline.
+- `docs/plans/captura-automatica-imprevistos.md`: plano que motivou a release. 4 blocos (philosophy, triage SKILL, run-plan SKILL, CLAUDE.md guard) com revisor `code` (e `qa` quando aplicável). Ganhou seção `## Pendências de validação` listando os 13 cenários ainda não exercitados em projeto-fixture e a cobertura `qa-reviewer` pulada por limite de uso — pendências de validação ficam no plano, não no backlog.
+
 ## [1.15.1] - 2026-05-05
 
 ### Changed
