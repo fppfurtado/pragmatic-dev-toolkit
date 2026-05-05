@@ -2,12 +2,14 @@
 
 ## Próximos
 
-## Em andamento
+- /run-plan: captura automática de bloqueios em pré-condição de worktree (fase anterior ao loop de arquivos)
+- /triage: push automático pós-commit não é executado de forma confiável — verificar condições de disparo
 
-- /run-plan: sugerir push e abertura de PR ao final, além do commit (quando aplicável)
+## Em andamento
 
 ## Concluídos
 
+- /run-plan: sugerir push e abertura de PR ao final, além do commit (quando aplicável)
 - /run-plan + philosophy.md: distinguir capturas de validação (plano) de capturas de feature/correção (backlog) na regra de captura automática
 
 - /triage + /run-plan: merge artifact eliminado — triage empurra main ao remote após commit; run-plan bloqueia se main estiver à frente do remote com Em andamento no backlog
