@@ -112,6 +112,8 @@ Em seguida, **propor um commit único** agrupando todos os artefatos de alinhame
 
 Por que o commit importa aqui: `/run-plan` cria worktree a partir do HEAD do branch atual. Artefatos uncommitted ficam fora da worktree — o próprio plano que `/run-plan` tentaria executar não estaria visível lá. Commitar agora fecha esse gap antes do salto para execução.
 
+Quando o caminho incluiu plano (e portanto gravou a linha em `## Em andamento`), **empurrar main ao remote** imediatamente após o commit — `git push origin <branch-atual>`. Sem o push, o `/run-plan` criará o branch da feature a partir de um estado que o remote não conhece; o merge do PR produzirá merge artifact no BACKLOG.md. O push é obrigatório nesse caminho — não é proposta ao operador.
+
 Por fim, sugerir o **próximo passo** (uma frase): "implementar agora via /run-plan <slug>", "validar o plano antes de codar", "preencher o ADR e voltar".
 
 Não começar a implementar. Quem decide o salto para código é o operador.
