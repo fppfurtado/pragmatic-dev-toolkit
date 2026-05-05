@@ -2,9 +2,9 @@
 
 ## Próximos
 
-- /run-plan: sugerir push e abertura de PR ao final, além do commit (quando aplicável)
-
 ## Em andamento
+
+- /run-plan: sugerir push e abertura de PR ao final, além do commit (quando aplicável)
 
 ## Concluídos
 
