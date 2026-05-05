@@ -2,10 +2,11 @@
 
 ## Próximos
 
-- /run-plan: captura automática de bloqueios em pré-condição de worktree (fase anterior ao loop de arquivos)
 - /triage: push automático pós-commit não é executado de forma confiável — verificar condições de disparo
 
 ## Em andamento
+
+- /run-plan: captura automática de bloqueios em pré-condição de worktree (fase anterior ao loop de arquivos)
 
 ## Concluídos
 
