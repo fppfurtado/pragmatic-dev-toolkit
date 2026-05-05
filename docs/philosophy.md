@@ -212,7 +212,7 @@ Sempre que uma skill grava nova(s) linha(s) no arquivo do papel `backlog` durant
 
 ## Classificação de capturas automáticas
 
-Toda captura detectada pelo `/run-plan` (passo 4.5) é classificada em dois tipos antes de ser roteada:
+Capturas do `/run-plan` são classificadas em três tipos. O destino é determinado pelo tipo:
 
 **Validação** — item cuja resolução é pré-requisito para declarar a feature done:
 - Cenário não exercitado descoberto na execução
@@ -229,6 +229,11 @@ Destino: seção `## Pendências de validação` no arquivo do plano corrente (c
 - Gap operacional sinalizado por hook
 
 Destino: `## Próximos` do papel `backlog`. Sujeito à regra de "Consolidação do backlog".
+
+**Bloqueio de pré-condição ou setup** — a skill bloqueou antes de iniciar o loop: baseline vermelho no branch, worktree órfã, install falhando, baseline vermelho na worktree.
+
+Destino: `## Próximos` do papel `backlog`.
+Não se aplica a bloqueios por erro do operador (plano sujo, push pendente) — esses são estados esperados sem captura.
 
 **Sinal explícito do operador** vence a heurística — se o operador instruir o destino, obedecer sem questionar.
 
