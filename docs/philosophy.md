@@ -177,10 +177,10 @@ As três seções de `BACKLOG.md` representam **estados** no ciclo de vida do it
 - `## Em andamento` — committed para fazer agora. Plano associado existe (no `plans_dir`) ou execução está em curso.
 - `## Concluídos` — feature done localmente (gate de `/run-plan` fechou). Push e merge são decisão do operador — `## Concluídos` não significa "em produção".
 
-O toolkit move linhas entre seções via cutucada explícita ao operador, nunca por inferência textual. Os dois pontos de transição:
+O toolkit move linhas entre seções **automaticamente**, apenas informando o operador — nunca por inferência textual. Os dois pontos de transição:
 
-- **`Próximos → Em andamento`** — cutucado por `/triage` no passo 4 quando o caminho escolhido inclui plano (a feature será executada). Cutucado também por `/run-plan` no início, se a linha ainda está em `## Próximos` (defesa contra estado inconsistente — operador pulou a transição no `/triage` ou rodou `/run-plan` sobre plano antigo que recebeu a anotação em sessão posterior).
-- **`Em andamento → Concluídos`** — cutucado por `/run-plan` no gate final, antes do backlog harvest. Eixos distintos: transição da feature corrente vs. captura de novos itens deferidos. Ordem importa — fechar a linha corrente primeiro, depois colher o que emergiu durante execução.
+- **`Próximos → Em andamento`** — aplicado automaticamente por `/triage` no passo 4 quando o caminho escolhido inclui plano (a feature será executada). Aplicado também por `/run-plan` no início, se a linha ainda está em `## Próximos` (defesa contra estado inconsistente — operador pulou a transição no `/triage` ou rodou `/run-plan` sobre plano antigo que recebeu a anotação em sessão posterior).
+- **`Em andamento → Concluídos`** — aplicado automaticamente por `/run-plan` no gate final, antes do backlog harvest. Eixos distintos: transição da feature corrente vs. captura de novos itens deferidos. Ordem importa — fechar a linha corrente primeiro, depois colher o que emergiu durante execução.
 
 ### Anotação de matching
 

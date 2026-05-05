@@ -83,7 +83,7 @@ Idioma de saída: **espelhar o idioma já em uso pelo projeto consumidor** (ver 
 
 - **BACKLOG (papel: `backlog`):** comportamento depende da resolução do papel.
   - **Papel resolvido normalmente:** adicionar **uma linha** para a feature em curso. Frase de intenção, sem detalhamento. Escolha da seção depende do caminho:
-    - **Caminho com plano** (decisão formal de executar): cutucar via enum (`AskUserQuestion`, header `Backlog`, opções `Próximos` (recomendado) / `Em andamento`). Operador escolhe; linha é gravada na seção escolhida. Ver `docs/philosophy.md` → "Ciclo de vida do backlog".
+    - **Caminho com plano** (decisão formal de executar): gravar diretamente em `## Em andamento` e informar o operador. Ver `docs/philosophy.md` → "Ciclo de vida do backlog".
     - **Caminho sem plano** (linha pura, ADR-only, atualização de domínio sem plano associado): default direto em `## Próximos`. Sem cutucada — não há decisão de execução iminente para diferenciar.
     - Itens fora-de-escopo capturados no passo 2 entram sempre como **linhas separadas em `## Próximos`** — uma linha por item, distintas do artefato principal. Itens fora-de-escopo entram em `## Próximos` mesmo quando o artefato principal é plano/ADR/atualização de domínio (o backlog ganha linhas independentes da escolha de artefato principal).
   - **Papel resolvido para `não temos`:** disparar a proposta única de criação descrita na seção *Pré-condições* — enum (`AskUserQuestion`, header `Backlog`) com opções `Criar em BACKLOG.md` e `Não usamos esse papel`. Primeira opção cria arquivo no canonical com cabeçalho mínimo (`# Backlog\n\n## Próximos\n\n## Em andamento\n\n## Concluídos\n`) e prossegue como no caminho acima. Segunda opção registra `paths.backlog: null` no bloco de config (oferta única de memorização) e prossegue **sem gravar** — itens da feature e fora-de-escopo são reportados no passo 6.
@@ -135,4 +135,4 @@ Não começar a implementar. Quem decide o salto para código é o operador.
 - Não perguntar ao operador no passo 5 quando a checagem não levantou flags — confirmação de linhas já decididas no passo 4 é cerimônia.
 - Não consolidar, remover ou reordenar linhas do backlog sem confirmação explícita do operador na pergunta do passo 5.
 - Não gravar `**Linha do backlog:**` no plano quando o papel `backlog` resolveu para "não temos" ou quando o caminho não produziu linha — ausência da anotação é o sinal de skip silente para `/run-plan`.
-- Não cutucar a escolha de seção (`Próximos` / `Em andamento`) quando o caminho não inclui plano — sem decisão de execução iminente, default `Próximos` direto.
+- Não cutucar escolha de seção — caminho com plano vai direto para `## Em andamento`; caminho sem plano vai direto para `## Próximos`.
