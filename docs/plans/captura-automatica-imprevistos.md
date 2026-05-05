@@ -86,6 +86,11 @@ A skill `/run-plan` é meta-tool sem suite automatizada — validação manual �
 12. **Mensagens de informação**: ao longo dos cenários acima, validar que os avisos de captura são curtos (uma frase), não interrompem o fluxo da skill (skill continua sem aguardar resposta), e citam a linha que vai ser gravada.
 13. **Cross-skill**: rodar `/triage` em fluxo separado e confirmar que o passo 5 (consolidação após gravar linha de feature) usa exatamente a mesma mecânica do 4.5 do `/run-plan` — sintoma de regra única em `philosophy.md`.
 
+## Pendências de validação
+
+- **13 cenários acima** ainda não exercitados em projeto-fixture. Operador deve rodar cada cenário com este plugin instalado e marcar individualmente.
+- **Bloco 3 (run-plan/SKILL.md) — cobertura `qa-reviewer` pulada**: durante o `/run-plan`, o `qa-reviewer` esgotou limite de uso e não avaliou as edições do passo 4.5 do `SKILL.md` contra os 13 cenários. Revisitar quando o reviewer estiver disponível ou validar manualmente cada cenário quanto a coverage de invariantes do plano.
+
 ## Notas operacionais
 
 - **Janela de override do operador**: o intervalo entre "agente informa captura" e "bloco extra materializa as linhas" é a janela onde o operador pode dizer "descarta esse" (em prosa, sem enum). Documentar como comportamento, não como pergunta — operador pode usar a janela ou não.
