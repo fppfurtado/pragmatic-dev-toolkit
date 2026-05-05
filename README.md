@@ -6,10 +6,10 @@ Claude Code plugin para o workflow **flat & pragmatic**: skills genéricas, revi
 
 | Componente | Tipo | O que faz |
 |------------|------|-----------|
-| `/new-feature` | Skill | Alinha intenção, levanta gaps e decide qual artefato (linha de backlog, plano, ADR, atualização de domínio/design) é necessário antes de implementar. |
+| `/triage` | Skill | Alinha intenção, levanta gaps e decide qual artefato (linha de backlog, plano, ADR, atualização de domínio/design) é necessário antes de implementar. |
 | `/new-adr` | Skill | Cria um novo ADR em `docs/decisions/` com numeração automática e template padronizado. |
 | `/run-plan` | Skill | Executa um plano de `docs/plans/<slug>.md` em worktree isolada, micro-commits Conventional Commits, revisão dirigida por bloco e gate de validação manual quando aplicável. |
-| `/debug <sintoma>` | Skill | Diagnostica causa-raiz por método científico (reproduzir → isolar → hipótese-teste → evidência). Produz diagnóstico, não fix — operador escolhe revert / patch direto / `/new-feature` depois. Stack-agnóstico. |
+| `/debug <sintoma>` | Skill | Diagnostica causa-raiz por método científico (reproduzir → isolar → hipótese-teste → evidência). Produz diagnóstico, não fix — operador escolhe revert / patch direto / `/triage` depois. Stack-agnóstico. |
 | `/gen-tests-python` | Skill | Gera testes pytest para um módulo/função de um projeto Python (pytest + respx + asyncio_mode auto + tmp_path para SQLite). |
 | `/release [<bump>\|<version>]` | Skill | Bump de versão coordenado em `version_files`, entrada no `changelog`, commit unificado e tag anotada local. Não faz push — publicação fica com o operador. |
 | `code-reviewer` | Agent | Rubrica YAGNI: flagra abstrações prematuras, comentários redundantes, defensividade desnecessária e backwards-compat fantasma. |

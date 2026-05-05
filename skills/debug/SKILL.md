@@ -1,6 +1,6 @@
 ---
 name: debug
-description: Diagnostica a causa-raiz de um sintoma (teste falhando, erro inesperado, comportamento divergente) seguindo método científico — precisar sintoma → reproduzir → isolar → testar hipóteses → causa-raiz com evidência. Produz diagnóstico, não fix; o operador escolhe o caminho de correção depois (revert, patch direto, ou /new-feature para mudança maior). Stack-agnóstico.
+description: Diagnostica a causa-raiz de um sintoma (teste falhando, erro inesperado, comportamento divergente) seguindo método científico — precisar sintoma → reproduzir → isolar → testar hipóteses → causa-raiz com evidência. Produz diagnóstico, não fix; o operador escolhe o caminho de correção depois (revert, patch direto, ou /triage para mudança maior). Stack-agnóstico.
 ---
 
 # debug
@@ -85,15 +85,15 @@ Quando uma hipótese é confirmada com evidência, formular o diagnóstico em ci
 - **Causa-raiz:** arquivo:linha + mecanismo (por que o código se comporta assim).
 - **Evidência:** o que foi observado/rodado que comprova (output do teste, log, comparação git diff, etc.).
 - **Escopo de impacto:** quem mais é afetado pelo mesmo bug? Há outros call-sites, outras invariantes correlacionadas?
-- **Caminhos de correção (não execução):** **um ou mais caminhos** com trade-off explícito — revert do commit X, patch local pequeno (apontar mudança mínima), ou `/new-feature` se virar mudança maior. Se a investigação revelar caminho único razoável, declarar **"caminho único razoável"** com motivo (ex.: "revert é a única opção segura porque o commit X introduziu corrupção de dados que se acumula"). Operador decide.
+- **Caminhos de correção (não execução):** **um ou mais caminhos** com trade-off explícito — revert do commit X, patch local pequeno (apontar mudança mínima), ou `/triage` se virar mudança maior. Se a investigação revelar caminho único razoável, declarar **"caminho único razoável"** com motivo (ex.: "revert é a única opção segura porque o commit X introduziu corrupção de dados que se acumula"). Operador decide.
 
 Se nenhuma hipótese fechou ao fim do passo 4: reportar o status — hipóteses testadas, refutadas, inconclusivas, e o melhor palpite atual com nível de confiança baixa explicitado. Evidência incompleta é resultado válido; chute disfarçado de causa-raiz, não.
 
 ## O que NÃO fazer
 
-- **Não corrigir.** A skill produz diagnóstico, não código. Operador escolhe e dispara o fix depois (revert / patch direto / `/new-feature`).
+- **Não corrigir.** A skill produz diagnóstico, não código. Operador escolhe e dispara o fix depois (revert / patch direto / `/triage`).
 - Não pular a reprodução quando ela é viável — "deve ser X" sem teste é palpite, não diagnóstico.
 - Não declarar causa-raiz sem evidência. Hipóteses inconclusivas são reportadas como tal.
 - Não aplicar instrumentação (print/log temporário) — propor é parte do passo 4; aplicar fica com o operador no workspace dele.
-- Não escrever ADR, plano ou linha de backlog dentro da skill — esses pertencem a `/new-adr` e `/new-feature`.
+- Não escrever ADR, plano ou linha de backlog dentro da skill — esses pertencem a `/new-adr` e `/triage`.
 - Não fazer commits nem editar arquivos do projeto.

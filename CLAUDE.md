@@ -12,7 +12,7 @@ The companion repo is [`scaffold-kit`](https://github.com/fppfurtado/scaffold-ki
 
 Three component types, each with its own discovery mechanism:
 
-- **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/new-feature`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests-python`, `/release`). Skills only act when invoked by the user.
+- **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests-python`, `/release`). Skills only act when invoked by the user.
 - **Agents** — `agents/<name>.md` with frontmatter. Subagents called by name (`code-reviewer`, `qa-reviewer`, `security-reviewer`). Reviewers analyze a diff and return findings.
 - **Hooks** — `hooks/hooks.json` declares lifecycle bindings; the bound scripts (`hooks/*.py`) run on every matching tool call in any project that has the plugin installed. Therefore hooks **must auto-gate** (see below).
 
@@ -44,10 +44,10 @@ See `docs/philosophy.md` → "Convenção de naming" for the full triple gate (e
 
 The workflow skills compose in a deliberate order:
 
-1. **`/new-feature <intent>`** — alignment only, no implementation. Reads roles in order: `product_direction` → `ubiquitous_language` → `backlog` → `design_notes` → `decisions_dir`. Decides which artifact to produce (backlog line / plan / ADR / domain update) and stops. Plan blocks may be annotated `{reviewer: code|qa|security}` (multiple profiles allowed: `{reviewer: code,qa,security}`) to direct `/run-plan`. Schema documented in `docs/philosophy.md` → "Anotação de revisor em planos".
+1. **`/triage <intent>`** — alignment only, no implementation. Reads roles in order: `product_direction` → `ubiquitous_language` → `backlog` → `design_notes` → `decisions_dir`. Decides which artifact to produce (backlog line / plan / ADR / domain update) and stops. Plan blocks may be annotated `{reviewer: code|qa|security}` (multiple profiles allowed: `{reviewer: code,qa,security}`) to direct `/run-plan`. Schema documented in `docs/philosophy.md` → "Anotação de revisor em planos".
 2. **`/new-adr "<title>"`** — auto-numbers within the resolved `decisions_dir` by **inferring** the format from existing ADRs (3-digit padded canonical, 4-digit padded, or no padding); generates slug, writes template skeleton with placeholders. Has `disable-model-invocation: true` — only invoked explicitly.
 3. **`/run-plan <slug>`** — the only execution skill. Creates `.worktrees/<slug>/`, replicates files listed in `.worktreeinclude` (see `docs/philosophy.md` → "Convenção `.worktreeinclude`"), requires the resolved `test_command` (default `make test`) to be green as baseline, then loops per "files to change" block (canonical PT-BR `## Arquivos a alterar`, matched semantically): implement → run `test_command` → invoke **all** reviewers listed in `{reviewer: ...}` (default `code-reviewer`; `qa`/`security` resolve to the plugin-shipped `qa-reviewer` / `security-reviewer` agents, with project-level shadowing via `.claude/agents/<name>.md`; multiple profiles aggregate reports) → micro-commit following the project's commit convention (see `docs/philosophy.md` → "Convenção de commits"; canonical default is Conventional Commits in English; `--amend` reserved for localized fixes within the current block). Blocks final "done" until the operator confirms the manual-verification section if the plan has one.
-4. **`/debug <symptom>`** — diagnose phase, the bug-fix-axis counterpart to `/new-feature`'s alignment. Walks the scientific method (precisar → reproduzir → isolar → hypothesis-test → root cause) and produces a five-field diagnostic (sintoma, causa-raiz, evidência, escopo, caminhos de correção). Stack-agnostic. **Produces no code, no commit, no instrumentation** — the operator routes the diagnosis to revert / direct patch / `/new-feature` for a larger change. Roles consumed are all informational (`test_command`, `ubiquitous_language`, `decisions_dir`, `design_notes`); none block the skill.
+4. **`/debug <symptom>`** — diagnose phase, the bug-fix-axis counterpart to `/triage`'s alignment. Walks the scientific method (precisar → reproduzir → isolar → hypothesis-test → root cause) and produces a five-field diagnostic (sintoma, causa-raiz, evidência, escopo, caminhos de correção). Stack-agnostic. **Produces no code, no commit, no instrumentation** — the operator routes the diagnosis to revert / direct patch / `/triage` for a larger change. Roles consumed are all informational (`test_command`, `ubiquitous_language`, `decisions_dir`, `design_notes`); none block the skill.
 5. **`/release [<bump>|<version>]`** — version bump in declared `version_files`, generates a `changelog` entry from the CC log since the last tag, unified commit and annotated tag (format detected in 3 levels: explicit policy → observed pattern ≥70% → SemVer canonical). Roles consumed are informational (`version_files`, `changelog`); release with neither degenerates to commit + tag only. **Does not push** — handoff to the operator. Operational convention is embedded in the skill itself (`skills/release/SKILL.md`), not mirrored in `docs/philosophy.md` (single consumer).
 
 When editing these skills, preserve the separations: **alignment → plan → execute** for new work, **diagnose ≠ fix** on the bug-fix axis, and **release ≠ publish** (skill stops at local commit + tag; push is the operator's call).
@@ -73,6 +73,12 @@ The two reviewers added in 0.3 are intentionally **stack-agnostic** — they rea
 - Skills/agents end with an explicit `## O que NÃO fazer` section listing scope guards. Preserve that section when editing — it's load-bearing for tight skill focus.
 - Don't introduce a build system, package manager, or test runner for this repo itself. The hooks are runnable Python scripts (`python3 ${CLAUDE_PLUGIN_ROOT}/hooks/<script>.py`); the rest is markdown.
 - From v1.11.0 onward, version bumps in **this** repo go through `/release` — keep the loop closed by dogfooding rather than editing manifests by hand.
+
+## Pragmatic Toolkit
+<!-- pragmatic-toolkit:config -->
+```yaml
+test_command: null  # repo has no test suite; /run-plan falls back to plan's `## Verificação manual`
+```
 
 ## Local install for iteration
 

@@ -1,11 +1,11 @@
 ---
-name: new-feature
-description: Conduz o fluxo de uma nova funcionalidade alinhando intenção, levantando gaps e decidindo qual artefato (linha de backlog, plano, ADR ou atualização de domínio/design) é necessário antes de implementar. Use quando o operador propuser uma feature, mudança de comportamento ou ideia exploratória.
+name: triage
+description: Triagem da intenção do operador (feature, fix, refactor, mudança pontual): alinha contexto, levanta gaps e decide qual artefato (linha de backlog, plano, ADR ou atualização de domínio/design) é necessário antes de implementar. Use quando o operador propuser qualquer mudança que ainda não tenha plano ou linha de backlog.
 ---
 
-# new-feature
+# triage
 
-Workflow de **alinhamento prévio** para uma funcionalidade nova. O objetivo é evitar que o pedido pule direto para código sem passar pelo protocolo flat-e-pragmático: `BACKLOG.md` curto e vivo, planos em `docs/plans/` só quando exigem alinhamento, ADR só para decisão estrutural, atualização de `docs/domain.md`/`docs/design.md` quando o entendimento evolui.
+Workflow de **alinhamento prévio** para qualquer mudança não-trivial — feature nova, fix que precisa de plano (rota saída de `/debug`), refactor com bifurcação arquitetural, alteração pontual que toca invariante. O objetivo é evitar que o pedido pule direto para código sem passar pelo protocolo flat-e-pragmático: `BACKLOG.md` curto e vivo, planos em `docs/plans/` só quando exigem alinhamento, ADR só para decisão estrutural, atualização de `docs/domain.md`/`docs/design.md` quando o entendimento evolui.
 
 Esta skill **não implementa**. Ela produz os artefatos de alinhamento e devolve o controle ao operador.
 
@@ -20,9 +20,9 @@ Quando o caminho do passo 3 escolhido **for** "atualizar `ubiquitous_language`/`
 ## Argumentos
 
 O usuário fornece a **intenção** da funcionalidade em linguagem natural. Pode ser:
-- Frase curta: `/new-feature exportar movimentos do mês em CSV`
-- Descrição com contexto: `/new-feature quando o webhook falhar, salvar o payload pra reprocessar depois`
-- Vago: `/new-feature melhorar o fluxo de comprovante`
+- Frase curta: `/triage exportar movimentos do mês em CSV`
+- Descrição com contexto: `/triage quando o webhook falhar, salvar o payload pra reprocessar depois`
+- Vago: `/triage melhorar o fluxo de comprovante`
 
 Se o input estiver vazio ou genericamente "o que vamos fazer hoje?", peça ao usuário a intenção antes de prosseguir.
 
@@ -61,7 +61,7 @@ Se o usuário já forneceu o necessário, pular as perguntas. Se houver 1–3 ga
 
 **Itens fora de escopo emergidos na conversa.** Ao longo do esclarecimento, manter atenção para coisas que o operador menciona mas que **não pertencem ao escopo desta feature** — TODO adjacente ("e a gente devia também renomear X um dia"), tech-debt revelado pela leitura, bug menor avistado de passagem, melhoria não-essencial. Capturá-los como candidatos a registro. Quando o papel `backlog` resolveu normalmente, viram **linhas separadas em `## Próximos`** — uma linha por item, distintas do artefato principal (mencionar explicitamente no passo 4). Quando o papel resolveu para `não temos`, os itens **não são gravados** — são reportados no passo 6. Se o operador disser "deixa pra lá" ou "isso a gente não vai fazer", descartar — captura é sugestão, não imposição.
 
-Quando bifurcação é detectada, **uma pergunta nominal-comparativa é obrigatória** antes do plano. Modo: enum via `AskUserQuestion` (ver "Convenção de pergunta ao operador" em `docs/philosophy.md` → "Nomear bifurcações arquiteturais"). Forma canônica: opções nomeadas `(a) caminho-default-barato` e `(b) caminho-rico` com `description` carregando o trade-off concreto (custo, virtude entregue). Operador escolhe um caminho concreto ou usa "Other" para nomear uma terceira via que a skill não previu. A escolha vai para o `## Contexto` ou `## Resumo da mudança` do plano produzido — sem nomear, o caminho barato vence por omissão. **Se o operador já citou explicitamente uma das opções** na frase original (`/new-feature exportar CSV usando streaming`), pular a pergunta e registrar a escolha no plano direto.
+Quando bifurcação é detectada, **uma pergunta nominal-comparativa é obrigatória** antes do plano. Modo: enum via `AskUserQuestion` (ver "Convenção de pergunta ao operador" em `docs/philosophy.md` → "Nomear bifurcações arquiteturais"). Forma canônica: opções nomeadas `(a) caminho-default-barato` e `(b) caminho-rico` com `description` carregando o trade-off concreto (custo, virtude entregue). Operador escolhe um caminho concreto ou usa "Other" para nomear uma terceira via que a skill não previu. A escolha vai para o `## Contexto` ou `## Resumo da mudança` do plano produzido — sem nomear, o caminho barato vence por omissão. **Se o operador já citou explicitamente uma das opções** na frase original (`/triage exportar CSV usando streaming`), pular a pergunta e registrar a escolha no plano direto.
 
 ### 3. Decidir o artefato
 
