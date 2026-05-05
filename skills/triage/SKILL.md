@@ -24,7 +24,7 @@ O usuário fornece a **intenção** da funcionalidade em linguagem natural. Pode
 - Descrição com contexto: `/triage quando o webhook falhar, salvar o payload pra reprocessar depois`
 - Vago: `/triage melhorar o fluxo de comprovante`
 
-Se o input estiver vazio ou genericamente "o que vamos fazer hoje?", peça ao usuário a intenção antes de prosseguir.
+Se o input estiver vazio ou genericamente "o que vamos fazer hoje?", ler e seguir o workflow definido em `skills/next/SKILL.md`.
 
 ## Passos
 
