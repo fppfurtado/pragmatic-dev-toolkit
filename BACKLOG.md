@@ -2,6 +2,7 @@
 
 ## Próximos
 
+- /run-plan: condição de skip do sanity check de docs (4.3) não distingue arquivos de implementação .md de documentação user-facing — restringir a arquivos README/install/changelog/guias ou adicionar critério negativo para arquivos de skill/agent
 - /run-plan: sugerir push e abertura de PR ao final, além do commit (quando aplicável)
 - /run-plan + philosophy.md: distinguir capturas de validação (plano) de capturas de feature/correção (backlog) na regra de captura automática
 - /triage: não listar BACKLOG.md como bloco em "Arquivos a alterar" quando a transição Próximos → Em andamento já é executada no passo 4 do triage
