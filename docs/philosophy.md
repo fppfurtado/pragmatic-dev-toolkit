@@ -179,7 +179,7 @@ As três seções de `BACKLOG.md` representam **estados** no ciclo de vida do it
 
 O toolkit move linhas entre seções **automaticamente**, apenas informando o operador — nunca por inferência textual. Os dois pontos de transição:
 
-- **`Próximos → Em andamento`** — aplicado automaticamente por `/triage` no passo 4 quando o caminho escolhido inclui plano (a feature será executada). Aplicado também por `/run-plan` no início, se a linha ainda está em `## Próximos` (defesa contra estado inconsistente — operador pulou a transição no `/triage` ou rodou `/run-plan` sobre plano antigo que recebeu a anotação em sessão posterior).
+- **`Próximos → Em andamento`** — aplicado automaticamente por `/run-plan` no início do passo 3, sempre que a linha está em `## Próximos`. `/triage` não faz essa transição — registrar Em andamento em `main` antes do branch da feature existir produz merge artifact no momento do merge do PR.
 - **`Em andamento → Concluídos`** — aplicado automaticamente por `/run-plan` no gate final, antes da captura automática de imprevistos. Eixos distintos: transição da feature corrente vs. captura de imprevistos detectados pelo agente durante execução. Ordem importa — fechar a linha corrente primeiro, depois materializar o que foi capturado.
 
 ### Anotação de matching
