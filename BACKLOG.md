@@ -2,6 +2,8 @@
 
 ## Próximos
 
+- /run-plan: conflito recorrente em BACKLOG.md ao fundir PR — transição final (Em andamento → Concluídos) conflita com estado divergente de main; ocorreu duas vezes; investigar se guarda pré-condição 2b cobre todos os cenários
+
 ## Em andamento
 
 - /triage: push automático pós-commit não é executado de forma confiável — verificar condições de disparo
