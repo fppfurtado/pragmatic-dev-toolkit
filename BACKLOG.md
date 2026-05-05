@@ -7,10 +7,9 @@
 
 ## Em andamento
 
-- /triage: não listar BACKLOG.md como bloco em "Arquivos a alterar" quando a transição Próximos → Em andamento já é executada no passo 4 do triage
-
 ## Concluídos
 
+- /triage: guarda explícita contra inclusão de BACKLOG.md em ## Arquivos a alterar — transições gerenciadas pelo campo Linha do backlog
 - /run-plan: condição de skip do sanity check de docs (4.3) restrita a padrões user-facing (positive list: README*, CHANGELOG*, install.md, docs/guides/**)
 - skill /next: orientação de sessão — analisa backlog, verifica implementados e sugere top 3 por impacto; /triage delega a /next quando invocada sem argumento
 - /run-plan: refinar sanity check de documentação no passo 4.3
