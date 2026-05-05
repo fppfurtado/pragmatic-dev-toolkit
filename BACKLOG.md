@@ -5,10 +5,10 @@
 ## Em andamento
 
 - /run-plan: captura automática de bloqueios em pré-condição de worktree (fase anterior ao loop de arquivos)
-- /triage: push automático pós-commit não é executado de forma confiável — verificar condições de disparo
 
 ## Concluídos
 
+- /triage: push pós-commit determinístico — caminho-com-plano consolida commit + push num único shell call (gate Commit cobre a unidade)
 - /run-plan: sugerir push e abertura de PR ao final, além do commit (quando aplicável)
 - /run-plan + philosophy.md: distinguir capturas de validação (plano) de capturas de feature/correção (backlog) na regra de captura automática
 
