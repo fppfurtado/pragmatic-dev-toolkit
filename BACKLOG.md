@@ -3,9 +3,10 @@
 ## Próximos
 
 - /run-plan: sugerir push e abertura de PR ao final, além do commit (quando aplicável)
-- /run-plan + philosophy.md: distinguir capturas de validação (plano) de capturas de feature/correção (backlog) na regra de captura automática
 
 ## Em andamento
+
+- /run-plan + philosophy.md: distinguir capturas de validação (plano) de capturas de feature/correção (backlog) na regra de captura automática
 
 ## Concluídos
 
