@@ -2,11 +2,12 @@
 
 ## Próximos
 
-- /triage + /run-plan: merge artifact no BACKLOG.md — transição Em andamento gravada no commit de triage (main) reaparece após merge do PR; investigar postergação da transição para o branch da feature
 - /run-plan: sugerir push e abertura de PR ao final, além do commit (quando aplicável)
 - /run-plan + philosophy.md: distinguir capturas de validação (plano) de capturas de feature/correção (backlog) na regra de captura automática
 
 ## Em andamento
+
+- /triage + /run-plan: merge artifact no BACKLOG.md — transição Em andamento gravada no commit de triage (main) reaparece após merge do PR; investigar postergação da transição para o branch da feature
 
 ## Concluídos
 
