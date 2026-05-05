@@ -105,8 +105,13 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
 
    **Caso especial:** papel `backlog` resolveu para "não temos" → lista de backlog vira relato final ao operador (sem registro persistido). Lista de validação é gravada no plano independentemente do estado do papel `backlog`.
 6. **Declarar done**.
+7. **Sugestão de publicação** — verificar se há remote configurado (`git remote -v`). Se houver, perguntar ao operador via `AskUserQuestion` (header `Publicar`) com opções:
+   - `Push` — executar `git push -u origin <branch-atual>`.
+   - `Push + abrir PR` — executar `git push -u origin <branch-atual>` seguido de `gh pr create`.
+   - `Nenhum` — encerrar sem ação.
+   Se não houver remote, pular silenciosamente.
 
-A skill termina na worktree com branch da feature. Caminho de fechamento (PR, merge, descarte) é decisão do operador.
+A skill termina na worktree com branch da feature após oferecer publicação ao operador.
 
 ## O que NÃO fazer
 
@@ -126,6 +131,8 @@ A skill termina na worktree com branch da feature. Caminho de fechamento (PR, me
 - Não inverter a ordem entre transição final (4.4) e captura automática (4.5) — fechar a linha corrente da feature antes de materializar capturas. Eixos distintos, ordem importa.
 - Não rotear para o backlog capturas de validação (cenário não exercitado, divergência do plano, gap de verificação manual) — destino é `## Pendências de validação` no plano corrente.
 - Não informar "capturei no backlog" para item classificado como validação — a mensagem ao operador deve refletir o destino real do item.
+- Não executar push ou abrir PR sem confirmação explícita via enum `Publicar`.
+- Não exibir o enum `Publicar` quando não há remote configurado — skip silente.
 
 ## Convenção: `.worktreeinclude`
 

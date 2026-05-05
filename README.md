@@ -9,7 +9,7 @@ Claude Code plugin para o workflow **flat & pragmatic**: skills genéricas, revi
 | `/triage` | Skill | Alinha intenção, levanta gaps e decide qual artefato (linha de backlog, plano, ADR, atualização de domínio/design) é necessário antes de implementar. Sem argumento, delega para `/next`. |
 | `/next` | Skill | Orientação de sessão: lê o backlog, verifica no código o que já foi implementado e sugere os três candidatos de maior impacto para triagem. |
 | `/new-adr` | Skill | Cria um novo ADR em `docs/decisions/` com numeração automática e template padronizado. |
-| `/run-plan` | Skill | Executa um plano de `docs/plans/<slug>.md` em worktree isolada, micro-commits Conventional Commits, revisão dirigida por bloco e gate de validação manual quando aplicável. |
+| `/run-plan` | Skill | Executa um plano de `docs/plans/<slug>.md` em worktree isolada, micro-commits Conventional Commits, revisão dirigida por bloco, gate de validação manual quando aplicável e sugestão de push/PR ao concluir. |
 | `/debug <sintoma>` | Skill | Diagnostica causa-raiz por método científico (reproduzir → isolar → hipótese-teste → evidência). Produz diagnóstico, não fix — operador escolhe revert / patch direto / `/triage` depois. Stack-agnóstico. |
 | `/gen-tests-python` | Skill | Gera testes pytest para um módulo/função de um projeto Python (pytest + respx + asyncio_mode auto + tmp_path para SQLite). |
 | `/release [<bump>\|<version>]` | Skill | Bump de versão coordenado em `version_files`, entrada no `changelog`, commit unificado e tag anotada local. Não faz push — publicação fica com o operador. |
