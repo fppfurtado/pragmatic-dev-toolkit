@@ -180,7 +180,7 @@ As três seções de `BACKLOG.md` representam **estados** no ciclo de vida do it
 O toolkit move linhas entre seções **automaticamente**, apenas informando o operador — nunca por inferência textual. Os dois pontos de transição:
 
 - **`Próximos → Em andamento`** — aplicado automaticamente por `/triage` no passo 4 quando o caminho escolhido inclui plano (a feature será executada). Aplicado também por `/run-plan` no início, se a linha ainda está em `## Próximos` (defesa contra estado inconsistente — operador pulou a transição no `/triage` ou rodou `/run-plan` sobre plano antigo que recebeu a anotação em sessão posterior).
-- **`Em andamento → Concluídos`** — aplicado automaticamente por `/run-plan` no gate final, antes do backlog harvest. Eixos distintos: transição da feature corrente vs. captura de novos itens deferidos. Ordem importa — fechar a linha corrente primeiro, depois colher o que emergiu durante execução.
+- **`Em andamento → Concluídos`** — aplicado automaticamente por `/run-plan` no gate final, antes da captura automática de imprevistos. Eixos distintos: transição da feature corrente vs. captura de imprevistos detectados pelo agente durante execução. Ordem importa — fechar a linha corrente primeiro, depois materializar o que foi capturado.
 
 ### Anotação de matching
 
@@ -189,6 +189,26 @@ O mensageiro entre alinhamento e execução é o campo `**Linha do backlog:** <t
 ### Quando o ciclo silencia
 
 Plano sem `**Linha do backlog:**` (caminho ADR-only sem linha acompanhante, refactor puro com plano sem item no backlog, plano antigo criado antes desta convenção); papel `backlog` resolvido para "não temos"; linha não localizada no arquivo do backlog (operador removeu/consolidou desde o registro). Em todos os casos, ambas as skills procedem **sem mencionar o ciclo** — sem warning, sem oferta de adoção. O ciclo é opcional na prática.
+
+## Consolidação do backlog
+
+Sempre que uma skill grava nova(s) linha(s) no arquivo do papel `backlog` durante o fluxo corrente, há um passo de **consolidação** antes de fechar o gate da skill. O objetivo é evitar que o backlog acumule duplicatas ou redundâncias por gravações sucessivas — sem cerimônia quando o estado já é coerente. A regra é única; cada skill referencia esta seção em vez de duplicar critério.
+
+**Quando dispara:** sempre que uma skill modificou o arquivo do papel `backlog` no fluxo corrente. Caminho que não tocou o backlog (ex.: ADR-only sem linha acompanhante, papel `backlog` resolvido para "não temos") → skip silente.
+
+**Mecânica:**
+
+1. **Reler** o arquivo do backlog na íntegra após as edições.
+2. **Flagar** (não decidir):
+   - **Duplicatas** entre linhas recém-adicionadas e linhas pré-existentes em `## Próximos`, `## Em andamento` ou `## Concluídos`.
+   - **Obsolescência:** linha em `## Próximos` que vira redundante pela linha recém-registrada (ex.: nova linha "exportar movimentos em CSV" cobre item antigo "exportar movimentos como planilha"). Inferência conservadora — só flagar quando a sobreposição é nítida no texto, não em similaridade vaga.
+3. **Sem flags → skip silente.** Linhas recém-gravadas já foram decididas no fluxo corrente; perguntar para confirmar novamente é cerimônia (ver "Convenção de pergunta ao operador").
+4. **Com flags →** mostrar ao operador a síntese dos flags e o estado atual das seções tocadas (com as linhas recém-adicionadas marcadas). Perguntar **uma vez** via enum (`AskUserQuestion`, header `Backlog`, opções `Está bom, prosseguir` e `Aplicar edits` — Other → operador descreve em prosa quais edits, ex.: consolidar duplicatas X+Y, remover linha obsoleta Z, reordenar). Edits descritos pelo operador são aplicados ao arquivo do backlog e ficam parte do mesmo commit unificado/micro-commit da skill corrente.
+
+**Onde aplica:**
+
+- `/triage` passo 5 — após gravar linhas no passo 4 (feature em curso e itens fora-de-escopo emergidos).
+- `/run-plan` passo 4.5 — após o agente acumular capturas durante execução e validação manual, antes de materializar como bloco extra.
 
 ## Linguagem ubíqua na implementação
 
