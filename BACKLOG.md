@@ -2,6 +2,8 @@
 
 ## Próximos
 
+- /triage: push automático pós-commit não é executado de forma confiável — verificar condições de disparo
+
 ## Em andamento
 
 - /run-plan: sugerir push e abertura de PR ao final, além do commit (quando aplicável)
