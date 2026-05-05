@@ -90,13 +90,20 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
    - **Divergência do plano** — operador reporta comportamento que diverge do esperado por `## Verificação manual`.
    - **Bug colateral** — operador menciona bug menor não relacionado ao gate corrente.
 
-   **Política de gravação:** a cada captura, o agente **informa o operador** com mensagem curta ("capturei no backlog: <linha>"; redação curta, descritiva do problema, não do gatilho) e segue sem aguardar resposta. O intervalo entre o aviso e a materialização final é a janela onde o operador pode dizer em prosa "descarta esse" — agente respeita e remove da lista.
+   **Política de gravação:** classificar no momento da captura em dois tipos:
+
+   - **Validação** — item cuja resolução é pré-requisito para declarar a feature done: cenário não exercitado descoberto na execução, divergência do plano (comportamento observado diferente do esperado por `## Verificação manual`), gap de passo de verificação, reviewer pulado sem justificativa. Mensagem ao operador: `"capturei para verificação: <linha>"`.
+   - **Backlog** — item independente do gate corrente: feature/fix/doc/regra nova, bug colateral (não relacionado ao gate corrente), finding fora-do-escopo do plano, gap operacional sinalizado por hook. Mensagem ao operador: `"capturei no backlog: <linha>"`.
+
+   Sinal explícito do operador vence a classificação automática: se o operador instruir o destino ("registra no backlog X", "registra no plano Y"), obedecer sem questionar. O intervalo entre o aviso e a materialização final é a janela onde o operador pode dizer em prosa "descarta esse" — agente respeita e remove da lista.
 
    **No gate final:**
-   - **Lista vazia** → skip silente (ver `docs/philosophy.md` → "Convenção de pergunta ao operador").
-   - **Lista não-vazia** → bloco extra: (a) escrever uma linha por item em `## Próximos` do arquivo do papel `backlog`; (b) **aplicar consolidação** seguindo `docs/philosophy.md` → "Consolidação do backlog" (única pergunta admitida no passo é o enum `Backlog` da consolidação, condicional a flags); (c) revisor `code`; (d) micro-commit. Sem pergunta de confirmação sobre as capturas em si — operador já foi informado a cada detecção.
+   - **Ambas as listas vazias** → skip silente (ver `docs/philosophy.md` → "Convenção de pergunta ao operador").
+   - **Lista de validação não-vazia** → parte do bloco extra: escrever seção `## Pendências de validação` no arquivo do plano corrente (adicionar ao final; criar a seção se não existe), uma linha por item.
+   - **Lista de backlog não-vazia** → parte do bloco extra: escrever uma linha por item em `## Próximos` do arquivo do papel `backlog`; **aplicar consolidação** seguindo `docs/philosophy.md` → "Consolidação do backlog" (única pergunta admitida no passo é o enum `Backlog` da consolidação, condicional a flags).
+   - As duas partes entram num único revisor `code` e micro-commit. Sem pergunta de confirmação sobre as capturas em si — operador já foi informado a cada detecção.
 
-   **Caso especial:** papel `backlog` resolveu para "não temos" → skip silente do bloco extra; capturas viram apenas relato final ao operador (sem registro persistido).
+   **Caso especial:** papel `backlog` resolveu para "não temos" → lista de backlog vira relato final ao operador (sem registro persistido). Lista de validação é gravada no plano independentemente do estado do papel `backlog`.
 6. **Declarar done**.
 
 A skill termina na worktree com branch da feature. Caminho de fechamento (PR, merge, descarte) é decisão do operador.
@@ -117,6 +124,8 @@ A skill termina na worktree com branch da feature. Caminho de fechamento (PR, me
 - Não inferir a linha do backlog por matching textual heurístico — `**Linha do backlog:**` ausente é skip silente; presença é match exato. Slug do plano vs. frase da linha não conta como evidência.
 - Não silenciar a transição final (passo 4.4) quando a linha está presente e localizada — a transição é automática; informar o operador é obrigatório.
 - Não inverter a ordem entre transição final (4.4) e captura automática (4.5) — fechar a linha corrente da feature antes de materializar capturas. Eixos distintos, ordem importa.
+- Não rotear para o backlog capturas de validação (cenário não exercitado, divergência do plano, gap de verificação manual) — destino é `## Pendências de validação` no plano corrente.
+- Não informar "capturei no backlog" para item classificado como validação — a mensagem ao operador deve refletir o destino real do item.
 
 ## Convenção: `.worktreeinclude`
 
