@@ -2,6 +2,19 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.15.1] - 2026-05-05
+
+### Changed
+- `/debug` passo 5 ganha campo condicional **Hipóteses testadas** — ledger formato `H<n> (<status>): <hipótese>. <evidência>` (status `confirmada` / `refutada` / `inconclusiva`), emitido apenas quando ≥2 hipóteses passaram pelo passo 4. Hipótese única confirmada → campo omitido (espelha "lista vazia → skip silente" de `/run-plan` 4.5). Posição: entre *Sintoma* e *Causa-raiz* — operador vê o caminho, não só o destino. Anti-confirmation-bias auditável + insumo para `/triage` quando o caminho de correção é mudança maior.
+- `/debug` ganha passo 6 explícito ("Reportar e devolver controle") espelhando o fechamento de `/triage` e `/release` — síntese curta + sugestão de próximo passo numa frase (revert / patch local / `/triage <intent-do-fix>`). Handoff antes diluído entre passo 5 e seção `## O que NÃO fazer`.
+- `/debug` passo 1 cita "Convenção de pergunta ao operador" — perguntas de precisão são prosa livre, não enum. Padronização editorial alinhada às demais skills.
+- `/debug` passo 5 *Caminhos de correção* nomeia `/triage <intent-do-fix>` como handoff estruturado: o diagnóstico (incluindo *Hipóteses testadas* quando presente) vira insumo natural do `## Contexto` do plano.
+
+### Notes
+- `docs/install.md` validação item 6 menciona o campo opcional *hipóteses testadas* no diagnóstico estruturado.
+- `docs/plans/debug-trilha-hipoteses-e-handoff.md`: plano que motivou a release. Bloco único de 4 edits coordenados em `skills/debug/SKILL.md` mais sanidade no `docs/install.md`, revisor `code`.
+- Transições de estado do backlog (`Próximos → Em andamento → Concluídos`) passam a ser **automáticas** — `/triage` grava diretamente em `## Em andamento` quando o caminho inclui plano; `/run-plan` aplica ambas as transições sem prompt, apenas informando o operador. Reverte a decisão "toolkit cutuca, não decide" do v1.13 — o matching por texto exato já elimina o risco de mover linha errada que motivava a cutucada.
+
 ## [1.15.0] - 2026-05-05
 
 ### Changed
