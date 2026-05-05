@@ -2,6 +2,17 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.14.0] - 2026-05-04
+
+### Changed
+- `/new-feature` renomeada para `/triage`. Mudança breaking (slash command visível ao operador, sem alias de compat — filosofia flat). O nome antigo sugeria escopo restrito a feature nova; o real é triagem da intenção do operador (feature, fix saído de `/debug`, refactor com bifurcação, mudança pontual que toca invariante). Pareia com `/debug` no eixo "pensar antes de agir" (diagnose ↔ triage). Frontmatter `description` reescrita para escopo broader. `git mv skills/new-feature skills/triage` preserva histórico.
+
+### Notes
+- `docs/philosophy.md`: convenção de naming relaxada — skills aceitam `<verb>` (sem sufixo de artefato) quando o output emerge da decisão da skill (caso `triage`); skills cujo artefato é fixo (`new-adr`) seguem `<verb>-<artifact>`. Tabela ganha nota explicativa abaixo.
+- Referências mecânicas atualizadas em `CLAUDE.md`, `README.md`, `docs/install.md`, `skills/run-plan/SKILL.md`, `skills/debug/SKILL.md`, `skills/release/SKILL.md`. `CHANGELOG.md` e `docs/plans/*.md` históricos não tocados (registro do que existia ao tempo de cada release).
+- `CLAUDE.md`: bloco `<!-- pragmatic-toolkit:config -->` declara `version_files: [".claude-plugin/plugin.json", ".claude-plugin/marketplace.json"]` e `test_command: null` (repo sem suite — `/run-plan` cai para `## Verificação manual` do plano).
+- `docs/plans/rename-new-feature-to-triage.md`: plano que motivou a release. Primeira release que dogfooda `/triage` (a próxima invocação será sob o novo nome).
+
 ## [1.13.0] - 2026-05-04
 
 ### Added
