@@ -7,10 +7,9 @@
 
 ## Em andamento
 
-- /triage + /run-plan: merge artifact no BACKLOG.md — transição Em andamento gravada no commit de triage (main) reaparece após merge do PR; investigar postergação da transição para o branch da feature
-
 ## Concluídos
 
+- /triage + /run-plan: merge artifact eliminado — /triage grava sempre em Próximos; Próximos→Em andamento passa a ser responsabilidade exclusiva do /run-plan no branch da feature
 - /triage: guarda explícita contra inclusão de BACKLOG.md em ## Arquivos a alterar — transições gerenciadas pelo campo Linha do backlog
 - /run-plan: condição de skip do sanity check de docs (4.3) restrita a padrões user-facing (positive list: README*, CHANGELOG*, install.md, docs/guides/**)
 - skill /next: orientação de sessão — analisa backlog, verifica implementados e sugere top 3 por impacto; /triage delega a /next quando invocada sem argumento
