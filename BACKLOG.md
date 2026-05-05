@@ -7,9 +7,8 @@
 
 ## Em andamento
 
-- release: colapsar gates de version_files, changelog e commit/tag num único review final consolidado
-
 ## Concluídos
 
+- release: colapsar gates de version_files, changelog e commit/tag num único review final consolidado
 - captura automática de imprevistos durante /run-plan e validação manual
 - backlog: transições de estado automáticas sem cutucada ao operador
