@@ -14,7 +14,7 @@ Three component types, each with its own discovery mechanism:
 
 - **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests-python`, `/release`). Skills only act when invoked by the user.
 - **Agents** — `agents/<name>.md` with frontmatter. Subagents called by name (`code-reviewer`, `qa-reviewer`, `security-reviewer`). Reviewers analyze a diff and return findings.
-- **Hooks** — `hooks/hooks.json` declares lifecycle bindings; the bound scripts (`hooks/*.py`) run on every matching tool call in any project that has the plugin installed. Therefore hooks **must auto-gate** (see below).
+- **Hooks** — `hooks/hooks.json` declares lifecycle bindings; the bound scripts (`hooks/*.py`) run on every matching tool call in any project that has the plugin installed. Therefore hooks **must auto-gate**. `PostToolUse` exits 0; `PreToolUse` uses exit 2 to block (see `block_env.py`).
 
 Manifests:
 - `.claude-plugin/plugin.json` — plugin name/version/description.
@@ -31,42 +31,6 @@ Skills consume **roles**, not literal paths. Each role has a canonical default; 
 Roles and canonical defaults: `product_direction` → `IDEA.md`, `ubiquitous_language` → `docs/domain.md`, `design_notes` → `docs/design.md`, `decisions_dir` → `docs/decisions/`, `plans_dir` → `docs/plans/`, `backlog` → `BACKLOG.md`, `version_files` → _(no default — opt-in list)_, `changelog` → `CHANGELOG.md`, `test_command` → `make test`. Plugin-internal: `.worktreeinclude` (consumed by `/run-plan`). Reviewers `qa-reviewer` and `security-reviewer` ship as plugin agents — consumer projects can shadow either with a project-level `.claude/agents/<name>.md` (Claude Code convention; project-level wins on name collision).
 
 Resolution order (per role): probe canonical → consult config block in consumer's `CLAUDE.md` → ask the operator with tri-state response (`path | "não temos" | <other path>`). Skills must **report a gap rather than guess** when a required role resolves to "não temos". This is non-negotiable — fabricating context defeats the alignment-first workflow.
-
-## Naming convention (stack-specific vs generic)
-
-See `docs/philosophy.md` → "Convenção de naming" for the full table and rationale (suffix-required for components that generate/execute stack-specific things; no suffix for components that review principles from a diff).
-
-## Hook auto-gating triple (mandatory)
-
-See `docs/philosophy.md` → "Convenção de naming" for the full triple gate (extension → stack marker → toolchain). `hooks/run_pytest_python.py` is the canonical example.
-
-`PostToolUse` hooks must always exit 0 (do not block subsequent hooks). Use exit 2 only for `PreToolUse` blocking (see `block_env.py`).
-
-## Skill workflow contract
-
-The workflow skills compose in a deliberate order:
-
-1. **`/triage <intent>`** — alignment only, no implementation. Reads roles in order: `product_direction` → `ubiquitous_language` → `backlog` → `design_notes` → `decisions_dir`. Decides which artifact to produce (backlog line / plan / ADR / domain update) and stops. Plan blocks may be annotated `{reviewer: code|qa|security}` (multiple profiles allowed: `{reviewer: code,qa,security}`) to direct `/run-plan`. Schema documented in `docs/philosophy.md` → "Anotação de revisor em planos".
-2. **`/new-adr "<title>"`** — auto-numbers within the resolved `decisions_dir` by **inferring** the format from existing ADRs (3-digit padded canonical, 4-digit padded, or no padding); generates slug, writes template skeleton with placeholders. Has `disable-model-invocation: true` — only invoked explicitly.
-3. **`/run-plan <slug>`** — the only execution skill. Creates `.worktrees/<slug>/`, replicates files listed in `.worktreeinclude` (see `docs/philosophy.md` → "Convenção `.worktreeinclude`"), requires the resolved `test_command` (default `make test`) to be green as baseline, then loops per "files to change" block (canonical PT-BR `## Arquivos a alterar`, matched semantically): implement → run `test_command` → invoke **all** reviewers listed in `{reviewer: ...}` (default `code-reviewer`; `qa`/`security` resolve to the plugin-shipped `qa-reviewer` / `security-reviewer` agents, with project-level shadowing via `.claude/agents/<name>.md`; multiple profiles aggregate reports) → micro-commit following the project's commit convention (see `docs/philosophy.md` → "Convenção de commits"; canonical default is Conventional Commits in English; `--amend` reserved for localized fixes within the current block). Blocks final "done" until the operator confirms the manual-verification section if the plan has one.
-4. **`/debug <symptom>`** — diagnose phase, the bug-fix-axis counterpart to `/triage`'s alignment. Walks the scientific method (precisar → reproduzir → isolar → hypothesis-test → root cause) and produces a five-field diagnostic (sintoma, causa-raiz, evidência, escopo, caminhos de correção). Stack-agnostic. **Produces no code, no commit, no instrumentation** — the operator routes the diagnosis to revert / direct patch / `/triage` for a larger change. Roles consumed are all informational (`test_command`, `ubiquitous_language`, `decisions_dir`, `design_notes`); none block the skill.
-5. **`/release [<bump>|<version>]`** — version bump in declared `version_files`, generates a `changelog` entry from the CC log since the last tag, unified commit and annotated tag (format detected in 3 levels: explicit policy → observed pattern ≥70% → SemVer canonical). Roles consumed are informational (`version_files`, `changelog`); release with neither degenerates to commit + tag only. **Does not push** — handoff to the operator. Operational convention is embedded in the skill itself (`skills/release/SKILL.md`), not mirrored in `docs/philosophy.md` (single consumer).
-
-When editing these skills, preserve the separations: **alignment → plan → execute** for new work, **diagnose ≠ fix** on the bug-fix axis, and **release ≠ publish** (skill stops at local commit + tag; push is the operator's call).
-
-## Asking the operator (enum vs prose)
-
-Skills collect operator input via `AskUserQuestion` (discrete choices) or free prose (explanation/justification). Criterion in `docs/philosophy.md` → "Convenção de pergunta ao operador". Preserve the mode of each touchpoint when editing skills.
-
-## Reviewer agents
-
-All three are invoked on a diff and report only real problems (no "consider" hedging):
-
-- **`code-reviewer`** — YAGNI rubric: premature abstractions, redundant comments, unnecessary defensiveness, phantom backwards-compat.
-- **`qa-reviewer`** — coverage of happy path + invariants documented by the project's `ubiquitous_language` role (RNxx) + edge cases declared by the `design_notes` role; flags mocked persistence layer in integration tests.
-- **`security-reviewer`** — secrets handling, boundary input validation, external I/O hygiene (timeouts, silent errors, side-effect retries), sensitive data exposure, privilege/permission scope, post-error invariants defined by ADRs in the `decisions_dir` role. Stack-agnostic — applies to web, CLI, desktop, mobile, embedded, libraries, pipelines and IaC.
-
-The two reviewers added in 0.3 are intentionally **stack-agnostic** — they read principles from the diff. Don't add stack suffixes unless the principles themselves change.
 
 ## Editing conventions
 
