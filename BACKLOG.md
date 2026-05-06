@@ -8,10 +8,9 @@
 
 ## Em andamento
 
-- plugin: batch 3/E3 — extrair `templates/plan.md` centralizado e atualizar /triage e /run-plan para apontar ao template (implementa ADR-001)
-
 ## Concluídos
 
+- plugin: batch 3/E3 — extrair `templates/plan.md` centralizado e atualizar /triage e /run-plan para apontar ao template (implementa ADR-001)
 - plugin: batch 2 de refactor de fronteira documental — A1 desduplica papéis philosophy.md ↔ CLAUDE.md, A2 continua mecânica residual de philosophy.md para consumers, B1 declara aplicabilidade condicional em code-reviewer settings.json/infra
 - /triage e /run-plan: redundância na descrição do reviewer dispatch — /triage descreve o comportamento do /run-plan ("/run-plan invoca o agent correspondente") em vez de focar só na sintaxe da anotação `{reviewer: ...}` no plano. Flagado pelo `code-reviewer` no Bloco 4 do plano `batch1-tightening-editorial` como finding fora-do-escopo.
 - plugin: batch 1 de tightening editorial pós-v1.20.0 — sanity check de docs como prosa (/run-plan 4.3), trim disciplinado de `## O que NÃO fazer` + critério editorial em CLAUDE.md, `disable-model-invocation` em /release e /run-plan, single-reviewer como caso normal (multi como exceção), /next propõe commit das movimentações automáticas
