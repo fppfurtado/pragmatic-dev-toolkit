@@ -115,12 +115,12 @@ Frase final fixa:
 > # ou: git push && git push origin <tag>
 > ```
 >
-> GitHub Release (se aplicável): `gh release create <tag>`.
+> Release no forge (se aplicável): ex. `gh release create <tag>` (GitHub), `glab release create <tag>` (GitLab), ou UI web.
 
 ## O que NÃO fazer
 
 - Não fazer push automático — release é local; publicação é decisão explícita do operador.
-- Não criar GitHub Release — `gh release create` cobre o caso, fora do escopo da skill.
+- Não criar release no forge — comandos como `gh release create` / `glab release create` ou UI web cobrem o caso, fora do escopo da skill.
 - Não tocar arquivos de versão fora dos paths declarados em `version_files`.
 - Não inferir bump de log que não segue Conventional Commits sem perguntar — falsa-confiança gera versionamento errado.
 - Não sobrescrever tag existente — colisão é gap report, não merge.
