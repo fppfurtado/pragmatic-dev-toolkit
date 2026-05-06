@@ -8,6 +8,8 @@
 
 ## Em andamento
 
+- plugin: batch 3/C1 — gate de prontidão consolidado em /run-plan (implementa ADR-002), antecipa detecção de warnings pré-loop e substitui 4 enums em cascata por um único gate informativo
+
 ## Concluídos
 
 - plugin: batch 3/E3 — extrair `templates/plan.md` centralizado e atualizar /triage e /run-plan para apontar ao template (implementa ADR-001)
