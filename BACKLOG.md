@@ -2,12 +2,13 @@
 
 ## Próximos
 
-## Em andamento
+- CLAUDE.md: ajustar frase "Skills/agents end with an explicit `## O que NÃO fazer` section" — agents reviewer (code/qa/security/doc) não têm essa seção; padrão se aplica apenas a skills. Flagado pelo `code-reviewer` durante execução do plano `agent-doc-reviewer-drift`.
 
-- agent doc-reviewer: revisor genérico de drift entre doc e código (identificadores, cross-refs, exemplos) — quarto reviewer ao lado de code/qa/security; cross-cutting (código+doc); default em blocos .md-only no /run-plan.
+## Em andamento
 
 ## Concluídos
 
+- agent doc-reviewer: revisor genérico de drift entre doc e código (identificadores, cross-refs, exemplos) — quarto reviewer ao lado de code/qa/security; cross-cutting (código+doc); default em blocos .md-only no /run-plan.
 - /release: após `git checkout <branch-da-pré-condição-2>` no recovery proativo do Aplicar, auto-sync com upstream (`git pull --ff-only` se HEAD atrás do remote) antes da sequência (a)-(e) — evita taggear SHA atrasado em janelas concorrentes onde merge/push remoto aconteceu durante prep da release. Flagado pelo `code-reviewer` como gap de design durante execução do plano `release-head-check-and-action-dedup`.
 - /release: verificar HEAD branch (não detached, mesma branch da pré-condição 2) imediatamente antes do `git commit` no passo 4.Aplicar — guarda contra mudança de HEAD por sessão concorrente em outro terminal. Sintoma observado na release v1.18.0: `git checkout v1.17.0` rodado em paralelo detachou HEAD; commit nasceu em linha paralela com tree de v1.17.0 + version bumps, fora do main.
 - Action `validate-backlog`: deduplicar issues abertas com mesma label antes de criar nova (`gh issue list --label backlog-merge-artifact --state open`) — evita N issues duplicadas em pushes sucessivos com artefato. Flagado pelo `security-reviewer` como editorial (fora-de-escopo de segurança) durante execução do plano `backlog-validate-and-heal`.
