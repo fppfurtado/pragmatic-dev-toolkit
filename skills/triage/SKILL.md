@@ -90,7 +90,21 @@ No `## Contexto`:
 
 `BACKLOG.md` **não aparece** em `## Arquivos a alterar` — transições são geridas pelo campo acima e pelo mecanismo do `/run-plan`.
 
-Em `## Arquivos a alterar`, anotação `{reviewer: <perfil>}` no header da subseção orienta o `/run-plan`. Schema (perfis, múltiplos perfis) em `docs/philosophy.md` → "Anotação de revisor em planos". Sem anotação, default `code-reviewer`. Exemplo: `### Bloco 1 — auth.py {reviewer: security}`.
+Em `## Arquivos a alterar`, anotação `{reviewer: <perfil>}` no fim do header da subseção orienta o `/run-plan`. Palavra-chave em inglês (mecânica do toolkit). Schema:
+
+- **Sem anotação** → default `code-reviewer`.
+- **Um perfil** (`{reviewer: code|qa|security}`) → `/run-plan` invoca `code-reviewer`, `qa-reviewer` ou `security-reviewer`.
+- **Múltiplos perfis** (`{reviewer: code,qa,security}`) → invoca todos os listados, agregando relatórios. Faz sentido quando o bloco toca múltiplos eixos (security/qa/code revisam objetos diferentes do mesmo diff).
+
+Exemplos:
+
+```markdown
+### Bloco 1 — autenticação {reviewer: security}
+### Bloco 2 — endpoint público {reviewer: code,qa,security}
+### Bloco 3 — refactor interno
+```
+
+Bloco que **contém testes** (saída (i) da heurística de cobertura) recebe `{reviewer: qa}`; reviewer revisa qualidade do teste recém-escrito (caminho feliz, invariantes, edge cases, mock vs real). Para código de produção que mereça olhar combinado de YAGNI + cobertura no mesmo bloco, usar `{reviewer: code,qa}`.
 
 **ADR:** invocar `/new-adr "<título>"` (não duplicar lógica). Reportar e seguir.
 
@@ -100,9 +114,16 @@ Slug de plano: lowercase, espaços/acentos→hífens, curto e descritivo (ex.: `
 
 ### 5. Consolidação do backlog
 
-Se o passo 4 modificou o arquivo do papel `backlog`, aplicar a regra de `docs/philosophy.md` → "Consolidação do backlog". Caminho que não tocou backlog → skip silente.
+Se o passo 4 modificou o arquivo do papel `backlog` (linha da feature, linhas fora-de-escopo, ou ambas), consolidar antes de fechar:
 
-Edits descritos pelo operador (caminho "Aplicar edits") ficam parte do mesmo commit unificado do passo 6.
+1. **Reler** o backlog na íntegra após edits.
+2. **Flagar** (não decidir):
+   - **Duplicatas** entre linhas recém-adicionadas e linhas pré-existentes em qualquer seção.
+   - **Obsolescência:** linha em `## Próximos` que vira redundante pela nova (ex.: nova "exportar movimentos em CSV" cobre antiga "exportar movimentos como planilha"). Critério conservador — só flagar quando a sobreposição é nítida no texto, não em similaridade vaga.
+3. **Sem flags → skip silente.** Linhas recém-gravadas já foram decididas no fluxo corrente.
+4. **Com flags →** mostrar ao operador o estado tocado (com linhas recém-adicionadas marcadas) e perguntar uma vez via enum (`AskUserQuestion`, header `Backlog`, opções `Está bom, prosseguir` / `Aplicar edits`; Other → operador descreve em prosa quais edits — consolidar duplicatas, remover obsoleta, reordenar). Edits descritos entram no mesmo commit unificado do passo 6.
+
+Caminho que não tocou backlog (atualização pura de `ubiquitous_language`/`design_notes`, ADR delegada sem linha, papel `backlog` "não temos") → skip silente.
 
 ### 6. Reportar, propor commit e devolver controle
 
