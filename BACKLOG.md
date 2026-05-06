@@ -2,10 +2,11 @@
 
 ## Próximos
 
-- /run-plan 4.7: auto-rebase pré-push não cobre fan-out de PRs — quando 2 PRs ficam abertos em paralelo e um merge muda BACKLOG.md em main, o segundo PR pode mergear com merge artifact (linha duplicada em Em andamento+Concluídos ou linha sumida). Ocorreu na 3ª vez ao mergear PR #20 + #21. Considerar: detecção pós-merge no main + script de cura, ou bloqueio de /triage quando há PR aberto que ainda não fundiu.
 - /release: verificar HEAD branch (não detached, mesma branch da pré-condição 2) imediatamente antes do `git commit` no passo 4.Aplicar — guarda contra mudança de HEAD por sessão concorrente em outro terminal. Sintoma observado na release v1.18.0: `git checkout v1.17.0` rodado em paralelo detachou HEAD; commit nasceu em linha paralela com tree de v1.17.0 + version bumps, fora do main.
 
 ## Em andamento
+
+- /run-plan 4.7: auto-rebase pré-push não cobre fan-out de PRs — quando 2 PRs ficam abertos em paralelo e um merge muda BACKLOG.md em main, o segundo PR pode mergear com merge artifact (linha duplicada em Em andamento+Concluídos ou linha sumida). Ocorreu na 3ª vez ao mergear PR #20 + #21. Considerar: detecção pós-merge no main + script de cura, ou bloqueio de /triage quando há PR aberto que ainda não fundiu.
 
 ## Concluídos
 
