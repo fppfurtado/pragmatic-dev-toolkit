@@ -6,6 +6,8 @@
 
 ## Em andamento
 
+- philosophy.md: refatorar para conter apenas princípios; migrar mecânicas para os consumidores reais (skills/CLAUDE.md/README)
+
 ## Concluídos
 
 - Skills: compactar prosa e enxugar `## O que NÃO fazer` para reduzir input recorrente
