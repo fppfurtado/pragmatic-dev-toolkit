@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A **Claude Code plugin** (not an app, not a library). It ships skills, agents, and hooks that codify the "flat & pragmatic" workflow described in `docs/philosophy.md`. There is no build step and no test suite — the artifacts are markdown frontmatter (skills/agents) and short Python scripts (hooks). Validation is manual: install the plugin into a consumer project and smoke-test the components.
 
-The companion repo is [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit), a Copier template that generates the canonical default layout the skills assume. They are designed to be used together but are independently usable — projects with a different layout declare role variants in their `CLAUDE.md` (see `docs/philosophy.md` → "Resolução de papéis").
+The companion repo is [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit), a Copier template that generates the canonical default layout the skills assume. They are designed to be used together but are independently usable — projects with a different layout declare role variants in their `CLAUDE.md` (see "The role contract" below).
 
 ## Plugin layout (what loads what)
 
@@ -26,11 +26,27 @@ Release cadence: accumulate merges in `main` and trigger `/release` when there's
 
 ## The role contract (load-bearing)
 
-Skills consume **roles**, not literal paths. Each role has a canonical default; consumer projects declare variants via the `<!-- pragmatic-toolkit:config -->` YAML block in their `CLAUDE.md`. Full protocol in `docs/philosophy.md` → "Resolução de papéis".
+Skills consume **roles**, not literal paths. Each role has a canonical default; consumer projects declare variants via the `<!-- pragmatic-toolkit:config -->` YAML block in their `CLAUDE.md` (see "Pragmatic Toolkit" section below for schema and semantics).
 
 Roles and canonical defaults: `product_direction` → `IDEA.md`, `ubiquitous_language` → `docs/domain.md`, `design_notes` → `docs/design.md`, `decisions_dir` → `docs/decisions/`, `plans_dir` → `docs/plans/`, `backlog` → `BACKLOG.md`, `version_files` → _(no default — opt-in list)_, `changelog` → `CHANGELOG.md`, `test_command` → `make test`. Plugin-internal: `.worktreeinclude` (consumed by `/run-plan`). Reviewers `qa-reviewer` and `security-reviewer` ship as plugin agents — consumer projects can shadow either with a project-level `.claude/agents/<name>.md` (Claude Code convention; project-level wins on name collision).
 
-Resolution order (per role): probe canonical → consult config block in consumer's `CLAUDE.md` → ask the operator with tri-state response (`path | "não temos" | <other path>`). Skills must **report a gap rather than guess** when a required role resolves to "não temos". This is non-negotiable — fabricating context defeats the alignment-first workflow.
+### Resolution protocol
+
+Each skill resolves the roles it needs before acting, following a single protocol to avoid drift:
+
+1. **Probe canonical.** Test if the default filename exists (e.g., `docs/domain.md` for `ubiquitous_language`). Probe is exact, no fuzzy matching: `README.md` is not assumed to be `IDEA.md`.
+2. **Consult CLAUDE.md.** If canonical is absent, read consumer's `CLAUDE.md` looking for the `<!-- pragmatic-toolkit:config -->` block. Declared value beats absent canonical.
+3. **Ask the operator.** If still absent and the role is needed, ask with tri-state response: **concrete path** (skill uses it) | **`não temos`** (skill proceeds without input if role is informational, or stops with gap report if required) | **other path** (operator points to equivalent file). Mode: enum via `AskUserQuestion` with two named options (`Não usamos esse papel`, `Existe em outro path`) plus auto-`Other` receiving the concrete path; header = role name.
+4. **One-shot memoization offer.** At the end of the invocation, propose once to record the resolution in the `<!-- pragmatic-toolkit:config -->` block. `n` = ask again next time. Mode: binary enum (`Sim, registrar` / `Não, perguntar de novo`).
+
+**Drift detection.** If canonical exists AND CLAUDE.md declares a different variant, the skill flags the inconsistency to the operator before proceeding — likely a forgotten rename.
+
+### Required vs informational roles
+
+Skills treat them differently:
+
+- **Required** — `plans_dir` (where `/run-plan` reads and `/triage` writes plans); `test_command` in `/run-plan` when the plan has no `## Verificação end-to-end`; `decisions_dir` in `/new-adr` (where the ADR is written). Required role absent without alternative → skill must **report a gap rather than guess**. Non-negotiable — fabricating context defeats the alignment-first workflow.
+- **Informational** (skill proceeds without): `product_direction`, `ubiquitous_language`, `design_notes`, ADRs, `backlog`, `test_command` when the plan provides `## Verificação end-to-end`. In `/debug`, **all** consumed roles are informational — absence reduces the hypothesis base, never blocks. In `/gen-tests-python`, `ubiquitous_language` and `design_notes` are informational; absence of `pyproject.toml` makes the skill refuse by stack contradiction (not a role gap). In `/release`, `version_files` and `changelog` are informational — absence reduces release scope (degenerate case: just commit + tag). In `/triage`, `backlog` is informational — absence means no line is recorded (one-shot creation offer on first run).
 
 ## Editing conventions
 
@@ -41,12 +57,23 @@ Resolution order (per role): probe canonical → consult config block in consume
 - From v1.11.0 onward, version bumps in **this** repo go through `/release` — keep the loop closed by dogfooding rather than editing manifests by hand.
 
 ## Pragmatic Toolkit
+
+Consumer projects declare path-contract variants in a fenced YAML block marked by the HTML comment below. Skills search for the marker; absence = all canonical defaults.
+
 <!-- pragmatic-toolkit:config -->
 ```yaml
 paths:
   version_files: [".claude-plugin/plugin.json", ".claude-plugin/marketplace.json"]
-test_command: null  # repo has no test suite; /run-plan falls back to plan's `## Verificação manual`
+test_command: null  # repo has no test suite; /run-plan falls back to plan's `## Verificação end-to-end`
 ```
+
+**Schema and semantics:**
+
+- Missing key → canonical default.
+- `null` (or explicit `false`) → "não usamos esse papel". Skill treats as absent without asking again.
+- Unknown keys are ignored (forward-compat for releases that add new roles).
+- Keys live under `paths.<role>` (top-level `test_command` as exception); reference list in "Roles and canonical defaults" above.
+- The HTML marker `<!-- pragmatic-toolkit:config -->` is what the skill looks for — without it, the YAML block is not interpreted even if under the `## Pragmatic Toolkit` heading.
 
 ## Local install for iteration
 

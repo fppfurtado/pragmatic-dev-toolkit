@@ -32,11 +32,11 @@ Detalhes e alternativa de path direto em [`docs/install.md`](docs/install.md).
 
 Bounded contexts e linguagem ubíqua sim, cerimônia tática (camadas formais, ports/adapters universais, mappers em cascata) **não**. YAGNI por padrão; abstrações só quando há dor real. Ler [`docs/philosophy.md`](docs/philosophy.md) para o detalhe e o **path contract** que as skills assumem.
 
-Funciona em qualquer projeto alinhado à filosofia, não só os gerados por `scaffold-kit`. As skills consomem **papéis** (linguagem ubíqua, plano, decisão, gate de testes…), não paths literais — projeto com layout diferente declara variantes uma vez via bloco `<!-- pragmatic-toolkit:config -->` no `CLAUDE.md`. Detalhe em [`docs/philosophy.md`](docs/philosophy.md#resolução-de-papéis).
+Funciona em qualquer projeto alinhado à filosofia, não só os gerados por `scaffold-kit`. As skills consomem **papéis** (linguagem ubíqua, plano, decisão, gate de testes…), não paths literais — projeto com layout diferente declara variantes uma vez via bloco `<!-- pragmatic-toolkit:config -->` no `CLAUDE.md`. Detalhe e schema em [`docs/install.md`](docs/install.md).
 
 ## Companion
 
-Para começar um projeto novo já alinhado ao path contract default (`IDEA.md`, `docs/domain.md`, `docs/design.md`, `docs/decisions/`, `docs/plans/`, `BACKLOG.md`, `Makefile`, `.worktreeinclude`), use o template [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit) — eles foram desenhados juntos.
+[`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit) é o template Copier que produz a estrutura inicial de um projeto novo já alinhada ao path contract default (`IDEA.md`, `docs/domain.md`, `docs/design.md`, `docs/decisions/`, `docs/plans/`, `BACKLOG.md`, `Makefile`, `.worktreeinclude`). Os dois artefatos são desacoplados — você pode usar um sem o outro.
 
 ## Contribuir
 

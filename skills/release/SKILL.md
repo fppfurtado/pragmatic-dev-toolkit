@@ -21,7 +21,7 @@ Sem argumento e sem CC extraível → pergunta livre ao operador.
 
 ## Pré-condições
 
-`version_files` e `changelog` seguem **Resolução de papéis** (ver `docs/philosophy.md`). Ambos informacionais — skill segue mesmo com `não temos` em ambos. Caso degenerado: só commit + tag.
+`version_files` e `changelog` seguem **Resolução de papéis**. Ambos informacionais — skill segue mesmo com `não temos` em ambos. Caso degenerado: só commit + tag.
 
 1. **Working tree limpo (bloqueia).** `git status --porcelain` vazio. Release com WT sujo mistura release com mudança não-revisada — broken-by-construction. Skill aborta sem perguntar; mensagem cita o sujo e direciona para stash/commit.
 2. **Branch é o default do projeto (cutuca).** `git symbolic-ref --short HEAD` vs `main`/`master`. Diferente → enum (`AskUserQuestion`, header `Branch`) com `Prosseguir nesta branch` / `Cancelar e mudar`. Operador pode legitimamente fazer release de hotfix branch.

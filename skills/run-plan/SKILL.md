@@ -21,7 +21,7 @@ Slug sem arquivo correspondente → parar e listar planos disponíveis.
 
 ## Pré-condições
 
-Paths e comandos seguem a **Resolução de papéis** (ver `docs/philosophy.md`): default canonical → bloco `<!-- pragmatic-toolkit:config -->` no CLAUDE.md → pergunta ao operador. Headers de plano são citados em PT-BR canonical (`## Arquivos a alterar`, `## Verificação end-to-end`, etc.); planos em outro idioma usam matching semântico (`## Files to change`, `## End-to-end verification`, ...).
+Paths e comandos seguem a **Resolução de papéis**: default canonical → bloco `<!-- pragmatic-toolkit:config -->` no CLAUDE.md → pergunta ao operador. Headers de plano são citados em PT-BR canonical (`## Arquivos a alterar`, `## Verificação end-to-end`, etc.); planos em outro idioma usam matching semântico (`## Files to change`, `## End-to-end verification`, ...).
 
 Falha de qualquer pré-condição → parar e reportar.
 
@@ -43,7 +43,7 @@ Falha de qualquer pré-condição → parar e reportar.
 1. `git worktree add .worktrees/<slug> -b <slug>` a partir do branch atual.
 
 2. **Replicar gitignored essenciais:**
-   - `.worktreeinclude` existe → ler (1 path por linha, `#` para comentário) e copiar cada path para a worktree (cópia, não symlink — isolamento real).
+   - `.worktreeinclude` existe → ler e copiar cada path para a worktree (cópia, não symlink — isolamento real). Formato: 1 path por linha relativo à raiz do repo; `#` para comentário; linhas em branco ignoradas; globs são roadmap (hoje só paths literais).
    - Não existe E operador não declarou que não precisa → propor criação **uma vez por projeto** via enum (`AskUserQuestion`, header `Worktree`, `multiSelect: true`) listando gitignored em uso aparente (`.env`, dbs locais, fixtures não versionadas). Sem seleção → pular passo, avisar que baseline pode falhar por dependências locais ausentes.
    - **Gatilho cruzado de validação manual** (independe do estado prévio): plano tem `## Verificação manual` E raiz do repo tem gitignored típico de credencial/config local (`.env`, `*.local.yaml`, `secrets.*`) não coberto pelo `.worktreeinclude` aplicado → **cutucar** via enum (header `Credencial`, opções `Replicar agora` / `Seguir sem replicar`); citar nome da credencial e motivo (validação manual provavelmente exige serviço real). `Replicar agora` → adicionar ao `.worktreeinclude` (criar se necessário) e copiar. Estado prévio "não preciso" **não silencia** este gatilho — contexto mudou (plano corrente exige serviço real).
 
@@ -65,7 +65,7 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
 
 1. **Implementar** as mudanças.
 2. **Rodar `test_command`** uma vez no fim do bloco. "Não temos" → aplicar verificação textual do plano.
-3. **Escolher revisor** lendo anotação `{reviewer: ...}` no header. Schema completo em `docs/philosophy.md` → "Anotação de revisor em planos". Resumo:
+3. **Escolher revisor** lendo anotação `{reviewer: ...}` no header:
    - Sem anotação ou `{reviewer: code}` → `code-reviewer`.
    - `{reviewer: qa}` ou `{reviewer: security}` → agent correspondente (project-level `.claude/agents/<nome>.md` sobrescreve via convenção Claude Code).
    - `{reviewer: code,qa,security}` → invocar **todos**, agregando relatórios.
@@ -109,7 +109,7 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
    **Materialização no gate final:**
    - Ambas as listas vazias → skip silente.
    - Lista de validação não-vazia → escrever em `## Pendências de validação` do plano (uma linha por item).
-   - Lista de backlog não-vazia → escrever em `## Próximos` do `backlog`; aplicar consolidação (`docs/philosophy.md` → "Consolidação do backlog").
+   - Lista de backlog não-vazia → escrever em `## Próximos` do `backlog`; aplicar consolidação (releitura → flag de duplicatas/obsolescência → sem flags skip silente; com flags enum `Backlog` único — algoritmo completo em `/triage` SKILL → passo 5).
    - As partes não-vazias entram em **um único** bloco extra (revisor `code` + micro-commit). Sem confirmação adicional sobre as capturas — operador foi informado a cada detecção.
    - Caso especial: papel `backlog` = "não temos" → lista de backlog vira relato final (sem registro persistido); lista de validação grava no plano sempre.
 
