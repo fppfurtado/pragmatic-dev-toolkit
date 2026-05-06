@@ -20,6 +20,7 @@ Claude Code plugin para o workflow **flat & pragmatic**: skills genéricas, revi
 | `doc-reviewer` | Agent | Drift entre doc e código: identificadores citados em docs que não existem no repo, cross-refs/anchors quebrados, exemplos/snippets contraditórios. Default em blocos doc-only no `/run-plan`. Stack-agnóstico. |
 | `block_env` | Hook | `PreToolUse` que bloqueia edição direta a `.env` (e variantes), aceitando apenas `.env.example`. |
 | `run_pytest_python` | Hook | `PostToolUse` auto-gated (`.py` + ancestral `pyproject.toml`) que roda pytest após edits e imprime saída só em falha. |
+| `templates/plan.md` | Template | Esqueleto canônico do plano (consumido por `/triage` e `/run-plan`). Referência para autoria manual de planos. |
 
 ## Instalação
 
