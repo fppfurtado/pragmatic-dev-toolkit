@@ -90,24 +90,23 @@ No `## Contexto`:
 
 `BACKLOG.md` **não aparece** em `## Arquivos a alterar` — transições são geridas pelo campo acima e pelo mecanismo do `/run-plan`.
 
-Em `## Arquivos a alterar`, anotação `{reviewer: <perfil>}` no fim do header da subseção orienta o `/run-plan`. Palavra-chave em inglês (mecânica do toolkit). Schema:
+Em `## Arquivos a alterar`, anotação `{reviewer: <perfil>}` no fim do header da subseção orienta o `/run-plan`. Palavra-chave em inglês (mecânica do toolkit). **Single-reviewer é o caso normal** — um bloco, um eixo de revisão, um agent. Schema:
 
 - **Sem anotação** → default `code-reviewer` (exceção: blocos doc-only — ver regra abaixo).
-- **Um perfil** (`{reviewer: code|qa|security|doc}`) → `/run-plan` invoca `code-reviewer`, `qa-reviewer`, `security-reviewer` ou `doc-reviewer`.
-- **Múltiplos perfis** (`{reviewer: code,qa,security}`) → invoca todos os listados, agregando relatórios. Faz sentido quando o bloco toca múltiplos eixos (security/qa/code revisam objetos diferentes do mesmo diff; `code,doc` quando o diff toca código E doc adjacente).
+- **Um perfil** (`{reviewer: code|qa|security|doc}`) → `/run-plan` invoca o agent correspondente.
+- **Múltiplos perfis** (`{reviewer: code,qa}` etc.) → exceção rara para quando o mesmo diff genuinamente merece olhares de eixos diferentes que não cabem em blocos separados. **Preferir separar em blocos** quando viável — bloco por arquivo/agrupamento lógico já tende a isolar eixos naturalmente.
 
 Exemplos:
 
 ```markdown
 ### Bloco 1 — autenticação {reviewer: security}
-### Bloco 2 — endpoint público {reviewer: code,qa,security}
-### Bloco 3 — refactor interno
-### Bloco 4 — atualizar README {reviewer: doc}
+### Bloco 2 — refactor interno
+### Bloco 3 — atualizar README {reviewer: doc}
 ```
 
-Bloco que **contém testes** (saída (i) da heurística de cobertura) recebe `{reviewer: qa}`; reviewer revisa qualidade do teste recém-escrito (caminho feliz, invariantes, edge cases, mock vs real). Para código de produção que mereça olhar combinado de YAGNI + cobertura no mesmo bloco, usar `{reviewer: code,qa}`.
+Bloco que **contém testes** (saída (i) da heurística de cobertura) recebe `{reviewer: qa}`; reviewer revisa qualidade do teste recém-escrito (caminho feliz, invariantes, edge cases, mock vs real).
 
-Bloco **doc-only** (paths todos `.md`/`.rst`/`.txt`) recebe `doc-reviewer` como default — omitir anotação ou usar `{reviewer: doc}` para deixar explícito. Diff que toca código E doc adjacente no mesmo bloco, usar `{reviewer: code,doc}`.
+Bloco **doc-only** (paths todos `.md`/`.rst`/`.txt`) recebe `doc-reviewer` como default — omitir anotação ou usar `{reviewer: doc}` para deixar explícito. Diff que toca código E doc adjacente — preferir separar em dois blocos (`{reviewer: code}` e `{reviewer: doc}`); `{reviewer: code,doc}` no mesmo bloco continua válido como exceção rara quando a separação não faz sentido lógico.
 
 **ADR:** invocar `/new-adr "<título>"` (não duplicar lógica). Reportar e seguir.
 
