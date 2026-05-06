@@ -2,6 +2,8 @@
 
 ## Próximos
 
+- /triage e /run-plan: redundância na descrição do reviewer dispatch — /triage descreve o comportamento do /run-plan ("/run-plan invoca o agent correspondente") em vez de focar só na sintaxe da anotação `{reviewer: ...}` no plano. Flagado pelo `code-reviewer` no Bloco 4 do plano `batch1-tightening-editorial` como finding fora-do-escopo.
+
 ## Em andamento
 
 ## Concluídos
