@@ -8,10 +8,9 @@
 
 ## Em andamento
 
-- plugin: batch 3/B2 — frontmatter declarativo `roles:` nas SKILLs (implementa ADR-003), CLAUDE.md absorve regra de despacho automático, skills removem prosa de Pré-condições enumerando papéis
-
 ## Concluídos
 
+- plugin: batch 3/B2 — frontmatter declarativo `roles:` nas SKILLs (implementa ADR-003), CLAUDE.md absorve regra de despacho automático, skills removem prosa de Pré-condições enumerando papéis
 - plugin: batch 3/C1 — eliminar gates de cutucada na fase pré-loop do /run-plan (implementa ADR-002), capturar warnings via trilhos existentes do passo 3.5
 - plugin: batch 3/E3 — extrair `templates/plan.md` centralizado e atualizar /triage e /run-plan para apontar ao template (implementa ADR-001)
 - plugin: batch 2 de refactor de fronteira documental — A1 desduplica papéis philosophy.md ↔ CLAUDE.md, A2 continua mecânica residual de philosophy.md para consumers, B1 declara aplicabilidade condicional em code-reviewer settings.json/infra
