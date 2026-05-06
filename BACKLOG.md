@@ -2,16 +2,15 @@
 
 ## Próximos
 
-- plugin: BACKLOG.md como state-tracker é fonte recorrente de merge artifact — 5 mecanismos defensivos (`/triage` push pós-commit, `/run-plan` precondição 2, `/run-plan` 4.7 auto-rebase, Action `validate-backlog`, `/heal-backlog`) protegem o mesmo problema estrutural: o arquivo mistura curadoria (Próximos) com state-tracking (Em andamento, Concluídos), e dois PRs concorrentes mutam ambos. Reavaliar mover state para git/forge (PR aberto = em andamento, mergeado = concluído) — 4 dos 5 mecanismos viram desnecessários. Mudança grande, exige ADR antes de implementar. Flagado na revisão arquitetural pós-v1.20.0.
+- plugin: BACKLOG.md como state-tracker é fonte recorrente de merge artifact — 5 mecanismos defensivos (`/triage` push pós-commit, `/run-plan` precondição 2, `/run-plan` 3.7 auto-rebase, Action `validate-backlog`, `/heal-backlog`) protegem o mesmo problema estrutural: o arquivo mistura curadoria (Próximos) com state-tracking (Em andamento, Concluídos), e dois PRs concorrentes mutam ambos. Reavaliar mover state para git/forge (PR aberto = em andamento, mergeado = concluído) — 4 dos 5 mecanismos viram desnecessários. Mudança grande, exige ADR antes de implementar. Flagado na revisão arquitetural pós-v1.20.0.
 - /debug → /triage: handoff perde contexto em sessão longa — /debug produz diagnóstico (incluindo ledger de hipóteses) em conversa que cai do contexto antes do operador invocar /triage. Direção possível: /debug passo 6 grava sumário em `.cache/debug-<timestamp>.md` (gitignored) que /triage lê se existir e recente (<24h); ou enriquecer a sugestão final do /debug com snippet pronto de invocação /triage. YAGNI até o pain ser reportado em uso real — registrar para reavaliar. Flagado na revisão arquitetural pós-v1.20.0.
 - Action `validate-backlog` continua GitHub-específica (`gh issue list`/`create`, `gh label create`) após o decoupling forge-agnostic do #27 — projetos consumers em GitLab/outros não têm a guarda pós-merge disponível. Generalização análoga ao #27: substituir chamadas `gh` por mecanismo neutro (script + instruções textuais por forge), possivelmente via ADR "automações forge-agnostic do plugin" antes de implementar. Flagado na revisão arquitetural pós-v1.20.0.
 
 ## Em andamento
 
-- plugin: batch 3/C1 — eliminar gates de cutucada na fase pré-loop do /run-plan (implementa ADR-002), capturar warnings via trilhos existentes do passo 4.5
-
 ## Concluídos
 
+- plugin: batch 3/C1 — eliminar gates de cutucada na fase pré-loop do /run-plan (implementa ADR-002), capturar warnings via trilhos existentes do passo 3.5
 - plugin: batch 3/E3 — extrair `templates/plan.md` centralizado e atualizar /triage e /run-plan para apontar ao template (implementa ADR-001)
 - plugin: batch 2 de refactor de fronteira documental — A1 desduplica papéis philosophy.md ↔ CLAUDE.md, A2 continua mecânica residual de philosophy.md para consumers, B1 declara aplicabilidade condicional em code-reviewer settings.json/infra
 - /triage e /run-plan: redundância na descrição do reviewer dispatch — /triage descreve o comportamento do /run-plan ("/run-plan invoca o agent correspondente") em vez de focar só na sintaxe da anotação `{reviewer: ...}` no plano. Flagado pelo `code-reviewer` no Bloco 4 do plano `batch1-tightening-editorial` como finding fora-do-escopo.
