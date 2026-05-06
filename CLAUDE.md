@@ -68,6 +68,36 @@ Skills treat them differently:
 - Don't introduce a build system, package manager, or test runner for this repo itself. The hooks are runnable Python scripts (`python3 ${CLAUDE_PLUGIN_ROOT}/hooks/<script>.py`); the rest is markdown.
 - From v1.11.0 onward, version bumps in **this** repo go through `/release` — keep the loop closed by dogfooding rather than editing manifests by hand.
 
+## AskUserQuestion mechanics
+
+Concrete shape for the `AskUserQuestion` tool when used by skills (philosophy and choice criterion in `docs/philosophy.md` → "Convenção de pergunta ao operador"):
+
+- **Header** (chip/tag): ≤ 12 chars. Examples: `Commit`, `Backlog`, `Publicar`, `Branch`.
+- **Options**: 2-4 per question. `Other` is automatic — never list it explicitly. Each option carries a concrete trade-off in `description` (cost, maintenance, virtue delivered); description-obvious like "choose A" signals a cosmetic enum.
+- **Multiple related questions** in a single call: up to 4 (`questions` array).
+- **`multiSelect: true`** when the choices are not mutually exclusive (e.g., picking gitignored files to replicate into a worktree).
+- **Recommended option**: place first and append "(Recommended)" to the label.
+
+## Plugin component naming and hook auto-gating
+
+Skills and hooks stack-specific coexist with generic components in the same plugin. The name carries the contract:
+
+| Type | Generic | Stack-specific |
+|------|---------|----------------|
+| Hook (script) | `<purpose>.py\|.sh` (e.g., `block_env.py`) | `<purpose>_<stack>.py\|.sh` (e.g., `run_pytest_python.py`) |
+| Skill (frontmatter `name`) | `<verb>-<artifact>` (e.g., `new-adr`) **or** `<verb>` when the artifact emerges from the skill's decision (e.g., `triage`) | `<verb>-<artifact>-<stack>` (e.g., `gen-tests-python`) |
+| Agent (frontmatter `name`) | `<role>` (e.g., `code-reviewer`, `qa-reviewer`, `security-reviewer`) | `<role>-<stack>` (only if principles change with the stack) |
+
+Skill whose output is fixed (always produces an ADR, always executes a plan) carries `<verb>-<artifact>` — the name promises the output. Skill whose output is decided per invocation among multiple options (e.g., `/triage` decides among backlog line, plan, ADR, or domain update) carries only `<verb>` — a fixed suffix would lie about what comes out.
+
+**Hook auto-gating triplo** (a hook fires in every project where the plugin is installed, so the gating is non-negotiable for safe shipping):
+
+1. **File extension** — `if not file_path.endswith(".py"): exit 0` filters most cases at zero cost.
+2. **Stack marker** — walk ancestors looking for `pyproject.toml` (Python), `build.gradle*`/`pom.xml` (JVM), etc. No marker → `exit 0`.
+3. **Toolchain** — only run the tool (`uv run pytest`, `gradle test`) with reasonable fallback; if the toolchain isn't installed, `exit 0`.
+
+This makes it safe to ship `run_pytest_python.py` alongside `run_gradle_test_java.sh` in the same plugin: each hook is silent in projects outside its stack, with no flags or env vars to disable.
+
 ## Pragmatic Toolkit
 
 Consumer projects declare path-contract variants in a fenced YAML block marked by the HTML comment below. Skills search for the marker; absence = all canonical defaults.

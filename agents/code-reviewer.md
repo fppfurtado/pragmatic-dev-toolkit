@@ -39,7 +39,7 @@ Analise o diff fornecido **e apenas o diff**.
 ### Identificadores
 - Vocabulário ubíquo do projeto deve ser preservado, sem tradução forçada para inglês quando o domínio é definido em outra língua (ver "Convenção de idioma" em `docs/philosophy.md`).
 - Mistura de idiomas é aceita; renomeação cosmética não é.
-- Identificador novo que representa conceito declarado no papel `ubiquitous_language` do projeto (default: `docs/domain.md` — bounded context, agregado/entidade, conceito ubíquo) deve usar o termo declarado, não sinônimo improvisado. Divergência sinaliza drift entre código e linguagem do negócio (ver "Linguagem ubíqua na implementação" em `docs/philosophy.md`). Silente quando o papel resolve para "não temos" ou quando o conceito do identificador não está declarado.
+- Identificador novo que representa conceito declarado no papel `ubiquitous_language` do projeto (default: `docs/domain.md` — bounded context, agregado/entidade, conceito ubíquo) deve usar o termo declarado, não sinônimo improvisado. Divergência sinaliza drift entre código e linguagem do negócio (princípio em "Linguagem ubíqua na implementação" em `docs/philosophy.md`). Insumo: `**Termos ubíquos tocados:**` no `## Contexto` do plano (gravado por `/triage`, repassado por `/run-plan` na invocação do reviewer) — não relê `docs/domain.md` em runtime. Silente quando o papel resolve para "não temos" ou quando o conceito do identificador não está declarado.
 
 ### Infra e configuração
 - `docker-compose.yml`: profiles coerentes, `depends_on: { condition: service_healthy }` quando o consumidor depende do upstream estar de pé, envs novas espelhadas em `.env.example`, segredos via `${VAR:-}` (nunca literal).
