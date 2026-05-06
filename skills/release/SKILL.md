@@ -97,7 +97,7 @@ Disparar **apenas** se papel resolvido. "Não temos" → skip silente.
    Caso degenerado (ambos os papéis desativados): apenas Commit + Tag.
 
 5. **Gate único** via `AskUserQuestion` (header `Release`) com três opções:
-   - **`Aplicar`** — executa: (a) escrever cada `version_file`; (b) inserir entrada no changelog; (c) `git add <paths-específicos>` (**não** `git add -A` — risco de capturar arquivos não-relacionados); (d) `git commit -m "<msg>"`; (e) `git tag -a <tag> -m "Release <tag>"`.
+   - **`Aplicar`** — verificar HEAD: rodar `git symbolic-ref --short HEAD`. Se falha (detached) ou difere do branch da pré-condição 2, recovery proativo — `git status --porcelain`; se não-vazio, `git stash push -m "release v<X.Y.Z> auto-stash"`; depois `git checkout <branch-da-pré-condição-2>`; reportar ao operador a ref-atual encontrada, o branch esperado, e o nome da stash se criada (operador roda `git stash pop` manualmente após release se desejar). Em seguida, executar em sequência: (a) escrever cada `version_file`; (b) inserir entrada no changelog; (c) `git add <paths-específicos>` (**não** `git add -A` — risco de capturar arquivos não-relacionados); (d) `git commit -m "<msg>"`; (e) `git tag -a <tag> -m "Release <tag>"`.
    - **`Editar`** — prosa livre. Operador descreve ajuste em qualquer elemento (bullet do changelog, mensagem do commit, nome da tag). Skill aplica no rascunho em memória, volta ao item 4 e re-pergunta.
    - **`Cancelar`** — abort silente. Nada para reverter em disco. Reportar.
 
