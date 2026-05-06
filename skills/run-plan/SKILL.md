@@ -5,9 +5,9 @@ description: Executa plano de docs/plans/<slug>.md em worktree isolada, com micr
 
 # run-plan
 
-Executa um plano produzido por `/triage` (ou escrito à mão) seguindo a disciplina **worktree isolada → micro-commit por bloco → revisão dirigida → gate final**. Importa a parte boa de execução disciplinada (worktree, commits granulares, gate antes de declarar done) sem o overhead documental (spec separado, two-stage review universal, plano gigante).
+Executa um plano produzido por `/triage` (ou escrito à mão) seguindo a disciplina **worktree isolada → micro-commit por bloco → revisão dirigida → gate final**. Importa execução disciplinada (worktree, commits granulares, gate antes do done) sem overhead documental.
 
-Esta skill **executa** mudanças. Deve ser chamada explicitamente pelo operador, após o plano estar revisado.
+Esta skill **executa** mudanças. Chamar explicitamente após o plano estar revisado.
 
 ## Argumentos
 
@@ -17,138 +17,127 @@ Slug do plano (filename em `<plans_dir>/<slug>.md` sem o `.md`, default `docs/pl
 /run-plan exportar-movimentos-csv
 ```
 
-Se o slug não corresponder a nenhum arquivo, parar e listar os planos disponíveis.
+Slug sem arquivo correspondente → parar e listar planos disponíveis.
 
 ## Pré-condições
 
-Paths e comandos abaixo seguem a **Resolução de papéis** (ver `docs/philosophy.md`): default canonical → bloco `<!-- pragmatic-toolkit:config -->` no CLAUDE.md → pergunta ao operador.
+Paths e comandos seguem a **Resolução de papéis** (ver `docs/philosophy.md`): default canonical → bloco `<!-- pragmatic-toolkit:config -->` no CLAUDE.md → pergunta ao operador. Headers de plano são citados em PT-BR canonical (`## Arquivos a alterar`, `## Verificação end-to-end`, etc.); planos em outro idioma usam matching semântico (`## Files to change`, `## End-to-end verification`, ...).
 
-Headers de plano (`## Arquivos a alterar`, `## Verificação end-to-end`, `## Verificação manual`, `## Contexto`, `## Resumo da mudança`) são citados em PT-BR canonical. Em planos escritos em outro idioma, fazer **matching semântico** pelo equivalente lingüístico (`## Files to change`, `## End-to-end verification`, etc.) — ver "Convenção de idioma" em `docs/philosophy.md`.
+Falha de qualquer pré-condição → parar e reportar.
 
-1. `<plans_dir>/<slug>.md` existe e tem `## Arquivos a alterar` (papel: `plans_dir`, default: `docs/plans/`).
-2. **Estado git dos artefatos de alinhamento** — checagem em duas camadas via `git status --porcelain`:
-   - **Bloquear** se `<plans_dir>/<slug>.md` estiver modificado ou untracked. Broken-by-construction: worktree é criada a partir do HEAD e não veria o plano que deveria executar. Mensagem direta ao operador: commitar o plano antes de prosseguir (ou usar `/triage` que já propõe o commit no passo 6). Não tentar contornar copiando o plano manualmente para a worktree.
-   - **Bloquear** se `git log origin/<branch-atual>..HEAD` retornar commits E o arquivo do papel `backlog` contiver linha em `## Em andamento` — sinal de que o commit de triage com a transição Próximos → Em andamento não foi empurrado ao remote. Mensagem ao operador: empurrar main antes de criar a worktree (`git push`) para evitar merge artifact no BACKLOG.md após integração do PR. Não criar a worktree sem o push.
-   - **Cutucar** (não bloquear) se papéis de alinhamento — arquivos resolvidos pelos papéis `backlog`, `ubiquitous_language`, `design_notes`, ou qualquer arquivo sob `decisions_dir` — tiverem alterações uncommitted. A worktree perde esse contexto e reviewers podem não ver invariantes/ADRs que o plano assume documentados. Modo: enum via `AskUserQuestion` (header `Alinhamento`) com opções `Commitar agora` (skill aguarda commit antes de prosseguir) e `Continuar mesmo assim` (skill segue, registrando que o operador foi avisado). Mostrar a lista de arquivos sujos na pergunta. Outras alterações uncommitted no working tree (código de exploração, debug) **não** geram aviso — o operador as isolou intencionalmente, é o ponto da worktree.
-3. O gate automático de testes do projeto está verde no branch atual (rodar antes de começar). Default: `make test`. Variante: `test_command` declarado no CLAUDE.md (ex.: `uv run pytest`, `npm test`, `cargo test`). Caminho de decisão: se canonical (`make test`) ausente E operador ainda não declarou `test_command: null` no bloco de config, perguntar uma vez (oferta única de memorização). Em projetos sem suite automatizada (meta-tools, doc-only), `## Verificação end-to-end` do plano substitui o gate — caso de exceção, sinalizado pela ausência de `test_command` resolvido **e** por o plano explicitar essa verificação textual. Se o gate falha: escrever linha `baseline vermelho no branch ao iniciar /run-plan <slug> — investigar antes de re-executar` em `## Próximos` do papel `backlog`; informar o operador; parar. Papel `backlog` = "não temos" → só informar, sem escrita.
-4. A worktree `.worktrees/<slug>/` ainda não existe. Se já existir: escrever linha `worktree .worktrees/<slug> existe de run anterior — remover antes de re-executar` em `## Próximos` do papel `backlog`; informar o operador; parar. Papel `backlog` = "não temos" → só informar, sem escrita.
+1. **Plano existe e tem `## Arquivos a alterar`** (papel: `plans_dir`, default: `docs/plans/`).
 
-Se qualquer pré-condição falhar, parar e reportar ao operador.
+2. **Estado git dos artefatos de alinhamento** (`git status --porcelain`):
+   - **Bloquear** se `<plans_dir>/<slug>.md` está modificado/untracked. Worktree é criada do HEAD e não veria o plano. Mensagem: commitar antes (ou usar `/triage`, que já propõe commit).
+   - **Bloquear** se `git log origin/<branch-atual>..HEAD` retornar commits E o arquivo do papel `backlog` tem linha em `## Em andamento` — sinal de que o triage com transição Próximos→Em andamento não foi empurrado. Mensagem: `git push` antes da worktree (evita merge artifact em BACKLOG.md no merge do PR).
+   - **Cutucar** (não bloquear) se papéis de alinhamento (`backlog`, `ubiquitous_language`, `design_notes`, ou arquivo sob `decisions_dir`) têm alterações uncommitted — worktree perde esse contexto, reviewers podem não ver invariantes/ADRs assumidos pelo plano. Modo: enum (`AskUserQuestion`, header `Alinhamento`) com `Commitar agora` (skill aguarda) ou `Continuar mesmo assim` (skill segue, registrando aviso). Mostrar lista. Outras alterações uncommitted (código de exploração, debug) **não** geram aviso — operador isolou intencionalmente.
+
+3. **Gate automático verde no branch atual.** Default: `make test`. Variante: `test_command` no CLAUDE.md. Se canonical ausente E operador não declarou `test_command: null`, perguntar uma vez (oferta única de memorização). Projetos sem suite (`test_command: null` E plano traz `## Verificação end-to-end`) → baseline vira inspeção textual dessa seção. Gate falha → escrever em `## Próximos` do papel `backlog` linha tipo `baseline vermelho no branch ao iniciar /run-plan <slug> — investigar`; informar; parar. Papel `backlog` = "não temos" → só informar.
+
+4. **Worktree `.worktrees/<slug>/` não existe.** Se existir → escrever em `## Próximos` linha tipo `worktree .worktrees/<slug> existe de run anterior — remover antes de re-executar`; informar; parar. Papel `backlog` = "não temos" → só informar.
 
 ## Passos
 
 ### 1. Setup da worktree
 
 1. `git worktree add .worktrees/<slug> -b <slug>` a partir do branch atual.
-2. **Replicar gitignored files essenciais**:
-   - Se `.worktreeinclude` existe na raiz do repo: ler (1 path por linha, comentários com `#`) e copiar cada path do repo origem para a worktree. **Cópia, não symlink** — a worktree precisa ser realmente isolada.
-   - Se não existe e o operador ainda não declarou explicitamente que não precisa, propor criação **uma vez por projeto** via enum (`AskUserQuestion`, header `Worktree`, `multiSelect: true`) listando os gitignored em uso aparente (`.env`, dbs locais, fixtures não versionadas) como opções selecionáveis. Operador pode escolher múltiplos. Sem seleção → o passo é pulado e a skill avisa que o gate baseline pode falhar por dependências locais ausentes.
-   - **Gatilho cruzado de validação manual** (independente do estado prévio do `.worktreeinclude`): se o plano corrente tem `## Verificação manual` (matching semântico aceitando equivalente em outro idioma) E a raiz do repo tem gitignored típicos de credencial/config local (`.env`, `*.local.yaml`, `*.local.yml`, `secrets.*`), checar se cada um está coberto pelo `.worktreeinclude` aplicado. Para os não cobertos, **cutucar o operador** via enum (`AskUserQuestion`, header `Credencial`, opções `Replicar agora` e `Seguir sem replicar`); a pergunta cita o nome da credencial e o motivo (validação manual provavelmente exige serviço real). `Replicar agora` → adicionar ao `.worktreeinclude` (criar se não existir) e copiar; `Seguir sem replicar` → registrar que o operador foi avisado e prosseguir. O gatilho silencia estado prévio: `.worktreeinclude` ausente porque o operador disse "não preciso" antes **não** suprime a checagem quando `## Verificação manual` está presente — o contexto mudou (plano corrente exige serviço real).
-3. `cd` na worktree. Sincronizar dependências executando o gerenciador idiomático da stack (ex.: `uv sync` Python, `npm ci` Node, `cargo fetch` Rust, `mvn install` Java). Stack inferida pelo marker do projeto. Rodar o `test_command` resolvido como baseline (default: `make test`). **Abortar se falhar** — o plano não roda em cima de testes vermelhos. Ao abortar (falha de install ou baseline vermelho): escrever linha descritiva em `## Próximos` do papel `backlog` antes de parar — ex.: `install de dependências falhou na worktree de <slug> — verificar ambiente` ou `baseline vermelho na worktree de <slug> ao iniciar — investigar`. Papel `backlog` = "não temos" → só informar, sem escrita. Quando `test_command` resolve para "não temos" e o plano traz `## Verificação end-to-end`, o baseline vira inspeção textual conforme essa seção descreve.
+
+2. **Replicar gitignored essenciais:**
+   - `.worktreeinclude` existe → ler (1 path por linha, `#` para comentário) e copiar cada path para a worktree (cópia, não symlink — isolamento real).
+   - Não existe E operador não declarou que não precisa → propor criação **uma vez por projeto** via enum (`AskUserQuestion`, header `Worktree`, `multiSelect: true`) listando gitignored em uso aparente (`.env`, dbs locais, fixtures não versionadas). Sem seleção → pular passo, avisar que baseline pode falhar por dependências locais ausentes.
+   - **Gatilho cruzado de validação manual** (independe do estado prévio): plano tem `## Verificação manual` E raiz do repo tem gitignored típico de credencial/config local (`.env`, `*.local.yaml`, `secrets.*`) não coberto pelo `.worktreeinclude` aplicado → **cutucar** via enum (header `Credencial`, opções `Replicar agora` / `Seguir sem replicar`); citar nome da credencial e motivo (validação manual provavelmente exige serviço real). `Replicar agora` → adicionar ao `.worktreeinclude` (criar se necessário) e copiar. Estado prévio "não preciso" **não silencia** este gatilho — contexto mudou (plano corrente exige serviço real).
+
+3. **Sincronizar e baseline.** `cd` na worktree. Sincronizar dependências com o gerenciador idiomático da stack (`uv sync`, `npm ci`, `cargo fetch`, `mvn install`, ...) — stack inferida pelo marker do projeto. Rodar `test_command` resolvido como baseline. Falhar (install ou baseline vermelho) → escrever linha descritiva em `## Próximos` do `backlog` (ex.: `baseline vermelho na worktree de <slug> — investigar`); informar; parar. Papel `backlog` = "não temos" → só informar. `test_command` = "não temos" + plano com `## Verificação end-to-end` → baseline é inspeção textual dessa seção.
 
 ### 2. Sanity check de escopo
 
-Releia `## Contexto` e `## Resumo da mudança` do plano. Se houver menção a superfícies externas (configuração, ambiente, infraestrutura, compose, deploy, webhook, integração externa, `.env`) **que não aparecem em `## Arquivos a alterar`**, **avisar o operador** (cutucar, não bloquear) — o plano pode estar incompleto. Modo: enum via `AskUserQuestion` (header `Escopo`) com opções `Continuar mesmo assim` e `Pausar para ajustar plano`; a pergunta cita a superfície detectada.
+Reler `## Contexto` e `## Resumo da mudança` do plano. Menção a superfície externa (configuração, ambiente, infraestrutura, compose, deploy, webhook, integração externa, `.env`) **ausente em `## Arquivos a alterar`** → **avisar** (cutucar, não bloquear) via enum (header `Escopo`) com `Continuar mesmo assim` / `Pausar para ajustar plano`; citar superfície detectada.
 
 ### 3. Loop por bloco de `## Arquivos a alterar`
 
-**Antes do primeiro bloco:** capturar `**Linha do backlog:** <texto>` do `## Contexto` do plano se presente. Se a linha está em `## Próximos` do arquivo do papel `backlog`, mover automaticamente para `## Em andamento`, informar o operador, e aplicar o edit no arquivo do backlog antes do primeiro bloco (edit entra no commit do primeiro bloco). Plano sem o campo, linha não localizada, papel `backlog` "não temos" → skip silente sem mencionar (vale para esta transição e para a do passo 4.4). Ver `docs/philosophy.md` → "Ciclo de vida do backlog".
+**Antes do primeiro bloco:** capturar `**Linha do backlog:** <texto>` do `## Contexto` se presente. Linha em `## Próximos` do `backlog` → mover para `## Em andamento`, informar, aplicar edit antes do primeiro bloco (entra no commit do bloco 1). Plano sem campo, linha não localizada, papel `backlog` "não temos" → skip silente (vale aqui e no passo 4.4).
 
-**Captura automática — dois modos:**
-- **Imediata (pre-loop):** bloqueios nas pré-condições 3/4 e no passo 1 (baseline vermelho, worktree órfã, falha de setup) geram captura antes de parar — a skill escreve a linha no papel `backlog` e para. Mecânica descrita in situ em cada pré-condição/passo.
-- **Deferida (execução + validação):** ao longo do passo 3 e do passo 4.2, o agente acumula gatilhos de imprevistos detectados automaticamente e materializa tudo no gate final. Lista, gatilhos e materialização em 4.5.
+**Captura automática.** Dois modos:
+- **Imediata (pre-loop):** bloqueios em pré-condições 3/4 e passo 1 (baseline vermelho, worktree órfã, falha de setup) escrevem captura no `backlog` antes de parar — mecânica in situ.
+- **Deferida:** durante passos 3 e 4.2, agente acumula gatilhos e materializa no gate final (passo 4.5).
 
 Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento lógico):
 
-1. **Implementar** as mudanças descritas no bloco.
-2. **Rodar o `test_command` resolvido** uma vez no fim do bloco (não a cada arquivo). Se `test_command` é "não temos", aplicar a verificação textual definida no plano.
-3. **Escolher o(s) revisor(es)** lendo a anotação `{reviewer: ...}` no header do bloco. Schema completo em `docs/philosophy.md` → "Anotação de revisor em planos". Resumo operacional:
-   - Sem anotação → `code-reviewer` (incluído neste plugin).
-   - `{reviewer: code}` → `code-reviewer`.
-   - `{reviewer: qa}` ou `{reviewer: security}` → `qa-reviewer` ou `security-reviewer` (incluídos neste plugin; projeto consumidor pode sobrescrever com `.claude/agents/<nome>.md`, que vence por convenção Claude Code).
-   - `{reviewer: code,qa,security}` (múltiplos perfis) → invocar **todos** os perfis listados, em qualquer ordem, agregando relatórios.
-   - Exemplo canônico: `### Bloco 1 — auth.py {reviewer: security}`.
-4. **Aplicar correções** levantadas pelo(s) revisor(es) antes de prosseguir.
-5. **Micro-commit** seguindo a **convenção de commits do projeto consumidor** (ver `docs/philosophy.md` → "Convenção de commits"): política explícita declarada → padrão observado no histórico (`git log`) → default canonical Conventional Commits em inglês. **Um commit por bloco**. Como regra, evitar `--amend` e rebase — micro-commits revertíveis são o ponto. Exceção localizada: corrigir o último commit ainda dentro do bloco corrente quando faz sentido (typo na mensagem, arquivo esquecido no stage, footer faltando). Commits de blocos já fechados ficam intocados.
+1. **Implementar** as mudanças.
+2. **Rodar `test_command`** uma vez no fim do bloco. "Não temos" → aplicar verificação textual do plano.
+3. **Escolher revisor** lendo anotação `{reviewer: ...}` no header. Schema completo em `docs/philosophy.md` → "Anotação de revisor em planos". Resumo:
+   - Sem anotação ou `{reviewer: code}` → `code-reviewer`.
+   - `{reviewer: qa}` ou `{reviewer: security}` → agent correspondente (project-level `.claude/agents/<nome>.md` sobrescreve via convenção Claude Code).
+   - `{reviewer: code,qa,security}` → invocar **todos**, agregando relatórios.
+   - Exemplo: `### Bloco 1 — auth.py {reviewer: security}`.
+4. **Aplicar correções** dos revisores antes de prosseguir.
+5. **Micro-commit** seguindo a convenção do projeto (ver `docs/philosophy.md` → "Convenção de commits"; default canonical Conventional Commits em inglês). **Um commit por bloco**. Evitar `--amend`/rebase — micro-commits revertíveis são o ponto. Exceção localizada: corrigir o último commit ainda dentro do bloco corrente (typo, arquivo esquecido, footer faltando). Commits de blocos já fechados ficam intocados.
 
 ### 4. Gate final
 
-1. Rodar o `test_command` resolvido integralmente (gate automático sempre que houver). Quando `test_command` é "não temos", o gate é a inspeção textual de `## Verificação end-to-end` do plano.
-2. **Plano com `## Verificação manual`**: ler os passos ao operador e **aguardar confirmação explícita** ("ok, valido") antes de prosseguir. Sem confirmação, a skill não fecha. Durante o diálogo, observar gatilhos de captura automática conforme passo 4.5 (alimentando a mesma lista do passo 3) sem interromper a validação.
-3. **Sanity check de documentação** — antes de declarar done, validar consistência das docs `.md` user-facing com o que foi implementado:
-   - **Skip silente** se o plano já listou pelo menos um arquivo `.md` **user-facing** em `## Arquivos a alterar` e o diff agregado dos blocos o tocou — padrões que contam: `README*`, `CHANGELOG*`, `install.md`, `docs/install.md`, `docs/guides/**`. Arquivos `.md` de implementação (skills, agents, hooks, philosophy) não ativam o skip; o gate continua e pergunta sobre docs.
-   - **Skip silente** se o `## Resumo da mudança` não menciona nenhuma das categorias concretas de superfície user-facing (CLI/flag nova, env var nova, endpoint novo, comportamento perceptível, integração externa, alteração de instalação/configuração). Refactor puro / internal-only não precisa do check.
-   - Caso contrário, **cutucar** (não bloquear) via enum (`AskUserQuestion`, header `Docs`) com opção única `Sim, consistente` — Other absorve naturalmente a lista de arquivos `.md` que o operador queira atualizar. A pergunta cita a superfície user-facing inferida do plano e os candidatos típicos (README, install, docs internas); `CHANGELOG` fica de fora porque é responsabilidade do `/release`. Se o operador listar updates via Other, tratá-los como **bloco extra** (implementar → `test_command` → revisor `code` → micro-commit) e só então declarar done.
-4. **Transição final do backlog** — se a referência `**Linha do backlog:**` foi capturada no início do passo 3 E a linha está em `## Em andamento` (ou ainda em `## Próximos`, caso a transição inicial não tenha ocorrido), mover automaticamente para `## Concluídos`, informar o operador, e aplicar como **bloco extra** (atualizar arquivo do papel `backlog` → revisor `code` → micro-commit) antes de seguir para o passo 4.5. Linha não localizada (sumiu desde o registro) → skip silente. Sem referência capturada (plano sem o campo, papel `backlog` "não temos") → skip silente. Ver `docs/philosophy.md` → "Ciclo de vida do backlog".
-5. **Captura automática de imprevistos** — materializar a lista mantida desde o início do passo 3 (alimentada também durante a validação manual no passo 4.2). Gatilhos prescritos:
+1. **Gate automático.** Rodar `test_command` integralmente. "Não temos" → inspeção textual de `## Verificação end-to-end`.
 
-   **Durante a execução dos blocos (passo 3):**
-   - **Falha contornada** — `test_command` (ou verificação textual equivalente) falha e o agente segue contornando (skip de teste, retry frágil, fallback ad-hoc) sem solucionar a causa-raiz.
-   - **Finding fora-do-escopo** — reviewer (`code`, `qa`, `security`) levanta problema real que não pertence ao bloco corrente nem ao plano corrente.
-   - **Hook bloqueando** — hook do plugin retorna exit ≠ 0 sinalizando gap real (não bloqueio esperado já absorvido pela mecânica do hook); agente pivota e segue.
-   - **Superfície faltante** — sanity check de escopo do passo 2 detecta menção a superfície externa em `## Contexto`/`## Resumo da mudança` que não aparece em `## Arquivos a alterar`, e o operador escolhe `Continuar mesmo assim`.
+2. **Validação manual.** Plano com `## Verificação manual` → ler passos ao operador, **aguardar confirmação explícita** ("ok, valido"). Sem confirmação, não fechar. Durante o diálogo, observar gatilhos de captura (passo 4.5) sem interromper.
 
-   *(Bloqueios de pré-condição e passo 1 — baseline vermelho, worktree órfã, falha de setup — geram captura imediata descrita in situ; não alimentam esta lista deferida.)*
+3. **Sanity check de docs user-facing.** Antes do done:
+   - **Skip** se o plano já listou `.md` user-facing (`README*`, `CHANGELOG*`, `install.md`, `docs/install.md`, `docs/guides/**`) em `## Arquivos a alterar` E o diff agregado o tocou. Arquivos `.md` de implementação (skills, agents, hooks, philosophy) **não** ativam o skip.
+   - **Skip** se `## Resumo da mudança` não menciona superfície user-facing (CLI/flag nova, env var nova, endpoint novo, comportamento perceptível, integração externa, instalação/configuração).
+   - **Cutucar** caso contrário via enum (header `Docs`, opção única `Sim, consistente`; Other absorve a lista de arquivos a atualizar). Citar superfície inferida e candidatos típicos (README, install, docs internas). `CHANGELOG` fica fora (responsabilidade do `/release`). Updates listados via Other → bloco extra (implementar → `test_command` → revisor `code` → micro-commit) antes do done.
 
-   **Durante a validação manual (passo 4.2):**
-   - **Divergência do plano** — operador reporta comportamento que diverge do esperado por `## Verificação manual`.
-   - **Bug colateral** — operador menciona bug menor não relacionado ao gate corrente.
+4. **Transição final do backlog.** `**Linha do backlog:**` capturada no passo 3 E linha em `## Em andamento` (ou ainda em `## Próximos`, se a transição inicial não ocorreu) → mover para `## Concluídos`, informar, aplicar como **bloco extra** (atualizar `backlog` → revisor `code` → micro-commit) **antes** do passo 4.5. Linha não localizada ou referência não capturada → skip silente.
 
-   **Política de gravação:** classificar no momento da captura em dois tipos:
+5. **Captura automática de imprevistos.** Materializar a lista mantida desde o passo 3.
 
-   - **Validação** — item cuja resolução é pré-requisito para declarar a feature done: cenário não exercitado descoberto na execução, divergência do plano (comportamento observado diferente do esperado por `## Verificação manual`), gap de passo de verificação, reviewer pulado sem justificativa. Mensagem ao operador: `"capturei para verificação: <linha>"`.
-   - **Backlog** — item independente do gate corrente: feature/fix/doc/regra nova, bug colateral (não relacionado ao gate corrente), finding fora-do-escopo do plano, gap operacional sinalizado por hook. Mensagem ao operador: `"capturei no backlog: <linha>"`.
+   **Gatilhos durante execução (passo 3):**
+   - **Falha contornada** — `test_command` (ou verificação textual) falha e o agente segue contornando (skip de teste, retry frágil, fallback ad-hoc) sem solucionar a causa-raiz.
+   - **Finding fora-do-escopo** — reviewer levanta problema real fora do bloco/plano corrente.
+   - **Hook bloqueando** — hook do plugin retorna exit ≠ 0 sinalizando gap real; agente pivota e segue.
+   - **Superfície faltante** — passo 2 detectou superfície externa em Contexto/Resumo ausente em `## Arquivos a alterar` e o operador escolheu `Continuar mesmo assim`.
 
-   Sinal explícito do operador vence a classificação automática: se o operador instruir o destino ("registra no backlog X", "registra no plano Y"), obedecer sem questionar. O intervalo entre o aviso e a materialização final é a janela onde o operador pode dizer em prosa "descarta esse" — agente respeita e remove da lista.
+   *(Bloqueios de pré-condição 3/4 e passo 1 — baseline vermelho, worktree órfã, falha de setup — geram captura imediata in situ; não alimentam esta lista.)*
 
-   **No gate final:**
-   - **Ambas as listas vazias** → skip silente (ver `docs/philosophy.md` → "Convenção de pergunta ao operador").
-   - **Lista de validação não-vazia** → parte do bloco extra: escrever seção `## Pendências de validação` no arquivo do plano corrente (adicionar ao final; criar a seção se não existe), uma linha por item.
-   - **Lista de backlog não-vazia** → parte do bloco extra: escrever uma linha por item em `## Próximos` do arquivo do papel `backlog`; **aplicar consolidação** seguindo `docs/philosophy.md` → "Consolidação do backlog" (única pergunta admitida no passo é o enum `Backlog` da consolidação, condicional a flags).
-   - As duas partes entram num único revisor `code` e micro-commit. Sem pergunta de confirmação sobre as capturas em si — operador já foi informado a cada detecção.
+   **Gatilhos durante validação manual (passo 4.2):**
+   - **Divergência do plano** — operador reporta comportamento divergente do esperado por `## Verificação manual`.
+   - **Bug colateral** — operador menciona bug não relacionado ao gate corrente.
 
-   **Caso especial:** papel `backlog` resolveu para "não temos" → lista de backlog vira relato final ao operador (sem registro persistido). Lista de validação é gravada no plano independentemente do estado do papel `backlog`.
-6. **Declarar done**.
-7. **Sugestão de publicação** — antes de exibir o enum `Publicar`, detectar divergência em BACKLOG.md:
+   **Classificação no momento da captura:**
+   - **Validação** (pré-requisito para done) — cenário não exercitado, divergência do plano, gap de verificação, reviewer pulado sem justificativa. Mensagem: `"capturei para verificação: <linha>"`. Destino: `## Pendências de validação` no plano corrente (criar se não existe).
+   - **Backlog** (independente do gate) — feature/fix/doc/regra nova, bug colateral, finding fora-do-escopo, gap de hook. Mensagem: `"capturei no backlog: <linha>"`. Destino: `## Próximos` do papel `backlog`.
 
-   **Detecção de divergência em BACKLOG.md**: executar `git fetch origin` e verificar `git log HEAD..origin/main --oneline -- BACKLOG.md`. Sem commits → prosseguir normalmente (enum `Publicar` inalterado).
+   Sinal explícito do operador vence a classificação automática ("registra no backlog X" / "registra no plano Y" / "descarta esse" — operador pode descartar entre o aviso e a materialização).
 
-   Com commits (divergência detectada): tentar `git rebase origin/main` na worktree.
+   **Materialização no gate final:**
+   - Ambas as listas vazias → skip silente.
+   - Lista de validação não-vazia → escrever em `## Pendências de validação` do plano (uma linha por item).
+   - Lista de backlog não-vazia → escrever em `## Próximos` do `backlog`; aplicar consolidação (`docs/philosophy.md` → "Consolidação do backlog").
+   - As partes não-vazias entram em **um único** bloco extra (revisor `code` + micro-commit). Sem confirmação adicional sobre as capturas — operador foi informado a cada detecção.
+   - Caso especial: papel `backlog` = "não temos" → lista de backlog vira relato final (sem registro persistido); lista de validação grava no plano sempre.
 
-   - **Rebase limpo** (sem conflito): informar operador — `"main avançou em BACKLOG.md; rebase aplicado — push usará --force-with-lease"`. Substituir `-u` por `--force-with-lease` nas opções `Push` e `Push + abrir PR` do enum `Publicar`.
-   - **Conflito apenas em BACKLOG.md, seção `## Em andamento`**, E `**Linha do backlog:**` foi capturada no início do passo 3: resolver programaticamente — (a) ler arquivo com conflict markers; (b) do lado `<<<<<<< HEAD`, extrair todos os itens de `## Em andamento`; (c) remover o item que casa exatamente com `**Linha do backlog:**`; (d) manter os demais em Em andamento; (e) adicionar o item removido ao topo de `## Concluídos`; (f) `git add BACKLOG.md && git rebase --continue`. Informar operador — `"conflito de BACKLOG.md em Em andamento resolvido automaticamente; push usará --force-with-lease"`. Substituir `-u` por `--force-with-lease` nas opções do enum `Publicar`.
-   - **Qualquer outro conflito** (outros arquivos em conflito, BACKLOG.md com conflito fora de Em andamento, ou `**Linha do backlog:**` ausente): `git rebase --abort`; avisar operador — `"main divergiu em BACKLOG.md com conflito não-resolvível automaticamente — resolver manualmente antes de fundir"`. Prosseguir para o enum `Publicar` normalmente (push sem force).
+6. **Declarar done.**
 
-   Verificar se há remote configurado (`git remote -v`). Se houver, perguntar ao operador via `AskUserQuestion` (header `Publicar`) com opções:
-   - `Push` — executar `git push -u origin <branch-atual>`.
-   - `Push + abrir PR` — executar `git push -u origin <branch-atual>` seguido de `gh pr create`.
-   - `Nenhum` — encerrar sem ação.
-   Se não houver remote, pular silenciosamente.
+7. **Sugestão de publicação.** Antes do enum `Publicar`, detectar divergência em BACKLOG.md.
 
-A skill termina na worktree com branch da feature após oferecer publicação ao operador.
+   `git fetch origin` e `git log HEAD..origin/main --oneline -- BACKLOG.md`. Sem commits → enum inalterado. Com commits → tentar `git rebase origin/main`:
+
+   - **Rebase limpo:** informar `"main avançou em BACKLOG.md; rebase aplicado — push usará --force-with-lease"`. Substituir `-u` por `--force-with-lease` nas opções `Push` e `Push + abrir PR`.
+   - **Conflito apenas em BACKLOG.md em `## Em andamento`** E `**Linha do backlog:**` foi capturada: resolver programaticamente — (a) ler arquivo com markers; (b) do lado `<<<<<<< HEAD`, extrair itens de Em andamento; (c) remover o que casa exato com `**Linha do backlog:**`; (d) manter os demais; (e) adicionar o removido ao topo de Concluídos; (f) `git add BACKLOG.md && git rebase --continue`. Informar resolução automática e usar `--force-with-lease`.
+   - **Qualquer outro conflito** (outros arquivos, BACKLOG.md fora de Em andamento, ou linha não capturada): `git rebase --abort`; avisar `"main divergiu em BACKLOG.md com conflito não-resolvível automaticamente — resolver manualmente"`. Push sem force.
+
+   Remote configurado (`git remote -v`) → enum (header `Publicar`):
+   - `Push` → `git push -u origin <branch-atual>`.
+   - `Push + abrir PR` → push + `gh pr create`.
+   - `Nenhum` → encerrar sem ação.
+
+   Sem remote → skip silente.
+
+A skill termina na worktree com a branch da feature após oferecer publicação.
 
 ## O que NÃO fazer
 
 - Não declarar done sem confirmação humana **quando o plano exige validação manual**.
 - Não pular revisor, mesmo em bloco trivial.
-- Não tentar resolver merge/rebase no fim — a skill não fecha o branch. Exceção: divergência de BACKLOG.md detectada antes da sugestão de publicação (passo 4.7) — nesse caso, `git rebase origin/main` é executado automaticamente e o conflito de `## Em andamento` é resolvido programaticamente quando: (i) o único arquivo em conflito é BACKLOG.md; (ii) o conflito está restrito à seção `## Em andamento`; (iii) `**Linha do backlog:**` foi capturada. Qualquer outra situação: `git rebase --abort` e aviso ao operador.
-- Não rodar a skill sem o plano revisado e aprovado pelo operador.
-- Não interpretar `{revisor: ...}` (PT) — schema canônico é `{reviewer: ...}` em inglês. Recusar antes de começar o bloco, mensagem indicando o bloco e a anotação ofensora, sugerindo migrar para `{reviewer:}`.
-- Não contornar plano sujo copiando o conteúdo manualmente para dentro da worktree. O bloqueio na pré-condição 2 existe para forçar o commit no branch correto — burlar quebra o histórico do branch da feature.
-- Não pular o sanity check de documentação quando ele se aplica (passo 4.3) — skip só nas duas condições prescritas (`.md` user-facing já no plano e tocados, ou `## Resumo da mudança` sem nenhuma das categorias concretas de superfície user-facing). Em dúvida, perguntar.
-- Não capturar com base em inferência tardia do diff — captura ocorre no momento do gatilho (passo 3 ou 4.2), não em pós-leitura.
-- Não capturar itens que já foram absorvidos pelo plano corrente (escopo creep contido) — backlog é para imprevistos detectados, não para registrar tudo que apareceu.
-- Não pedir confirmação ao operador sobre as capturas em si — política é "informar e seguir".
-- Não silenciar o gatilho cruzado de validação manual (passo 1.2) por estado prévio do `.worktreeinclude` — quando o plano corrente tem `## Verificação manual` e há credencial gitignored típica não coberta, a cutucada é obrigatória independente da cláusula original "uma vez por projeto" ter sido respondida no passado.
-- Não inferir a linha do backlog por matching textual heurístico — `**Linha do backlog:**` ausente é skip silente; presença é match exato. Slug do plano vs. frase da linha não conta como evidência.
-- Não silenciar a transição final (passo 4.4) quando a linha está presente e localizada — a transição é automática; informar o operador é obrigatório.
-- Não inverter a ordem entre transição final (4.4) e captura automática (4.5) — fechar a linha corrente da feature antes de materializar capturas. Eixos distintos, ordem importa.
-- Não rotear para o backlog capturas de validação (cenário não exercitado, divergência do plano, gap de verificação manual) — destino é `## Pendências de validação` no plano corrente.
-- Não informar "capturei no backlog" para item classificado como validação — a mensagem ao operador deve refletir o destino real do item.
+- Não tentar resolver merge/rebase no fim — exceção única em 4.7 quando: (i) único arquivo em conflito é BACKLOG.md; (ii) conflito restrito a `## Em andamento`; (iii) `**Linha do backlog:**` capturada. Qualquer outra situação: `git rebase --abort` e aviso.
+- Não interpretar `{revisor: ...}` (PT) — schema canônico é `{reviewer: ...}` em inglês. Recusar antes de começar o bloco com mensagem indicando bloco e anotação ofensora.
+- Não contornar plano sujo copiando o conteúdo manualmente para a worktree — bloqueio na pré-condição 2 existe para forçar commit no branch correto.
+- Não silenciar o gatilho cruzado de credencial (passo 1.2) por estado prévio do `.worktreeinclude` — quando o plano tem `## Verificação manual` e há credencial gitignored não coberta, a cutucada é obrigatória.
 - Não executar push ou abrir PR sem confirmação explícita via enum `Publicar`.
-- Não exibir o enum `Publicar` quando não há remote configurado — skip silente.
-- Não bloquear sem captura em pré-condição 3 (baseline vermelho), pré-condição 4 (worktree órfã) e passo 1 (falha de setup) — captura imediata no papel `backlog` é obrigatória antes do stop nesses casos. Papel `backlog` = "não temos" → informar operador, não escrever.
-
-## Convenção: `.worktreeinclude`
-
-Ver `docs/philosophy.md` → "Convenção `.worktreeinclude`".

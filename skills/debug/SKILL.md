@@ -7,8 +7,6 @@ description: Diagnostica causa-raiz de sintoma (teste falhando, erro inesperado,
 
 Esta skill enforca **"não corrigir sem isolar a causa"**. Recebe um sintoma e produz um diagnóstico — não escreve código, não cria commit, não aplica instrumentação. Saída é texto na conversa: sintoma observado, reprodução, hipóteses testadas, causa-raiz com evidência, escopo de impacto, caminhos de correção possíveis. O operador decide o caminho depois.
 
-Idioma do diagnóstico: **espelhar o idioma do projeto consumidor** (ver "Convenção de idioma" em `docs/philosophy.md`). Default canonical PT-BR.
-
 ## Argumentos
 
 Sintoma operacionalizável. Exemplos:
@@ -21,24 +19,20 @@ Sintoma vazio ou vago ("não está funcionando", "está bugado") → pedir preci
 
 ## Pré-condições
 
-Paths e comandos seguem **Resolução de papéis** (ver `docs/philosophy.md`): default canonical → bloco `<!-- pragmatic-toolkit:config -->` no CLAUDE.md → pergunta ao operador.
+Paths e comandos seguem **Resolução de papéis** (ver `docs/philosophy.md`). Roles consumidos são todos informacionais — papel ausente nunca é gap report, apenas reduz a base de hipóteses:
 
-Roles consumidos (todos informacionais — nenhum bloqueia a skill):
-
-- `test_command` (default: `make test`): usado para reproduzir teste falhando ou para rodar a suíte que exerce o cenário.
-- `ubiquitous_language` (default: `docs/domain.md`): consultado se o sintoma toca invariantes documentadas (RNxx ou equivalentes).
-- `decisions_dir` (default: `docs/decisions/`): consultado se o sintoma envolve invariantes pós-erro (rollback, retry com efeito colateral, divergência de estado).
-- `design_notes` (default: `docs/design.md`): consultado se o sintoma envolve integração externa.
-
-`/debug` reporta o que tem evidência mesmo com contexto parcial — papel ausente nunca é gap report, apenas reduz a base de hipóteses.
+- `test_command` (default `make test`) — reproduzir teste falhando ou rodar a suíte que exerce o cenário.
+- `ubiquitous_language` (default `docs/domain.md`) — consultar se o sintoma toca invariantes documentadas (RNxx ou equivalentes).
+- `decisions_dir` (default `docs/decisions/`) — consultar se o sintoma envolve invariantes pós-erro (rollback, retry com efeito colateral, divergência de estado).
+- `design_notes` (default `docs/design.md`) — consultar se o sintoma envolve integração externa.
 
 ## Passos
 
 ### 1. Precisar o sintoma
 
-Perguntas de precisão são **prosa livre** — operador descreve em linguagem natural (ver "Convenção de pergunta ao operador" em `docs/philosophy.md`).
+Perguntas de precisão são **prosa livre** — operador descreve em linguagem natural.
 
-Se a entrada é genérica, perguntar antes de hipotetizar:
+Entrada genérica → perguntar antes de hipotetizar:
 
 - Qual ação produz o sintoma (comando, teste, request, fluxo manual)?
 - Output observado vs esperado?
@@ -50,12 +44,12 @@ Sem sintoma operacionalizável, não avançar.
 
 ### 2. Reproduzir
 
-- Sintoma é teste: rodar o `test_command` resolvido restringindo ao teste alvo conforme a sintaxe da stack (filtro por nome em pytest, cargo, jest, go test, etc.).
-- Sintoma é runtime error: identificar input/comando mínimo que dispara o erro.
-- Sintoma intermitente (race condition, flaky test, dependência externa instável): reproduzir N vezes (default 5) e reportar a taxa observada. Análise prossegue mesmo sem reprodução determinística — diagnóstico fica sinalizado como **estatístico**, não determinístico.
-- Não-reprodutível localmente: enumerar os artefatos disponíveis (stack trace, logs, métricas, screenshot), prosseguir com base em evidência indireta e **sinalizar explicitamente** que a análise é especulativa.
+- **Sintoma é teste:** rodar `test_command` resolvido restringindo ao alvo (filtro por nome em pytest, cargo, jest, go test).
+- **Sintoma é runtime error:** identificar input/comando mínimo que dispara.
+- **Sintoma intermitente** (race, flaky, dependência externa): reproduzir N vezes (default 5), reportar taxa observada. Análise prossegue mesmo sem reprodução determinística — diagnóstico fica sinalizado como **estatístico**.
+- **Não-reprodutível localmente:** enumerar artefatos disponíveis (stack trace, logs, métricas, screenshot), prosseguir com evidência indireta e **sinalizar explicitamente** que a análise é especulativa.
 
-Evitar pular para hipótese antes de ver o sintoma com os próprios olhos quando a reprodução é viável.
+Evitar pular para hipótese antes de ver o sintoma com os próprios olhos quando reprodução é viável.
 
 ### 3. Isolar
 
@@ -66,47 +60,46 @@ Estreitar a área suspeita antes de hipotetizar:
 - `git blame` nas linhas relacionadas ao erro.
 - ADRs (`decisions_dir`) se o sintoma envolve invariantes pós-erro.
 - `design_notes` se envolve integração externa com peculiaridades documentadas.
-- `ubiquitous_language` para checar se o comportamento observado fere uma RNxx.
+- `ubiquitous_language` para checar se o comportamento fere uma RNxx.
 
 ### 4. Hipotetizar e testar
 
 Para cada hipótese plausível:
 
 1. **Estado** em uma frase: "X falha porque Y".
-2. **Definir condição que confirma** (o que deve acontecer se a hipótese é verdadeira) e **condição que refuta** (o que deve acontecer se for falsa).
-3. **Observar**: rodar teste, ler código, sugerir instrumentação ao operador (não aplicar).
-4. **Atualizar status**: confirmada / refutada / inconclusiva.
+2. **Condição que confirma** + **condição que refuta** explícitas.
+3. **Observar:** rodar teste, ler código, sugerir instrumentação ao operador (não aplicar).
+4. **Status:** confirmada / refutada / inconclusiva.
 
-Limite: **parar quando duas hipóteses consecutivas forem refutadas sem ganho de evidência nova** (mesmo erro, mesmo escopo, nenhuma pista nova) e reportar o status da investigação ao operador (passo 5, ramo "nenhuma hipótese fechou").
+Limite: **parar após duas hipóteses consecutivas refutadas sem ganho de evidência** (mesmo erro, mesmo escopo, nenhuma pista nova) e reportar status no passo 5 (ramo "nenhuma hipótese fechou").
 
-Manter o ledger das hipóteses (frase + status final + evidência) acessível para o passo 5. Quando ≥2 hipóteses foram examinadas, o ledger entra como campo *Hipóteses testadas* do diagnóstico final.
+Manter ledger das hipóteses (frase + status + evidência) para o passo 5. ≥2 hipóteses examinadas → ledger entra como campo *Hipóteses testadas*.
 
 ### 5. Causa-raiz
 
-Quando uma hipótese é confirmada com evidência, formular o diagnóstico nos campos abaixo:
+Hipótese confirmada com evidência → formular diagnóstico nos campos abaixo:
 
-- **Sintoma:** descrição operacional do que se observa.
-- **Hipóteses testadas:** ledger das hipóteses examinadas no passo 4 — formato por linha `H<n> (<status>): <hipótese em uma frase>. <evidência confirmadora ou refutadora>`. Status canonical: `confirmada` / `refutada` / `inconclusiva`. **Omitir o campo** quando apenas uma hipótese foi testada e confirmada — *Causa-raiz* sozinha basta (espelha "lista vazia → skip silente" em `/run-plan` 4.5).
+- **Sintoma:** descrição operacional.
+- **Hipóteses testadas:** ledger no formato `H<n> (<status>): <hipótese>. <evidência confirmadora/refutadora>`. Status canonical: `confirmada` / `refutada` / `inconclusiva`. **Omitir o campo** quando apenas 1 hipótese foi testada e confirmada — *Causa-raiz* sozinha basta.
 - **Causa-raiz:** arquivo:linha + mecanismo (por que o código se comporta assim).
-- **Evidência:** o que foi observado/rodado que comprova (output do teste, log, comparação git diff, etc.).
-- **Escopo de impacto:** quem mais é afetado pelo mesmo bug? Há outros call-sites, outras invariantes correlacionadas?
-- **Caminhos de correção (não execução):** **um ou mais caminhos** com trade-off explícito — revert do commit X, patch local pequeno (apontar mudança mínima), ou `/triage <intent-do-fix>` se virar mudança maior. No último caso, o diagnóstico completo (incluindo *Hipóteses testadas* quando presente) é insumo natural do `## Contexto` do plano que `/triage` vai produzir. Se a investigação revelar caminho único razoável, declarar **"caminho único razoável"** com motivo (ex.: "revert é a única opção segura porque o commit X introduziu corrupção de dados que se acumula"). Operador decide.
+- **Evidência:** o que foi observado/rodado que comprova (output, log, diff).
+- **Escopo de impacto:** quem mais é afetado? Outros call-sites? Outras invariantes correlacionadas?
+- **Caminhos de correção (não execução):** um ou mais caminhos com trade-off explícito — revert do commit X, patch local pequeno (mudança mínima apontada), ou `/triage <intent>` se for mudança maior. Investigação revelar caminho único razoável → declarar **"caminho único razoável"** com motivo. Operador decide.
 
-Se nenhuma hipótese fechou ao fim do passo 4: o campo *Hipóteses testadas* carrega o ledger completo (refutadas + inconclusivas), *Causa-raiz* é substituída por **palpite atual com nível de confiança baixa explicitado**, e o relato preserva o que foi observado para que `/triage` (se for esse o caminho) tenha base. Evidência incompleta é resultado válido; chute disfarçado de causa-raiz, não.
+Nenhuma hipótese fechou no passo 4 → *Hipóteses testadas* carrega ledger completo (refutadas + inconclusivas); *Causa-raiz* é substituída por **palpite atual com nível de confiança baixa explicitado**; relato preserva observações para `/triage` (se for o caminho) ter base. Evidência incompleta é resultado válido; chute disfarçado de causa-raiz, não.
 
 ### 6. Reportar e devolver controle
 
-Apresentar o diagnóstico do passo 5 em formato curto na conversa e sugerir o **próximo passo** numa frase, escolhido entre:
+Apresentar diagnóstico do passo 5 em formato curto e sugerir **próximo passo** em uma frase:
 
-- **Revert** — quando a investigação isolou o sintoma a um commit específico e o revert é seguro (ex.: "revert de `<hash>` no branch atual").
-- **Patch local** — quando a mudança é cirúrgica e cabe sem alinhamento prévio (ex.: "ajustar `<arquivo>:<linha>` — uma linha; commitar diretamente").
-- **`/triage <intent-do-fix>`** — quando o fix é mudança maior (multi-arquivo, toca invariante/integração, exige plano). O diagnóstico completo entra como insumo do `## Contexto` do plano.
+- **Revert** — investigação isolou sintoma a commit específico e revert é seguro (ex.: "revert de `<hash>` no branch atual").
+- **Patch local** — mudança cirúrgica que cabe sem alinhamento prévio (ex.: "ajustar `<arquivo>:<linha>` — uma linha; commitar diretamente").
+- **`/triage <intent>`** — fix é mudança maior (multi-arquivo, toca invariante/integração, exige plano). Diagnóstico completo (incluindo *Hipóteses testadas* quando presente) entra como insumo do `## Contexto` do plano.
 
 ## O que NÃO fazer
 
-- **Não corrigir.** A skill produz diagnóstico, não código. Passo 6 sugere um próximo passo (revert / patch direto / `/triage`), mas quem dispara é o operador.
-- Não pular a reprodução quando ela é viável — "deve ser X" sem teste é palpite, não diagnóstico.
+- **Não corrigir.** A skill produz diagnóstico, não código. Passo 6 sugere próximo passo (revert / patch / `/triage`), mas quem dispara é o operador. Sem commits, sem edição de arquivos do projeto.
+- Não pular reprodução quando viável — "deve ser X" sem teste é palpite, não diagnóstico.
 - Não declarar causa-raiz sem evidência. Hipóteses inconclusivas são reportadas como tal.
-- Não aplicar instrumentação (print/log temporário) — propor é parte do passo 4; aplicar fica com o operador no workspace dele.
-- Não escrever ADR, plano ou linha de backlog dentro da skill — esses pertencem a `/new-adr` e `/triage`.
-- Não fazer commits nem editar arquivos do projeto.
+- Não aplicar instrumentação (print/log temporário) — propor é parte do passo 4; aplicar fica com o operador.
+- Não escrever ADR, plano ou linha de backlog dentro da skill — pertencem a `/new-adr` e `/triage`.
