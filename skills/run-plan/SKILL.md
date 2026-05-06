@@ -1,6 +1,7 @@
 ---
 name: run-plan
 description: Executa plano de docs/plans/<slug>.md em worktree isolada, com micro-commits, revisor por bloco e gate de validação manual. Use quando há plano pronto e o operador autorizou implementar.
+disable-model-invocation: true
 ---
 
 # run-plan
@@ -65,10 +66,10 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
 
 1. **Implementar** as mudanças.
 2. **Rodar `test_command`** uma vez no fim do bloco. "Não temos" → aplicar verificação textual do plano.
-3. **Escolher revisor** lendo anotação `{reviewer: ...}` no header:
+3. **Escolher revisor** lendo anotação `{reviewer: ...}` no header. Single-reviewer é o caso normal:
    - Sem anotação → default `code-reviewer`. **Exceção**: paths do bloco **não-vazios** e todos com extensão `.md`/`.rst`/`.txt` → default vira `doc-reviewer` (bloco vazio, path sem extensão, ou bloco misto caem na regra default).
    - `{reviewer: code|qa|security|doc}` → agent correspondente (project-level `.claude/agents/<nome>.md` sobrescreve via convenção Claude Code).
-   - Combinações (`{reviewer: code,qa,security}`, `{reviewer: code,doc}`, etc.) → invocar **todos**, agregando relatórios.
+   - Combinações (`{reviewer: code,qa}`, `{reviewer: code,doc}`, etc.) → exceção rara: invoca todos os listados, agregando relatórios. Útil quando o mesmo diff genuinamente merece olhares de eixos diferentes que não cabem em blocos separados.
    - Exemplos: `### Bloco 1 — auth.py {reviewer: security}`; `### Bloco 2 — README {reviewer: doc}`.
 4. **Aplicar correções** dos revisores antes de prosseguir.
 5. **Micro-commit** seguindo a convenção do projeto (ver `docs/philosophy.md` → "Convenção de commits"; default canonical Conventional Commits em inglês). **Um commit por bloco**. Evitar `--amend`/rebase — micro-commits revertíveis são o ponto. Exceção localizada: corrigir o último commit ainda dentro do bloco corrente (typo, arquivo esquecido, footer faltando). Commits de blocos já fechados ficam intocados.
@@ -82,7 +83,7 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
 3. **Sanity check de docs user-facing.** Antes do done:
    - **Skip** se o plano já listou `.md` user-facing (`README*`, `CHANGELOG*`, `install.md`, `docs/install.md`, `docs/guides/**`) em `## Arquivos a alterar` E o diff agregado o tocou. Arquivos `.md` de implementação (skills, agents, hooks, philosophy) **não** ativam o skip.
    - **Skip** se `## Resumo da mudança` não menciona superfície user-facing (CLI/flag nova, env var nova, endpoint novo, comportamento perceptível, integração externa, instalação/configuração).
-   - **Cutucar** caso contrário via enum (header `Docs`, opção única `Sim, consistente`; Other absorve a lista de arquivos a atualizar). Citar superfície inferida e candidatos típicos (README, install, docs internas). `CHANGELOG` fica fora (responsabilidade do `/release`). Updates listados via Other → bloco extra (implementar → `test_command` → revisor `code` → micro-commit) antes do done.
+   - **Cutucar** caso contrário em **prosa livre** (não enum — a maioria das respostas reais é uma listagem de arquivos a atualizar, território de "Other"). Citar a superfície inferida e os candidatos típicos (README, install, docs internas) e pedir resposta livre — `"consistente"` ou listagem dos arquivos a atualizar. `CHANGELOG` fica fora (responsabilidade do `/release`). Resposta listando atualizações → bloco extra (implementar → `test_command` → revisor `code` → micro-commit) antes do done.
 
 4. **Transição final do backlog.** `**Linha do backlog:**` capturada no passo 3 E linha em `## Em andamento` (ou ainda em `## Próximos`, se a transição inicial não ocorreu) → mover para `## Concluídos`, informar, aplicar como **bloco extra** (atualizar `backlog` → revisor `code` → micro-commit) **antes** do passo 4.5. Linha não localizada ou referência não capturada → skip silente.
 

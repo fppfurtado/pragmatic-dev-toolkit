@@ -33,7 +33,7 @@ Pegar os **seis primeiros** itens de `## Próximos` em ordem de aparição (topo
 
 Para cada candidato, buscar evidência no repo (funções, endpoints, modelos, comandos, fluxos correspondentes). Classificar:
 
-- **Evidência forte** — código claro e diretamente mapeável (ex.: item "exportar movimentos em CSV" → handler de export CSV presente e funcional). Mover a linha para `## Concluídos` automaticamente e reportar com justificativa de 1 linha.
+- **Evidência forte** — código claro e diretamente mapeável (ex.: item "exportar movimentos em CSV" → handler de export CSV presente e funcional). Preparar movimentação da linha para `## Concluídos` (escrever no arquivo) e reportar com justificativa de 1 linha. Commit fica para o passo 6.
 - **Evidência fraca** — código parcial, feature similar com escopo diferente, ou inferência incerta. Reportar o que foi encontrado; **não mover** — operador decide.
 - **Sem evidência** — segue como candidato normal.
 
@@ -57,7 +57,17 @@ Reportar em formato curto:
 
 Em seguida, enum (`AskUserQuestion`, header `Próximo`) com as 3 opções nomeadas pelo texto exato da linha + Other (operador digita intenção diferente). Escolha alimenta diretamente `/triage`.
 
-### 6. Continuar com `/triage`
+### 6. Commit das movimentações automáticas
+
+Disparar **apenas** se o passo 3 moveu pelo menos uma linha para `## Concluídos`. Sem movimentações → skip silente.
+
+Mostrar ao operador a lista das linhas movidas e perguntar via enum (`AskUserQuestion`, header `Movimentações`, opções `Confirmar e commitar` / `Reverter movimentações`):
+
+- **`Confirmar e commitar`** → `git commit -m "chore(backlog): mark <N> concluded item(s)"` (mensagem segue a convenção do projeto consumidor; default canonical Conventional Commits em inglês). Push não é forçado — operador pusha quando achar oportuno.
+- **`Reverter movimentações`** → restaurar o arquivo do papel `backlog` ao estado pré-passo-3 (`git restore <path>`). Operador segue para o passo 7 sem mutação persistida.
+- **Other** → equivalente a `Reverter movimentações` (default conservador — operador descreve intenção em prosa subsequente).
+
+### 7. Continuar com `/triage`
 
 Com a intenção confirmada (item escolhido ou texto livre), executar o fluxo de `/triage` a partir do passo 1 — tratando a intenção como argumento. Reaproveitar papéis já resolvidos neste fluxo.
 
@@ -65,4 +75,3 @@ Com a intenção confirmada (item escolhido ou texto livre), executar o fluxo de
 
 - Não apresentar mais de 3 sugestões no top.
 - Não iniciar `/triage` sem escolha explícita do operador.
-- Não implementar nada — esta skill é orientação de sessão, não execução.

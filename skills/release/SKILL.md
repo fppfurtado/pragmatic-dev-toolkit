@@ -1,6 +1,7 @@
 ---
 name: release
 description: Bump de versão em version_files, entrada de changelog, commit unificado e tag anotada local (não faz push). Use quando o operador autorizou publicar release.
+disable-model-invocation: true
 ---
 
 # release
