@@ -44,7 +44,7 @@ Skills consume **roles**, not literal paths. Each role has a canonical default; 
 
 ### Resolution protocol
 
-Each skill resolves the roles it needs before acting, following a single protocol to avoid drift:
+Each skill declares its roles in `roles.required` and `roles.informational` in the frontmatter (ADR-003). The resolution protocol applies to each declared role: required absent follows one of the 3 default behavior tracks below; informational absent → skill proceeds silently (reduces context/hypotheses, never blocks). Special sub-flows (canonical creation via enum, conditionals like `test_command` in `/run-plan`, stack contradiction in `/gen-tests-python`) live in skill prose.
 
 1. **Probe canonical.** Test if the default filename exists (e.g., `docs/domain.md` for `ubiquitous_language`). Probe is exact, no fuzzy matching: `README.md` is not assumed to be `IDEA.md`.
 2. **Consult CLAUDE.md.** If canonical is absent, read consumer's `CLAUDE.md` looking for the `<!-- pragmatic-toolkit:config -->` block. Declared value beats absent canonical.
@@ -55,10 +55,13 @@ Each skill resolves the roles it needs before acting, following a single protoco
 
 ### Required vs informational roles
 
-Skills treat them differently:
+**Required** = skill cannot proceed without the role; **informational** = reduces context/hypotheses, never blocks. Each SKILL declares in frontmatter which role belongs to which category (the same role may have different criticalities in different skills — see ADR-003).
 
-- **Required** — `plans_dir` (where `/run-plan` reads and `/triage` writes plans); `test_command` in `/run-plan` when the plan has no `## Verificação end-to-end`; `decisions_dir` in `/new-adr` (where the ADR is written). Required role absent without alternative → skill must **report a gap rather than guess**. Non-negotiable — fabricating context defeats the alignment-first workflow.
-- **Informational** (skill proceeds without): `product_direction`, `ubiquitous_language`, `design_notes`, ADRs, `backlog`, `test_command` when the plan provides `## Verificação end-to-end`. In `/debug`, **all** consumed roles are informational — absence reduces the hypothesis base, never blocks. In `/gen-tests-python`, `ubiquitous_language` and `design_notes` are informational; absence of `pyproject.toml` makes the skill refuse by stack contradiction (not a role gap). In `/release`, `version_files` and `changelog` are informational — absence reduces release scope (degenerate case: just commit + tag). In `/triage`, `backlog` is informational — absence means no line is recorded (one-shot creation offer on first run).
+**Default behavior for absent required role** (3 tracks; each SKILL declares in prose which one applies when it differs from the default `inform and stop`):
+
+- **Capture immediately + stop** — when the issue is project/setup state. E.g., `/run-plan` precondition 3 (red baseline), 4 (orphan worktree).
+- **Offer canonical creation via enum** — when the role has a clear canonical default and the skill can create it. E.g., `/triage` step 4; `/new-adr` creating `docs/decisions/` on first invocation.
+- **Inform and stop** (default) — when the role is BACKLOG itself (paradox of where to capture) or the skill cannot resolve and the operator must create manually. E.g., `/heal-backlog`/`/next` without `backlog`.
 
 ## Editing conventions
 
