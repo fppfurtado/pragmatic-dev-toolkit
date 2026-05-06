@@ -1,6 +1,6 @@
 ---
 name: new-adr
-description: Cria um novo ADR no diretório de decisões do projeto com numeração automática (formato inferido dos ADRs existentes) e template padronizado. Use quando o usuário pedir um novo ADR ou registrar uma decisão estrutural duradoura.
+description: Cria novo ADR no decisions_dir com numeração inferida e template padronizado. Use quando o operador pedir registro de decisão estrutural duradoura.
 disable-model-invocation: true
 ---
 

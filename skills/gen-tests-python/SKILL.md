@@ -1,6 +1,6 @@
 ---
 name: gen-tests-python
-description: Gera testes pytest para um módulo de um projeto Python, seguindo as convenções pytest + respx + asyncio_mode auto + tmp_path para SQLite. Use quando o projeto for Python e o usuário pedir testes para um módulo ou função.
+description: Gera testes pytest (respx + asyncio_mode auto + tmp_path para SQLite) para módulo de projeto Python. Use quando o projeto for Python e o operador pedir testes.
 ---
 
 # gen-tests-python

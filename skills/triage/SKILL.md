@@ -1,6 +1,6 @@
 ---
 name: triage
-description: Triagem da intenção do operador (feature, fix, refactor, mudança pontual): alinha contexto, levanta gaps e decide qual artefato (linha de backlog, plano, ADR ou atualização de domínio/design) é necessário antes de implementar. Use quando o operador propuser qualquer mudança que ainda não tenha plano ou linha de backlog.
+description: Alinha intenção e decide artefato (backlog, plano, ADR, atualização de domain/design) antes de implementar. Use quando o operador propuser feature, fix ou refactor sem plano nem linha de backlog.
 ---
 
 # triage

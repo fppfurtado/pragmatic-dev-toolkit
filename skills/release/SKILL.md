@@ -1,6 +1,6 @@
 ---
 name: release
-description: Bump de versão coordenado em arquivos declarados, entrada de changelog, commit unificado e tag anotada. Use quando o operador autorizou publicar uma release a partir de commits acumulados desde a última tag.
+description: Bump de versão em version_files, entrada de changelog, commit unificado e tag anotada local (não faz push). Use quando o operador autorizou publicar release.
 ---
 
 # release

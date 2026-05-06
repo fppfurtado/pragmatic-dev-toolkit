@@ -1,6 +1,6 @@
 ---
 name: debug
-description: Diagnostica a causa-raiz de um sintoma (teste falhando, erro inesperado, comportamento divergente) seguindo método científico — precisar sintoma → reproduzir → isolar → testar hipóteses → causa-raiz com evidência. Produz diagnóstico, não fix; o operador escolhe o caminho de correção depois (revert, patch direto, ou /triage para mudança maior). Stack-agnóstico.
+description: Diagnostica causa-raiz de sintoma (teste falhando, erro inesperado, comportamento divergente) por método científico. Produz diagnóstico, não fix. Stack-agnóstico.
 ---
 
 # debug

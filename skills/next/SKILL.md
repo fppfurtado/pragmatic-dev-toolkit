@@ -1,6 +1,6 @@
 ---
 name: next
-description: Identifica os próximos candidatos no backlog, verifica implementação no código e sugere os três de maior impacto estratégico para triagem. Invocável diretamente ou como pré-passo de /triage sem argumento.
+description: Lê o backlog, descarta itens já implementados e sugere top 3 candidatos por impacto estratégico. Invocável direto ou como pré-passo de /triage sem argumento.
 ---
 
 # next
