@@ -61,3 +61,8 @@ Cenários (1) e (2) cobrem ambos os pontos de mudança. Não há surface não-de
 
 - Mudança contida (texto de instrução em duas skills); sem migração, sem impacto em hooks ou agentes.
 - Se atrito recorrente surgir (operador frequentemente copiando comando do exemplo em vez de ter ação automatizada), reavaliar evolução: (a) auto-detect via `git remote -v` casando padrões `github.com`/`gitlab.com`/domínio corporativo; (b) role `forge` no path contract com override explícito. A linha do backlog registra o gancho para reabrir.
+
+## Pendências de validação
+
+- Cenário 1 do `## Verificação manual` (enum `Publicar` neutro) — não exercitável nesta execução porque o próprio `/run-plan` que aplicou as mudanças roda da versão instalada do plugin (sem os diffs). Validar na próxima invocação de `/run-plan` em consumidor com remote configurado, após estas mudanças entrarem em `main` e o plugin local ser atualizado.
+- Cenário 2 do `## Verificação manual` (frase final neutra de `/release`) — observar visualmente na próxima release dogfood deste repo.
