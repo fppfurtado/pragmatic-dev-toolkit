@@ -4,6 +4,8 @@
 
 ## Em andamento
 
+- agent doc-reviewer: revisor genérico de drift entre doc e código (identificadores, cross-refs, exemplos) — quarto reviewer ao lado de code/qa/security; cross-cutting (código+doc); default em blocos .md-only no /run-plan.
+
 ## Concluídos
 
 - /release: após `git checkout <branch-da-pré-condição-2>` no recovery proativo do Aplicar, auto-sync com upstream (`git pull --ff-only` se HEAD atrás do remote) antes da sequência (a)-(e) — evita taggear SHA atrasado em janelas concorrentes onde merge/push remoto aconteceu durante prep da release. Flagado pelo `code-reviewer` como gap de design durante execução do plano `release-head-check-and-action-dedup`.
