@@ -8,6 +8,8 @@
 
 ## Em andamento
 
+- plugin: batch 2 de refactor de fronteira documental — A1 desduplica papéis philosophy.md ↔ CLAUDE.md, A2 continua mecânica residual de philosophy.md para consumers, B1 declara aplicabilidade condicional em code-reviewer settings.json/infra
+
 ## Concluídos
 
 - /triage e /run-plan: redundância na descrição do reviewer dispatch — /triage descreve o comportamento do /run-plan ("/run-plan invoca o agent correspondente") em vez de focar só na sintaxe da anotação `{reviewer: ...}` no plano. Flagado pelo `code-reviewer` no Bloco 4 do plano `batch1-tightening-editorial` como finding fora-do-escopo.
