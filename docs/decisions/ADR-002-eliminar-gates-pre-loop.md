@@ -1,7 +1,7 @@
 # ADR-002: Eliminar gates de cutucada na fase pré-loop do /run-plan
 
 **Data:** 2026-05-06
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 
