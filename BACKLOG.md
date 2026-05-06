@@ -2,13 +2,12 @@
 
 ## Próximos
 
-- CLAUDE.md: ajustar frase "Skills/agents end with an explicit `## O que NÃO fazer` section" — agents reviewer (code/qa/security/doc) não têm essa seção; padrão se aplica apenas a skills. Flagado pelo `code-reviewer` durante execução do plano `agent-doc-reviewer-drift`.
-
 ## Em andamento
 
 ## Concluídos
 
 - plugin: desacoplar de GitHub-específico — `/run-plan` (4.7) chama `gh pr create` no enum `Push + abrir PR`, e `/release` sugere `gh release create` no texto final; consumidores em GitLab (corporativo) ficam sem caminho. Direção mínima: substituir chamada e texto por sugestão neutra ao operador (push + instrução textual com exemplos `gh`/`glab`/UI web), sem auto-detect nem role `forge`. Reavaliar evolução (auto-detect via `git remote -v` ou role `forge` no path contract) só se atrito recorrente justificar a abstração.
+- CLAUDE.md: ajustar frase "Skills/agents end with an explicit `## O que NÃO fazer` section" — agents reviewer (code/qa/security/doc) não têm essa seção; padrão se aplica apenas a skills. Flagado pelo `code-reviewer` durante execução do plano `agent-doc-reviewer-drift`.
 - agent doc-reviewer: revisor genérico de drift entre doc e código (identificadores, cross-refs, exemplos) — quarto reviewer ao lado de code/qa/security; cross-cutting (código+doc); default em blocos .md-only no /run-plan.
 - /release: após `git checkout <branch-da-pré-condição-2>` no recovery proativo do Aplicar, auto-sync com upstream (`git pull --ff-only` se HEAD atrás do remote) antes da sequência (a)-(e) — evita taggear SHA atrasado em janelas concorrentes onde merge/push remoto aconteceu durante prep da release. Flagado pelo `code-reviewer` como gap de design durante execução do plano `release-head-check-and-action-dedup`.
 - /release: verificar HEAD branch (não detached, mesma branch da pré-condição 2) imediatamente antes do `git commit` no passo 4.Aplicar — guarda contra mudança de HEAD por sessão concorrente em outro terminal. Sintoma observado na release v1.18.0: `git checkout v1.17.0` rodado em paralelo detachou HEAD; commit nasceu em linha paralela com tree de v1.17.0 + version bumps, fora do main.
