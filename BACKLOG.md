@@ -2,6 +2,10 @@
 
 ## Próximos
 
+- plugin: BACKLOG.md como state-tracker é fonte recorrente de merge artifact — 5 mecanismos defensivos (`/triage` push pós-commit, `/run-plan` precondição 2, `/run-plan` 4.7 auto-rebase, Action `validate-backlog`, `/heal-backlog`) protegem o mesmo problema estrutural: o arquivo mistura curadoria (Próximos) com state-tracking (Em andamento, Concluídos), e dois PRs concorrentes mutam ambos. Reavaliar mover state para git/forge (PR aberto = em andamento, mergeado = concluído) — 4 dos 5 mecanismos viram desnecessários. Mudança grande, exige ADR antes de implementar. Flagado na revisão arquitetural pós-v1.20.0.
+- /debug → /triage: handoff perde contexto em sessão longa — /debug produz diagnóstico (incluindo ledger de hipóteses) em conversa que cai do contexto antes do operador invocar /triage. Direção possível: /debug passo 6 grava sumário em `.cache/debug-<timestamp>.md` (gitignored) que /triage lê se existir e recente (<24h); ou enriquecer a sugestão final do /debug com snippet pronto de invocação /triage. YAGNI até o pain ser reportado em uso real — registrar para reavaliar. Flagado na revisão arquitetural pós-v1.20.0.
+- Action `validate-backlog` continua GitHub-específica (`gh issue list`/`create`, `gh label create`) após o decoupling forge-agnostic do #27 — projetos consumers em GitLab/outros não têm a guarda pós-merge disponível. Generalização análoga ao #27: substituir chamadas `gh` por mecanismo neutro (script + instruções textuais por forge), possivelmente via ADR "automações forge-agnostic do plugin" antes de implementar. Flagado na revisão arquitetural pós-v1.20.0.
+
 ## Em andamento
 
 ## Concluídos
