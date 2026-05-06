@@ -2,6 +2,19 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.20.0] - 2026-05-06
+
+### Added
+- Generic `doc-reviewer` agent for drift detection between code and docs (CLAUDE.md, ADRs, `docs/philosophy.md`, skills/agents prose) (#26).
+
+### Changed
+- `/run-plan` and `/release` skills made forge-agnostic — push, PR opening and GitHub Release passam ao operador; skills entregam estado local pronto (#27).
+
+### Notes
+- `docs/philosophy.md`: convenção esclarecida — `## O que NÃO fazer` é específica de skills.
+- Planos consolidados em `docs/plans/` para os refactors forge-agnostic e para o `doc-reviewer` genérico.
+- BACKLOG: item de forge-agnostic decoupling registrado.
+
 ## [1.19.0] - 2026-05-06
 
 ### Added
