@@ -2,13 +2,14 @@
 
 ## Próximos
 
-- /run-plan 4.7: auto-rebase pré-push não cobre fan-out de PRs — quando 2 PRs ficam abertos em paralelo e um merge muda BACKLOG.md em main, o segundo PR pode mergear com merge artifact (linha duplicada em Em andamento+Concluídos ou linha sumida). Ocorreu na 3ª vez ao mergear PR #20 + #21. Considerar: detecção pós-merge no main + script de cura, ou bloqueio de /triage quando há PR aberto que ainda não fundiu.
 - /release: verificar HEAD branch (não detached, mesma branch da pré-condição 2) imediatamente antes do `git commit` no passo 4.Aplicar — guarda contra mudança de HEAD por sessão concorrente em outro terminal. Sintoma observado na release v1.18.0: `git checkout v1.17.0` rodado em paralelo detachou HEAD; commit nasceu em linha paralela com tree de v1.17.0 + version bumps, fora do main.
+- Action `validate-backlog`: deduplicar issues abertas com mesma label antes de criar nova (`gh issue list --label backlog-merge-artifact --state open`) — evita N issues duplicadas em pushes sucessivos com artefato. Flagado pelo `security-reviewer` como editorial (fora-de-escopo de segurança) durante execução do plano `backlog-validate-and-heal`.
 
 ## Em andamento
 
 ## Concluídos
 
+- /run-plan 4.7: auto-rebase pré-push não cobre fan-out de PRs — quando 2 PRs ficam abertos em paralelo e um merge muda BACKLOG.md em main, o segundo PR pode mergear com merge artifact (linha duplicada em Em andamento+Concluídos ou linha sumida). Ocorreu na 3ª vez ao mergear PR #20 + #21. Considerar: detecção pós-merge no main + script de cura, ou bloqueio de /triage quando há PR aberto que ainda não fundiu.
 - philosophy.md: refatorar para conter apenas princípios; migrar mecânicas para os consumidores reais (skills/CLAUDE.md/README)
 - Skills: compactar prosa e enxugar `## O que NÃO fazer` para reduzir input recorrente
 - CLAUDE.md: cortar paráfrases de philosophy.md/skills/agents para reduzir input tokens auto-loaded a cada interação
