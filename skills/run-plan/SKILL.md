@@ -62,6 +62,8 @@ Reler `## Contexto` e `## Resumo da mudança` do plano. Menção a superfície e
 - **Imediata (pre-loop):** bloqueios em pré-condições 3/4 e passo 1 (baseline vermelho, worktree órfã, falha de setup) escrevem captura no `backlog` antes de parar — mecânica in situ.
 - **Deferida:** durante passos 3 e 4.2, agente acumula gatilhos e materializa no gate final (passo 4.5).
 
+**Linguagem ubíqua repassada ao reviewer.** Se o `## Contexto` do plano traz `**Termos ubíquos tocados:** <Termo> (<categoria>), ...`, esse subset entra como contexto da invocação do reviewer no bloco — `/run-plan` não relê `ubiquitous_language` em runtime; o plano é o ponto único de transferência entre alinhamento e execução. Plano sem a linha = mudança não toca domínio = nada a carregar.
+
 Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento lógico):
 
 1. **Implementar** as mudanças.

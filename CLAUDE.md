@@ -26,9 +26,21 @@ Release cadence: accumulate merges in `main` and trigger `/release` when there's
 
 ## The role contract (load-bearing)
 
-Skills consume **roles**, not literal paths. Each role has a canonical default; consumer projects declare variants via the `<!-- pragmatic-toolkit:config -->` YAML block in their `CLAUDE.md` (see "Pragmatic Toolkit" section below for schema and semantics).
+Skills consume **roles**, not literal paths. Each role has a canonical default; consumer projects declare variants via the `<!-- pragmatic-toolkit:config -->` YAML block in their `CLAUDE.md` (see "Pragmatic Toolkit" section below for schema and semantics). Conceptual rationale (papéis vs paths) in `docs/philosophy.md` → "Path contract".
 
-Roles and canonical defaults: `product_direction` → `IDEA.md`, `ubiquitous_language` → `docs/domain.md`, `design_notes` → `docs/design.md`, `decisions_dir` → `docs/decisions/`, `plans_dir` → `docs/plans/`, `backlog` → `BACKLOG.md`, `version_files` → _(no default — opt-in list)_, `changelog` → `CHANGELOG.md`, `test_command` → `make test`. Plugin-internal: `.worktreeinclude` (consumed by `/run-plan`). Reviewers `qa-reviewer`, `security-reviewer`, and `doc-reviewer` ship as plugin agents — consumer projects can shadow any of them with a project-level `.claude/agents/<name>.md` (Claude Code convention; project-level wins on name collision).
+| Role | Default | Description |
+|------|---------|-------------|
+| `product_direction` | `IDEA.md` | What we're building and why. Product direction. |
+| `ubiquitous_language` | `docs/domain.md` | Bounded contexts, ubiquitous language, aggregates/entities, invariants (RNxx) — when the domain warrants formalization. |
+| `design_notes` | `docs/design.md` | Quirks of external integrations not covered by official docs. |
+| `decisions_dir` | `docs/decisions/` | Directory of immutable structural decisions. Numbering and slug owned by `/new-adr`. |
+| `plans_dir` | `docs/plans/<slug>.md` | Multi-phase plans for changes that require upfront alignment. |
+| `backlog` | `BACKLOG.md` | Short exploratory list — `## Próximos`, `## Em andamento`, `## Concluídos`. |
+| `version_files` | _(no default — opt-in)_ | Paths whose version string is updated on each release. Empty or absent = role disabled. Consumed by `/release`. |
+| `changelog` | `CHANGELOG.md` | Release history. `/release` prepends a new block at each bump. |
+| `test_command` | `make test` (with `Makefile`) | Automatic gate at execution steps. |
+| (plugin-internal) | `.worktreeinclude` | Optional gitignored paths to replicate in fresh worktrees. Consumed by `/run-plan`. |
+| (agents shipped by the plugin) | `qa-reviewer`, `security-reviewer`, `doc-reviewer` | Generic baseline invoked by `/run-plan` per `{reviewer: qa\|security\|doc}` annotation on the plan block. Consumer projects can shadow with project-level `.claude/agents/<name>.md` (project-level wins on collision). |
 
 ### Resolution protocol
 
@@ -55,6 +67,36 @@ Skills treat them differently:
 - Skills end with an explicit `## O que NÃO fazer` section listing scope guards. Preserve that section when editing — it's load-bearing for tight skill focus. **Critério editorial:** lista apenas guardas que documentam anti-padrão não-óbvio. Item que apenas reafirma prosa anterior do skill é ruído — se sua remoção não confundiria um leitor razoável que leu o resto do skill, não pertence aqui. Itens vindos de incidentes ou de anti-padrões sutis (modelo tem viés de autoinvocação, gatilho condicional facilmente esquecido, exceção localizada que não é óbvia) são não-óbvios e devem permanecer.
 - Don't introduce a build system, package manager, or test runner for this repo itself. The hooks are runnable Python scripts (`python3 ${CLAUDE_PLUGIN_ROOT}/hooks/<script>.py`); the rest is markdown.
 - From v1.11.0 onward, version bumps in **this** repo go through `/release` — keep the loop closed by dogfooding rather than editing manifests by hand.
+
+## AskUserQuestion mechanics
+
+Concrete shape for the `AskUserQuestion` tool when used by skills (philosophy and choice criterion in `docs/philosophy.md` → "Convenção de pergunta ao operador"):
+
+- **Header** (chip/tag): ≤ 12 chars. Examples: `Commit`, `Backlog`, `Publicar`, `Branch`.
+- **Options**: 2-4 per question. `Other` is automatic — never list it explicitly. Each option carries a concrete trade-off in `description` (cost, maintenance, virtue delivered); description-obvious like "choose A" signals a cosmetic enum.
+- **Multiple related questions** in a single call: up to 4 (`questions` array).
+- **`multiSelect: true`** when the choices are not mutually exclusive (e.g., picking gitignored files to replicate into a worktree).
+- **Recommended option**: place first and append "(Recommended)" to the label.
+
+## Plugin component naming and hook auto-gating
+
+Skills and hooks stack-specific coexist with generic components in the same plugin. The name carries the contract:
+
+| Type | Generic | Stack-specific |
+|------|---------|----------------|
+| Hook (script) | `<purpose>.py\|.sh` (e.g., `block_env.py`) | `<purpose>_<stack>.py\|.sh` (e.g., `run_pytest_python.py`) |
+| Skill (frontmatter `name`) | `<verb>-<artifact>` (e.g., `new-adr`) **or** `<verb>` when the artifact emerges from the skill's decision (e.g., `triage`) | `<verb>-<artifact>-<stack>` (e.g., `gen-tests-python`) |
+| Agent (frontmatter `name`) | `<role>` (e.g., `code-reviewer`, `qa-reviewer`, `security-reviewer`) | `<role>-<stack>` (only if principles change with the stack) |
+
+Skill whose output is fixed (always produces an ADR, always executes a plan) carries `<verb>-<artifact>` — the name promises the output. Skill whose output is decided per invocation among multiple options (e.g., `/triage` decides among backlog line, plan, ADR, or domain update) carries only `<verb>` — a fixed suffix would lie about what comes out.
+
+**Hook auto-gating triplo** (a hook fires in every project where the plugin is installed, so the gating is non-negotiable for safe shipping):
+
+1. **File extension** — `if not file_path.endswith(".py"): exit 0` filters most cases at zero cost.
+2. **Stack marker** — walk ancestors looking for `pyproject.toml` (Python), `build.gradle*`/`pom.xml` (JVM), etc. No marker → `exit 0`.
+3. **Toolchain** — only run the tool (`uv run pytest`, `gradle test`) with reasonable fallback; if the toolchain isn't installed, `exit 0`.
+
+This makes it safe to ship `run_pytest_python.py` alongside `run_gradle_test_java.sh` in the same plugin: each hook is silent in projects outside its stack, with no flags or env vars to disable.
 
 ## Pragmatic Toolkit
 
