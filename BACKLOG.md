@@ -9,6 +9,7 @@
 
 ## Concluídos
 
+- CLAUDE.md: cortar paráfrases de philosophy.md/skills/agents para reduzir input tokens auto-loaded a cada interação
 - /run-plan: conflito recorrente em BACKLOG.md ao fundir PR — transição final (Em andamento → Concluídos) conflita com estado divergente de main; ocorreu duas vezes; investigar se guarda pré-condição 2b cobre todos os cenários
 - /run-plan: captura automática de bloqueios em pré-condição de worktree (fase anterior ao loop de arquivos)
 - /triage: push pós-commit determinístico — caminho-com-plano consolida commit + push num único shell call (gate Commit cobre a unidade)
