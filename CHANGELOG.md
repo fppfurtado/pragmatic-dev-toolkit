@@ -2,6 +2,14 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.19.0] - 2026-05-06
+
+### Added
+- `/release` 4.5.Aplicar: verificação de HEAD branch antes do commit, com recovery proativo (stash uncommitted + checkout para o branch da pré-condição 2) quando HEAD detached ou em ref errada — guarda contra mudança de HEAD por sessão concorrente em outro terminal (#24).
+- `/release` 4.5.Aplicar: auto-sync de upstream (`git fetch` + `git pull --ff-only`) após o checkout do recovery e antes da sequência (a)-(e) — evita taggear SHA atrasado em janelas concorrentes onde merge/push remoto aconteceu durante prep da release (#25).
+- Action `validate-backlog`: detecta merge artifacts em BACKLOG.md (linha duplicada em Em andamento+Concluídos) em push para `main` e abre issue com label `backlog-merge-artifact` (com dedup) (#23, #24).
+- Skill `/heal-backlog`: detecta padrão duplicata em BACKLOG.md e propõe edit de cura via gate Aplicar/Cancelar; suporta inserção manual de "linha sumida" via prosa do operador (#23).
+
 ## [1.18.0] - 2026-05-06
 
 ### Changed
