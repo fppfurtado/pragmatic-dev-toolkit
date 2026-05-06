@@ -98,7 +98,6 @@ Apresentar diagnóstico do passo 5 em formato curto e sugerir **próximo passo**
 
 ## O que NÃO fazer
 
-- **Não corrigir.** A skill produz diagnóstico, não código. Passo 6 sugere próximo passo (revert / patch / `/triage`), mas quem dispara é o operador. Sem commits, sem edição de arquivos do projeto.
 - Não pular reprodução quando viável — "deve ser X" sem teste é palpite, não diagnóstico.
 - Não declarar causa-raiz sem evidência. Hipóteses inconclusivas são reportadas como tal.
 - Não aplicar instrumentação (print/log temporário) — propor é parte do passo 4; aplicar fica com o operador.

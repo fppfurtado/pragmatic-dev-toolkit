@@ -150,7 +150,6 @@ Sugerir próximo passo (uma frase): "implementar via /run-plan <slug>", "validar
 
 ## O que NÃO fazer
 
-- Não implementar — esta skill é alinhamento puro.
 - Não duplicar conteúdo de `CLAUDE.md`, `docs/domain.md` ou `docs/design.md` no plano — referenciar.
 - Não separar `git commit` e `git push` no caminho-com-plano — a unidade atômica do passo 6 elimina a janela em que push é esquecido.
 - Não recuperar push falho via `--force`, `--force-with-lease`, retry automático ou flags equivalentes — parar, reportar erro literal e deixar manual.

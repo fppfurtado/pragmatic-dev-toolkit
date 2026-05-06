@@ -65,4 +65,3 @@ Com a intenção confirmada (item escolhido ou texto livre), executar o fluxo de
 
 - Não apresentar mais de 3 sugestões no top.
 - Não iniciar `/triage` sem escolha explícita do operador.
-- Não implementar nada — esta skill é orientação de sessão, não execução.

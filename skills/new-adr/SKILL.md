@@ -85,5 +85,4 @@ Idioma: espelhar ADRs existentes no projeto. Diretório vazio → default canoni
 ## O que NÃO fazer
 
 - Não inventar conteúdo de Contexto/Decisão — quem decide é o operador, a skill só estrutura.
-- Não criar ADR sem título.
 - Não alterar ADRs existentes.
