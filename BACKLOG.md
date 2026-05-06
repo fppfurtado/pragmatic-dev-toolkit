@@ -6,10 +6,9 @@
 
 ## Em andamento
 
-- /run-plan 4.7: auto-rebase pré-push não cobre fan-out de PRs — quando 2 PRs ficam abertos em paralelo e um merge muda BACKLOG.md em main, o segundo PR pode mergear com merge artifact (linha duplicada em Em andamento+Concluídos ou linha sumida). Ocorreu na 3ª vez ao mergear PR #20 + #21. Considerar: detecção pós-merge no main + script de cura, ou bloqueio de /triage quando há PR aberto que ainda não fundiu.
-
 ## Concluídos
 
+- /run-plan 4.7: auto-rebase pré-push não cobre fan-out de PRs — quando 2 PRs ficam abertos em paralelo e um merge muda BACKLOG.md em main, o segundo PR pode mergear com merge artifact (linha duplicada em Em andamento+Concluídos ou linha sumida). Ocorreu na 3ª vez ao mergear PR #20 + #21. Considerar: detecção pós-merge no main + script de cura, ou bloqueio de /triage quando há PR aberto que ainda não fundiu.
 - philosophy.md: refatorar para conter apenas princípios; migrar mecânicas para os consumidores reais (skills/CLAUDE.md/README)
 - Skills: compactar prosa e enxugar `## O que NÃO fazer` para reduzir input recorrente
 - CLAUDE.md: cortar paráfrases de philosophy.md/skills/agents para reduzir input tokens auto-loaded a cada interação
