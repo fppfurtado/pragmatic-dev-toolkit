@@ -1,7 +1,7 @@
 # ADR-003: Frontmatter declarativo `roles:` nas SKILLs
 
 **Data:** 2026-05-06
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 
