@@ -37,6 +37,7 @@ git clone git@github.com:fppfurtado/pragmatic-dev-toolkit.git
 3. Smoke das skills + edição direta de `.env` (verifica `block_env`) + edição de um `.py` num projeto Python (verifica `run_pytest_python`).
 4. Invocar `qa-reviewer` num diff que adiciona função pública sem teste correspondente → flag esperado de "caminho feliz sem teste".
 5. Invocar `security-reviewer` num diff que faz `logger.info(f"token={token}")` → flag esperado de "credencial em log".
+5a. Invocar `doc-reviewer` num diff que adiciona, num `.md` qualquer, link `[ver](docs/inexistente.md)` ou referência a flag/comando inexistente no projeto → flag esperado de drift (`cross-ref/anchor quebrado` ou `identificador inexistente`).
 6. Invocar `/debug` com um sintoma operacionalizável (ex.: teste que sabidamente falha) → skill produz diagnóstico estruturado (sintoma, causa-raiz, evidência, impacto, caminhos de correção; opcionalmente *hipóteses testadas*) e fecha com sugestão de próximo passo **sem aplicar fix nem fazer commit**.
 7. Em projeto com bloco de config declarado, invocar `/triage` num pedido que toque domínio e confirmar que a skill consulta o path declarado (ex.: `docs/glossary.md`), não o canonical (`docs/domain.md`).
 8. Em projeto com plano contendo `### Bloco 1 — exemplo {revisor: code}` (alias PT removido em v1.0), invocar `/run-plan` → confirmar recusa explícita (não silenciosa, sem fallback) com mensagem indicando o bloco e a anotação ofensora, sugerindo migrar para `{reviewer:}`.

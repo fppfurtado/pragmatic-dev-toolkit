@@ -13,7 +13,7 @@ The companion repo is [`scaffold-kit`](https://github.com/fppfurtado/scaffold-ki
 Three component types, each with its own discovery mechanism:
 
 - **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests-python`, `/release`). Skills only act when invoked by the user.
-- **Agents** — `agents/<name>.md` with frontmatter. Subagents called by name (`code-reviewer`, `qa-reviewer`, `security-reviewer`). Reviewers analyze a diff and return findings.
+- **Agents** — `agents/<name>.md` with frontmatter. Subagents called by name (`code-reviewer`, `qa-reviewer`, `security-reviewer`, `doc-reviewer`). Reviewers analyze a diff and return findings.
 - **Hooks** — `hooks/hooks.json` declares lifecycle bindings; the bound scripts (`hooks/*.py`) run on every matching tool call in any project that has the plugin installed. Therefore hooks **must auto-gate**. `PostToolUse` exits 0; `PreToolUse` uses exit 2 to block (see `block_env.py`).
 
 Manifests:
@@ -28,7 +28,7 @@ Release cadence: accumulate merges in `main` and trigger `/release` when there's
 
 Skills consume **roles**, not literal paths. Each role has a canonical default; consumer projects declare variants via the `<!-- pragmatic-toolkit:config -->` YAML block in their `CLAUDE.md` (see "Pragmatic Toolkit" section below for schema and semantics).
 
-Roles and canonical defaults: `product_direction` → `IDEA.md`, `ubiquitous_language` → `docs/domain.md`, `design_notes` → `docs/design.md`, `decisions_dir` → `docs/decisions/`, `plans_dir` → `docs/plans/`, `backlog` → `BACKLOG.md`, `version_files` → _(no default — opt-in list)_, `changelog` → `CHANGELOG.md`, `test_command` → `make test`. Plugin-internal: `.worktreeinclude` (consumed by `/run-plan`). Reviewers `qa-reviewer` and `security-reviewer` ship as plugin agents — consumer projects can shadow either with a project-level `.claude/agents/<name>.md` (Claude Code convention; project-level wins on name collision).
+Roles and canonical defaults: `product_direction` → `IDEA.md`, `ubiquitous_language` → `docs/domain.md`, `design_notes` → `docs/design.md`, `decisions_dir` → `docs/decisions/`, `plans_dir` → `docs/plans/`, `backlog` → `BACKLOG.md`, `version_files` → _(no default — opt-in list)_, `changelog` → `CHANGELOG.md`, `test_command` → `make test`. Plugin-internal: `.worktreeinclude` (consumed by `/run-plan`). Reviewers `qa-reviewer`, `security-reviewer`, and `doc-reviewer` ship as plugin agents — consumer projects can shadow any of them with a project-level `.claude/agents/<name>.md` (Claude Code convention; project-level wins on name collision).
 
 ### Resolution protocol
 
