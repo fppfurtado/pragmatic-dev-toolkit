@@ -123,6 +123,10 @@ Refactor textual sem suite executável; gate é inspeção dirigida:
 
 **Critério de aceitação**: os 3 cenários se comportam conforme ADR-004; nenhuma tentativa de mutar `## Em andamento` em qualquer skill; merge artifact estruturalmente impossível.
 
+## Pendências de validação
+
+- Smoke comportamental dos 3 cenários (`/triage` caminho-com-plano sem gravar em Em andamento; `/run-plan` done que adiciona em Concluídos sem origem; `/next` sem reportar Em andamento) exige merge + reload do plugin (cache instalado pré-D2). Inspeção direta pós-merge cobre o core do contrato (refactors em SKILLs presentes, Em andamento ausente, /heal-backlog removida, Action removida); smoke comportamental real fica para invocação subsequente.
+
 ## Notas operacionais
 
 - **Cleanup pós-merge obrigatório**: dois ajustes em BACKLOG.md ficam fora dos blocos do plano e devem ser feitos em commit direto em main após o merge:
