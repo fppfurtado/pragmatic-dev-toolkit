@@ -12,7 +12,7 @@ Sem `**Linha do backlog:**` (plano cobre 2 linhas em Próximos; auto-transição
 
 ## Resumo da mudança
 
-**Bloco 1 — `/release` SKILL.md:** inserir verificação de HEAD branch como primeiro item da sequência `Aplicar` no passo 4.5. `git symbolic-ref --short HEAD` (canonical, já em uso por outras skills); detached ou diferente do branch da pré-condição 2 → abortar com erro literal; release não nasce em linha paralela.
+**Bloco 1 — `/release` SKILL.md:** inserir verificação + recovery de HEAD branch como primeiro item da sequência `Aplicar` no passo 4.5. `git symbolic-ref --short HEAD`; detached ou diferente do branch da pré-condição 2 → recovery proativo: se houver alterações uncommitted (`git status --porcelain` não-vazio), `git stash push -m "<mensagem descritiva>"`; depois `git checkout <branch-da-pré-condição-2>`; só então prosseguir com a sequência (a)-(e). Release continua em vez de abortar; operador recupera stash manualmente após release se necessário.
 
 **Bloco 2 — Action workflow:** modificar step `Open issue on artifact detected` para checar `gh issue list --label backlog-merge-artifact --state open --json number --jq 'length'` antes do `gh issue create`. Count ≥1 → log + early-exit do step. Permissions inalteradas (`contents: read, issues: write`).
 
@@ -22,13 +22,20 @@ Arquivos disjuntos (`skills/release/SKILL.md` vs `.github/workflows/validate-bac
 
 ### Bloco 1 — skills/release/SKILL.md
 
-Inserir verificação de HEAD branch como **primeiro item** da sequência `Aplicar` no passo 4.5 (antes do atual `(a) escrever cada version_file`):
+Inserir verificação + recovery de HEAD branch como **primeiro item** da sequência `Aplicar` no passo 4.5 (antes do atual `(a) escrever cada version_file`):
 
 ```
-- **Aplicar** — verificar HEAD: rodar `git symbolic-ref --short HEAD`; se falha (detached) ou difere do branch da pré-condição 2, reportar erro literal e abortar (release não nasce em linha paralela; pré-condição 2 valida no início, mas HEAD pode mudar por sessão concorrente entre prep e apply). Caso ok, executar em sequência: (a) escrever cada `version_file` preparado; (b) inserir entrada do changelog; (c) `git add <paths-específicos>` (...).
+- **Aplicar** — verificar HEAD e recuperar se necessário:
+  1. Rodar `git symbolic-ref --short HEAD`. Output → branch atual; falha (exit ≠ 0) → HEAD detached.
+  2. Se detached OU se branch atual difere do branch da pré-condição 2:
+     - `git status --porcelain`; se não-vazio, `git stash push -m "release v<X.Y.Z> auto-stash: HEAD inesperado em <ref-atual> ao iniciar Aplicar (esperado <branch-pré-condição-2>)"` para preservar trabalho local.
+     - `git checkout <branch-da-pré-condição-2>`.
+     - Reportar ao operador o que aconteceu (incluindo nome da stash se criada) — operador recupera manualmente após release com `git stash pop` se desejar.
+  3. Caso ok desde o início (HEAD igual ao branch da pré-condição 2 e working tree clean), prosseguir direto.
+  4. Executar em sequência: (a) escrever cada `version_file` preparado; (b) inserir entrada do changelog; (c) `git add <paths-específicos>` (...).
 ```
 
-Re-verificação cobre janela entre prep (passos 1–3, em memória) e apply (passo 4.5, escrita + commit). Sem mudança nos demais sub-itens.
+Recovery cobre janela entre prep (passos 1–3, em memória) e apply (passo 4.5, escrita + commit) — HEAD pode mudar por sessão concorrente. Stash preserva trabalho do operador se houver; checkout volta para o branch correto; release continua. Operador retoma stash manualmente após release.
 
 Reviewer default `code`. Sem `## O que NÃO fazer` novo (o guard fica embutido no Aplicar).
 
