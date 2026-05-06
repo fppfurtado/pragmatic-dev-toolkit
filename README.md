@@ -36,7 +36,7 @@ Funciona em qualquer projeto alinhado à filosofia, não só os gerados por `sca
 
 ## Companion
 
-Para começar um projeto novo já alinhado ao path contract default (`IDEA.md`, `docs/domain.md`, `docs/design.md`, `docs/decisions/`, `docs/plans/`, `BACKLOG.md`, `Makefile`, `.worktreeinclude`), use o template [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit) — eles foram desenhados juntos.
+[`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit) é o template Copier que produz a estrutura inicial de um projeto novo já alinhada ao path contract default (`IDEA.md`, `docs/domain.md`, `docs/design.md`, `docs/decisions/`, `docs/plans/`, `BACKLOG.md`, `Makefile`, `.worktreeinclude`). Os dois artefatos são desacoplados — você pode usar um sem o outro.
 
 ## Contribuir
 
