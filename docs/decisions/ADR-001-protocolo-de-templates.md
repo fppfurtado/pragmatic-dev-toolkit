@@ -1,7 +1,7 @@
 # ADR-001: Protocolo de templates centralizados no plugin
 
 **Data:** 2026-05-06
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 
