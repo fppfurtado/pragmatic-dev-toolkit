@@ -93,7 +93,7 @@ No `## Contexto`:
 Em `## Arquivos a alterar`, anotação `{reviewer: <perfil>}` no fim do header da subseção orienta o `/run-plan`. Palavra-chave em inglês (mecânica do toolkit). **Single-reviewer é o caso normal** — um bloco, um eixo de revisão, um agent. Schema:
 
 - **Sem anotação** → default `code-reviewer` (exceção: blocos doc-only — ver regra abaixo).
-- **Um perfil** (`{reviewer: code|qa|security|doc}`) → `/run-plan` invoca o agent correspondente.
+- **Um perfil** (`{reviewer: code|qa|security|doc}`) → indica explicitamente o agent que revisará o bloco.
 - **Múltiplos perfis** (`{reviewer: code,qa}` etc.) → exceção rara para quando o mesmo diff genuinamente merece olhares de eixos diferentes que não cabem em blocos separados. **Preferir separar em blocos** quando viável — bloco por arquivo/agrupamento lógico já tende a isolar eixos naturalmente.
 
 Exemplos:
