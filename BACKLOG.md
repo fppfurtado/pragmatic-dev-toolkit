@@ -4,6 +4,8 @@
 
 ## Em andamento
 
+- plugin: batch 1 de tightening editorial pós-v1.20.0 — sanity check de docs como prosa (/run-plan 4.3), trim disciplinado de `## O que NÃO fazer` + critério editorial em CLAUDE.md, `disable-model-invocation` em /release e /run-plan, single-reviewer como caso normal (multi como exceção), /next propõe commit das movimentações automáticas
+
 ## Concluídos
 
 - plugin: desacoplar de GitHub-específico — `/run-plan` (4.7) chama `gh pr create` no enum `Push + abrir PR`, e `/release` sugere `gh release create` no texto final; consumidores em GitLab (corporativo) ficam sem caminho. Direção mínima: substituir chamada e texto por sugestão neutra ao operador (push + instrução textual com exemplos `gh`/`glab`/UI web), sem auto-detect nem role `forge`. Reavaliar evolução (auto-detect via `git remote -v` ou role `forge` no path contract) só se atrito recorrente justificar a abstração.
