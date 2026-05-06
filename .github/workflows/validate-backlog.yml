@@ -36,6 +36,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
+          open_count=$(gh issue list --label backlog-merge-artifact --state open --json number --jq 'length')
+          if [ "$open_count" -gt 0 ]; then
+            echo "skipping issue creation: $open_count open issue(s) already track this artifact"
+            exit 0
+          fi
           gh label create backlog-merge-artifact \
             --color FFA500 \
             --description "Auto-detected merge artifact in BACKLOG.md" \
