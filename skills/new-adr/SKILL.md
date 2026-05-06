@@ -2,6 +2,8 @@
 name: new-adr
 description: Cria novo ADR no decisions_dir com numeração inferida e template padronizado. Use quando o operador pedir registro de decisão estrutural duradoura.
 disable-model-invocation: true
+roles:
+  required: [decisions_dir]
 ---
 
 # new-adr
@@ -9,6 +11,8 @@ disable-model-invocation: true
 Cria um novo Architecture Decision Record no papel `decisions_dir` (default: `docs/decisions/`) seguindo o template do toolkit.
 
 Esta skill cria o arquivo e devolve o controle ao operador. **Não faz commit** — o operador (ou `/run-plan` num plano que inclui o ADR) commita conforme a convenção do projeto.
+
+`decisions_dir` ausente → sub-fluxo "oferecer criação canonical via enum" (`Criar em <path>` / `Não usamos esse papel`); sem `Criar`, skill para (ADR sem diretório de decisões não tem onde morar).
 
 ## Argumentos
 
@@ -18,9 +22,7 @@ Sem título → pedir antes de prosseguir.
 
 ## Passos
 
-1. **Resolver `decisions_dir`** (default `docs/decisions/`). Resolveu para "não temos" → parar e reportar (ADR sem diretório de decisões não tem onde morar).
-
-2. **Listar ADRs existentes** para descobrir próximo número e formato:
+1. **Listar ADRs existentes** para descobrir próximo número e formato:
    ```bash
    ls <decisions_dir>/ADR-*.md 2>/dev/null
    ```
@@ -35,11 +37,11 @@ Sem título → pedir antes de prosseguir.
 
    Extrair maior número (independente do padding), somar 1, aplicar formato inferido.
 
-3. **Gerar slug** do título: lowercase, espaços/acentos→hífens, remover caracteres especiais. Ex.: `"Política de retentativas para chamadas HTTP externas"` → `politica-de-retentativas-chamadas-http-externas`.
+2. **Gerar slug** do título: lowercase, espaços/acentos→hífens, remover caracteres especiais. Ex.: `"Política de retentativas para chamadas HTTP externas"` → `politica-de-retentativas-chamadas-http-externas`.
 
-4. **Obter data** em `YYYY-MM-DD` (`currentDate` do contexto se disponível, senão `date +%Y-%m-%d`).
+3. **Obter data** em `YYYY-MM-DD` (`currentDate` do contexto se disponível, senão `date +%Y-%m-%d`).
 
-5. **Criar arquivo** `<decisions_dir>/ADR-<NNN>-<slug>.md` com o template abaixo. Não preencher conteúdo — deixar placeholders explícitos para o operador.
+4. **Criar arquivo** `<decisions_dir>/ADR-<NNN>-<slug>.md` com o template abaixo. Não preencher conteúdo — deixar placeholders explícitos para o operador.
 
 ## Template
 

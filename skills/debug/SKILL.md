@@ -1,6 +1,8 @@
 ---
 name: debug
 description: Diagnostica causa-raiz de sintoma (teste falhando, erro inesperado, comportamento divergente) por método científico. Produz diagnóstico, não fix. Stack-agnóstico.
+roles:
+  informational: [test_command, ubiquitous_language, decisions_dir, design_notes]
 ---
 
 # debug
@@ -17,14 +19,12 @@ Sintoma operacionalizável. Exemplos:
 
 Sintoma vazio ou vago ("não está funcionando", "está bugado") → pedir precisão antes de prosseguir (passo 1).
 
-## Pré-condições
+## Uso dos roles
 
-Paths e comandos seguem **Resolução de papéis**. Roles consumidos são todos informacionais — papel ausente nunca é gap report, apenas reduz a base de hipóteses:
-
-- `test_command` (default `make test`) — reproduzir teste falhando ou rodar a suíte que exerce o cenário.
-- `ubiquitous_language` (default `docs/domain.md`) — consultar se o sintoma toca invariantes documentadas (RNxx ou equivalentes).
-- `decisions_dir` (default `docs/decisions/`) — consultar se o sintoma envolve invariantes pós-erro (rollback, retry com efeito colateral, divergência de estado).
-- `design_notes` (default `docs/design.md`) — consultar se o sintoma envolve integração externa.
+- `test_command` — reproduzir teste falhando ou rodar a suíte que exerce o cenário.
+- `ubiquitous_language` — consultar se o sintoma toca invariantes documentadas (RNxx ou equivalentes).
+- `decisions_dir` — consultar se o sintoma envolve invariantes pós-erro (rollback, retry com efeito colateral, divergência de estado).
+- `design_notes` — consultar se o sintoma envolve integração externa.
 
 ## Passos
 
