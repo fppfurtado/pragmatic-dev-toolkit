@@ -67,6 +67,8 @@ Chave ausente = canonical default. Valor `null` = "não usamos esse papel" (skil
 
 Pré-requisitos de runtime dos hooks: `python3` no `PATH`. `run_pytest_python` é auto-gated — só dispara em arquivos `.py` que estão sob um diretório com `pyproject.toml`; usa `uv run pytest` quando `uv` está disponível, senão `python -m pytest`.
 
+Esqueleto canônico de plano em [`templates/plan.md`](../templates/plan.md) — referência para autoria manual quando o operador prefere escrever o plano direto, sem `/triage`.
+
 ## Uninstall
 
 ```

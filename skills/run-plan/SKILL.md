@@ -26,7 +26,7 @@ Paths e comandos seguem a **Resolução de papéis**: default canonical → bloc
 
 Falha de qualquer pré-condição → parar e reportar.
 
-1. **Plano existe e tem `## Arquivos a alterar`** (papel: `plans_dir`, default: `docs/plans/`).
+1. **Plano existe e tem `## Arquivos a alterar`** (papel: `plans_dir`, default: `docs/plans/`). Esqueleto canônico em `${CLAUDE_PLUGIN_ROOT}/templates/plan.md`.
 
 2. **Estado git dos artefatos de alinhamento** (`git status --porcelain`):
    - **Bloquear** se `<plans_dir>/<slug>.md` está modificado/untracked. Worktree é criada do HEAD e não veria o plano. Mensagem: commitar antes (ou usar `/triage`, que já propõe commit).
