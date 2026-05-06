@@ -2,6 +2,18 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.18.0] - 2026-05-06
+
+### Changed
+- `docs/philosophy.md` refatorada para princípios apenas — mecânicas migradas para os consumidores reais (CLAUDE.md, skills, README); 4170 → 1792 palavras; 18 → 8 seções (#22).
+- Skills compactadas e `## O que NÃO fazer` enxugado para scope guards genuínos — agregado 7 skills de 11070 → 7200 palavras; `/run-plan` 18 → 7 itens, `/triage` 13 → 4, `/release` 10 → 5 (#21).
+- `CLAUDE.md` cortou paráfrases de `docs/philosophy.md`/skills/agents — 1407 → 740 palavras (#20).
+- Frontmatter `description` das 7 skills enxugado para gateway de invocação — média −34% chars.
+
+### Notes
+- `.worktreeinclude` adicionado listando `.claude/` para `/run-plan` worktrees novas.
+- BACKLOG.md heal pós-merge artifact de #20+#21 fan-out (3ª ocorrência; capturada em `## Próximos` para fix subsequente).
+
 ## [1.17.0] - 2026-05-05
 
 ### Added
