@@ -85,3 +85,7 @@ Refactor textual sem suite executável; gate é inspeção dirigida:
 
 - Após merge do PR, validar em **uso real** no próximo plano antes de prosseguir para C1 (gate consolidado em /run-plan, próximo item do Batch 3 do roteiro). Validação em uso real é o gatilho do roteiro: "executar **um por vez** e validar antes do próximo."
 - Plano abre o caminho para `templates/adr.md` no futuro — ADR-001 documenta os gatilhos de revisão.
+
+## Pendências de validação
+
+- Smoke test do template em uso real: invocar `/triage` num pedido fictício pós-merge+reinstall do plugin e confirmar que (i) skill lê `templates/plan.md`; (ii) plano produzido segue o esqueleto (seções obrigatórias presentes; opcionais omitidas quando não aplicáveis); (iii) headers em PT-BR (idioma do repo); (iv) campos especiais do `## Contexto` aparecem só quando relevantes. Não realizado durante o /run-plan: o cache instalado do plugin é v1.19.0 e ainda não tem o template — smoke real depende de release + reinstall.
