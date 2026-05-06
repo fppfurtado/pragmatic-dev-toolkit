@@ -1,7 +1,7 @@
 # ADR-004: State-tracking em git/forge, não em markdown
 
 **Data:** 2026-05-06
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 
