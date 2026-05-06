@@ -2,9 +2,9 @@
 
 ## Próximos
 
-- /release: após `git checkout <branch-da-pré-condição-2>` no recovery proativo do Aplicar, verificar sync com upstream (`git rev-list --count HEAD..@{u}` > 0 → cutucar via enum `Prosseguir mesmo atrás do remote` / `Cancelar`) — evita taggear SHA atrasado em janelas concorrentes onde merge/push remoto aconteceu durante prep da release. Flagado pelo `code-reviewer` como gap de design durante execução do plano `release-head-check-and-action-dedup`.
-
 ## Em andamento
+
+- /release: após `git checkout <branch-da-pré-condição-2>` no recovery proativo do Aplicar, auto-sync com upstream (`git pull --ff-only` se HEAD atrás do remote) antes da sequência (a)-(e) — evita taggear SHA atrasado em janelas concorrentes onde merge/push remoto aconteceu durante prep da release. Flagado pelo `code-reviewer` como gap de design durante execução do plano `release-head-check-and-action-dedup`.
 
 ## Concluídos
 
