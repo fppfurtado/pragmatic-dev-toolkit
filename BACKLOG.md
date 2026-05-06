@@ -4,6 +4,9 @@
 
 ## Em andamento
 
+- CLAUDE.md: cortar paráfrases de philosophy.md/skills/agents para reduzir input tokens auto-loaded a cada interação
+- Skills: compactar prosa e enxugar `## O que NÃO fazer` para reduzir input recorrente
+
 ## Concluídos
 
 - CLAUDE.md: cortar paráfrases de philosophy.md/skills/agents para reduzir input tokens auto-loaded a cada interação

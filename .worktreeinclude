@@ -1,0 +1,4 @@
+# Gitignored paths to replicate into worktrees created by /run-plan.
+# One path per line, relative to repo root. Lines starting with # are comments.
+
+.claude/
