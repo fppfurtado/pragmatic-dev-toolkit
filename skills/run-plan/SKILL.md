@@ -2,6 +2,9 @@
 name: run-plan
 description: Executa plano de docs/plans/<slug>.md em worktree isolada, com micro-commits, revisor por bloco e gate de validação manual. Use quando há plano pronto e o operador autorizou implementar.
 disable-model-invocation: true
+roles:
+  required: [plans_dir]
+  informational: [backlog, test_command]
 ---
 
 # run-plan
@@ -22,7 +25,7 @@ Slug sem arquivo correspondente → parar e listar planos disponíveis.
 
 ## Pré-condições
 
-Paths e comandos seguem a **Resolução de papéis**: default canonical → bloco `<!-- pragmatic-toolkit:config -->` no CLAUDE.md → pergunta ao operador. Headers de plano são citados em PT-BR canonical (`## Arquivos a alterar`, `## Verificação end-to-end`, etc.); planos em outro idioma usam matching semântico (`## Files to change`, `## End-to-end verification`, ...).
+Headers de plano são citados em PT-BR canonical (`## Arquivos a alterar`, `## Verificação end-to-end`, etc.); planos em outro idioma usam matching semântico (`## Files to change`, `## End-to-end verification`, ...).
 
 Falha de qualquer pré-condição → parar e reportar.
 

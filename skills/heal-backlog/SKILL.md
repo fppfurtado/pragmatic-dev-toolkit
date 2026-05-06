@@ -1,15 +1,13 @@
 ---
 name: heal-backlog
 description: Detecta merge artifacts em BACKLOG.md (linha duplicada em Em andamento+Concluídos) e propõe edit de cura via gate Aplicar/Cancelar. Use quando a Action de validação abrir issue ou quando suspeitar de inconsistência manual.
+roles:
+  required: [backlog]
 ---
 
 # heal-backlog
 
 Cura artefatos de merge em `BACKLOG.md` (linha duplicada em `## Em andamento`+`## Concluídos`). Escreve no arquivo, não commita.
-
-## Pré-condições
-
-Papel `backlog` (ver Resolução de papéis em CLAUDE.md → "The role contract"; default canonical `BACKLOG.md`). Resolveu "não temos" → gap report (sem backlog não há o que curar).
 
 ## Argumentos
 

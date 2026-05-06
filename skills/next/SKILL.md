@@ -1,18 +1,14 @@
 ---
 name: next
 description: Lê o backlog, descarta itens já implementados e sugere top 3 candidatos por impacto estratégico. Invocável direto ou como pré-passo de /triage sem argumento.
+roles:
+  required: [backlog]
+  informational: [product_direction]
 ---
 
 # next
 
 Skill de orientação de sessão: lê o backlog, limpa itens já implementados e indica os três candidatos de maior impacto — alimentando o fluxo de `/triage` a seguir.
-
-## Pré-condições
-
-Aplicar **Resolução de papéis**:
-
-- `backlog` (default `BACKLOG.md`) — sem backlog não há o que analisar. Resolveu "não temos" → informar e interromper.
-- `product_direction` (default `IDEA.md`) — informacional, usado para alinhamento estratégico. Papel ausente reduz profundidade da análise, nunca bloqueia.
 
 ## Passos
 

@@ -1,6 +1,8 @@
 ---
 name: gen-tests-python
 description: Gera testes pytest (respx + asyncio_mode auto + tmp_path para SQLite) para módulo de projeto Python. Use quando o projeto for Python e o operador pedir testes.
+roles:
+  informational: [ubiquitous_language, design_notes]
 ---
 
 # gen-tests-python
@@ -11,7 +13,7 @@ Princípio: **não exigir TDD estrito; exigir confiança no que vai pra produç�
 
 Gera arquivo e devolve o controle ao operador. **Não faz commit** — o operador (ou `/run-plan`) commita conforme convenção do projeto.
 
-A skill **não** descobre regras de negócio sozinha. Papel `ubiquitous_language` (default `docs/domain.md`) → consultar para identificar invariantes (RNxx) que o alvo exerce. Resolveu "não temos" → cobrir caminho feliz + edge cases que o código realmente trata.
+A skill **não** descobre regras de negócio sozinha — consulta `ubiquitous_language` para identificar invariantes (RNxx) que o alvo exerce. Resolveu "não temos" → cobrir caminho feliz + edge cases que o código realmente trata.
 
 ## Stack assumida
 

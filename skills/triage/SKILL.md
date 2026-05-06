@@ -1,18 +1,16 @@
 ---
 name: triage
 description: Alinha intenção e decide artefato (backlog, plano, ADR, atualização de domain/design) antes de implementar. Use quando o operador propuser feature, fix ou refactor sem plano nem linha de backlog.
+roles:
+  required: [plans_dir]
+  informational: [backlog, ubiquitous_language, design_notes, decisions_dir, product_direction]
 ---
 
 # triage
 
 Workflow de **alinhamento prévio** para mudança não-trivial — feature, fix com plano (saída de `/debug`), refactor com bifurcação, alteração que toca invariante. Produz artefato de alinhamento (linha de backlog, plano, ADR, atualização de `docs/domain.md`/`docs/design.md`) e devolve controle.
 
-## Pré-condições
-
-Para cada papel necessário (`product_direction`, `ubiquitous_language`, `design_notes`, `decisions_dir`, `plans_dir`, `backlog`), aplicar **Resolução de papéis**: probe canonical → bloco `<!-- pragmatic-toolkit:config -->` no CLAUDE.md → pergunta tri-state via `AskUserQuestion`.
-
-- Papéis informacionais (`product_direction`, `ubiquitous_language`, `design_notes`, `decisions_dir`, `backlog`) podem resolver "não temos" — skill segue.
-- `plans_dir` "não temos" → para com gap report em prosa livre.
+## Sub-fluxo de criação canonical
 
 Quando o passo 3 escolher "atualizar `ubiquitous_language`/`design_notes`" e o papel resolveu "não temos": propor criação no path canonical via enum (`Criar em <path>` / `Não usamos esse papel`). Segunda opção registra `paths.<role>: null` (oferta única de memorização). Mesmo mecanismo para `backlog` quando o passo 4 vai gravar linha (`Criar em BACKLOG.md` / `Não usamos esse papel`; segunda registra `paths.backlog: null`).
 

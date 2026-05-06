@@ -125,3 +125,7 @@ Refactor textual sem suite executável; gate é inspeção dirigida:
 
 - Após merge, B2 fecha o roteiro arquitetural pós-v1.20.0. Resta acumular merges para `/release` em algum ponto futuro (cadência registrada em CLAUDE.md).
 - Skills futuras seguem o padrão: declaram `roles:` no frontmatter; herdam comportamento default; prosa cobre só sub-fluxos especiais.
+
+## Pendências de validação
+
+- Smoke test em uso real (3 cenários: required ausente com creação canonical em `/new-adr`; informational ausente em `/debug`; required ausente sem criação canonical em `/heal-backlog`): exige merge + reload do plugin (cache instalado pré-B2 ainda não tem o frontmatter `roles:`). Validação direta pós-merge via inspeção dos frontmatters em `${CLAUDE_PLUGIN_ROOT}/skills/*/SKILL.md` cobre o core do contrato; comportamental real fica para invocação subsequente das skills.
