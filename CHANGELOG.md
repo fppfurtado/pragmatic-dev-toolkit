@@ -2,6 +2,31 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.17.0] - 2026-05-05
+
+### Added
+- `/run-plan`: detect BACKLOG.md divergence and auto-rebase before publish (#19).
+- `/run-plan`: auto-capture pre-loop blockers before stopping (#17).
+- `/run-plan`: suggest push and PR opening after done (#16).
+- `/run-plan`: classify auto-captures as validation or backlog at detection time (#15).
+- `/next`: nova skill de orientação de sessão; `/triage` delega quando invocada sem argumento.
+
+### Fixed
+- `/triage`: deterministic post-commit push via atomic shell call (#18).
+- Eliminate BACKLOG.md merge artifact via push-after-triage (#14).
+- `/triage`: guard against BACKLOG.md in plan's `## Arquivos a alterar` (#12).
+- `/run-plan`: restrict docs gate skip to user-facing `.md` patterns (#11).
+
+### Changed
+- `/run-plan`: simplifica sanity check de documentação no gate final (#10).
+- `/release`: colapsa gates de `version_files`, `changelog` e commit/tag num review único (#9).
+
+### Notes
+- Planos em `docs/plans/` cobrindo cada feat/fix/refactor desta release.
+- `BACKLOG.md`: capturas recorrentes (conflito em merge, transição de Em andamento, gap de confiabilidade do push do `/triage`); itens executados movidos para Concluídos.
+- `docs/philosophy.md`: convenção de cadência de release registrada.
+- `README.md` + backlog: skill `/next` listada.
+
 ## [1.16.0] - 2026-05-05
 
 ### Added
