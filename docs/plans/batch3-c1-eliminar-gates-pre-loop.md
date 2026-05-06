@@ -83,3 +83,7 @@ Refactor textual sem suite executável; gate é inspeção dirigida:
 
 - Após merge do PR, validar em uso real antes de prosseguir para B2 (frontmatter declarativo `roles:` — último item do roteiro).
 - Mudança elimina friction-point conhecido (4 cascadas de cutucada). Pain reportado depois pode justificar reabrir o ADR (gatilhos de revisão registrados em ADR-002).
+
+## Pendências de validação
+
+- Smoke test do zero-gate em uso real: invocar `/run-plan` pós-merge+reload em (i) plano fictício que dispare ao menos 1 warning detectável; (ii) plano simples sem nenhum gatilho. Confirmar: zero `AskUserQuestion` na fase pré-loop nos dois casos; mensagens de captura aparecem antes da worktree quando há warnings; skill segue silente quando não há; `## Pendências de validação` e `## Próximos` do backlog refletem as capturas no done. Não realizado durante o /run-plan corrente: o cache instalado do plugin é v1.20.0 e ainda não tem o refactor — smoke real depende de merge + reload.
