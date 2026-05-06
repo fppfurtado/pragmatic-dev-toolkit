@@ -33,7 +33,7 @@ git clone git@github.com:fppfurtado/pragmatic-dev-toolkit.git
 `claude plugin validate` ainda **não existe** como subcomando estável (até abril de 2026). Para validar localmente:
 
 1. Confirmar `.claude-plugin/plugin.json` válido como JSON.
-2. Após instalar, abrir o Claude Code no workspace e confirmar que `/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests-python`, `/release` aparecem em `/help` ou `/plugin list`.
+2. Após instalar, abrir o Claude Code no workspace e confirmar que `/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests-python`, `/release`, `/heal-backlog` aparecem em `/help` ou `/plugin list`.
 3. Smoke das skills + edição direta de `.env` (verifica `block_env`) + edição de um `.py` num projeto Python (verifica `run_pytest_python`).
 4. Invocar `qa-reviewer` num diff que adiciona função pública sem teste correspondente → flag esperado de "caminho feliz sem teste".
 5. Invocar `security-reviewer` num diff que faz `logger.info(f"token={token}")` → flag esperado de "credencial em log".
@@ -43,6 +43,7 @@ git clone git@github.com:fppfurtado/pragmatic-dev-toolkit.git
 8a. Em projeto com remote configurado, invocar `/run-plan` num plano simples de 1 bloco → ao concluir, confirmar que o enum `Publicar` aparece com as opções `Push`, `Push + abrir PR` e `Nenhum`; confirmar que em repo sem remote o enum não aparece.
 9. Em projeto com `docs/domain.md` declarando ao menos uma RNxx, invocar `/triage` com pedido que toca essa RN → confirmar que o plano resultante inclui bloco de teste em `## Arquivos a alterar` com `{reviewer: qa}`, **ou** justifica ausência via `## Verificação end-to-end` textual (heurística "Cobertura de teste em planos").
 10. Em projeto com tag prévia (ex.: `v0.1.0`), `paths.version_files` declarado (ex.: `["package.json"]`) e `CHANGELOG.md` em formato Keep-a-Changelog, invocar `/release patch` → confirmar (a) bump da versão em `version_files`, (b) entrada `## [0.1.1] - YYYY-MM-DD` no topo do changelog agrupando commits por tipo CC, (c) commit local `chore(release): bump version to 0.1.1`, (d) tag anotada `v0.1.1` criada localmente, (e) **nenhum push** disparado pela skill — mensagem final orienta `git push --follow-tags`.
+11. Invocar `/heal-backlog` em `BACKLOG.md` íntegro → reportar "íntegro" e encerrar sem edit. Em seguida, criar artefato local (linha duplicada em Em andamento+Concluídos), rodar `/heal-backlog` → confirmar que skill detecta o padrão, mostra a linha e a seção a remover, e oferece gate `Aplicar`/`Cancelar`; `Aplicar` escreve o arquivo curado e sugere o `git commit` (skill **não commita**); `Cancelar` encerra sem tocar o arquivo.
 
 ## Pré-requisitos no projeto consumidor
 
