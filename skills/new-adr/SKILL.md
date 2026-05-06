@@ -6,44 +6,44 @@ disable-model-invocation: true
 
 # new-adr
 
-Cria um novo Architecture Decision Record no papel `decisions_dir` do projeto (default: `docs/decisions/`; resolução em `docs/philosophy.md`) seguindo o template do toolkit.
+Cria um novo Architecture Decision Record no papel `decisions_dir` (default: `docs/decisions/`; resolução em `docs/philosophy.md`) seguindo o template do toolkit.
 
-Esta skill cria o arquivo e devolve o controle ao operador. **Não faz commit** — o operador (ou `/run-plan` num plano que inclui o ADR) commita conforme a Convenção de commits do projeto.
+Esta skill cria o arquivo e devolve o controle ao operador. **Não faz commit** — o operador (ou `/run-plan` num plano que inclui o ADR) commita conforme a convenção do projeto.
 
 ## Argumentos
 
-O usuário fornece o **título** da decisão (string curta e descritiva). Exemplo: `/new-adr "Política de retentativas para chamadas HTTP externas"`.
+Título da decisão (string curta e descritiva). Exemplo: `/new-adr "Política de retentativas para chamadas HTTP externas"`.
 
-Se o usuário não fornecer título, peça antes de prosseguir.
+Sem título → pedir antes de prosseguir.
 
 ## Passos
 
-1. **Resolver `decisions_dir`** seguindo a Resolução de papéis (default: `docs/decisions/`). Se o papel resolve para "não temos", parar e reportar — ADR sem diretório de decisões não tem onde morar.
+1. **Resolver `decisions_dir`** (default `docs/decisions/`). Resolveu para "não temos" → parar e reportar (ADR sem diretório de decisões não tem onde morar).
 
-2. **Listar ADRs existentes** no `decisions_dir` resolvido para descobrir o próximo número e o formato de numeração:
+2. **Listar ADRs existentes** para descobrir próximo número e formato:
    ```bash
    ls <decisions_dir>/ADR-*.md 2>/dev/null
    ```
-   - **Inferir o formato** a partir dos arquivos existentes (não hardcode):
-     - Se todos batem `ADR-\d{4}-` → 4-dígitos com padding (`0006`, `0007`, …).
-     - Se todos batem `ADR-\d{3}-` → 3-dígitos com padding (`006`, `007`, …) — formato canonical do toolkit.
-     - Se há `ADR-\d+-` sem zero à esquerda em ao menos um (ex.: `ADR-1-`, `ADR-12-`) → sem padding (`6`, `7`, …).
-     - Formatos mistos (alguns padded, outros não) → flagar ao operador via enum (`AskUserQuestion`, header `Numeração`) com opções nomeando os formatos detectados (ex.: `Padding 4-dígitos`, `Sem padding`); a escolha rege apenas este ADR — saneamento histórico, se desejado, é decisão separada do operador. Provável drift que merece nomear antes de continuar.
-     - **Formatos atípicos** (ex.: `ADR-007a-`, `ADR-DRAFT-`, sufixos com letra) → flagar ao operador via enum (`AskUserQuestion`, header `Numeração`) com opções `Seguir o formato canonical 3-dígitos` e `Manter o formato atípico detectado` (Other → especificar formato customizado). Default não-fatal — skill espera resposta, não aborta.
-     - **Diretório vazio**: default 3-dígitos com padding (canonical do toolkit).
-   - Extrair o maior número numérico (independente do padding) e somar 1; aplicar o formato inferido.
 
-3. **Gerar slug** do título: lowercase, espaços/acentos para hífens, remover caracteres especiais. Exemplo: `"Política de retentativas para chamadas HTTP externas"` → `politica-de-retentativas-chamadas-http-externas`.
+   **Inferir formato a partir dos arquivos (não hardcode):**
+   - Todos batem `ADR-\d{4}-` → 4-dígitos com padding (`0006`, `0007`).
+   - Todos batem `ADR-\d{3}-` → 3-dígitos com padding (`006`, `007`) — canonical do toolkit.
+   - Pelo menos um sem zero à esquerda (`ADR-1-`, `ADR-12-`) → sem padding (`6`, `7`).
+   - **Mistos** (alguns padded, outros não) → enum (`AskUserQuestion`, header `Numeração`) nomeando formatos detectados (`Padding 4-dígitos`, `Sem padding`). Escolha rege apenas este ADR; saneamento histórico é decisão separada.
+   - **Atípicos** (`ADR-007a-`, `ADR-DRAFT-`, sufixos) → enum (`Seguir canonical 3-dígitos` / `Manter formato atípico detectado`; Other → customizado). Não-fatal.
+   - **Diretório vazio** → default 3-dígitos com padding.
 
-4. **Obter data de hoje** em formato `YYYY-MM-DD` (use a `currentDate` do contexto se disponível, senão `date +%Y-%m-%d`).
+   Extrair maior número (independente do padding), somar 1, aplicar formato inferido.
 
-5. **Criar arquivo** `<decisions_dir>/ADR-<NNN>-<slug>.md` (onde `<NNN>` segue o formato inferido) com o template abaixo. Não preencher o conteúdo das seções — deixar placeholders explícitos para o operador completar.
+3. **Gerar slug** do título: lowercase, espaços/acentos→hífens, remover caracteres especiais. Ex.: `"Política de retentativas para chamadas HTTP externas"` → `politica-de-retentativas-chamadas-http-externas`.
+
+4. **Obter data** em `YYYY-MM-DD` (`currentDate` do contexto se disponível, senão `date +%Y-%m-%d`).
+
+5. **Criar arquivo** `<decisions_dir>/ADR-<NNN>-<slug>.md` com o template abaixo. Não preencher conteúdo — deixar placeholders explícitos para o operador.
 
 ## Template
 
-Idioma do template: **espelhar ADRs existentes no projeto consumidor**. Se o `decisions_dir` resolvido tem ADRs prévios, usar o idioma deles (headers, status, rótulos de bullets). Se está vazio, default canonical PT-BR mostrado abaixo. Ver "Convenção de idioma" em `docs/philosophy.md`.
-
-Esqueleto mínimo (sempre presente, headers em PT-BR canonical):
+Idioma: espelhar ADRs existentes no projeto. Diretório vazio → default canonical PT-BR. Headers em PT-BR canonical:
 
 ```markdown
 # ADR-NNN: <Título>
@@ -65,34 +65,25 @@ Esqueleto mínimo (sempre presente, headers em PT-BR canonical):
 
 ## Consequências
 
-<Impacto da decisão. Pode ser texto corrido ou subseções, conforme a natureza do ADR.>
+<Impacto da decisão. Texto corrido ou subseções (`### Benefícios`, `### Trade-offs`, `### Limitações`, `### Mitigações`) conforme a natureza.>
 ```
 
-### Seções opcionais (incluir só se houver substância)
+**Seções opcionais** (incluir só se houver substância — não criar vazias):
 
-Não criar seções vazias — incluir apenas quando a decisão genuinamente exige.
+- `## Alternativas consideradas` — comparação concreta entre opções avaliadas (H3 por alternativa com motivo de descarte).
+- `## Comparação objetiva` — trade-off mensurável (tabela ou bullets paralelos).
+- `## Gatilhos de revisão` — condição clara que reabriria o ADR.
+- `## Referências` — material externo essencial (RFCs, posts, threads).
 
-- **`## Alternativas consideradas`** — quando há comparação concreta entre opções avaliadas. Use H3 por alternativa com motivo de descarte.
-- **`## Comparação objetiva`** — quando a escolha envolve trade-off mensurável (libs, estratégias). Tabela ou bullets paralelos.
-- **`## Gatilhos de revisão`** — quando há condição clara que reabriria o ADR (ex.: limite de volume, mudança de fornecedor).
-- **`## Referências`** — quando há material externo essencial (RFCs, posts, threads).
-
-### Subseções de Consequências (escolha conforme o caso)
-
-Padrões úteis: `### Benefícios`, `### Trade-offs`, `### Limitações`, `### Mitigações`. **Não obrigatório** subdividir — ADRs curtos podem ter apenas texto corrido na seção.
-
-### Bullets de Origem (escolha conforme o caso)
-
-Variantes úteis: `**Investigação:**`, `**Decisão base:**` (link a ADR anterior), `**Direção de produto:**` (link ao papel `product_direction` do projeto, default `IDEA.md`), `**Regra de domínio:**` (link a RN no papel `ubiquitous_language`). Use o rótulo que melhor descreve o gatilho real. **Critério de escolha** quando múltiplos gatilhos parecem aplicáveis: pelo mais específico — ADR anterior > Direção de produto > Investigação > Regra de domínio.
+**Bullets de Origem.** Rótulos úteis: `**Investigação:**`, `**Decisão base:**` (link a ADR anterior), `**Direção de produto:**` (link a `product_direction`), `**Regra de domínio:**` (link a RN em `ubiquitous_language`). Múltiplos gatilhos aplicáveis → escolher pelo mais específico: ADR anterior > Direção de produto > Investigação > Regra de domínio.
 
 ## Validação
 
-Após criar o arquivo:
-- Confirmar que o slug não colide com nenhum ADR existente.
-- Reportar ao usuário o caminho do arquivo criado. Status default `Proposto` reflete que o ADR ainda não passou por revisão; após aprovação, vira `Aceito`. Se a decisão for revisada futuramente, o `Status` pode mudar para `Substituído` (com link para o sucessor) ou `Revogado`.
+- Confirmar que o slug não colide com ADR existente.
+- Reportar caminho do arquivo criado. Status default `Proposto`; após revisão vira `Aceito`. Revisão futura pode mudar para `Substituído` (com link para sucessor) ou `Revogado`.
 
 ## O que NÃO fazer
 
-- Não inventar conteúdo de Contexto/Decisão — quem decide é o operador, o skill só estrutura.
+- Não inventar conteúdo de Contexto/Decisão — quem decide é o operador, a skill só estrutura.
 - Não criar ADR sem título.
 - Não alterar ADRs existentes.
