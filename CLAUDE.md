@@ -26,9 +26,21 @@ Release cadence: accumulate merges in `main` and trigger `/release` when there's
 
 ## The role contract (load-bearing)
 
-Skills consume **roles**, not literal paths. Each role has a canonical default; consumer projects declare variants via the `<!-- pragmatic-toolkit:config -->` YAML block in their `CLAUDE.md` (see "Pragmatic Toolkit" section below for schema and semantics).
+Skills consume **roles**, not literal paths. Each role has a canonical default; consumer projects declare variants via the `<!-- pragmatic-toolkit:config -->` YAML block in their `CLAUDE.md` (see "Pragmatic Toolkit" section below for schema and semantics). Conceptual rationale (papéis vs paths) in `docs/philosophy.md` → "Path contract".
 
-Roles and canonical defaults: `product_direction` → `IDEA.md`, `ubiquitous_language` → `docs/domain.md`, `design_notes` → `docs/design.md`, `decisions_dir` → `docs/decisions/`, `plans_dir` → `docs/plans/`, `backlog` → `BACKLOG.md`, `version_files` → _(no default — opt-in list)_, `changelog` → `CHANGELOG.md`, `test_command` → `make test`. Plugin-internal: `.worktreeinclude` (consumed by `/run-plan`). Reviewers `qa-reviewer`, `security-reviewer`, and `doc-reviewer` ship as plugin agents — consumer projects can shadow any of them with a project-level `.claude/agents/<name>.md` (Claude Code convention; project-level wins on name collision).
+| Role | Default | Description |
+|------|---------|-------------|
+| `product_direction` | `IDEA.md` | What we're building and why. Product direction. |
+| `ubiquitous_language` | `docs/domain.md` | Bounded contexts, ubiquitous language, aggregates/entities, invariants (RNxx) — when the domain warrants formalization. |
+| `design_notes` | `docs/design.md` | Quirks of external integrations not covered by official docs. |
+| `decisions_dir` | `docs/decisions/` | Directory of immutable structural decisions. Numbering and slug owned by `/new-adr`. |
+| `plans_dir` | `docs/plans/<slug>.md` | Multi-phase plans for changes that require upfront alignment. |
+| `backlog` | `BACKLOG.md` | Short exploratory list — `## Próximos`, `## Em andamento`, `## Concluídos`. |
+| `version_files` | _(no default — opt-in)_ | Paths whose version string is updated on each release. Empty or absent = role disabled. Consumed by `/release`. |
+| `changelog` | `CHANGELOG.md` | Release history. `/release` prepends a new block at each bump. |
+| `test_command` | `make test` (with `Makefile`) | Automatic gate at execution steps. |
+| (plugin-internal) | `.worktreeinclude` | Optional gitignored paths to replicate in fresh worktrees. Consumed by `/run-plan`. |
+| (agents shipped by the plugin) | `qa-reviewer`, `security-reviewer`, `doc-reviewer` | Generic baseline invoked by `/run-plan` per `{reviewer: qa\|security\|doc}` annotation on the plan block. Consumer projects can shadow with project-level `.claude/agents/<name>.md` (project-level wins on collision). |
 
 ### Resolution protocol
 

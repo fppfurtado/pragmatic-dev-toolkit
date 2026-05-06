@@ -48,7 +48,7 @@ git clone git@github.com:fppfurtado/pragmatic-dev-toolkit.git
 
 ## Pré-requisitos no projeto consumidor
 
-As skills consomem **papéis** (`product_direction`, `ubiquitous_language`, `design_notes`, `decisions_dir`, `plans_dir`, `backlog`, `version_files`, `changelog`, `test_command`), não paths literais. A convenção default por papel é o canonical (`IDEA.md`, `BACKLOG.md`, `docs/domain.md`, `docs/design.md`, `docs/decisions/`, `docs/plans/`, `CHANGELOG.md`, `make test`; `version_files` é opt-in sem default). Projeto que segue os defaults funciona zero-config — o caminho mais simples é gerar com [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit).
+As skills consomem **papéis**, não paths literais. Projeto que segue os defaults canonicais funciona zero-config — o caminho mais simples é gerar com [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit). Lista canônica de papéis (papel | default | descrição) no [`CLAUDE.md`](../CLAUDE.md) do plugin → "The role contract".
 
 Projeto com layout diferente declara variantes uma vez no `CLAUDE.md` raiz, sob o marcador HTML `<!-- pragmatic-toolkit:config -->`:
 

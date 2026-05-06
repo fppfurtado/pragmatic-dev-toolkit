@@ -20,21 +20,9 @@ Operacionalização no checklist de gaps de `/triage`. Sem nomear, a bifurcaçã
 
 ## Path contract
 
-As skills consomem **papéis**, não paths. A tabela abaixo lista a convenção default por papel — projetos com layout diferente declaram variantes via bloco de config (schema e protocolo de resolução em `CLAUDE.md` → "The role contract").
+As skills consomem **papéis**, não paths literais. Projeto declara variantes uma vez via bloco de config; layout diferente do canonical é cidadão de primeira classe, não exceção. O que importa em runtime é a função do arquivo (direção de produto, linguagem ubíqua, plano de mudança), não o nome.
 
-| Papel | Default | Descrição |
-|-------|---------|-----------|
-| `product_direction` | `IDEA.md` | O que estamos construindo e por quê. Direção de produto. |
-| `ubiquitous_language` | `docs/domain.md` | Bounded contexts, linguagem ubíqua, agregados/entidades, invariantes (RNxx) — quando o domínio merece formalização. |
-| `design_notes` | `docs/design.md` | Peculiaridades de integrações externas que não estão na doc oficial. |
-| `decisions_dir` | `docs/decisions/` | Diretório de decisões estruturais imutáveis. Numeração e slug são responsabilidade de `/new-adr`. |
-| `plans_dir` | `docs/plans/<slug>.md` | Planos multi-fase para mudanças que exigem alinhamento prévio. |
-| `backlog` | `BACKLOG.md` | Lista exploratória curta — `## Próximos`, `## Em andamento`, `## Concluídos`. |
-| `version_files` | _(sem default — opt-in)_ | Lista de paths a atualizar com a nova versão a cada release. Lista vazia ou ausente = papel desativado. Consumido por `/release`. |
-| `changelog` | `CHANGELOG.md` | Histórico de releases. `/release` insere novo bloco no topo a cada bump. |
-| `test_command` | `make test` (com `Makefile`) | Gate automático nos passos de execução. |
-| (interno do plugin) | `.worktreeinclude` | Lista opcional de gitignored a replicar em worktrees novas. Consumido por `/run-plan`. |
-| (agents shipados pelo plugin) | `qa-reviewer`, `security-reviewer` | Baseline genérico invocado por `/run-plan` quando o bloco do plano anota `{reviewer: qa}` ou `{reviewer: security}`. Projeto consumidor pode sobrescrever via `.claude/agents/<nome>.md` (project-level vence colisão). |
+Tabela canônica de papéis (papel | default | descrição) e protocolo de resolução em `CLAUDE.md` → "The role contract" — fonte única de verdade.
 
 Projeto que segue os defaults funciona zero-config. O caminho mais simples para começar com os defaults é gerar o projeto com [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit), template companion — qualquer layout alinhado à filosofia também funciona.
 
