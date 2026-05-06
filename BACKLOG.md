@@ -6,10 +6,9 @@
 
 ## Em andamento
 
-- philosophy.md: refatorar para conter apenas princípios; migrar mecânicas para os consumidores reais (skills/CLAUDE.md/README)
-
 ## Concluídos
 
+- philosophy.md: refatorar para conter apenas princípios; migrar mecânicas para os consumidores reais (skills/CLAUDE.md/README)
 - Skills: compactar prosa e enxugar `## O que NÃO fazer` para reduzir input recorrente
 - CLAUDE.md: cortar paráfrases de philosophy.md/skills/agents para reduzir input tokens auto-loaded a cada interação
 - /run-plan: conflito recorrente em BACKLOG.md ao fundir PR — transição final (Em andamento → Concluídos) conflita com estado divergente de main; ocorreu três vezes; investigar se guarda pré-condição 2b cobre todos os cenários
