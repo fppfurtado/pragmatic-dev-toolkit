@@ -42,11 +42,15 @@ Analise o diff fornecido **e apenas o diff**.
 - Identificador novo que representa conceito declarado no papel `ubiquitous_language` do projeto (default: `docs/domain.md` — bounded context, agregado/entidade, conceito ubíquo) deve usar o termo declarado, não sinônimo improvisado. Divergência sinaliza drift entre código e linguagem do negócio (princípio em "Linguagem ubíqua na implementação" em `docs/philosophy.md`). Insumo: `**Termos ubíquos tocados:**` no `## Contexto` do plano (gravado por `/triage`, repassado por `/run-plan` na invocação do reviewer) — não relê `docs/domain.md` em runtime. Silente quando o papel resolve para "não temos" ou quando o conceito do identificador não está declarado.
 
 ### Infra e configuração
+**Aplicabilidade:** acionar apenas quando o diff toca `docker-compose*.yml`, `.env.example`, ou READMEs de infra. Diff de código de aplicação puro → pular esta subseção.
+
 - `docker-compose.yml`: profiles coerentes, `depends_on: { condition: service_healthy }` quando o consumidor depende do upstream estar de pé, envs novas espelhadas em `.env.example`, segredos via `${VAR:-}` (nunca literal).
 - `.env.example`: comentário curto antes de cada bloco descrevendo o propósito; pares de variáveis relacionadas (ex.: token emitido por um lado, esperado pelo outro) com referência cruzada explícita.
 - READMEs de infra: se a feature acrescenta workflow ou env, o README deve listá-lo — não deixar implícito.
 
 ### `.claude/settings.json` e `.claude/settings.local.json`
+**Aplicabilidade:** acionar apenas quando o diff toca `.claude/settings.json`, `.claude/settings.local.json`, ou referências a estes arquivos. Diff fora desse escopo → pular esta subseção.
+
 - **Drift e duplicação:** mesma entry presente em `settings.json` (compartilhado) e `settings.local.json` (pessoal). Local deveria conter **apenas overrides** — duplicar é redundância que diverge silenciosamente. *Exemplo*: regra `Bash(git *)` aparecendo em ambos `settings.json` e `settings.local.json`.
 - **Vazamento pessoal em arquivo compartilhado:** entries de cara idiossincrática (paths absolutos com username, permissões claramente de um único usuário, env vars de máquina específica) em `settings.json` quando pertencem a `settings.local.json`. *Exemplo*: path absoluto contendo username em `Bash(... /storage/3. Resources/Projects/h3/...)` — pertence a `local`.
 - **Hook com path não-portável:** comando de hook em `settings.json` referenciando path absoluto da máquina do autor. Hooks compartilhados precisam ser portáveis — path relativo ao repo (`${CLAUDE_PLUGIN_ROOT}` quando aplicável) ou via PATH. *Exemplo*: comando referenciando `/home/<user>/.claude/...` em vez de `${CLAUDE_PLUGIN_ROOT}/...`.
