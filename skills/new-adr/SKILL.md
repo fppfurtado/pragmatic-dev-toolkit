@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # new-adr
 
-Cria um novo Architecture Decision Record no papel `decisions_dir` (default: `docs/decisions/`; resolução em `docs/philosophy.md`) seguindo o template do toolkit.
+Cria um novo Architecture Decision Record no papel `decisions_dir` (default: `docs/decisions/`) seguindo o template do toolkit.
 
 Esta skill cria o arquivo e devolve o controle ao operador. **Não faz commit** — o operador (ou `/run-plan` num plano que inclui o ADR) commita conforme a convenção do projeto.
 

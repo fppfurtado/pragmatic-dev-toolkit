@@ -9,7 +9,7 @@ Workflow de **alinhamento prévio** para mudança não-trivial — feature, fix 
 
 ## Pré-condições
 
-Para cada papel necessário (`product_direction`, `ubiquitous_language`, `design_notes`, `decisions_dir`, `plans_dir`, `backlog`), aplicar **Resolução de papéis** (ver `docs/philosophy.md`): probe canonical → bloco `<!-- pragmatic-toolkit:config -->` no CLAUDE.md → pergunta tri-state via `AskUserQuestion`.
+Para cada papel necessário (`product_direction`, `ubiquitous_language`, `design_notes`, `decisions_dir`, `plans_dir`, `backlog`), aplicar **Resolução de papéis**: probe canonical → bloco `<!-- pragmatic-toolkit:config -->` no CLAUDE.md → pergunta tri-state via `AskUserQuestion`.
 
 - Papéis informacionais (`product_direction`, `ubiquitous_language`, `design_notes`, `decisions_dir`, `backlog`) podem resolver "não temos" — skill segue.
 - `plans_dir` "não temos" → para com gap report em prosa livre.

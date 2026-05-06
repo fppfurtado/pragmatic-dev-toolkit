@@ -32,7 +32,7 @@ Detalhes e alternativa de path direto em [`docs/install.md`](docs/install.md).
 
 Bounded contexts e linguagem ubíqua sim, cerimônia tática (camadas formais, ports/adapters universais, mappers em cascata) **não**. YAGNI por padrão; abstrações só quando há dor real. Ler [`docs/philosophy.md`](docs/philosophy.md) para o detalhe e o **path contract** que as skills assumem.
 
-Funciona em qualquer projeto alinhado à filosofia, não só os gerados por `scaffold-kit`. As skills consomem **papéis** (linguagem ubíqua, plano, decisão, gate de testes…), não paths literais — projeto com layout diferente declara variantes uma vez via bloco `<!-- pragmatic-toolkit:config -->` no `CLAUDE.md`. Detalhe em [`docs/philosophy.md`](docs/philosophy.md#resolução-de-papéis).
+Funciona em qualquer projeto alinhado à filosofia, não só os gerados por `scaffold-kit`. As skills consomem **papéis** (linguagem ubíqua, plano, decisão, gate de testes…), não paths literais — projeto com layout diferente declara variantes uma vez via bloco `<!-- pragmatic-toolkit:config -->` no `CLAUDE.md`. Detalhe e schema em [`docs/install.md`](docs/install.md).
 
 ## Companion
 

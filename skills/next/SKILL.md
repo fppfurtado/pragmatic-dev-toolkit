@@ -9,7 +9,7 @@ Skill de orientação de sessão: lê o backlog, limpa itens já implementados e
 
 ## Pré-condições
 
-Aplicar **Resolução de papéis** (ver `docs/philosophy.md`):
+Aplicar **Resolução de papéis**:
 
 - `backlog` (default `BACKLOG.md`) — sem backlog não há o que analisar. Resolveu "não temos" → informar e interromper.
 - `product_direction` (default `IDEA.md`) — informacional, usado para alinhamento estratégico. Papel ausente reduz profundidade da análise, nunca bloqueia.

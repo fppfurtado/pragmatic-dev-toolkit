@@ -19,7 +19,7 @@ Sintoma vazio ou vago ("não está funcionando", "está bugado") → pedir preci
 
 ## Pré-condições
 
-Paths e comandos seguem **Resolução de papéis** (ver `docs/philosophy.md`). Roles consumidos são todos informacionais — papel ausente nunca é gap report, apenas reduz a base de hipóteses:
+Paths e comandos seguem **Resolução de papéis**. Roles consumidos são todos informacionais — papel ausente nunca é gap report, apenas reduz a base de hipóteses:
 
 - `test_command` (default `make test`) — reproduzir teste falhando ou rodar a suíte que exerce o cenário.
 - `ubiquitous_language` (default `docs/domain.md`) — consultar se o sintoma toca invariantes documentadas (RNxx ou equivalentes).
