@@ -8,6 +8,8 @@
 
 ## Em andamento
 
+- plugin: batch 3/B2 — frontmatter declarativo `roles:` nas SKILLs (implementa ADR-003), CLAUDE.md absorve regra de despacho automático, skills removem prosa de Pré-condições enumerando papéis
+
 ## Concluídos
 
 - plugin: batch 3/C1 — eliminar gates de cutucada na fase pré-loop do /run-plan (implementa ADR-002), capturar warnings via trilhos existentes do passo 3.5
