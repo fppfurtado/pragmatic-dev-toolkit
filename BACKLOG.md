@@ -8,7 +8,7 @@
 
 ## Em andamento
 
-- plugin: batch 3/C1 — gate de prontidão consolidado em /run-plan (implementa ADR-002), antecipa detecção de warnings pré-loop e substitui 4 enums em cascata por um único gate informativo
+- plugin: batch 3/C1 — eliminar gates de cutucada na fase pré-loop do /run-plan (implementa ADR-002), capturar warnings via trilhos existentes do passo 4.5
 
 ## Concluídos
 
