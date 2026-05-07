@@ -5,439 +5,439 @@ All notable changes to this plugin are documented here. Format inspired by [Keep
 ## [1.23.0] - 2026-05-07
 
 ### Added
-- Conversões de prosa-com-bifurcação para `AskUserQuestion` enum em 5 SKILLs (ADR-006, #37): `/run-plan` §3.2 (`Validação`: `Validei` Recommended / `Falhou — descrever`), §3.3 (`Docs`: `Consistente` / `Listar arquivos a atualizar`), §3.7 (`Publicar` absorve `Renomear branch antes` em modo local); `/debug` §1 unificada em 1 chamada com 3 questions enum (`Onde`/`Reprod`/`Mudou`) + 1-2 prose follow-ups; `/release` §1b ambíguo (`patch`/`minor`/`major`); `/gen-tests-python` §6 fixture/conftest (`No próprio arquivo` Recommended / `Em conftest.py`).
-- ADR-006 (Aceito): preferência por enum quando há bifurcação discreta na pergunta ao operador — critério "todas-Other → prosa" substitui "maioria-Other → prosa". `philosophy.md` e `CLAUDE.md` "AskUserQuestion mechanics" refinados (bifurcação discreta → enum mesmo com Other comum; unificação preferida sobre sequência; `(Recommended)` só com default estatisticamente estável, caso contrário opções construídas dinamicamente).
+- Conversions of prose-with-bifurcation to `AskUserQuestion` enums in 5 SKILLs (ADR-006, #37): `/run-plan` §3.2 (`Validação`: `Validei` Recommended / `Falhou — descrever`), §3.3 (`Docs`: `Consistente` / `Listar arquivos a atualizar`), §3.7 (`Publicar` absorbs `Renomear branch antes` in local mode); `/debug` §1 unified into a single call with 3 enum questions (`Onde`/`Reprod`/`Mudou`) + 1-2 prose follow-ups; `/release` §1b ambiguous (`patch`/`minor`/`major`); `/gen-tests-python` §6 fixture/conftest (`No próprio arquivo` Recommended / `Em conftest.py`).
+- ADR-006 (Accepted): preference for enum when there is a discrete bifurcation in the operator question — criterion "all-Other → prose" replaces "majority-Other → prose". `philosophy.md` and `CLAUDE.md` "AskUserQuestion mechanics" refined (discrete bifurcation → enum even with common Other; unification preferred over sequencing; `(Recommended)` only with statistically stable default, otherwise options built dynamically).
 
 ### Changed
-- `/triage` §2: unificação de gaps enum-áveis vira preferência (≥2 → agrupar numa chamada) em vez de permissão.
+- `/triage` §2: unification of enum-able gaps becomes a preference (≥2 → group into a single call) instead of a permission.
 
 ### Fixed
-- `(Recommended)` em `/run-plan` §3.3 removido: heurística de gatilho não favorece caminho dominante quando dispara; `Consistente` e `Listar` igualmente prováveis.
+- `(Recommended)` removed from `/run-plan` §3.3: trigger heuristic does not favor a dominant path when it fires; `Consistente` and `Listar` are equally likely.
 
 ### Notes
-- 7 conversões + 1 cross-cutting fix no plano `forma-perguntas-enum-first` em 9 commits granulares; squash em main como PR #37.
+- 7 conversions + 1 cross-cutting fix in plan `forma-perguntas-enum-first` across 9 granular commits; squashed into main as PR #37.
 
 ## [1.22.0] - 2026-05-07
 
 ### Added
-- Auto-detect de forge em `/run-plan` (passo 7) e `/release` (frase final): parse `git remote get-url origin` mapeia `github.com → gh` / `^gitlab\. → glab` → gate `Forge` antes de executar `gh pr create --fill` / `glab mr create --fill` / `gh release create --generate-notes` / `glab release create --notes <body>`; cai em fallback textual quando CLI ausente ou host desconhecido (#35).
-- Modo local-gitignored no path contract (ADR-005): `paths.<role>: local` para `decisions_dir`, `backlog`, `plans_dir` ativa artefato em `.claude/local/<role>/`, com regra de não-referenciar (ADR/plan slug/backlog line não aparecem em commit/PR/branch metadata). Mecânica de inicialização: `mkdir -p` + probe `git check-ignore` + gate `Gitignore` quando entrada ausente. `/release` recusa modo local em `version_files`/`changelog` (#36).
-- Seção opcional `## Implementação` no template do `/new-adr` — lista de commits que materializaram a decisão (formato `[\`hash\`](url) subject`); aplicada manualmente em ADR-005.
+- Forge auto-detect in `/run-plan` (step 7) and `/release` (final phrase): parsing `git remote get-url origin` maps `github.com → gh` / `^gitlab\. → glab` → `Forge` gate before running `gh pr create --fill` / `glab mr create --fill` / `gh release create --generate-notes` / `glab release create --notes <body>`; falls back to a textual hint when the CLI is missing or the host is unknown (#35).
+- Local-gitignored mode in the path contract (ADR-005): `paths.<role>: local` for `decisions_dir`, `backlog`, `plans_dir` activates an artifact under `.claude/local/<role>/`, with a no-reference rule (ADR / plan slug / backlog line do not appear in commit / PR / branch metadata). Initialization mechanics: `mkdir -p` + `git check-ignore` probe + `Gitignore` gate when the entry is missing. `/release` rejects local mode for `version_files`/`changelog` (#36).
+- Optional `## Implementação` section in the `/new-adr` template — a list of commits that materialized the decision (format `[\`hash\`](url) subject`); applied manually in ADR-005.
 
 ### Changed
-- `disable-model-invocation: true → false` em `/release`, `/run-plan` e `/new-adr` — autoinvocação habilitada; blast radius baixo (release é local até push manual; run-plan opera em worktree isolada; new-adr só cria markdown).
-- `/triage` passo 2: heurística de ADR-worthy expandida — bullet "Persistência" (gatilho potencial) substituído por "Decisão estrutural duradoura?" com 3 sinais explícitos (persistência/schema; inversão de decisão registrada em `decisions_dir`; restrição externa de longa duração).
+- `disable-model-invocation: true → false` in `/release`, `/run-plan` and `/new-adr` — model auto-invocation enabled; blast radius is low (release stays local until manual push; run-plan operates in an isolated worktree; new-adr only creates markdown).
+- `/triage` step 2: ADR-worthy heuristic expanded — bullet "Persistência" (potential trigger) replaced by "Decisão estrutural duradoura?" with 3 explicit signals (persistence/schema; reversal of a decision recorded in `decisions_dir`; long-lived external constraint).
 
 ### Notes
-- ADR-005 introduz o modo local como trilho paralelo aos 3 default behaviors do ADR-003 (cross-ref aplicado em § Limitações).
-- Captura no backlog: wizard de configuração inicial dos papéis; convenção `## Implementação` em ADRs (retrofit dos ADRs 001-004 como follow-up).
+- ADR-005 introduces local mode as a parallel track to the 3 default behaviors of ADR-003 (cross-ref applied in § Limitações).
+- Captured in the backlog: initial role-configuration wizard; `## Implementação` convention in ADRs (retrofit of ADRs 001-004 as follow-up).
 
 ## [1.21.0] - 2026-05-07
 
 ### Added
-- Skill `/debug` passo 6 emite snippet pronto de invocação `/triage` (paste-ready) — handoff em sessão curta (#34).
-- `templates/plan.md` — esqueleto canônico do plano consumido por `/triage` e `/run-plan` (ADR-001, #30).
-- ADRs 001 (templates), 002 (zero-gate), 003 (frontmatter roles), 004 (state em git/forge) registrando as decisões estruturais do roteiro arquitetural pós-v1.20.0.
+- Skill `/debug` step 6 emits a paste-ready `/triage` invocation snippet — handoff in short sessions (#34).
+- `templates/plan.md` — canonical plan skeleton consumed by `/triage` and `/run-plan` (ADR-001, #30).
+- ADRs 001 (templates), 002 (zero-gate), 003 (frontmatter roles), 004 (state in git/forge) recording the structural decisions of the post-v1.20.0 architectural roadmap.
 
 ### Changed
-- `BACKLOG.md` schema: removida seção `## Em andamento`. State de trabalho em curso vive em git/forge (branches/PRs); `## Próximos` preserva curadoria; `## Concluídos` preserva registro editorial. ADR-004 (#33).
-- `/run-plan`: 4 enums de cutucada na fase pré-loop eliminados — warnings detectados são classificados em trilhos (Aviso/Backlog/Validação) e materializados via captura automática. ADR-002 (#31).
-- `/run-plan` passo 3.4: volta a **mover** linha de `## Próximos` para `## Concluídos` (com fallback "só adicionar" quando linha não está em Próximos).
-- SKILLs: frontmatter declarativo `roles.required` / `roles.informational` em todas as 8 skills; CLAUDE.md "Resolution protocol" absorve regra de despacho automático e os 3 trilhos de comportamento default. ADR-003 (#32).
-- `philosophy.md` ↔ CLAUDE.md fronteira refatorada: tabela de papéis consolidada em CLAUDE.md (single source of truth); mecânica residual (naming, AskUserQuestion, linguagem ubíqua) migrada para consumers; `code-reviewer` ganha aplicabilidade condicional em subseções de infra/settings (#29).
-- Tightening editorial: sanity check de docs como prosa (em vez de enum cosmético); trim disciplinado de `## O que NÃO fazer` em skills + critério editorial em CLAUDE.md; `disable-model-invocation: true` em `/release` e `/run-plan`; single-reviewer como caso normal; `/next` propõe commit das movimentações automáticas (#28).
+- `BACKLOG.md` schema: `## Em andamento` section removed. State of work in progress lives in git/forge (branches/PRs); `## Próximos` preserves curation; `## Concluídos` preserves the editorial registry. ADR-004 (#33).
+- `/run-plan`: 4 nudge enums in the pre-loop phase eliminated — detected warnings are classified into tracks (Notice/Backlog/Validation) and materialized via automatic capture. ADR-002 (#31).
+- `/run-plan` step 3.4: returns to **moving** the line from `## Próximos` to `## Concluídos` (with a fallback "only add" when the line is not in Próximos).
+- SKILLs: declarative frontmatter `roles.required` / `roles.informational` in all 8 skills; `CLAUDE.md` "Resolution protocol" absorbs the auto-dispatch rule and the 3 default-behavior tracks. ADR-003 (#32).
+- `philosophy.md` ↔ `CLAUDE.md` boundary refactored: roles table consolidated in `CLAUDE.md` (single source of truth); residual mechanics (naming, AskUserQuestion, ubiquitous language) migrated to consumers; `code-reviewer` gains conditional applicability in infra/settings subsections (#29).
+- Editorial tightening: docs sanity check as prose (instead of cosmetic enum); disciplined trim of `## O que NÃO fazer` in skills + editorial criterion in `CLAUDE.md`; `disable-model-invocation: true` in `/release` and `/run-plan`; single-reviewer as the normal case; `/next` proposes commit of automatic movements (#28).
 
 ### Fixed
-- `/run-plan` 3.4 sob ADR-004: gap onde linha pré-existente em `## Próximos` ficava duplicada em Concluídos pós-merge — fix volta a mover.
+- `/run-plan` 3.4 under ADR-004: gap where a pre-existing line in `## Próximos` got duplicated in Concluídos post-merge — fix returns to moving.
 
 ### Removed
-- Skill `/heal-backlog` — obsoleta sob ADR-004 (state-tracking saiu do markdown, sem merge artifact a curar).
-- Action `validate-backlog` (`.github/workflows/validate-backlog.yml` + `.github/scripts/validate_backlog.py`) — obsoleta sob ADR-004.
+- Skill `/heal-backlog` — obsolete under ADR-004 (state-tracking left the markdown, no merge artifact to heal).
+- Action `validate-backlog` (`.github/workflows/validate-backlog.yml` + `.github/scripts/validate_backlog.py`) — obsolete under ADR-004.
 
 ### Notes
-- Roteiro arquitetural pós-v1.20.0 fechado: 6 PRs estruturais (Batch 1/2/3/E3/C1/B2 + D2) + 2 commits de polimento (handoff snippet, fix 3.4) + 4 ADRs estabelecidos.
-- Mecanismos defensivos contra merge artifact em BACKLOG.md: 5 → 0 (problema estrutural removido por ADR-004).
-- Pendências de validação registradas nos planos correspondentes — resolvidas via inspeção direta pós-merge ou ficam para invocação subsequente das skills.
+- Post-v1.20.0 architectural roadmap closed: 6 structural PRs (Batch 1/2/3/E3/C1/B2 + D2) + 2 polishing commits (handoff snippet, fix 3.4) + 4 ADRs established.
+- Defensive mechanisms against merge artifact in `BACKLOG.md`: 5 → 0 (structural problem removed by ADR-004).
+- Validation pendings recorded in the corresponding plans — resolved via direct post-merge inspection or deferred to a subsequent skill invocation.
 
 ## [1.20.0] - 2026-05-06
 
 ### Added
-- Generic `doc-reviewer` agent for drift detection between code and docs (CLAUDE.md, ADRs, `docs/philosophy.md`, skills/agents prose) (#26).
+- Generic `doc-reviewer` agent for drift detection between code and docs (`CLAUDE.md`, ADRs, `docs/philosophy.md`, skills/agents prose) (#26).
 
 ### Changed
-- `/run-plan` and `/release` skills made forge-agnostic — push, PR opening and GitHub Release passam ao operador; skills entregam estado local pronto (#27).
+- `/run-plan` and `/release` skills made forge-agnostic — push, PR opening and GitHub Release are handed off to the operator; skills deliver a ready local state (#27).
 
 ### Notes
-- `docs/philosophy.md`: convenção esclarecida — `## O que NÃO fazer` é específica de skills.
-- Planos consolidados em `docs/plans/` para os refactors forge-agnostic e para o `doc-reviewer` genérico.
-- BACKLOG: item de forge-agnostic decoupling registrado.
+- `docs/philosophy.md`: convention clarified — `## O que NÃO fazer` is specific to skills.
+- Plans consolidated in `docs/plans/` for the forge-agnostic refactors and for the generic `doc-reviewer`.
+- BACKLOG: forge-agnostic decoupling item recorded.
 
 ## [1.19.0] - 2026-05-06
 
 ### Added
-- `/release` 4.5.Aplicar: verificação de HEAD branch antes do commit, com recovery proativo (stash uncommitted + checkout para o branch da pré-condição 2) quando HEAD detached ou em ref errada — guarda contra mudança de HEAD por sessão concorrente em outro terminal (#24).
-- `/release` 4.5.Aplicar: auto-sync de upstream (`git fetch` + `git pull --ff-only`) após o checkout do recovery e antes da sequência (a)-(e) — evita taggear SHA atrasado em janelas concorrentes onde merge/push remoto aconteceu durante prep da release (#25).
-- Action `validate-backlog`: detecta merge artifacts em BACKLOG.md (linha duplicada em Em andamento+Concluídos) em push para `main` e abre issue com label `backlog-merge-artifact` (com dedup) (#23, #24).
-- Skill `/heal-backlog`: detecta padrão duplicata em BACKLOG.md e propõe edit de cura via gate Aplicar/Cancelar; suporta inserção manual de "linha sumida" via prosa do operador (#23).
+- `/release` 4.5.Aplicar: HEAD-branch verification before commit, with proactive recovery (stash uncommitted + checkout to the branch from precondition 2) when HEAD is detached or on the wrong ref — guards against HEAD changing due to a concurrent session in another terminal (#24).
+- `/release` 4.5.Aplicar: upstream auto-sync (`git fetch` + `git pull --ff-only`) after the recovery checkout and before the (a)-(e) sequence — avoids tagging a stale SHA in concurrent windows where remote merge/push happened during release prep (#25).
+- Action `validate-backlog`: detects merge artifacts in `BACKLOG.md` (line duplicated across Em andamento + Concluídos) on push to `main` and opens an issue with label `backlog-merge-artifact` (with dedup) (#23, #24).
+- Skill `/heal-backlog`: detects the duplicate pattern in `BACKLOG.md` and proposes a healing edit via Apply/Cancel gate; supports manual insertion of a "missing line" via operator prose (#23).
 
 ## [1.18.0] - 2026-05-06
 
 ### Changed
-- `docs/philosophy.md` refatorada para princípios apenas — mecânicas migradas para os consumidores reais (CLAUDE.md, skills, README); 4170 → 1792 palavras; 18 → 8 seções (#22).
-- Skills compactadas e `## O que NÃO fazer` enxugado para scope guards genuínos — agregado 7 skills de 11070 → 7200 palavras; `/run-plan` 18 → 7 itens, `/triage` 13 → 4, `/release` 10 → 5 (#21).
-- `CLAUDE.md` cortou paráfrases de `docs/philosophy.md`/skills/agents — 1407 → 740 palavras (#20).
-- Frontmatter `description` das 7 skills enxugado para gateway de invocação — média −34% chars.
+- `docs/philosophy.md` refactored to principles only — mechanics migrated to the actual consumers (`CLAUDE.md`, skills, README); 4170 → 1792 words; 18 → 8 sections (#22).
+- Skills compacted and `## O que NÃO fazer` trimmed to genuine scope guards — aggregate of 7 skills from 11070 → 7200 words; `/run-plan` 18 → 7 items, `/triage` 13 → 4, `/release` 10 → 5 (#21).
+- `CLAUDE.md` cut paraphrases of `docs/philosophy.md`/skills/agents — 1407 → 740 words (#20).
+- Frontmatter `description` of the 7 skills trimmed to an invocation gateway — −34% chars on average.
 
 ### Notes
-- `.worktreeinclude` adicionado listando `.claude/` para `/run-plan` worktrees novas.
-- BACKLOG.md heal pós-merge artifact de #20+#21 fan-out (3ª ocorrência; capturada em `## Próximos` para fix subsequente).
+- `.worktreeinclude` added listing `.claude/` for new `/run-plan` worktrees.
+- `BACKLOG.md` healed after the merge artifact from #20+#21 fan-out (3rd occurrence; captured in `## Próximos` for a subsequent fix).
 
 ## [1.17.0] - 2026-05-05
 
 ### Added
-- `/run-plan`: detect BACKLOG.md divergence and auto-rebase before publish (#19).
+- `/run-plan`: detect `BACKLOG.md` divergence and auto-rebase before publish (#19).
 - `/run-plan`: auto-capture pre-loop blockers before stopping (#17).
 - `/run-plan`: suggest push and PR opening after done (#16).
 - `/run-plan`: classify auto-captures as validation or backlog at detection time (#15).
-- `/next`: nova skill de orientação de sessão; `/triage` delega quando invocada sem argumento.
+- `/next`: new session-orientation skill; `/triage` delegates to it when invoked without arguments.
 
 ### Fixed
 - `/triage`: deterministic post-commit push via atomic shell call (#18).
-- Eliminate BACKLOG.md merge artifact via push-after-triage (#14).
-- `/triage`: guard against BACKLOG.md in plan's `## Arquivos a alterar` (#12).
+- Eliminate `BACKLOG.md` merge artifact via push-after-triage (#14).
+- `/triage`: guard against `BACKLOG.md` in plan's `## Arquivos a alterar` (#12).
 - `/run-plan`: restrict docs gate skip to user-facing `.md` patterns (#11).
 
 ### Changed
-- `/run-plan`: simplifica sanity check de documentação no gate final (#10).
-- `/release`: colapsa gates de `version_files`, `changelog` e commit/tag num review único (#9).
+- `/run-plan`: simplifies the documentation sanity check at the final gate (#10).
+- `/release`: collapses `version_files`, `changelog` and commit/tag gates into a single review (#9).
 
 ### Notes
-- Planos em `docs/plans/` cobrindo cada feat/fix/refactor desta release.
-- `BACKLOG.md`: capturas recorrentes (conflito em merge, transição de Em andamento, gap de confiabilidade do push do `/triage`); itens executados movidos para Concluídos.
-- `docs/philosophy.md`: convenção de cadência de release registrada.
-- `README.md` + backlog: skill `/next` listada.
+- Plans in `docs/plans/` covering each feat/fix/refactor of this release.
+- `BACKLOG.md`: recurring captures (merge conflict, Em andamento transition, reliability gap of `/triage` push); executed items moved to Concluídos.
+- `docs/philosophy.md`: release cadence convention recorded.
+- `README.md` + backlog: `/next` skill listed.
 
 ## [1.16.0] - 2026-05-05
 
 ### Added
-- `/run-plan` ganha **captura automática de imprevistos** (passo 4.5, substitui o "backlog harvest"): seis gatilhos prescritos — quatro durante execução (falha contornada, finding fora-do-escopo, hook bloqueando, superfície faltante) e dois durante validação manual (divergência do plano, bug colateral). Política unificada: agente informa o operador a cada detecção e materializa as linhas como bloco extra antes do `done` — sem `AskUserQuestion` de confirmação. Janela de override em prosa entre aviso e materialização. Sinal explícito do operador continua valendo como entrada do mesmo eixo.
+- `/run-plan` gains **automatic capture of unforeseen items** (step 4.5, replaces "backlog harvest"): six prescribed triggers — four during execution (worked-around failure, out-of-scope finding, hook blocking, missing surface) and two during manual validation (plan divergence, collateral bug). Unified policy: agent informs the operator at each detection and materializes the lines as an extra block before `done` — without an `AskUserQuestion` confirmation. Override window in prose between the notice and materialization. An explicit operator signal continues to count as input on the same axis.
 
 ### Changed
-- `docs/philosophy.md` ganha seção `## Consolidação do backlog` extraída do passo 5 do `/triage`. Mecânica única (releitura + flag de duplicatas/obsolescência + pergunta condicional única quando há flags) consumida pelo passo 5 do `/triage` e pelo passo 4.5 do `/run-plan` — DRY entre as duas skills.
-- `docs/philosophy.md` → "Ciclo de vida do backlog": referência ao "backlog harvest" substituída por "captura automática de imprevistos"; "captura de novos itens deferidos" vira "captura de imprevistos detectados pelo agente".
+- `docs/philosophy.md` gains a `## Consolidação do backlog` section extracted from `/triage` step 5. Single mechanic (re-read + flagging duplicates/obsolescence + single conditional question when there are flags) consumed by `/triage` step 5 and `/run-plan` step 4.5 — DRY between the two skills.
+- `docs/philosophy.md` → "Ciclo de vida do backlog": reference to "backlog harvest" replaced by "automatic capture of unforeseen items"; "capture of new deferred items" becomes "capture of unforeseen items detected by the agent".
 
 ### Notes
-- `skills/triage/SKILL.md`: passo 5 ("Consolidação do backlog") encurtado para referenciar `philosophy.md` em vez de duplicar a regra inline.
-- `docs/plans/captura-automatica-imprevistos.md`: plano que motivou a release. 4 blocos (philosophy, triage SKILL, run-plan SKILL, CLAUDE.md guard) com revisor `code` (e `qa` quando aplicável). Ganhou seção `## Pendências de validação` listando os 13 cenários ainda não exercitados em projeto-fixture e a cobertura `qa-reviewer` pulada por limite de uso — pendências de validação ficam no plano, não no backlog.
+- `skills/triage/SKILL.md`: step 5 ("Consolidação do backlog") shortened to reference `philosophy.md` instead of duplicating the rule inline.
+- `docs/plans/captura-automatica-imprevistos.md`: plan that motivated the release. 4 blocks (philosophy, triage SKILL, run-plan SKILL, `CLAUDE.md` guard) with `code` reviewer (and `qa` where applicable). Earned a `## Pendências de validação` section listing the 13 scenarios not yet exercised in a fixture project and the `qa-reviewer` coverage skipped due to usage limit — validation pendings stay in the plan, not in the backlog.
 
 ## [1.15.1] - 2026-05-05
 
 ### Changed
-- `/debug` passo 5 ganha campo condicional **Hipóteses testadas** — ledger formato `H<n> (<status>): <hipótese>. <evidência>` (status `confirmada` / `refutada` / `inconclusiva`), emitido apenas quando ≥2 hipóteses passaram pelo passo 4. Hipótese única confirmada → campo omitido (espelha "lista vazia → skip silente" de `/run-plan` 4.5). Posição: entre *Sintoma* e *Causa-raiz* — operador vê o caminho, não só o destino. Anti-confirmation-bias auditável + insumo para `/triage` quando o caminho de correção é mudança maior.
-- `/debug` ganha passo 6 explícito ("Reportar e devolver controle") espelhando o fechamento de `/triage` e `/release` — síntese curta + sugestão de próximo passo numa frase (revert / patch local / `/triage <intent-do-fix>`). Handoff antes diluído entre passo 5 e seção `## O que NÃO fazer`.
-- `/debug` passo 1 cita "Convenção de pergunta ao operador" — perguntas de precisão são prosa livre, não enum. Padronização editorial alinhada às demais skills.
-- `/debug` passo 5 *Caminhos de correção* nomeia `/triage <intent-do-fix>` como handoff estruturado: o diagnóstico (incluindo *Hipóteses testadas* quando presente) vira insumo natural do `## Contexto` do plano.
+- `/debug` step 5 gains a conditional **Hipóteses testadas** field — ledger format `H<n> (<status>): <hypothesis>. <evidence>` (status `confirmada` / `refutada` / `inconclusiva`), emitted only when ≥2 hypotheses passed through step 4. Single hypothesis confirmed → field omitted (mirrors "empty list → silent skip" of `/run-plan` 4.5). Position: between *Sintoma* and *Causa-raiz* — operator sees the path, not just the destination. Auditable anti-confirmation-bias + input for `/triage` when the correction path is a larger change.
+- `/debug` gains an explicit step 6 ("Reportar e devolver controle") mirroring the closing of `/triage` and `/release` — short synthesis + next-step suggestion in one phrase (revert / local patch / `/triage <intent-do-fix>`). Handoff was previously diluted between step 5 and the `## O que NÃO fazer` section.
+- `/debug` step 1 cites "Convenção de pergunta ao operador" — precision questions are free prose, not enum. Editorial standardization aligned with the other skills.
+- `/debug` step 5 *Caminhos de correção* names `/triage <intent-do-fix>` as the structured handoff: the diagnosis (including *Hipóteses testadas* when present) becomes a natural input for the plan's `## Contexto`.
 
 ### Notes
-- `docs/install.md` validação item 6 menciona o campo opcional *hipóteses testadas* no diagnóstico estruturado.
-- `docs/plans/debug-trilha-hipoteses-e-handoff.md`: plano que motivou a release. Bloco único de 4 edits coordenados em `skills/debug/SKILL.md` mais sanidade no `docs/install.md`, revisor `code`.
-- Transições de estado do backlog (`Próximos → Em andamento → Concluídos`) passam a ser **automáticas** — `/triage` grava diretamente em `## Em andamento` quando o caminho inclui plano; `/run-plan` aplica ambas as transições sem prompt, apenas informando o operador. Reverte a decisão "toolkit cutuca, não decide" do v1.13 — o matching por texto exato já elimina o risco de mover linha errada que motivava a cutucada.
+- `docs/install.md` validation item 6 mentions the optional *hipóteses testadas* field in the structured diagnosis.
+- `docs/plans/debug-trilha-hipoteses-e-handoff.md`: plan that motivated the release. Single block with 4 coordinated edits in `skills/debug/SKILL.md` plus a sanity tweak in `docs/install.md`, `code` reviewer.
+- Backlog state transitions (`Próximos → Em andamento → Concluídos`) become **automatic** — `/triage` writes directly to `## Em andamento` when the path includes a plan; `/run-plan` applies both transitions without prompting, only informing the operator. Reverts the v1.13 "toolkit nudges, does not decide" decision — exact-text matching already eliminates the risk of moving the wrong line that had motivated the nudge.
 
 ## [1.15.0] - 2026-05-05
 
 ### Changed
-- `/release` passos 4 (commit) e 5 (tag) fundidos num único passo "Aplicar commit + tag (gate único)". Mensagem de commit e tag são derivados mecânicos do bump confirmado no passo 1 — confirmar separadamente é cerimônia. Renumera "Reportar" passo 6 → 5.
-- `/run-plan` passo 4.5 (Backlog harvest): pergunta vira condicional. Skill mantém lista de itens emergidos durante execução via sinal explícito do operador ("isso fica pra depois") ou finding fora-de-escopo de revisor. Lista vazia → skip silente; lista não-vazia → mostra itens em prosa.
-- `/triage` passo 5 (Revisão do backlog): pergunta vira condicional. Releitura + flagar duplicatas/obsolescência sempre rodam. Sem flags → skip silente (linhas adicionadas no passo 4 não precisam de re-confirm); com flags → enum dispara mostrando síntese.
+- `/release` steps 4 (commit) and 5 (tag) merged into a single step "Aplicar commit + tag (gate único)". Commit and tag messages are mechanical derivatives of the bump confirmed in step 1 — confirming separately is ceremony. Renumbers "Reportar" step 6 → 5.
+- `/run-plan` step 4.5 (Backlog harvest): question becomes conditional. Skill keeps a list of items emerged during execution via explicit operator signal ("isso fica pra depois") or out-of-scope reviewer finding. Empty list → silent skip; non-empty list → shows the items in prose.
+- `/triage` step 5 (Backlog review): question becomes conditional. Re-read + flagging duplicates/obsolescence always run. No flags → silent skip (lines added in step 4 do not need re-confirmation); with flags → enum fires showing the synthesis.
 
 ### Notes
-- `docs/philosophy.md`: novo parágrafo "Não perguntar por valor único derivado" em "Convenção de pergunta ao operador". Princípio: quando o valor é 100% derivado de decisão já confirmada upstream, pular o confirm; janela de "abort tardio" vem de tornar visível antes de aplicar (`git status` antes do commit, diff antes do write), não de cerimônia adicional. Skills que aplicam N valores derivados consolidam num gate único.
-- `docs/plans/reduce-ceremonial-prompts.md`: plano que motivou a release. Construído via dogfooding — `/triage` produziu o plano, `/run-plan` executou os 4 blocos com revisor `code` em cada um e micro-commits. Primeira release que dogfooda o gate único do `/release` em si.
+- `docs/philosophy.md`: new paragraph "Não perguntar por valor único derivado" in "Convenção de pergunta ao operador". Principle: when the value is 100% derived from a decision already confirmed upstream, skip the confirm; the "late abort" window comes from making things visible before applying (`git status` before commit, diff before write), not from extra ceremony. Skills that apply N derived values consolidate into a single gate.
+- `docs/plans/reduce-ceremonial-prompts.md`: plan that motivated the release. Built via dogfooding — `/triage` produced the plan, `/run-plan` executed the 4 blocks with a `code` reviewer in each one and micro-commits. First release that dogfoods the `/release` single gate itself.
 
 ## [1.14.0] - 2026-05-04
 
 ### Changed
-- `/new-feature` renomeada para `/triage`. Mudança breaking (slash command visível ao operador, sem alias de compat — filosofia flat). O nome antigo sugeria escopo restrito a feature nova; o real é triagem da intenção do operador (feature, fix saído de `/debug`, refactor com bifurcação, mudança pontual que toca invariante). Pareia com `/debug` no eixo "pensar antes de agir" (diagnose ↔ triage). Frontmatter `description` reescrita para escopo broader. `git mv skills/new-feature skills/triage` preserva histórico.
+- `/new-feature` renamed to `/triage`. Breaking change (slash command visible to the operator, no compat alias — flat philosophy). The old name suggested a scope restricted to new features; the real one is triage of the operator's intent (feature, fix coming out of `/debug`, refactor with bifurcation, point change that touches an invariant). Pairs with `/debug` on the "think before acting" axis (diagnose ↔ triage). Frontmatter `description` rewritten for the broader scope. `git mv skills/new-feature skills/triage` preserves history.
 
 ### Notes
-- `docs/philosophy.md`: convenção de naming relaxada — skills aceitam `<verb>` (sem sufixo de artefato) quando o output emerge da decisão da skill (caso `triage`); skills cujo artefato é fixo (`new-adr`) seguem `<verb>-<artifact>`. Tabela ganha nota explicativa abaixo.
-- Referências mecânicas atualizadas em `CLAUDE.md`, `README.md`, `docs/install.md`, `skills/run-plan/SKILL.md`, `skills/debug/SKILL.md`, `skills/release/SKILL.md`. `CHANGELOG.md` e `docs/plans/*.md` históricos não tocados (registro do que existia ao tempo de cada release).
-- `CLAUDE.md`: bloco `<!-- pragmatic-toolkit:config -->` declara `version_files: [".claude-plugin/plugin.json", ".claude-plugin/marketplace.json"]` e `test_command: null` (repo sem suite — `/run-plan` cai para `## Verificação manual` do plano).
-- `docs/plans/rename-new-feature-to-triage.md`: plano que motivou a release. Primeira release que dogfooda `/triage` (a próxima invocação será sob o novo nome).
+- `docs/philosophy.md`: naming convention relaxed — skills accept `<verb>` (without artifact suffix) when the output emerges from the skill's decision (the `triage` case); skills whose artifact is fixed (`new-adr`) keep `<verb>-<artifact>`. Table gains an explanatory note below.
+- Mechanical references updated in `CLAUDE.md`, `README.md`, `docs/install.md`, `skills/run-plan/SKILL.md`, `skills/debug/SKILL.md`, `skills/release/SKILL.md`. Historical `CHANGELOG.md` and `docs/plans/*.md` are not touched (record of what existed at the time of each release).
+- `CLAUDE.md`: `<!-- pragmatic-toolkit:config -->` block declares `version_files: [".claude-plugin/plugin.json", ".claude-plugin/marketplace.json"]` and `test_command: null` (repo without a suite — `/run-plan` falls back to the plan's `## Verificação manual`).
+- `docs/plans/rename-new-feature-to-triage.md`: plan that motivated the release. First release that dogfoods `/triage` (the next invocation will be under the new name).
 
 ## [1.13.0] - 2026-05-04
 
 ### Added
-- `BACKLOG.md`: ciclo de vida formalizado — `## Próximos`, `## Em andamento` e `## Concluídos` viram estados reais com cutucadas em pontos de transição naturais. `/new-feature` decide a seção inicial quando a feature gera plano (enum `Próximos` (recomendado) / `Em andamento`); sem plano, vai direto para `## Próximos`. `/run-plan` cutuca `Próximos → Em andamento` antes do primeiro bloco e `Em andamento → Concluídos` no gate final, antes do harvest. Anotação `**Linha do backlog:** <texto>` no `## Contexto` do plano é o mecanismo de matching entre alinhamento e execução; ausência (plano sem o campo, papel `backlog` "não temos", linha não localizada) é skip silente — mudança aditiva, planos antigos sem a anotação seguem rodando sem alteração de comportamento.
+- `BACKLOG.md`: lifecycle formalized — `## Próximos`, `## Em andamento` and `## Concluídos` become real states with nudges at natural transition points. `/new-feature` decides the initial section when the feature generates a plan (enum `Próximos` (recommended) / `Em andamento`); without a plan, it goes straight to `## Próximos`. `/run-plan` nudges `Próximos → Em andamento` before the first block and `Em andamento → Concluídos` at the final gate, before the harvest. The `**Linha do backlog:** <text>` annotation in the plan's `## Contexto` is the matching mechanism between alignment and execution; absence (plan without the field, `backlog` role "não temos", line not located) is a silent skip — additive change, old plans without the annotation continue running with no behavior change.
 
 ### Notes
-- `docs/philosophy.md`: nova seção "Ciclo de vida do backlog" entre "Cobertura de teste em planos" e "Linguagem ubíqua na implementação", com subsections "Anotação de matching" e "Quando o ciclo silencia".
-- `skills/new-feature/SKILL.md`: passo 4 sub-bullet `backlog` distingue caminho-com-plano (enum de seção) vs caminho-sem-plano (default `Próximos`); sub-bullet `plans_dir` registra `**Linha do backlog:**` no `## Contexto` quando aplicável; `## O que NÃO fazer` ganha duas guardas.
-- `skills/run-plan/SKILL.md`: passo 3 captura a referência antes do primeiro bloco e cutuca a transição inicial; passo 4.4 nova "Transição final do backlog" antes do harvest (renumerações 4.4→4.5, 4.5→4.6); `## O que NÃO fazer` ganha três guardas (sem matching heurístico, sem silenciar transição final, sem inverter ordem 4.4↔4.5).
-- `docs/plans/v1.13-transicao-estado-backlog.md`: plano que motivou a release.
+- `docs/philosophy.md`: new "Ciclo de vida do backlog" section between "Cobertura de teste em planos" and "Linguagem ubíqua na implementação", with subsections "Anotação de matching" and "Quando o ciclo silencia".
+- `skills/new-feature/SKILL.md`: step 4 sub-bullet `backlog` distinguishes path-with-plan (section enum) vs path-without-plan (default `Próximos`); sub-bullet `plans_dir` records `**Linha do backlog:**` in `## Contexto` when applicable; `## O que NÃO fazer` gains two guards.
+- `skills/run-plan/SKILL.md`: step 3 captures the reference before the first block and nudges the initial transition; step 4.4 new "Transição final do backlog" before the harvest (renumberings 4.4→4.5, 4.5→4.6); `## O que NÃO fazer` gains three guards (no heuristic matching, no silencing of the final transition, no inversion of order 4.4↔4.5).
+- `docs/plans/v1.13-transicao-estado-backlog.md`: plan that motivated the release.
 
 ## [1.12.1] - 2026-05-04
 
 ### Notes
-- `CLAUDE.md`, `docs/philosophy.md`, `skills/run-plan/SKILL.md`: descrição dos reviewers `qa-reviewer`/`security-reviewer` alinhada à realidade — agents shipados pelo plugin com override project-level via `.claude/agents/<nome>.md` (convenção Claude Code, project-level vence colisão de nome). Frases corrigem drift que descrevia os reviewers como "project-level only" e contradizia `CLAUDE.md:16`, que já listava os três reviewers como agents do plugin.
-- `README.md`: adicionada linha de `/release` na tabela "O que vem". Skill chegou na v1.11.0; a tabela ficou para trás.
-- `docs/plans/corrigir-docs-reviewers-e-release-no-readme.md`: plano que motivou a release.
+- `CLAUDE.md`, `docs/philosophy.md`, `skills/run-plan/SKILL.md`: description of the `qa-reviewer`/`security-reviewer` reviewers aligned with reality — agents shipped by the plugin with project-level override via `.claude/agents/<name>.md` (Claude Code convention, project-level wins on name collision). Phrases correct the drift that described the reviewers as "project-level only" and contradicted `CLAUDE.md:16`, which already listed the three reviewers as plugin agents.
+- `README.md`: added a `/release` line in the "O que vem" table. The skill arrived in v1.11.0; the table had fallen behind.
+- `docs/plans/corrigir-docs-reviewers-e-release-no-readme.md`: plan that motivated the release.
 
 ## [1.12.0] - 2026-05-04
 
 ### Changed
-- `/new-feature`: papel `backlog` reclassificado de obrigatório para informacional. Projeto sem `BACKLOG.md` no canonical e sem declaração no bloco `<!-- pragmatic-toolkit:config -->` deixa de receber gap report e passa a usar a skill normalmente — pré-condição que bloqueia agora cita apenas `plans_dir` (único output não-fungível da skill). Oferta de criação enum (header `Backlog`, opções `Criar em BACKLOG.md` / `Não usamos esse papel`) dispara apenas no passo 4 quando estaria prestes a gravar linha; espelha o padrão já usado por `ubiquitous_language`/`design_notes`. Segunda opção registra `paths.backlog: null` no bloco de config — papel desativado para invocações futuras. Itens fora-de-escopo capturados no passo 2 passam a ser reportados ao operador no passo 6 sob "Itens não registrados (papel backlog desativado):" quando o papel resolve para "não temos", sem editorialização adicional.
+- `/new-feature`: `backlog` role reclassified from required to informational. A project without `BACKLOG.md` at the canonical path and without a declaration in the `<!-- pragmatic-toolkit:config -->` block stops getting a gap report and starts using the skill normally — the blocking precondition now mentions only `plans_dir` (the only non-fungible output of the skill). The enum creation offer (header `Backlog`, options `Criar em BACKLOG.md` / `Não usamos esse papel`) fires only at step 4 when a line is about to be recorded; mirrors the pattern already used by `ubiquitous_language`/`design_notes`. The second option records `paths.backlog: null` in the config block — role disabled for future invocations. Out-of-scope items captured at step 2 are reported to the operator at step 6 under "Itens não registrados (papel backlog desativado):" when the role resolves to "não temos", without further editorialization.
 
 ### Notes
-- `docs/philosophy.md`: `backlog` movido da lista Obrigatórios para Informacionais; nota curta explicando o comportamento do `/new-feature` quando o papel resolve para "não temos".
-- `docs/install.md`: lista de gap report no exemplo do bloco `<!-- pragmatic-toolkit:config -->` passa a citar apenas `plans_dir` em `/new-feature`/`/run-plan` e `decisions_dir` em `/new-adr`.
-- `docs/plans/v1.12-backlog-informacional-new-feature.md`: plano que motivou a release.
+- `docs/philosophy.md`: `backlog` moved from the Required list to the Informational list; short note explaining the `/new-feature` behavior when the role resolves to "não temos".
+- `docs/install.md`: gap-report list in the `<!-- pragmatic-toolkit:config -->` block example now mentions only `plans_dir` for `/new-feature`/`/run-plan` and `decisions_dir` for `/new-adr`.
+- `docs/plans/v1.12-backlog-informacional-new-feature.md`: plan that motivated the release.
 
 ## [1.11.0] - 2026-05-04
 
 ### Added
-- Nova skill `/release`: bump de versão coordenado em `version_files`, entrada de changelog em `changelog`, commit unificado e tag anotada local. Mecaniza release a partir do log Conventional Commits desde a última tag — inferência de bump (≥70% CC), proposta enum, bifurcação para histórico ambíguo / primeira release / argumento explícito (`/release minor|patch|major|X.Y.Z`). Pré-condições: working tree limpo (bloqueia), branch default (cutuca). Detecção de formato de tag em três níveis (política → padrão observado ≥70% → SemVer canonical `vX.Y.Z`). Skill **não** faz push — release é local; publicação é decisão deliberada (`git push --follow-tags`).
+- New skill `/release`: coordinated version bump in `version_files`, changelog entry in `changelog`, unified commit and local annotated tag. Mechanizes release from the Conventional Commits log since the last tag — bump inference (≥70% CC), enum proposal, bifurcation for ambiguous history / first release / explicit argument (`/release minor|patch|major|X.Y.Z`). Preconditions: clean working tree (blocks), default branch (nudges). Tag-format detection at three levels (policy → observed pattern ≥70% → SemVer canonical `vX.Y.Z`). The skill **does not** push — release is local; publication is a deliberate decision (`git push --follow-tags`).
 
 ### Changed
-- `/release`: aplicado feedback do `code-reviewer` no draft inicial (justificativas redundantes removidas; caminho per-file da confirmação de diff restaurado com batch como otimização; alternativa `git push && git push origin <tag>` adicionada ao handoff).
+- `/release`: `code-reviewer` feedback applied to the initial draft (redundant justifications removed; per-file path of the diff confirmation restored with batch as an optimization; alternative `git push && git push origin <tag>` added to the handoff).
 
 ### Notes
-- `docs/philosophy.md`: novos papéis `version_files` (opt-in, sem default canonical) e `changelog` (canonical `CHANGELOG.md`) no contrato de papéis.
-- `CLAUDE.md`: descrição do `/release` e nota de dogfood — o próprio repo passa a usar `/release` para subir versões a partir de v1.11.0.
-- `docs/install.md`: smoke test do `/release` (cenário 10) e enumeração atualizada dos papéis.
-- `docs/plans/v1.11-skill-release-tagueamento.md`: plano que motivou a release.
+- `docs/philosophy.md`: new roles `version_files` (opt-in, no canonical default) and `changelog` (canonical `CHANGELOG.md`) in the role contract.
+- `CLAUDE.md`: description of `/release` and dogfood note — the repo itself starts using `/release` to bump versions from v1.11.0 onward.
+- `docs/install.md`: smoke test for `/release` (scenario 10) and updated role enumeration.
+- `docs/plans/v1.11-skill-release-tagueamento.md`: plan that motivated the release.
 
 ## [1.10.0] - 2026-05-04
 
 ### Added
-- `docs/philosophy.md`: nova seção **"Convenção de pergunta ao operador"** define os dois modos complementares de coleta de input — `AskUserQuestion` (escolhas discretas) e prosa livre (explicação/justificativa) — com critério mecânico para optar.
-- Skills migradas para `AskUserQuestion` nos pontos enum-naturais: resolução de papéis tri-state e oferta de memorização (philosophy + todas as skills); bifurcação arquitetural (`/new-feature` passo 2); `/new-feature` passos 5 (revisão de backlog), 6 (commit) e proposta de criação de `domain.md`/`design.md`; `/new-adr` passo 2 (formato atípico/misto); `/run-plan` pré-cond 2 (alinhamento sujo), passo 1.2 (`.worktreeinclude` multiSelect + gatilho cruzado de credencial), passo 2 (sanity escopo), passo 4.3 (sanity doc), passo 4.4 (backlog harvest).
-- `CLAUDE.md`: ponteiro à nova convenção para preservar o modo de cada touchpoint ao editar skills.
+- `docs/philosophy.md`: new section **"Convenção de pergunta ao operador"** defines the two complementary input-collection modes — `AskUserQuestion` (discrete choices) and free prose (explanation/justification) — with a mechanical criterion to choose between them.
+- Skills migrated to `AskUserQuestion` at enum-natural points: tri-state role resolution and memoization offer (philosophy + all skills); architectural bifurcation (`/new-feature` step 2); `/new-feature` steps 5 (backlog review), 6 (commit) and creation proposal of `domain.md`/`design.md`; `/new-adr` step 2 (atypical/mixed format); `/run-plan` precondition 2 (dirty alignment), step 1.2 (`.worktreeinclude` multiSelect + cross-trigger for credentials), step 2 (scope sanity), step 4.3 (docs sanity), step 4.4 (backlog harvest).
+- `CLAUDE.md`: pointer to the new convention to preserve the mode of each touchpoint when editing skills.
 
 
 
 ### Added
-- `/new-feature`: novo **passo 5 "Revisão do backlog"** entre o passo 4 (produção dos artefatos) e o passo de commit (renumerado para passo 6). Gate condicional — dispara apenas quando o passo 4 modificou o arquivo do papel `backlog` (linha da feature em curso, linhas de fora-de-escopo capturadas no passo 2, ou ambas); caminho que não tocou backlog (atualização pura de `domain.md`/`design.md`, ADR delegada sem linha de backlog acompanhante, papel `backlog` resolvido para "não temos") pula silenciosamente. Quando dispara: relê o arquivo do backlog após as edições do passo 4, flaga duplicatas entre linhas recém-adicionadas (incluindo itens fora-de-escopo do passo 2) e linhas pré-existentes nas três seções, flaga obsolescência conservadora (sobreposição nítida no texto, não similaridade vaga), mostra ao operador o estado atual de `## Próximos` (com `## Em andamento`/`## Concluídos` apenas se um flag tocar essas seções) e pergunta uma vez se algo precisa ser consolidado, reordenado ou removido antes do commit. Versão mínima da pergunta no caso frequente (sem flags + uma linha adicionada): "Backlog atualizado com `<linha>`. Ok?". Edits aprovados pelo operador entram no mesmo commit unificado proposto no passo 6. Duas novas entradas em `## O que NÃO fazer` codificam: não pular o gate quando o passo 4 modificou o backlog, e não consolidar/remover/reordenar linhas sem confirmação explícita do operador.
+- `/new-feature`: new **step 5 "Revisão do backlog"** between step 4 (artifact production) and the commit step (renumbered to step 6). Conditional gate — fires only when step 4 modified the `backlog` role's file (line for the current feature, out-of-scope lines captured at step 2, or both); a path that did not touch the backlog (pure update of `domain.md`/`design.md`, ADR delegated without an accompanying backlog line, `backlog` role resolved to "não temos") skips silently. When it fires: re-reads the backlog file after step 4 edits, flags duplicates between newly-added lines (including out-of-scope items from step 2) and pre-existing lines across the three sections, flags conservative obsolescence (clear text overlap, not vague similarity), shows the operator the current state of `## Próximos` (with `## Em andamento`/`## Concluídos` only if a flag touches those sections) and asks once whether anything needs to be consolidated, reordered or removed before the commit. Minimum question version in the frequent case (no flags + one line added): "Backlog atualizado com `<linha>`. Ok?". Operator-approved edits go into the same unified commit proposed at step 6. Two new entries in `## O que NÃO fazer` codify: do not skip the gate when step 4 modified the backlog, and do not consolidate/remove/reorder lines without explicit operator confirmation.
 
 ### Notes
-- Mudança aditiva. Fecha a simetria do eixo **gates de qualidade no fim do fluxo**: `/run-plan` 4.4 (Backlog harvest, 1.7.0) captura **novos** itens emergidos durante execução; `/new-feature` 5 valida itens **recém-registrados** durante alinhamento. Sequência completa do eixo: 1.4 (commit dos artefatos), 1.5 (gate git no `/run-plan`), 1.6 (sanity check de documentação), 1.7 (backlog harvest + fora-de-escopo capture), 1.8 (cenários enumerados em validação manual), 1.9 (revisão do backlog em `/new-feature`). A heurística age **a partir** da próxima invocação da skill.
+- Additive change. Closes the symmetry of the **end-of-flow quality gates** axis: `/run-plan` 4.4 (Backlog harvest, 1.7.0) captures **new** items emerged during execution; `/new-feature` 5 validates items **just-recorded** during alignment. Full sequence on the axis: 1.4 (commit of artifacts), 1.5 (git gate in `/run-plan`), 1.6 (documentation sanity check), 1.7 (backlog harvest + out-of-scope capture), 1.8 (enumerated scenarios in manual validation), 1.9 (backlog review in `/new-feature`). The heuristic acts **starting from** the next invocation of the skill.
 
 ## [1.8.0] - 2026-05-03
 
 ### Added
-- `/run-plan` passo 1.2: novo **gatilho cruzado de validação manual**, independente do estado prévio do `.worktreeinclude`. Quando o plano corrente tem `## Verificação manual` (matching semântico) E a raiz do repo tem gitignored típicos de credencial/config local (`.env`, `*.local.yaml`, `*.local.yml`, `secrets.*`) **não cobertos** pelo `.worktreeinclude` aplicado, a skill cutuca o operador antes do baseline: *"Plano tem `## Verificação manual` e `<credencial>` não está replicada na worktree. Validação manual provavelmente vai precisar do serviço real. Replicar agora? (s/n)"*. Os 3 casos do mundo real (`.worktreeinclude` ausente / com mas sem a credencial / vazio porque operador disse "não preciso" antes) viram instâncias da mesma cláusula — fio condutor é "credencial necessária para validação manual não está replicada", não estado prévio. Nova entrada em `## O que NÃO fazer` codifica que a cutucada **não pode ser silenciada** por resposta "não preciso" antiga quando o contexto mudou (plano corrente exige serviço real). Fecha o gap de "worktree sobe sem credencial necessária e validação manual quebra na primeira tentativa".
-- `/new-feature` passo 2: gap existente *"Validação manual necessária?"* ganha **sub-bullet condicional** (não item top-level — refinamento de heurística > expansão da lista, alinhado a YAGNI). Quando o sim do gap vem de **surface não-determinística** (parsing, matching de strings, ou comportamento de agente LLM), exigir antes do plano: (a) **forma do dado real** — pedir 1-2 exemplos concretos do formato em produção (separadores, prefixos, capitalização inconsistente, ids internos que não devem vazar); (b) **cenários enumerados** — `## Verificação manual` deve listar passos concretos que exercitem essas formas, não direção genérica tipo "validar via interface real". Sub-bullet **não dispara** quando a primeira pergunta do gap resolveu "não" (refactor puro, doc-only). Fecha o gap de "matching contra dado sintético passa, dado real não" e "prompt vaza id interno descoberto por sorte".
+- `/run-plan` step 1.2: new **manual-validation cross-trigger**, independent of the prior state of `.worktreeinclude`. When the current plan has `## Verificação manual` (semantic matching) AND the repo root has typical credential/local-config gitignored files (`.env`, `*.local.yaml`, `*.local.yml`, `secrets.*`) **not covered** by the applied `.worktreeinclude`, the skill nudges the operator before the baseline: *"Plano tem `## Verificação manual` e `<credencial>` não está replicada na worktree. Validação manual provavelmente vai precisar do serviço real. Replicar agora? (s/n)"*. The 3 real-world cases (`.worktreeinclude` absent / present but missing the credential / empty because the operator said "I don't need it" before) become instances of the same clause — the through-line is "credential needed for manual validation is not replicated", not prior state. New entry in `## O que NÃO fazer` codifies that the nudge **cannot be silenced** by an old "I don't need it" answer when context has changed (current plan requires the real service). Closes the gap of "worktree comes up without the needed credential and manual validation breaks on the first try".
+- `/new-feature` step 2: existing gap *"Validação manual necessária?"* gains a **conditional sub-bullet** (not a top-level item — heuristic refinement > list expansion, aligned with YAGNI). When the gap's "yes" comes from a **non-deterministic surface** (parsing, string matching, or LLM agent behavior), require before the plan: (a) **shape of the real data** — ask for 1-2 concrete examples of the production format (separators, prefixes, inconsistent capitalization, internal IDs that must not leak); (b) **enumerated scenarios** — `## Verificação manual` must list concrete steps that exercise those shapes, not generic guidance like "validate via real interface". Sub-bullet **does not fire** when the gap's first question resolved to "no" (pure refactor, doc-only). Closes the gap of "matching against synthetic data passes, real data does not" and "prompt leaks an internal ID found by luck".
 
 ### Notes
-- Mudança aditiva. Fecha o quarteto de releases consecutivos no eixo **gate de validação manual**: 1.5 (gate git dos artefatos de alinhamento), 1.6 (sanity check de documentação), 1.7 (backlog harvest), 1.8 (cenários enumerados + credenciais replicadas). Dois bugs reais motivaram o 1.8 (matching falhou em formato de produção; agente LLM vazou id interno) — ambos passaram pelos reviewers automáticos e só foram pegos pela validação manual após o operador improvisar cenários por sorte. Decisões deliberadas de **não** propor: agente `prompt-reviewer` novo (uma sessão não justifica papel — YAGNI), seção `## Cenários do agente` no template de plano (criaria precedente para seção por tipo de feature), mudar mandato do `qa-reviewer` (reviewer age sobre diff, não conhece "dado real"; defesa fica upstream em `/new-feature`). A heurística age **a partir** da próxima invocação das skills.
+- Additive change. Closes the quartet of consecutive releases on the **manual-validation gate** axis: 1.5 (git gate of alignment artifacts), 1.6 (documentation sanity check), 1.7 (backlog harvest), 1.8 (enumerated scenarios + replicated credentials). Two real bugs motivated 1.8 (matching failed in production format; LLM agent leaked an internal ID) — both passed the automatic reviewers and were caught only by manual validation after the operator improvised scenarios by luck. Deliberate decisions to **not** propose: a new `prompt-reviewer` agent (one session does not justify a role — YAGNI), a `## Cenários do agente` section in the plan template (would set a precedent for one section per feature type), changing the `qa-reviewer` mandate (reviewer acts on the diff, does not know "real data"; defense stays upstream in `/new-feature`). The heuristic acts **starting from** the next invocation of the skills.
 
 ## [1.7.0] - 2026-05-03
 
 ### Added
-- `/new-feature` passo 2 (esclarecimento de gaps): nova diretiva **"Itens fora de escopo emergidos na conversa"** instrui a skill a manter atenção para coisas mencionadas pelo operador que não pertencem ao escopo da feature em curso (TODO adjacente, tech-debt revelado, bug menor avistado, melhoria não-essencial). Itens capturados são propostos como linhas separadas em `## Próximos` no backlog, distintas do artefato principal. Operador pode descartar com "deixa pra lá" — captura é sugestão, não imposição. Passo 4 (produção) clarifica que o backlog ganha linhas independentes da escolha de artefato principal: feature com plano/ADR/atualização de domínio também recebe linhas de itens fora-de-escopo em `## Próximos`.
-- `/run-plan`: novo **passo 4.4 "Backlog harvest"** entre o sanity check de documentação e declarar done. Pergunta direta ao operador se algo emergiu durante a execução que deveria virar item separado no backlog (TODO adjacente, tech-debt revelado pela leitura, bug menor de passagem, melhoria não-essencial). Itens listados são tratados como **bloco extra** (atualizar `backlog` → revisor `code` → micro-commit) antes do done. Resposta "nada" fecha o gate. Escopo creep já absorvido pelo plano **não** entra aqui — harvest é para deferimento deliberado. Duas novas entradas em `## O que NÃO fazer` codificam: não pular o harvest (sempre perguntar), e não capturar itens que já foram absorvidos pelo plano corrente.
+- `/new-feature` step 2 (gap clarification): new directive **"Itens fora de escopo emergidos na conversa"** instructs the skill to keep attention for things the operator mentions that do not belong to the current feature scope (adjacent TODO, revealed tech-debt, minor bug spotted, non-essential improvement). Captured items are proposed as separate lines in `## Próximos` of the backlog, distinct from the main artifact. The operator can discard with "deixa pra lá" — capture is a suggestion, not an imposition. Step 4 (production) clarifies that the backlog gains lines independent of the main artifact choice: a feature with plan/ADR/domain update also gets out-of-scope lines in `## Próximos`.
+- `/run-plan`: new **step 4.4 "Backlog harvest"** between the documentation sanity check and declaring done. Asks the operator directly whether anything emerged during execution that should become a separate backlog item (adjacent TODO, tech-debt revealed by reading, minor bug in passing, non-essential improvement). Listed items are treated as an **extra block** (update `backlog` → `code` reviewer → micro-commit) before done. Answer "nada" closes the gate. Scope creep already absorbed by the plan **does not** enter here — harvest is for deliberate deferral. Two new entries in `## O que NÃO fazer` codify: do not skip the harvest (always ask), and do not capture items already absorbed by the current plan.
 
 ### Notes
-- Mudança aditiva. Complementa simétricamente os bumps anteriores: 1.4.0 (commit dos artefatos de alinhamento em `/new-feature`), 1.5.0 (gate git em `/run-plan`), 1.6.0 (sanity check de documentação). Fecha o gap de **perda silenciosa de itens adjacentes** que emergem durante o fluxo. Cerimônia adicional é uma pergunta no fim do `/run-plan` ("nada" como resposta válida) e atenção passiva durante o gap analysis do `/new-feature` — custo desprezível frente à perda evitada. A heurística age **a partir** da próxima invocação das skills.
+- Additive change. Symmetrically complements previous bumps: 1.4.0 (commit of alignment artifacts in `/new-feature`), 1.5.0 (git gate in `/run-plan`), 1.6.0 (documentation sanity check). Closes the **silent loss of adjacent items** gap that emerges during the flow. The added ceremony is one question at the end of `/run-plan` ("nada" as a valid answer) and passive attention during `/new-feature`'s gap analysis — negligible cost compared to the loss avoided. The heuristic acts **starting from** the next invocation of the skills.
 
 ## [1.6.0] - 2026-05-03
 
 ### Added
-- `/run-plan`: novo **passo 4.3 "Sanity check de documentação"** no gate final, entre confirmação de `## Verificação manual` e declarar done. Valida consistência de docs `.md` user-facing (README, install, CHANGELOG, outras `.md`) com o que foi implementado. Heurística tri-state: (i) **skip silente** quando o plano já listou `.md` em `## Arquivos a alterar` e o diff agregado os tocou — gate cumprido pelo plano; (ii) **skip silente** em refactor puro / internal-only — sinalizado por ausência de `## Verificação manual` E ausência de menção a superfície user-facing no `## Resumo da mudança`; (iii) caso contrário, **cutucar** (não bloquear) com pergunta direta ao operador. Updates levantados pelo operador são tratados como **bloco extra** (implementar → `test_command` → revisor `code` → micro-commit) antes de declarar done. Nova entrada em `## O que NÃO fazer` veda pular o check fora das duas condições de skip prescritas.
+- `/run-plan`: new **step 4.3 "Sanity check de documentação"** at the final gate, between `## Verificação manual` confirmation and declaring done. Validates consistency of user-facing `.md` docs (README, install, CHANGELOG, other `.md`) with what was implemented. Tri-state heuristic: (i) **silent skip** when the plan already listed `.md` in `## Arquivos a alterar` and the aggregated diff touched them — gate fulfilled by the plan; (ii) **silent skip** in pure refactor / internal-only — signaled by the absence of `## Verificação manual` AND absence of any user-facing surface mention in `## Resumo da mudança`; (iii) otherwise, **nudge** (don't block) with a direct question to the operator. Updates raised by the operator are treated as an **extra block** (implement → `test_command` → `code` reviewer → micro-commit) before declaring done. New entry in `## O que NÃO fazer` forbids skipping the check outside the two prescribed skip conditions.
 
 ### Notes
-- Mudança aditiva. Plano que naturalmente não toca user-facing surface (refactor, doc-only, cleanup interno) segue declarando done sem pergunta extra — nada de cerimônia onde claramente não se aplica. A heurística age **a partir** da próxima invocação de `/run-plan`.
+- Additive change. A plan that naturally does not touch user-facing surface (refactor, doc-only, internal cleanup) still declares done without an extra question — no ceremony where it clearly does not apply. The heuristic acts **starting from** the next `/run-plan` invocation.
 
 ## [1.5.0] - 2026-05-03
 
 ### Added
-- `/run-plan`: nova **pré-condição 2** com checagem em duas camadas via `git status --porcelain` sobre o estado git dos artefatos de alinhamento. **Bloqueia** quando o próprio plano (`<plans_dir>/<slug>.md`) está modificado ou untracked — broken-by-construction, já que a worktree saída do HEAD não veria o plano que deveria executar; mensagem direciona para o commit explícito (e referencia o passo 5 do `/new-feature`). **Cutuca** (não bloqueia) quando papéis de alinhamento (`backlog`, `ubiquitous_language`, `design_notes`, arquivos sob `decisions_dir`) têm alterações uncommitted — a worktree perde esse contexto e reviewers podem não ver invariantes/ADRs que o plano assume documentados; operador decide commitar agora ou prosseguir. Outras alterações uncommitted no working tree (código de exploração/debug) **não** geram aviso — o operador as isolou intencionalmente, é o ponto da worktree. Nova entrada em `## O que NÃO fazer` veda contornar o bloqueio copiando o plano manualmente para dentro da worktree.
+- `/run-plan`: new **precondition 2** with a two-layer check via `git status --porcelain` over the git state of alignment artifacts. **Blocks** when the plan itself (`<plans_dir>/<slug>.md`) is modified or untracked — broken-by-construction, since the worktree branched from HEAD would not see the plan it should execute; the message points to the explicit commit (and references step 5 of `/new-feature`). **Nudges** (does not block) when alignment roles (`backlog`, `ubiquitous_language`, `design_notes`, files under `decisions_dir`) have uncommitted changes — the worktree loses that context and reviewers may not see invariants/ADRs the plan assumes documented; the operator decides to commit now or proceed. Other uncommitted changes in the working tree (exploration/debug code) **do not** generate a notice — the operator isolated them intentionally, that's the point of the worktree. New entry in `## O que NÃO fazer` forbids bypassing the block by manually copying the plan into the worktree.
 
 ### Notes
-- Complemento simétrico ao bump 1.4.0: `/new-feature` propõe o commit dos artefatos no passo 5; `/run-plan` agora valida que esse commit aconteceu (ou força a decisão explícita) antes de criar a worktree. A heurística age **a partir** da próxima invocação de `/run-plan`.
+- Symmetrical complement to the 1.4.0 bump: `/new-feature` proposes the artifact commit at step 5; `/run-plan` now validates that this commit happened (or forces an explicit decision) before creating the worktree. The heuristic acts **starting from** the next `/run-plan` invocation.
 
 ## [1.4.0] - 2026-05-03
 
 ### Changed
-- `/new-feature`: passo 5 renomeado para **"Reportar, propor commit e devolver controle"**. Após o report dos artefatos produzidos, a skill agora **propõe um commit único** agrupando linha de backlog, plano, atualização de `domain.md`/`design.md` etc. — mensagem segue a convenção de commits do projeto consumidor (default canonical Conventional Commits em inglês, tipo `docs:`/`chore:`). Confirmação explícita do operador é exigida antes do commit; etapa pulada quando não há alterações novas (ex.: caminho foi delegar para `/new-adr` que já fez commit próprio). Fecha o gap operacional em que `/run-plan`, ao criar worktree a partir do HEAD, não encontrava o plano que deveria executar porque os artefatos de alinhamento haviam ficado uncommitted. Nova entrada em `## O que NÃO fazer` codifica o guard ("não commitar sem confirmação").
+- `/new-feature`: step 5 renamed to **"Reportar, propor commit e devolver controle"**. After reporting the produced artifacts, the skill now **proposes a unified commit** grouping backlog line, plan, `domain.md`/`design.md` updates, etc. — message follows the consumer project's commit convention (default canonical Conventional Commits in English, `docs:`/`chore:` type). Explicit operator confirmation is required before the commit; the step is skipped when there are no new changes (e.g., the path was to delegate to `/new-adr`, which already made its own commit). Closes the operational gap where `/run-plan`, by creating a worktree from HEAD, did not find the plan it should execute because the alignment artifacts had stayed uncommitted. New entry in `## O que NÃO fazer` codifies the guard ("do not commit without confirmation").
 
 ### Notes
-- Mudança aditiva no comportamento da skill. Operadores que preferem commitar manualmente ainda podem declinar a proposta; a skill apenas torna a etapa explícita em vez de silente. A heurística age **a partir** da próxima invocação de `/new-feature`.
+- Additive change in the skill's behavior. Operators who prefer to commit manually can still decline the proposal; the skill only makes the step explicit instead of silent. The heuristic acts **starting from** the next `/new-feature` invocation.
 
 ## [1.3.0] - 2026-05-02
 
 ### Added
-- `/new-feature`: passo 4 (produção de plano) agora prescreve linha **"Termos ubíquos tocados"** em `## Contexto` quando o passo 1 identificou termos do `ubiquitous_language` que o pedido toca (bounded context, agregado/entidade, RN, conceito ubíquo). O plano vira mensageiro explícito do vocabulário entre alinhamento e execução, sem onerar `/run-plan` com releitura de `docs/domain.md`. Planos para mudanças que não tocam domínio (refactor puro, doc-only, papel resolvido para "não temos") seguem sem a linha — silente.
-- `agents/code-reviewer.md`: nova regra prescritiva na seção "Identificadores" — identificador novo que representa conceito declarado em `ubiquitous_language` deve usar o termo declarado, não sinônimo improvisado. Complementa a regra defensiva pré-existente ("renomeação cosmética não"); reviewer flagga apenas quando há termo declarado E identificador novo divergente, gracefully silente em projetos sem `docs/domain.md`.
-- `docs/philosophy.md`: nova seção curta **"Linguagem ubíqua na implementação"** (entre "Cobertura de teste em planos" e "Convenção `.worktreeinclude`") codificando o pipeline `domain.md` → plano → review em três estágios e a decisão deliberada de não tocar `/run-plan` (plano é mensageiro, releitura duplicaria responsabilidade). Espelha o pipeline de invariantes do `qa-reviewer`.
+- `/new-feature`: step 4 (plan production) now prescribes a **"Termos ubíquos tocados"** line in `## Contexto` when step 1 identified terms from `ubiquitous_language` that the request touches (bounded context, aggregate/entity, RN, ubiquitous concept). The plan becomes the explicit messenger of the vocabulary between alignment and execution, without burdening `/run-plan` with re-reading `docs/domain.md`. Plans for changes that do not touch the domain (pure refactor, doc-only, role resolved to "não temos") proceed without the line — silent.
+- `agents/code-reviewer.md`: new prescriptive rule in the "Identificadores" section — a new identifier representing a concept declared in `ubiquitous_language` must use the declared term, not an improvised synonym. Complements the pre-existing defensive rule ("cosmetic renaming no"); reviewer flags only when there is a declared term AND a divergent new identifier, gracefully silent in projects without `docs/domain.md`.
+- `docs/philosophy.md`: short new section **"Linguagem ubíqua na implementação"** (between "Cobertura de teste em planos" and "Convenção `.worktreeinclude`") codifying the `domain.md` → plan → review pipeline in three stages and the deliberate decision not to touch `/run-plan` (the plan is the messenger, re-reading would duplicate responsibility). Mirrors the `qa-reviewer` invariants pipeline.
 
 ### Notes
-- Mudança aditiva. Planos pré-existentes seguem válidos; reviewer flagga apenas em divergência real. A heurística age **a partir** da próxima invocação de `/new-feature`.
+- Additive change. Pre-existing plans remain valid; reviewer flags only on real divergence. The heuristic acts **starting from** the next `/new-feature` invocation.
 
 ## [1.2.0] - 2026-05-02
 
 ### Changed
-- `/new-feature`: passo 1 (leitura do papel `ubiquitous_language`), passo 2 (gap "Aprendizado de domínio") e passo 3 (tabela de decisão "Atualizar `docs/domain.md`") agora prompta explicitamente bounded contexts e agregados/entidades, além de linguagem ubíqua e invariantes (RNxx). Alinha a skill com a frase-tese da filosofia (`docs/philosophy.md` linha 7) — bounded contexts e DDD estratégico são pilares e merecem registro em `docs/domain.md` ao mesmo título dos demais elementos.
-- `docs/philosophy.md`: descrição do papel `ubiquitous_language` na tabela do path contract amplia para cobrir bounded contexts e agregados/entidades, fechando o gap entre a frase-tese e o contrato de papel.
+- `/new-feature`: step 1 (reading the `ubiquitous_language` role), step 2 (gap "Aprendizado de domínio") and step 3 (decision table "Atualizar `docs/domain.md`") now explicitly prompt for bounded contexts and aggregates/entities, in addition to ubiquitous language and invariants (RNxx). Aligns the skill with the philosophy's thesis sentence (`docs/philosophy.md` line 7) — bounded contexts and strategic DDD are pillars and deserve to be recorded in `docs/domain.md` on equal footing with the other elements.
+- `docs/philosophy.md`: description of the `ubiquitous_language` role in the path-contract table broadens to cover bounded contexts and aggregates/entities, closing the gap between the thesis sentence and the role contract.
 
 ### Notes
-- Mudança aditiva. Projetos cujo `docs/domain.md` hoje contém apenas linguagem ubíqua e invariantes seguem válidos — registro de bounded contexts e agregados/entidades é orientação, não obrigatoriedade. A heurística age **a partir** da próxima invocação de `/new-feature`.
+- Additive change. Projects whose `docs/domain.md` today contains only ubiquitous language and invariants remain valid — recording bounded contexts and aggregates/entities is guidance, not a requirement. The heuristic acts **starting from** the next `/new-feature` invocation.
 
 ## [1.1.0] - 2026-05-02
 
 ### Added
-- `/new-feature`: novo bullet "Cobertura de teste necessária?" no checklist de gaps (passo 2), com heurística tri-state codificada em `docs/philosophy.md` → "Cobertura de teste em planos". Eleva a probabilidade de planos prescreverem bloco de teste com `{reviewer: qa}` quando a feature toca invariantes (RNxx), integrações externas, persistência ou comportamento observável novo — sem TDD obrigatório, mantendo cerimônia proporcional ao risco. Refactor puro e doc-only seguem sem cerimônia adicional.
-- `docs/philosophy.md`: nova seção "Cobertura de teste em planos" entre "Anotação de revisor em planos" e "Convenção `.worktreeinclude`". Codifica princípio (testes servem à confiança, não à métrica; ausência é fragilidade ampliada em fluxo assistido por IA), heurística tri-state operacionalizada por `/new-feature`, e relação com `qa-reviewer` (revisão do bloco que contém os testes) e scaffolders stack-specific (`/gen-tests-python` complementa, não substitui).
-- `docs/install.md`: smoke test cobrindo a prescrição de bloco de teste em projeto com RNxx declarada.
+- `/new-feature`: new "Cobertura de teste necessária?" bullet in the gap checklist (step 2), with a tri-state heuristic codified in `docs/philosophy.md` → "Cobertura de teste em planos". Raises the probability that plans prescribe a test block with `{reviewer: qa}` when the feature touches invariants (RNxx), external integrations, persistence or new observable behavior — without mandatory TDD, keeping ceremony proportional to risk. Pure refactor and doc-only continue without extra ceremony.
+- `docs/philosophy.md`: new "Cobertura de teste em planos" section between "Anotação de revisor em planos" and "Convenção `.worktreeinclude`". Codifies principle (tests serve confidence, not metrics; absence is fragility amplified in AI-assisted flow), tri-state heuristic operationalized by `/new-feature`, and relation with `qa-reviewer` (review of the block containing the tests) and stack-specific scaffolders (`/gen-tests-python` complements, does not replace).
+- `docs/install.md`: smoke test covering the test-block prescription in a project with a declared RNxx.
 
 ### Notes
-- Bump minor: convenção é additive — projetos consumidores não precisam mudar nada para continuar funcionando como antes; planos preexistentes seguem válidos. A heurística age **a partir** da próxima invocação de `/new-feature`.
+- Minor bump: convention is additive — consumer projects do not need to change anything to keep working as before; pre-existing plans remain valid. The heuristic acts **starting from** the next `/new-feature` invocation.
 
 ## [1.0.0] - 2026-05-02
 
 ### Removed
-- Alias deprecado `{revisor: ...}` (PT) em headers de blocos de plano. `/run-plan` agora recusa essa anotação antes de começar o bloco, indicando o bloco e a anotação ofensora. Migrar para `{reviewer: ...}` (EN).
+- Deprecated `{revisor: ...}` (PT) alias in plan-block headers. `/run-plan` now refuses this annotation before starting the block, indicating the offending block and annotation. Migrate to `{reviewer: ...}` (EN).
 
 ### Fixed
-- `docs/philosophy.md` (tabela path contract, linha de "convenção Claude Code"): exemplo de anotação migrado de `{revisor: qa}` / `{revisor: security}` para `{reviewer: qa}` / `{reviewer: security}` — escapou da migração de v0.11.0.
+- `docs/philosophy.md` (path-contract table, "convenção Claude Code" line): annotation example migrated from `{revisor: qa}` / `{revisor: security}` to `{reviewer: qa}` / `{reviewer: security}` — escaped the v0.11.0 migration.
 
 ### Notes
-- A coexistência prometida em v0.11.0 (`v0.11–v0.12`) foi reduzida para `v0.11.x` apenas. Cutover direto v0.11.x → v1.0 sem shipar v0.12 sentinel. Justificativa: v0.12 sem mudanças reais seria overhead sem ganho dada a baixa expectativa de uso externo do alias.
-- Operadores com planos externos contendo `{revisor:}` precisam editar para `{reviewer:}` antes de invocar `/run-plan` (find/replace trivial).
-- Bump major: primeira release com remoção breaking. Toda a história anterior (v0.1.0–v0.11.1) foi aditiva.
+- The coexistence promised in v0.11.0 (`v0.11–v0.12`) was reduced to `v0.11.x` only. Direct cutover v0.11.x → v1.0 without shipping a v0.12 sentinel. Rationale: v0.12 with no real changes would be overhead without gain, given the low expected external use of the alias.
+- Operators with external plans containing `{revisor:}` need to edit to `{reviewer:}` before invoking `/run-plan` (trivial find/replace).
+- Major bump: first release with a breaking removal. The entire prior history (v0.1.0–v0.11.1) was additive.
 
 ## [0.11.1] - 2026-05-01
 
 ### Changed
-- `skills/new-feature/SKILL.md`: limite de gaps a esclarecer relaxado de "1–2" para "1–3" — duas perguntas podia ser pouco em pedidos com mais de uma área de gap real.
+- `skills/new-feature/SKILL.md`: gap-clarification limit relaxed from "1–2" to "1–3" — two questions could be too few in requests with more than one real gap area.
 
 ## [0.11.0] - 2026-05-01
 
 ### Changed
-- `docs/philosophy.md` consolidada como single source of truth: cobre todas as skills em "Papel obrigatório vs informacional"; critérios mecânicos para "sinal claro" (idioma) e "predomínio claro" (commits) — ambos a ≥70%; contrato `{reviewer: ...}` formalizado com schema, idioma e suporte a múltiplos perfis; `.worktreeinclude` centralizado aqui; política de hooks vs idioma declarada (mecânica universal, sempre em inglês).
-- `/run-plan` invoca **todos** os perfis listados em `{reviewer: ...}` (era "mais sensível vence"); aceita `{reviewer: code,qa,security}` agregando relatórios.
-- `agents/qa-reviewer.md` deixa de assumir layout `tests/unit/`+`tests/integration/`; reviewer infere categoria por marker, não por path. Nova seção "Qualidade dos testes" com critério mecânico de caminho feliz.
-- `agents/code-reviewer.md` ganha exemplos por categoria na rubric `.claude/settings*.json`; regra `application/`/`domain/`/`infrastructure/` aplicada apenas a código novo introduzido pelo diff (legacy não é flag); typing trivial sai do "NÃO flagrar" puro e ganha critério de exceção (motivo explicitável).
-- `skills/new-adr/SKILL.md` template default `**Status:** Proposto` (era `Aceito`); reflexão dos workflows reais — ADR aprovado vira `Aceito` após revisão.
-- `CLAUDE.md` deixa de duplicar "Naming convention" e "Hook auto-gating triple" — vira ponteiro para `docs/philosophy.md`.
+- `docs/philosophy.md` consolidated as single source of truth: covers all skills under "Papel obrigatório vs informacional"; mechanical criteria for "clear signal" (language) and "clear predominance" (commits) — both at ≥70%; `{reviewer: ...}` contract formalized with schema, language and multi-profile support; `.worktreeinclude` centralized here; hooks-vs-language policy declared (universal mechanic, always in English).
+- `/run-plan` invokes **all** profiles listed in `{reviewer: ...}` (was "most sensitive wins"); accepts `{reviewer: code,qa,security}` aggregating reports.
+- `agents/qa-reviewer.md` no longer assumes a `tests/unit/`+`tests/integration/` layout; reviewer infers category by marker, not by path. New "Qualidade dos testes" section with a mechanical happy-path criterion.
+- `agents/code-reviewer.md` gains examples per category in the `.claude/settings*.json` rubric; the `application/`/`domain/`/`infrastructure/` rule applies only to new code introduced by the diff (legacy is not flagged); trivial typing leaves the pure "do NOT flag" and gains an exception criterion (explainable reason).
+- `skills/new-adr/SKILL.md` template default `**Status:** Proposto` (was `Aceito`); reflects real workflows — an approved ADR becomes `Aceito` after review.
+- `CLAUDE.md` stops duplicating "Naming convention" and "Hook auto-gating triple" — becomes a pointer to `docs/philosophy.md`.
 
 ### Added
-- Anotação `{reviewer: ...}` em inglês como mecânica canônica; alias `{revisor: ...}` aceito com warning durante v0.11–v0.12, removido em v1.0.
-- Chave reservada `language` no bloco YAML de config (`<!-- pragmatic-toolkit:config -->`) para forçar idioma do projeto consumidor.
-- `qa-reviewer` e `security-reviewer` declaram divisão de trabalho explícita com `code-reviewer` (settings hygiene) e entre si.
-- `security-reviewer` ganha fast-path para diffs doc-only e fallback heurístico quando `decisions_dir` resolve "não temos".
-- `/debug` ganha critério de parada mecânico (duas hipóteses consecutivas refutadas sem ganho de evidência) e caminho dedicado para sintomas intermitentes (reprodução estatística).
-- `/new-adr` e `/gen-tests-python` declaram explicitamente que **não fazem commit** — handoff ao operador.
+- `{reviewer: ...}` annotation in English as the canonical mechanic; alias `{revisor: ...}` accepted with a warning during v0.11–v0.12, removed in v1.0.
+- Reserved `language` key in the YAML config block (`<!-- pragmatic-toolkit:config -->`) to force the consumer project's language.
+- `qa-reviewer` and `security-reviewer` declare an explicit division of labor with `code-reviewer` (settings hygiene) and with each other.
+- `security-reviewer` gains a fast-path for doc-only diffs and a heuristic fallback when `decisions_dir` resolves to "não temos".
+- `/debug` gains a mechanical stop criterion (two consecutive refuted hypotheses without evidence gain) and a dedicated path for intermittent symptoms (statistical reproduction).
+- `/new-adr` and `/gen-tests-python` explicitly declare that they **do not commit** — handoff to the operator.
 
 ### Fixed
-- Tabela do path contract — `decisions_dir` é diretório, não pattern (pattern de filename migrou para `/new-adr`).
-- Repetições removidas em `/new-feature`, `/run-plan`, `/debug`, `/gen-tests-python`.
-- Keywords sincronizadas entre `plugin.json` e `marketplace.json`.
-- `block_env` aceita lista expandida de template suffixes (`.j2`, `.erb`, `.mustache`, além dos antigos `.jinja`, `.tmpl`); constante `TEMPLATE_SUFFIXES` documentada.
-- `run_pytest_python` extrai constante `TAIL_LINES` com racional empírico; literal `10` deixa de ser mágico.
-- `hooks.json` ganha `description` por entry com racional dos timeouts (10s pre, 60s post).
-- Description de manifests desacoplada de nomes de skills.
-- Removido "sub-plugin" órfão do parágrafo introdutório de "Convenção de naming".
+- Path-contract table — `decisions_dir` is a directory, not a pattern (filename pattern migrated to `/new-adr`).
+- Repetitions removed in `/new-feature`, `/run-plan`, `/debug`, `/gen-tests-python`.
+- Keywords synced between `plugin.json` and `marketplace.json`.
+- `block_env` accepts an expanded list of template suffixes (`.j2`, `.erb`, `.mustache`, in addition to the older `.jinja`, `.tmpl`); constant `TEMPLATE_SUFFIXES` documented.
+- `run_pytest_python` extracts a `TAIL_LINES` constant with empirical rationale; the literal `10` is no longer magical.
+- `hooks.json` gains a `description` per entry with rationale for the timeouts (10s pre, 60s post).
+- Manifest description decoupled from skill names.
+- Removed orphan "sub-plugin" mention from the introductory paragraph of "Convenção de naming".
 
 ### Notes
-- Bump minor: formaliza schema da anotação `{reviewer: ...}` (era convenção implícita), introduz chave reservada `language` e marca `{revisor: ...}` como alias deprecado. Backwards compat mecânico preservado durante v0.11–v0.12.
-- v1.0 fica reservada para o release que **remove** o alias `{revisor: ...}`.
-- Plugin é meta-tool (não aplica strict-mode suas próprias pré-condições) — `CLAUDE.md` continua em inglês como operating instructions.
+- Minor bump: formalizes the schema of the `{reviewer: ...}` annotation (was an implicit convention), introduces the reserved `language` key and marks `{revisor: ...}` as a deprecated alias. Mechanical backwards-compat preserved during v0.11–v0.12.
+- v1.0 is reserved for the release that **removes** the `{revisor: ...}` alias.
+- Plugin is a meta-tool (does not strict-mode-apply its own preconditions to itself) — `CLAUDE.md` stays in English as operating instructions.
 
 ## [0.10.0] - 2026-05-01
 
 ### Changed
-- Agent `code-reviewer` ganha rubric específico para `.claude/settings.json` e `.claude/settings.local.json` na seção "Infra e configuração": flagga drift/duplicação entre arquivos shared e local, vazamento de entries pessoais para o compartilhado, hooks com paths não-portáveis, env vars literais em vez de `${VAR}`, e `permissions.allow` só-em-local sem racional explícito. Reaproveita o reviewer default de `/run-plan` — qualquer bloco que toque `.claude/settings*.json` é coberto sem precisar anotar `{revisor: ...}`.
+- `code-reviewer` agent gains a specific rubric for `.claude/settings.json` and `.claude/settings.local.json` in the "Infra e configuração" section: flags drift/duplication between shared and local files, leakage of personal entries into shared, hooks with non-portable paths, literal env vars instead of `${VAR}`, and `permissions.allow` only-in-local without explicit rationale. Reuses the default `/run-plan` reviewer — any block touching `.claude/settings*.json` is covered without needing a `{revisor: ...}` annotation.
 
 ### Notes
-- `security-reviewer` não foi estendido: capability grants amplos em `permissions.allow` já caem em "Privilégios e permissões" (broad ACL / manifest permissions) — duplicar seria ruído.
-- Sem princípio novo em `docs/philosophy.md`: higiene de settings é checklist mecânico, não tensão de design durável.
+- `security-reviewer` was not extended: broad capability grants in `permissions.allow` already fall under "Privilégios e permissões" (broad ACL / manifest permissions) — duplicating would be noise.
+- No new principle in `docs/philosophy.md`: settings hygiene is a mechanical checklist, not a durable design tension.
 
 ## [0.9.0] - 2026-05-01
 
 ### Added
-- Skill `/debug <sintoma>` — diagnostica causa-raiz por método científico (precisar sintoma → reproduzir → isolar → testar hipóteses → causa-raiz com evidência). Produz **diagnóstico, não fix**: o operador escolhe o caminho de correção depois (revert, patch direto, ou `/new-feature` se virar mudança maior). Stack-agnóstico — orquestra método, não toolchain de debugger. Roles consumidos (todos informacionais): `test_command`, `ubiquitous_language`, `decisions_dir`, `design_notes`.
+- Skill `/debug <sintoma>` — diagnoses root cause via the scientific method (precise the symptom → reproduce → isolate → test hypotheses → root cause with evidence). Produces **diagnosis, not a fix**: the operator chooses the correction path afterwards (revert, direct patch, or `/new-feature` if it grows into a larger change). Stack-agnostic — orchestrates method, not debugger toolchain. Roles consumed (all informational): `test_command`, `ubiquitous_language`, `decisions_dir`, `design_notes`.
 
 ### Notes
-- Skill enforca o paralelo de `/new-feature` no eixo de bug-fixing: "não corrigir sem isolar a causa". Sem essa disciplina explícita, debug em chat free-form pula etapas e regressões voltam.
-- Não cria worktree, não escreve artefato no repo, não aplica instrumentação. Propor instrumentação ao operador é parte do passo "hipotetizar e testar"; aplicar fica com o operador no workspace dele.
+- Skill enforces the `/new-feature` parallel on the bug-fixing axis: "do not fix without isolating the cause". Without this explicit discipline, free-form chat debugging skips steps and regressions return.
+- Does not create a worktree, does not write artifacts in the repo, does not apply instrumentation. Proposing instrumentation to the operator is part of the "hypothesize and test" step; applying stays with the operator in their workspace.
 
 ## [0.8.0] - 2026-05-01
 
 ### Changed
-- Agent `security-reviewer` generalizado para qualquer tipo de sistema (web, CLI, desktop, mobile, embedded, library, pipeline, IaC). Critérios passam a ser tratados como **princípios** que se manifestam diferente conforme stack: "Chamadas HTTP externas" vira "I/O externo" (qualquer I/O bloqueante — RPC, DB, file lock, socket, subprocess); "Tokens em URLs em vez de headers" generaliza para segredos em qualquer canal inseguro (argv visível, env herdada, query string); validação de entrada cobre fronteiras adicionais (IPC, deserialização, callback de SDK, stdin) e classes de injeção além de SQL (shell, path traversal, format string, deserialização unsafe, log injection).
+- `security-reviewer` agent generalized to any kind of system (web, CLI, desktop, mobile, embedded, library, pipeline, IaC). Criteria become **principles** that manifest differently per stack: "Chamadas HTTP externas" becomes "I/O externo" (any blocking I/O — RPC, DB, file lock, socket, subprocess); "Tokens em URLs em vez de headers" generalizes to secrets in any insecure channel (visible argv, inherited env, query string); input validation covers additional boundaries (IPC, deserialization, SDK callback, stdin) and injection classes beyond SQL (shell, path traversal, format string, unsafe deserialization, log injection).
 
 ### Added
-- Nova seção "Privilégios e permissões" no `security-reviewer`: least-privilege em escalation, capability grants, scopes OAuth, roles IAM, manifest permissions, ACLs e entitlements.
-- Frontmatter `description` do agent ganha pista explícita de aplicabilidade ("qualquer tipo de sistema") para evitar leitura como agent só-web. CLAUDE.md atualizado em paralelo.
+- New "Privilégios e permissões" section in `security-reviewer`: least-privilege in escalation, capability grants, OAuth scopes, IAM roles, manifest permissions, ACLs and entitlements.
+- The agent's frontmatter `description` gains an explicit applicability hint ("any kind of system") to avoid being read as a web-only agent. `CLAUDE.md` updated in parallel.
 
 ### Notes
-- Backwards compat preservado: diffs antes cobertos continuam cobertos. A superfície de detecção apenas expandiu.
+- Backwards compat preserved: previously covered diffs remain covered. The detection surface only expanded.
 
 ## [0.7.0] - 2026-05-01
 
 ### Changed
-- Skill `/run-plan` passa a seguir a **convenção de commits do projeto consumidor** ao gerar micro-commits. Detecção em três níveis: política explícita no projeto (CLAUDE.md, `CONTRIBUTING.md`, etc.) → padrão observado em `git log` → default canonical Conventional Commits em inglês. Backwards compat preservado: projetos sem política explícita e com histórico já em CC inglês mantêm comportamento idêntico ao v0.6.0.
+- Skill `/run-plan` now follows the **consumer project's commit convention** when generating micro-commits. Three-level detection: explicit policy in the project (`CLAUDE.md`, `CONTRIBUTING.md`, etc.) → pattern observed in `git log` → canonical default Conventional Commits in English. Backwards compat preserved: projects without an explicit policy and with history already in CC English keep behavior identical to v0.6.0.
 
 ### Added
-- Princípio "Convenção de commits" em `docs/philosophy.md`: protocolo de detecção em três níveis, espelhando o pattern da Convenção de idioma.
+- Principle "Convenção de commits" in `docs/philosophy.md`: three-level detection protocol, mirroring the "Convenção de idioma" pattern.
 
 ### Notes
-- Política de "um micro-commit por bloco" permanece invariante. `--amend`/rebase de commits de blocos já fechados continuam proibidos; emendar o último commit do bloco corrente passa a ser exceção localizada (typo, arquivo esquecido), não regra.
+- "One micro-commit per block" policy stays invariant. `--amend`/rebase of commits from already-closed blocks remain forbidden; amending the last commit of the current block becomes a localized exception (typo, forgotten file), not a rule.
 
 ## [0.6.0] - 2026-05-01
 
 ### Changed
-- Skills (`/new-feature`, `/new-adr`, `/run-plan`, `/gen-tests-python`) e agents (`code-reviewer`, `qa-reviewer`, `security-reviewer`) passam a **adaptar-se ao idioma do projeto consumidor** — prosa, headers de templates, nomes de teste e relatórios de revisão espelham o idioma já em uso. Default canonical: PT-BR (origem do toolkit). Backwards compat preservado para projetos PT-BR.
-- `/run-plan` faz matching semântico dos headers de plano em vez de exigir literais PT-BR (`## Files to change` / `## Arquivos a alterar`, etc., aceitos como equivalentes).
+- Skills (`/new-feature`, `/new-adr`, `/run-plan`, `/gen-tests-python`) and agents (`code-reviewer`, `qa-reviewer`, `security-reviewer`) now **adapt to the consumer project's language** — prose, template headers, test names and review reports mirror the language already in use. Canonical default: PT-BR (toolkit's origin). Backwards compat preserved for PT-BR projects.
+- `/run-plan` performs semantic matching of plan headers instead of requiring PT-BR literals (`## Files to change` / `## Arquivos a alterar`, etc., accepted as equivalents).
 
 ### Added
-- Princípio "Convenção de idioma" em `docs/philosophy.md`: idioma do projeto define a prosa; nomes de agents, frontmatter, paths, código e commits permanecem em inglês.
+- Principle "Convenção de idioma" in `docs/philosophy.md`: project language defines prose; agent names, frontmatter, paths, code and commits remain in English.
 
 ### Notes
-- `CLAUDE.md` deste repo continua dizendo PT-BR — a regra do plugin é "espelhar o projeto consumidor", e o projeto consumidor neste caso (o próprio repo do plugin) opera em PT.
+- This repo's `CLAUDE.md` still says PT-BR — the plugin rule is "mirror the consumer project", and the consumer project in this case (the plugin's own repo) operates in PT.
 
 ## [0.5.0] - 2026-05-01
 
 ### Changed
-- Skill `/new-adr` consome agora o papel `decisions_dir` (default: `docs/decisions/`) em vez de path literal.
-- Skill `/new-adr` passa a **inferir o formato de numeração** dos ADRs existentes no diretório resolvido: 3-dígitos padded (canonical), 4-dígitos padded ou sem padding. Diretório vazio mantém o default canonical (3-dígitos). Formatos mistos no diretório são flaggados ao operador antes da criação do novo ADR.
+- Skill `/new-adr` now consumes the `decisions_dir` role (default: `docs/decisions/`) instead of a literal path.
+- Skill `/new-adr` now **infers the numbering format** of existing ADRs in the resolved directory: 3-digit padded (canonical), 4-digit padded or no padding. An empty directory keeps the canonical default (3-digit). Mixed formats in the directory are flagged to the operator before creating the new ADR.
 
 ### Notes
-- Bump minor: comportamento de numeração muda em projetos que usam variantes (4-dígitos ou sem padding) — antes a skill forçaria 3-dígitos. Backwards compat preservado para projetos com 3-dígitos.
+- Minor bump: numbering behavior changes in projects that use variants (4-digit or no padding) — before the skill would force 3-digit. Backwards compat preserved for 3-digit projects.
 
 ## [0.4.1] - 2026-05-01
 
 ### Changed
-- Skill `/gen-tests-python` e agents `qa-reviewer`, `security-reviewer`, `code-reviewer` passam a referenciar **papéis** (`ubiquitous_language`, `design_notes`, `decisions_dir`) ao invés de paths literais (`docs/domain.md`, `docs/design.md`, `docs/decisions/`). Default canonical citado entre parênteses para legibilidade. Backwards compat preservado.
+- Skill `/gen-tests-python` and agents `qa-reviewer`, `security-reviewer`, `code-reviewer` now reference **roles** (`ubiquitous_language`, `design_notes`, `decisions_dir`) instead of literal paths (`docs/domain.md`, `docs/design.md`, `docs/decisions/`). Canonical default cited in parentheses for readability. Backwards compat preserved.
 
 ## [0.4.0] - 2026-05-01
 
 ### Changed
-- Path contract reframed como **convenção default por papel** (`docs/philosophy.md`). Skills consomem papéis (`product_direction`, `ubiquitous_language`, `design_notes`, `decisions_dir`, `plans_dir`, `backlog`, `test_command`), não paths literais. Backwards compat 100% preservado para projetos que seguem canonical paths.
+- Path contract reframed as a **default-per-role convention** (`docs/philosophy.md`). Skills consume roles (`product_direction`, `ubiquitous_language`, `design_notes`, `decisions_dir`, `plans_dir`, `backlog`, `test_command`), not literal paths. Backwards compat 100% preserved for projects following canonical paths.
 
 ### Added
-- Mecanismo "Resolução de papéis" em `docs/philosophy.md`: protocolo `probe canonical → consultar bloco no CLAUDE.md → perguntar ao operador (tri-state)`, com bloco YAML fenced sob marcador HTML `<!-- pragmatic-toolkit:config -->` como mecanismo de declaração de variantes.
-- Drift detection: skill flagga inconsistência ao operador quando canonical existe E CLAUDE.md declara variante diferente.
-- Skills `/new-feature` e `/run-plan` portadas para o protocolo. Test gate em `/run-plan` passa a aceitar `test_command` declarado (ex.: `uv run pytest`, `npm test`, `cargo test`).
-- `docs/install.md` e `README.md` documentam o bloco de config com exemplo de variantes típicas.
+- "Resolução de papéis" mechanism in `docs/philosophy.md`: protocol `probe canonical → consult block in CLAUDE.md → ask the operator (tri-state)`, with a fenced YAML block under HTML marker `<!-- pragmatic-toolkit:config -->` as the variant-declaration mechanism.
+- Drift detection: skill flags inconsistency to the operator when canonical exists AND `CLAUDE.md` declares a different variant.
+- Skills `/new-feature` and `/run-plan` ported to the protocol. `/run-plan`'s test gate now accepts the declared `test_command` (e.g., `uv run pytest`, `npm test`, `cargo test`).
+- `docs/install.md` and `README.md` document the config block with examples of typical variants.
 
 ### Notes
-- `/gen-tests-python`, agents (`qa-reviewer`, `security-reviewer`, `code-reviewer`) e `/new-adr` permanecem com referências literais ao path contract — serão portados em v0.4.1 (skills/agents) e v0.5.0 (numbering inferido em `/new-adr`).
-- Hooks (`block_env`, `run_pytest_python`) inalterados — `.env*` e `pyproject.toml` são markers universais por ecossistema, não project-config.
+- `/gen-tests-python`, agents (`qa-reviewer`, `security-reviewer`, `code-reviewer`) and `/new-adr` keep literal references to the path contract — will be ported in v0.4.1 (skills/agents) and v0.5.0 (inferred numbering in `/new-adr`).
+- Hooks (`block_env`, `run_pytest_python`) unchanged — `.env*` and `pyproject.toml` are universal markers per ecosystem, not project-config.
 
 ## [0.3.1] - 2026-05-01
 
 ### Added
-- Skill `/new-feature`: gap "Bifurcação arquitetural" no checklist + exceção à regra "1-2 perguntas" quando o pedido admite múltiplas implementações materialmente diferentes.
-- Princípio "Nomear bifurcações arquiteturais" em `docs/philosophy.md`.
+- Skill `/new-feature`: "Bifurcação arquitetural" gap in the checklist + exception to the "1-2 questions" rule when the request admits multiple materially different implementations.
+- Principle "Nomear bifurcações arquiteturais" in `docs/philosophy.md`.
 
 ## [0.3.0] - 2026-04-30
 
 ### Added
-- Agent: `qa-reviewer` — princípios de cobertura de testes (caminho feliz, invariantes, edge cases, mock vs real). Stack-agnóstico.
-- Agent: `security-reviewer` — credenciais, validação de entrada, HTTP externo, dados sensíveis, invariantes em ADRs. Stack-agnóstico.
-- Naming convention para agents documentada em `docs/philosophy.md` (critério: gera/executa = força sufixo; revisa princípios = não força).
+- Agent: `qa-reviewer` — test coverage principles (happy path, invariants, edge cases, mock vs real). Stack-agnostic.
+- Agent: `security-reviewer` — credentials, input validation, external HTTP, sensitive data, invariants in ADRs. Stack-agnostic.
+- Naming convention for agents documented in `docs/philosophy.md` (criterion: generates/runs = forces suffix; reviews principles = does not force).
 
 ## [0.2.1] - 2026-04-30
 
@@ -447,9 +447,9 @@ All notable changes to this plugin are documented here. Format inspired by [Keep
 ## [0.2.0] - 2026-04-30
 
 ### Added
-- Skill: `/gen-tests-python` — gera testes pytest para módulos/funções de um projeto Python.
-- Hook: `run_pytest_python` — auto-gated PostToolUse (extensão `.py` + ancestral `pyproject.toml`); roda pytest e imprime saída só em falha.
-- Naming convention para skills e hooks stack-specific (em `docs/philosophy.md`).
+- Skill: `/gen-tests-python` — generates pytest tests for modules/functions of a Python project.
+- Hook: `run_pytest_python` — auto-gated PostToolUse (`.py` extension + `pyproject.toml` ancestor); runs pytest and prints output only on failure.
+- Naming convention for stack-specific skills and hooks (in `docs/philosophy.md`).
 
 ## [0.1.0] - 2026-04-30
 

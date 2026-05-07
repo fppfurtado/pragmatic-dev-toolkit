@@ -65,7 +65,7 @@ Computar transformação **em memória**. Reportar progressão (`version_files p
 Disparar **apenas** se papel resolvido. "Não temos" → skip silente.
 
 1. **Detectar formato** lendo as primeiras ~30 linhas. `## [X.Y.Z] - YYYY-MM-DD` no topo → Keep-a-Changelog (default canonical). Outros formatos (changelog livre, Towncrier) → gap report; operador edita, confirma.
-2. **Compor rascunho** agrupando commits por prefixo:
+2. **Compor rascunho** agrupando commits por prefixo. Idioma das bullets segue o idioma dos commits agrupados (ADR-007).
    - `feat:` → `### Added`
    - `fix:` → `### Fixed`
    - `refactor:` / `perf:` → `### Changed`
