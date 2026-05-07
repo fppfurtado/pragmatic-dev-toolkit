@@ -12,7 +12,7 @@ The companion repo is [`scaffold-kit`](https://github.com/fppfurtado/scaffold-ki
 
 Three component types, each with its own discovery mechanism:
 
-- **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests-python`, `/release`). Skills only act when invoked by the user.
+- **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests`, `/release`). Skills only act when invoked by the user.
 - **Agents** — `agents/<name>.md` with frontmatter. Subagents called by name (`code-reviewer`, `qa-reviewer`, `security-reviewer`, `doc-reviewer`). Reviewers analyze a diff and return findings.
 - **Hooks** — `hooks/hooks.json` declares lifecycle bindings; the bound scripts (`hooks/*.py`) run on every matching tool call in any project that has the plugin installed. Therefore hooks **must auto-gate**. `PostToolUse` exits 0; `PreToolUse` uses exit 2 to block (see `block_env.py`).
 
@@ -44,7 +44,7 @@ Skills consume **roles**, not literal paths. Each role has a canonical default; 
 
 ### Resolution protocol
 
-Each skill declares its roles in `roles.required` and `roles.informational` in the frontmatter (ADR-003). The resolution protocol applies to each declared role: required absent follows one of the 3 default behavior tracks below; informational absent → skill proceeds silently (reduces context/hypotheses, never blocks). Special sub-flows (canonical creation via enum, conditionals like `test_command` in `/run-plan`, stack contradiction in `/gen-tests-python`) live in skill prose.
+Each skill declares its roles in `roles.required` and `roles.informational` in the frontmatter (ADR-003). The resolution protocol applies to each declared role: required absent follows one of the 3 default behavior tracks below; informational absent → skill proceeds silently (reduces context/hypotheses, never blocks). Special sub-flows (canonical creation via enum, conditionals like `test_command` in `/run-plan`, stack contradiction in `/gen-tests`) live in skill prose.
 
 1. **Probe canonical.** Test if the default filename exists (e.g., `docs/domain.md` for `ubiquitous_language`). Probe is exact, no fuzzy matching: `README.md` is not assumed to be `IDEA.md`.
 2. **Consult CLAUDE.md.** If canonical is absent, read consumer's `CLAUDE.md` looking for the `<!-- pragmatic-toolkit:config -->` block. Declared value beats absent canonical.
@@ -105,7 +105,7 @@ Skills and hooks stack-specific coexist with generic components in the same plug
 | Type | Generic | Stack-specific |
 |------|---------|----------------|
 | Hook (script) | `<purpose>.py\|.sh` (e.g., `block_env.py`) | `<purpose>_<stack>.py\|.sh` (e.g., `run_pytest_python.py`) |
-| Skill (frontmatter `name`) | `<verb>-<artifact>` (e.g., `new-adr`) **or** `<verb>` when the artifact emerges from the skill's decision (e.g., `triage`) | `<verb>-<artifact>-<stack>` (e.g., `gen-tests-python`) |
+| Skill (frontmatter `name`) | `<verb>-<artifact>` (e.g., `new-adr`, `gen-tests`) **or** `<verb>` when the artifact emerges from the skill's decision (e.g., `triage`) | n/a — generators use internal stack sub-blocks (per [ADR-008](docs/decisions/ADR-008-skills-geradoras-stack-agnosticas.md)) |
 | Agent (frontmatter `name`) | `<role>` (e.g., `code-reviewer`, `qa-reviewer`, `security-reviewer`) | `<role>-<stack>` (only if principles change with the stack) |
 
 Skill whose output is fixed (always produces an ADR, always executes a plan) carries `<verb>-<artifact>` — the name promises the output. Skill whose output is decided per invocation among multiple options (e.g., `/triage` decides among backlog line, plan, ADR, or domain update) carries only `<verb>` — a fixed suffix would lie about what comes out.

@@ -33,7 +33,7 @@ git clone git@github.com:fppfurtado/pragmatic-dev-toolkit.git
 `claude plugin validate` ainda **não existe** como subcomando estável (até abril de 2026). Para validar localmente:
 
 1. Confirmar `.claude-plugin/plugin.json` válido como JSON.
-2. Após instalar, abrir o Claude Code no workspace e confirmar que `/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests-python`, `/release` aparecem em `/help` ou `/plugin list`.
+2. Após instalar, abrir o Claude Code no workspace e confirmar que `/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests`, `/release` aparecem em `/help` ou `/plugin list`.
 3. Smoke das skills + edição direta de `.env` (verifica `block_env`) + edição de um `.py` num projeto Python (verifica `run_pytest_python`).
 4. Invocar `qa-reviewer` num diff que adiciona função pública sem teste correspondente → flag esperado de "caminho feliz sem teste".
 5. Invocar `security-reviewer` num diff que faz `logger.info(f"token={token}")` → flag esperado de "credencial em log".

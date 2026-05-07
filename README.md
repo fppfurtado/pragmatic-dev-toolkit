@@ -11,7 +11,7 @@ Claude Code plugin para o workflow **flat & pragmatic**: skills genéricas, revi
 | `/new-adr` | Skill | Cria um novo ADR em `docs/decisions/` com numeração automática e template padronizado. |
 | `/run-plan` | Skill | Executa um plano de `docs/plans/<slug>.md` em worktree isolada, micro-commits Conventional Commits, revisão dirigida por bloco, gate de validação manual quando aplicável e sugestão de push/PR ao concluir. |
 | `/debug <sintoma>` | Skill | Diagnostica causa-raiz por método científico (reproduzir → isolar → hipótese-teste → evidência). Produz diagnóstico, não fix — operador escolhe revert / patch direto / `/triage` depois. Stack-agnóstico. |
-| `/gen-tests-python` | Skill | Gera testes pytest para um módulo/função de um projeto Python (pytest + respx + asyncio_mode auto + tmp_path para SQLite). |
+| `/gen-tests` | Skill | Gera testes para um módulo/função/descrição livre, com idioms da stack do projeto consumidor. Stacks suportadas hoje: Python (pytest + respx + asyncio_mode auto + tmp_path para SQLite). |
 | `/release [<bump>\|<version>]` | Skill | Bump de versão coordenado em `version_files`, entrada no `changelog`, commit unificado e tag anotada local. Não faz push — publicação fica com o operador. |
 | `code-reviewer` | Agent | Rubrica YAGNI: flagra abstrações prematuras, comentários redundantes, defensividade desnecessária e backwards-compat fantasma. |
 | `qa-reviewer` | Agent | Princípios de cobertura de testes: caminho feliz, invariantes documentadas, edge cases declarados, mock vs real. Stack-agnóstico. |

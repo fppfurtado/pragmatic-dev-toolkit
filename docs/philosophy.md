@@ -28,11 +28,13 @@ Projeto que segue os defaults funciona zero-config. O caminho mais simples para 
 
 ## Convenção de naming
 
-Componentes que **geram ou executam** algo da stack (skills geradoras de código, hooks que invocam toolchain) carregam sufixo de stack — sintaxe e comando concreto não têm versão neutra, e sufixo é declaração explícita de acoplamento. Componentes que **revisam princípios** lidos do diff não precisam — o stack está no próprio diff.
+A convenção separa três categorias por critério de acoplamento à stack:
 
-Skill é invocada pelo usuário; o sufixo é visível ao operador. Hook dispara sozinho em todo projeto onde o plugin está instalado e precisa de **auto-gating triplo** (extensão → marker → toolchain) para shipar safely num plugin multi-stack — cada hook silente em projetos fora da sua stack, sem flags nem env vars para desligar.
+- **Agents reviewers** (revisam princípios lidos do diff) não carregam sufixo — o stack está no próprio diff.
+- **Skills geradoras** (ex.: `/gen-tests`) **não** carregam sufixo: idioms da stack vivem em sub-blocos por stack dentro do mesmo SKILL.md, e a skill detecta a stack do projeto consumidor por marker (`pyproject.toml`, `build.gradle`, `package.json`, ...). Operador invoca sempre o nome genérico; UX uniforme entre stacks. Critério canônico em [ADR-008](decisions/ADR-008-skills-geradoras-stack-agnosticas.md).
+- **Hooks executores de toolchain** carregam sufixo de stack + auto-gating triplo. Hook dispara sozinho em todo projeto onde o plugin está instalado, então sufixo é declaração ao autor do plugin de qual stack o componente serve, e o auto-gating triplo (extensão → marker → toolchain) garante silêncio fora da stack alvo — sem flags nem env vars para desligar.
 
-Tabela de naming concreta (skill | agent | hook; genérico vs stack-specific) e mecânica completa do auto-gating em `CLAUDE.md` → "Plugin component naming and hook auto-gating".
+Tabela de naming concreta e mecânica completa do auto-gating em `CLAUDE.md` → "Plugin component naming and hook auto-gating".
 
 ## Convenção de idioma
 
