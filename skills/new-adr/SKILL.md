@@ -1,7 +1,7 @@
 ---
 name: new-adr
 description: Cria novo ADR no decisions_dir com numeração inferida e template padronizado. Use quando o operador pedir registro de decisão estrutural duradoura.
-disable-model-invocation: true
+disable-model-invocation: false
 roles:
   required: [decisions_dir]
 ---

@@ -1,7 +1,7 @@
 ---
 name: run-plan
 description: Executa plano de docs/plans/<slug>.md em worktree isolada, com micro-commits, revisor por bloco e gate de validação manual. Use quando há plano pronto e o operador autorizou implementar.
-disable-model-invocation: true
+disable-model-invocation: false
 roles:
   required: [plans_dir]
   informational: [backlog, test_command]
