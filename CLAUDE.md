@@ -91,7 +91,9 @@ Concrete shape for the `AskUserQuestion` tool when used by skills (philosophy an
 
 - **Header** (chip/tag): ≤ 12 chars. Examples: `Commit`, `Backlog`, `Publicar`, `Branch`.
 - **Options**: 2-4 per question. `Other` is automatic — never list it explicitly. Each option carries a concrete trade-off in `description` (cost, maintenance, virtue delivered); description-obvious like "choose A" signals a cosmetic enum.
+- **Bifurcação discreta presente → enum, mesmo com Other comum** (ADR-006). Quando há ≥1 resposta comum **discreta** identificável, prefira enum — o `Other` automático cobre as livres com 1 toque a menos no caminho discreto. Prosa só é o modo certo quando **todas** as respostas comuns são livres (descrição de bug, justificativa de escopo, exemplo de dado real).
 - **Multiple related questions** in a single call: up to 4 (`questions` array).
+- **Unificação preferida sobre sequência.** Quando ≥2 perguntas relacionadas no mesmo passo são enum-áveis, **agrupar numa única chamada** em vez de sequenciar — fragmentação tira foco do operador.
 - **`multiSelect: true`** when the choices are not mutually exclusive (e.g., picking gitignored files to replicate into a worktree).
 - **Recommended option**: place first and append "(Recommended)" to the label.
 
