@@ -2,6 +2,16 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.23.1] - 2026-05-07
+
+### Changed
+- Informative artifacts (`CHANGELOG.md`, tag annotations, PR descriptions) now follow the project's commit-language convention (ADR-007). Operative `.md` files (SKILLs, agents, `philosophy.md`, `CLAUDE.md`, ADRs, plans, `BACKLOG.md`, `install.md`, `README.md`) stay free — developer choice. `docs/philosophy.md` "Convenção de idioma" gains an explicit paragraph; "Convenção de commits" cross-references it (#38).
+- `CHANGELOG.md` retroactively migrated from Portuguese to English for entries v0.2.0–v1.23.0; entries already in English (v0.1.0, v0.2.1) preserved (#38).
+- `/release` step 3 notes that changelog bullet language follows commit language (cross-ref ADR-007) (#38).
+
+### Notes
+- Plan for `/release` tag message synthesis registered (`docs/plans/release-tag-synthesis.md`) — deferred during ADR-007 work; ready for `/run-plan` next.
+
 ## [1.23.0] - 2026-05-07
 
 ### Added
