@@ -46,7 +46,7 @@ Ambíguo ou ausente → perguntar antes de gerar.
 3. **Decidir unit vs integration.** Unit se não toca SQLite nem rede real. Integration se toca SQLite ou exerce pipeline ponta-a-ponta.
 4. **Edge cases típicos.** Revisar `design_notes` (peculiaridades de integrações externas). Papel "não temos" → cobrir edge cases que o próprio código trata explicitamente (raises, branches de erro, validações).
 5. **Gerar arquivo** em `tests/unit/test_<módulo>.py` ou `tests/integration/test_<módulo>.py`.
-6. **Não criar fixtures em `conftest.py`** sem perguntar ao operador.
+6. **Decisão de fixture.** Se alguma fixture é usada por mais de um teste ou módulo, cutucar via `AskUserQuestion` (header `Fixture`) com opções `No próprio arquivo de teste (Recommended)` / `Em conftest.py`. `description` carrega trade-off (isolamento vs. compartilhamento).
 
 ## Padrões úteis
 
