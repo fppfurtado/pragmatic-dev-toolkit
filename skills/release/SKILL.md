@@ -115,13 +115,19 @@ Frase final fixa:
 > git push --follow-tags
 > # ou: git push && git push origin <tag>
 > ```
->
-> Release no forge (se aplicável): ex. `gh release create <tag>` (GitHub), `glab release create <tag>` (GitLab), ou UI web.
+
+Após exibir a instrução de push, oferecer criação de release no forge — auto-detect:
+
+1. **Detect host:** parse `git remote get-url origin`. `github.com` → CLI `gh`; host casando regex `^gitlab\.` (gitlab.com ou GitLab corporativo `gitlab.<domínio>`) → CLI `glab`. Outros hosts → fallback textual com instrução genérica (operador cria release pela UI web ou CLI específica do forge); skip etapas 2-4.
+2. **Verificar CLI:** `command -v <cli>` retorna não-zero → fallback textual mencionando o CLI esperado (`gh` em https://cli.github.com/, `glab` em https://gitlab.com/gitlab-org/cli) e link da UI web; skip etapas 3-4.
+3. **Gate de confirmação:** montar comando — `gh release create <tag> --generate-notes` (autogen de notes pelo GitHub) ou `glab release create <tag> --notes "<body>"` (body lido da entrada recém-prependada no `changelog`: do header da nova versão até a linha imediatamente antes do próximo `## [versão-anterior]`, sem incluir o header da nova versão). Apresentar via `AskUserQuestion` (header `Forge`) com opções `Executar (após push)` / `Pular`. Decline → skip silente; o comando exibido no gate é a referência para cópia manual. O label `Executar (após push)` é o pré-requisito explícito — skill assume que operador rodou o push acima antes de aceitar.
+4. **Executar:** `Bash` com o comando montado. Saída zero → reportar URL do release e seguir. Saída não-zero (ex.: tag ausente no remote, CLI não autenticado) → reportar erro literal e parar; release local permanece, operador resolve manual.
+
+Sem remote configurado → skip auto-detect (release pronta localmente, push não aplicável).
 
 ## O que NÃO fazer
 
 - Não fazer push automático — release é local; publicação é decisão explícita do operador.
-- Não criar release no forge — comandos como `gh release create` / `glab release create` ou UI web cobrem o caso, fora do escopo da skill.
 - Não tocar arquivos de versão fora dos paths declarados em `version_files`.
 - Não inferir bump de log que não segue Conventional Commits sem perguntar — falsa-confiança gera versionamento errado.
 - Não sobrescrever tag existente — colisão é gap report, não merge.
