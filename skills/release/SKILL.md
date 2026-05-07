@@ -89,16 +89,37 @@ Disparar **apenas** se papel resolvido. "Não temos" → skip silente.
 
 3. **Compor mensagem de commit.** Default: `chore(release): bump version to X.Y.Z` — formato canonical para projetos CC. Convenção do projeto consumidor diverge → espelhar (ver `docs/philosophy.md` → "Convenção de commits").
 
+3.5. **Compor mensagem de tag.** Reusar a classificação CC do passo 3 (mesmos commits agrupados por prefixo: `feat:` → Added, `fix:` → Fixed, `refactor:`/`perf:` → Changed, `docs:`/`chore:`/`style:`/`test:` → Notes). Idioma segue os subjects dos commits (convenção do projeto consumidor, `docs/philosophy.md` → "Convenção de commits") — não traduzir, não recompor a partir do CHANGELOG.
+
+   Disparar **apenas** se ≥1 commit CC classificável. Caso contrário, mensagem de tag é o literal `Release <tag>` (fallback ao comportamento anterior).
+
+   Para cada categoria com ≥1 commit (subject = mensagem sem o prefixo CC):
+   - 1 commit → usar o subject truncado em ~120 chars.
+   - 2+ commits → unir os subjects com `; `, truncar resultado em ~120 chars com `...` se cortar.
+   - Categoria sem commits → omitir do output.
+
+   Compor mensagem multilinha:
+   ```
+   Release <tag>
+
+   Added: <síntese>
+   Changed: <síntese>
+   Fixed: <síntese>
+   Notes: <síntese>
+   ```
+
+   Linhas das categorias vazias omitidas. Headers (`Added`/`Changed`/`Fixed`/`Notes`) ficam em EN sempre — rótulos canônicos do toolkit alinhados ao Keep-a-Changelog; conteúdo (subjects) acompanha o idioma dos commits.
+
 4. **Mostrar bloco consolidado** com seções nomeadas:
    - **Arquivos de versão** — diffs do passo 2 (omitida se `version_files` desativado).
    - **Changelog** — entrada do passo 3 (omitida se `changelog` desativado).
    - **Commit** — mensagem composta no item 3.
-   - **Tag** — `<tag>` (annotated, mensagem `Release <tag>`).
+   - **Tag** — `<tag>` (annotated). Mensagem multilinha do item 3.5 (ou `Release <tag>` literal no fallback).
 
    Caso degenerado (ambos os papéis desativados): apenas Commit + Tag.
 
 5. **Gate único** via `AskUserQuestion` (header `Release`) com três opções:
-   - **`Aplicar`** — verificar HEAD: rodar `git symbolic-ref --short HEAD`. Se falha (detached) ou difere do branch da pré-condição 2, recovery proativo — `git status --porcelain`; se não-vazio, `git stash push -m "release v<X.Y.Z> auto-stash"`; depois `git checkout <branch-da-pré-condição-2>`. Em seguida, **antes da sequência (a)-(e)**: `git fetch origin <branch-da-pré-condição-2> 2>/dev/null`; `behind=$(git rev-list --count HEAD..@{u} 2>/dev/null || echo 0)`; se `behind > 0`, `git pull --ff-only origin <branch-da-pré-condição-2>` — falha → abortar release com erro literal do git e instruir `git pull` manual. Reportar ao operador a ref-atual encontrada no início, o branch esperado, o nome da stash se criada, e o número de commits trazidos pelo pull se aplicável (operador roda `git stash pop` manualmente após release se desejar). Em seguida, executar em sequência: (a) escrever cada `version_file`; (b) inserir entrada no changelog; (c) `git add <paths-específicos>` (**não** `git add -A` — risco de capturar arquivos não-relacionados); (d) `git commit -m "<msg>"`; (e) `git tag -a <tag> -m "Release <tag>"`.
+   - **`Aplicar`** — verificar HEAD: rodar `git symbolic-ref --short HEAD`. Se falha (detached) ou difere do branch da pré-condição 2, recovery proativo — `git status --porcelain`; se não-vazio, `git stash push -m "release v<X.Y.Z> auto-stash"`; depois `git checkout <branch-da-pré-condição-2>`. Em seguida, **antes da sequência (a)-(e)**: `git fetch origin <branch-da-pré-condição-2> 2>/dev/null`; `behind=$(git rev-list --count HEAD..@{u} 2>/dev/null || echo 0)`; se `behind > 0`, `git pull --ff-only origin <branch-da-pré-condição-2>` — falha → abortar release com erro literal do git e instruir `git pull` manual. Reportar ao operador a ref-atual encontrada no início, o branch esperado, o nome da stash se criada, e o número de commits trazidos pelo pull se aplicável (operador roda `git stash pop` manualmente após release se desejar). Em seguida, executar em sequência: (a) escrever cada `version_file`; (b) inserir entrada no changelog; (c) `git add <paths-específicos>` (**não** `git add -A` — risco de capturar arquivos não-relacionados); (d) `git commit -m "<msg>"`; (e) `git tag -a <tag>` com **um `-m` por linha** da mensagem composta no item 3.5 (`-m "Release <tag>" -m "Added: ..." -m "Changed: ..." ...`); fallback (sem síntese) usa `-m "Release <tag>"` único.
    - **`Editar`** — prosa livre. Operador descreve ajuste em qualquer elemento (bullet do changelog, mensagem do commit, nome da tag). Skill aplica no rascunho em memória, volta ao item 4 e re-pergunta.
    - **`Cancelar`** — abort silente. Nada para reverter em disco. Reportar.
 
