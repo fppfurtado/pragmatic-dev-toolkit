@@ -128,6 +128,7 @@ Sem remote configurado → skip auto-detect (release pronta localmente, push nã
 ## O que NÃO fazer
 
 - Não fazer push automático — release é local; publicação é decisão explícita do operador.
+- Não aceitar modo `local` para `version_files` ou `changelog` (ADR-005). Se operador declarar `paths.version_files: local` ou `paths.changelog: local`, recusar antes de iniciar com mensagem clara — bump de versão e changelog precisam ser commitados/visíveis para o registro de versão fazer sentido.
 - Não tocar arquivos de versão fora dos paths declarados em `version_files`.
 - Não inferir bump de log que não segue Conventional Commits sem perguntar — falsa-confiança gera versionamento errado.
 - Não sobrescrever tag existente — colisão é gap report, não merge.
