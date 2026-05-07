@@ -13,7 +13,7 @@ The companion repo is [`scaffold-kit`](https://github.com/fppfurtado/scaffold-ki
 Three component types, each with its own discovery mechanism:
 
 - **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests`, `/release`). Skills only act when invoked by the user.
-- **Agents** — `agents/<name>.md` with frontmatter. Subagents called by name (`code-reviewer`, `qa-reviewer`, `security-reviewer`, `doc-reviewer`). Reviewers analyze a diff and return findings.
+- **Agents** — `agents/<name>.md` with frontmatter. Subagents called by name (`code-reviewer`, `qa-reviewer`, `security-reviewer`, `doc-reviewer`, `design-reviewer`). The first four analyze a diff post-fact and return findings. `design-reviewer` operates on a document pre-fact (plan or ADR draft) — invoked manually via `@design-reviewer`, not by `/run-plan`.
 - **Hooks** — `hooks/hooks.json` declares lifecycle bindings; the bound scripts (`hooks/*.py`) run on every matching tool call in any project that has the plugin installed. Therefore hooks **must auto-gate**. `PostToolUse` exits 0; `PreToolUse` uses exit 2 to block (see `block_env.py`).
 
 Manifests:
@@ -40,7 +40,7 @@ Skills consume **roles**, not literal paths. Each role has a canonical default; 
 | `changelog` | `CHANGELOG.md` | Release history. `/release` prepends a new block at each bump. |
 | `test_command` | `make test` (with `Makefile`) | Automatic gate at execution steps. |
 | (plugin-internal) | `.worktreeinclude` | Optional gitignored paths to replicate in fresh worktrees. Consumed by `/run-plan`. |
-| (agents shipped by the plugin) | `qa-reviewer`, `security-reviewer`, `doc-reviewer` | Generic baseline invoked by `/run-plan` per `{reviewer: qa\|security\|doc}` annotation on the plan block. Consumer projects can shadow with project-level `.claude/agents/<name>.md` (project-level wins on collision). |
+| (agents shipped by the plugin) | `qa-reviewer`, `security-reviewer`, `doc-reviewer`, `design-reviewer` | `qa-reviewer`, `security-reviewer`, `doc-reviewer` are invoked by `/run-plan` per `{reviewer: qa\|security\|doc}` annotation on the plan block. `design-reviewer` operates on documents pre-fact (plan/ADR draft); invoked manually via `@design-reviewer`. Consumer projects can shadow any of them with project-level `.claude/agents/<name>.md` (project-level wins on collision). |
 
 ### Resolution protocol
 
@@ -106,7 +106,7 @@ Skills and hooks stack-specific coexist with generic components in the same plug
 |------|---------|----------------|
 | Hook (script) | `<purpose>.py\|.sh` (e.g., `block_env.py`) | `<purpose>_<stack>.py\|.sh` (e.g., `run_pytest_python.py`) |
 | Skill (frontmatter `name`) | `<verb>-<artifact>` (e.g., `new-adr`, `gen-tests`) **or** `<verb>` when the artifact emerges from the skill's decision (e.g., `triage`) | n/a — generators use internal stack sub-blocks (per [ADR-008](docs/decisions/ADR-008-skills-geradoras-stack-agnosticas.md)) |
-| Agent (frontmatter `name`) | `<role>` (e.g., `code-reviewer`, `qa-reviewer`, `security-reviewer`) | `<role>-<stack>` (only if principles change with the stack) |
+| Agent (frontmatter `name`) | `<role>` (e.g., `code-reviewer`, `qa-reviewer`, `security-reviewer`, `doc-reviewer`, `design-reviewer`) | `<role>-<stack>` (only if principles change with the stack) |
 
 Skill whose output is fixed (always produces an ADR, always executes a plan) carries `<verb>-<artifact>` — the name promises the output. Skill whose output is decided per invocation among multiple options (e.g., `/triage` decides among backlog line, plan, ADR, or domain update) carries only `<verb>` — a fixed suffix would lie about what comes out.
 

@@ -17,6 +17,7 @@ Claude Code plugin para o workflow **flat & pragmatic**: skills genéricas, revi
 | `qa-reviewer` | Agent | Princípios de cobertura de testes: caminho feliz, invariantes documentadas, edge cases declarados, mock vs real. Stack-agnóstico. |
 | `security-reviewer` | Agent | Credenciais, validação de entrada, HTTP externo, dados sensíveis e invariantes documentadas em ADRs. Stack-agnóstico. |
 | `doc-reviewer` | Agent | Drift entre doc e código: identificadores citados em docs que não existem no repo, cross-refs/anchors quebrados, exemplos/snippets contraditórios. Default em blocos doc-only no `/run-plan`. Stack-agnóstico. |
+| `design-reviewer` | Agent | Revisor pré-fato de decisões estruturais e de design em planos e ADRs draft: abstrações prematuras, alternativas ausentes, ADR-worthiness não-formalizada, contradição com ADRs existentes ou `docs/philosophy.md`. Free-read autônomo de `docs/decisions/` e `docs/philosophy.md`. Invocação manual via `@design-reviewer`. Stack-agnóstico. |
 | `block_env` | Hook | `PreToolUse` que bloqueia edição direta a `.env` (e variantes), aceitando apenas `.env.example`. |
 | `run_pytest_python` | Hook | `PostToolUse` auto-gated (`.py` + ancestral `pyproject.toml`) que roda pytest após edits e imprime saída só em falha. |
 | `templates/plan.md` | Template | Esqueleto canônico do plano (consumido por `/triage` e `/run-plan`). Referência para autoria manual de planos. |
