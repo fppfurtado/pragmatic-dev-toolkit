@@ -7,10 +7,9 @@
 
 ## Em andamento
 
-- plugin: BACKLOG.md como state-tracker é fonte recorrente de merge artifact — 5 mecanismos defensivos (`/triage` push pós-commit, `/run-plan` precondição 2, `/run-plan` 3.7 auto-rebase, Action `validate-backlog`, `/heal-backlog`) protegem o mesmo problema estrutural: o arquivo mistura curadoria (Próximos) com state-tracking (Em andamento, Concluídos), e dois PRs concorrentes mutam ambos. Reavaliar mover state para git/forge (PR aberto = em andamento, mergeado = concluído) — 4 dos 5 mecanismos viram desnecessários. Mudança grande, exige ADR antes de implementar. Flagado na revisão arquitetural pós-v1.20.0.
-
 ## Concluídos
 
+- plugin: BACKLOG.md como state-tracker é fonte recorrente de merge artifact — 5 mecanismos defensivos (`/triage` push pós-commit, `/run-plan` precondição 2, `/run-plan` 3.7 auto-rebase, Action `validate-backlog`, `/heal-backlog`) protegem o mesmo problema estrutural: o arquivo mistura curadoria (Próximos) com state-tracking (Em andamento, Concluídos), e dois PRs concorrentes mutam ambos. Reavaliar mover state para git/forge (PR aberto = em andamento, mergeado = concluído) — 4 dos 5 mecanismos viram desnecessários. Mudança grande, exige ADR antes de implementar. Flagado na revisão arquitetural pós-v1.20.0.
 - plugin: batch 3/B2 — frontmatter declarativo `roles:` nas SKILLs (implementa ADR-003), CLAUDE.md absorve regra de despacho automático, skills removem prosa de Pré-condições enumerando papéis
 - plugin: batch 3/C1 — eliminar gates de cutucada na fase pré-loop do /run-plan (implementa ADR-002), capturar warnings via trilhos existentes do passo 3.5
 - plugin: batch 3/E3 — extrair `templates/plan.md` centralizado e atualizar /triage e /run-plan para apontar ao template (implementa ADR-001)

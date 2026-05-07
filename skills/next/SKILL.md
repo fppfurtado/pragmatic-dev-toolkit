@@ -14,10 +14,7 @@ Skill de orientação de sessão: lê o backlog, limpa itens já implementados e
 
 ### 1. Ler o backlog
 
-Ler o arquivo na íntegra. Extrair:
-
-- **`## Próximos`** — candidatos a analisar.
-- **`## Em andamento`** — itens já comprometidos. Reportar ao final apenas como informação; não analisar nem sugerir.
+Ler o arquivo na íntegra. Extrair `## Próximos` — candidatos a analisar.
 
 `## Próximos` vazio → informar e interromper.
 
@@ -48,7 +45,6 @@ Reportar em formato curto:
 
 - **Movidos para `## Concluídos`** (evidência forte): listar com justificativa.
 - **Evidência fraca:** listar com o que foi encontrado.
-- **Em andamento:** listar como informação.
 - **Top 3 candidatos** em ordem decrescente de impacto, com raciocínio de alinhamento + amplitude.
 
 Em seguida, enum (`AskUserQuestion`, header `Próximo`) com as 3 opções nomeadas pelo texto exato da linha + Other (operador digita intenção diferente). Escolha alimenta diretamente `/triage`.

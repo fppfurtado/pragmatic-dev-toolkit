@@ -35,7 +35,7 @@ Skills consume **roles**, not literal paths. Each role has a canonical default; 
 | `design_notes` | `docs/design.md` | Quirks of external integrations not covered by official docs. |
 | `decisions_dir` | `docs/decisions/` | Directory of immutable structural decisions. Numbering and slug owned by `/new-adr`. |
 | `plans_dir` | `docs/plans/<slug>.md` | Multi-phase plans for changes that require upfront alignment. |
-| `backlog` | `BACKLOG.md` | Short exploratory list — `## Próximos`, `## Em andamento`, `## Concluídos`. |
+| `backlog` | `BACKLOG.md` | Short exploratory list — `## Próximos` (curatorial) and `## Concluídos` (editorial registry, append-only). State of in-flight work lives in git/forge per ADR-004. |
 | `version_files` | _(no default — opt-in)_ | Paths whose version string is updated on each release. Empty or absent = role disabled. Consumed by `/release`. |
 | `changelog` | `CHANGELOG.md` | Release history. `/release` prepends a new block at each bump. |
 | `test_command` | `make test` (with `Makefile`) | Automatic gate at execution steps. |
@@ -61,7 +61,7 @@ Each skill declares its roles in `roles.required` and `roles.informational` in t
 
 - **Capture immediately + stop** — when the issue is project/setup state. E.g., `/run-plan` precondition 3 (red baseline), 4 (orphan worktree).
 - **Offer canonical creation via enum** — when the role has a clear canonical default and the skill can create it. E.g., `/triage` step 4; `/new-adr` creating `docs/decisions/` on first invocation.
-- **Inform and stop** (default) — when the role is BACKLOG itself (paradox of where to capture) or the skill cannot resolve and the operator must create manually. E.g., `/heal-backlog`/`/next` without `backlog`.
+- **Inform and stop** (default) — when the role is BACKLOG itself (paradox of where to capture) or the skill cannot resolve and the operator must create manually. E.g., `/next` without `backlog`.
 
 ## Editing conventions
 

@@ -26,7 +26,7 @@ Ler **só o que o pedido tocar**, nesta ordem:
 
 1. `product_direction` — alinhamento à direção de produto.
 2. `ubiquitous_language` — bounded contexts, agregados/entidades, RNxx tocadas.
-3. `backlog` — verificar item equivalente em **Próximos**, **Em andamento** ou **Concluídos**. Se existir, parar e reportar.
+3. `backlog` — verificar item equivalente em **Próximos** ou **Concluídos**. Se existir, parar e reportar. (Sob ADR-004, "em andamento" é state em git/forge; se a intenção corresponde a branch/worktree já em curso, `/run-plan` precondição 4 bloqueia ao tentar criar worktree com slug colidente.)
 4. `design_notes` — só se a feature toca uma das integrações listadas.
 5. `decisions_dir` — listar ADRs relacionados; ler na íntegra apenas os que o pedido contradiz/estende.
 
@@ -74,10 +74,10 @@ Idioma de saída: espelhar o do projeto consumidor (default canonical PT-BR; ver
 **BACKLOG (papel: `backlog`):**
 
 - **Papel resolvido normalmente:** uma linha para a feature em curso (frase de intenção, sem detalhamento).
-  - Caminho com plano → grava em `## Em andamento`.
+  - Caminho com plano → não grava no BACKLOG (state vivo é a worktree/PR aberto, ADR-004); a linha em `**Linha do backlog:**` no `## Contexto` do plano alimenta `/run-plan` para registrar conclusão em `## Concluídos` no done.
   - Caminho sem plano (linha pura, ADR-only, atualização de domínio) → grava em `## Próximos`.
   - Itens fora-de-escopo capturados no passo 2 → linhas separadas em `## Próximos`, mesmo quando o artefato principal é plano/ADR.
-- **Papel "não temos":** disparar enum (`AskUserQuestion`, header `Backlog`). `Criar em BACKLOG.md` cria com cabeçalho mínimo (`# Backlog\n\n## Próximos\n\n## Em andamento\n\n## Concluídos\n`) e prossegue; `Não usamos esse papel` registra `paths.backlog: null` e prossegue **sem gravar** (itens reportados no passo 6).
+- **Papel "não temos":** disparar enum (`AskUserQuestion`, header `Backlog`). `Criar em BACKLOG.md` cria com cabeçalho mínimo (`# Backlog\n\n## Próximos\n\n## Concluídos\n`) e prossegue; `Não usamos esse papel` registra `paths.backlog: null` e prossegue **sem gravar** (itens reportados no passo 6).
 
 **Plano (papel: `plans_dir`):** ler `${CLAUDE_PLUGIN_ROOT}/templates/plan.md` como esqueleto canônico, copiar para `<plans_dir>/<slug>.md`, adaptar headers ao idioma do projeto consumidor (per `docs/philosophy.md` → "Convenção de idioma"), preencher placeholders com o conteúdo decidido nos passos 2-3.
 
@@ -139,7 +139,7 @@ Propor commit único agrupando os artefatos. Mensagem segue a convenção do pro
 Após confirmação:
 
 - **Caminho sem plano:** apenas `git commit -m "…"`. Push não exigido.
-- **Caminho com plano:** confirmação cobre **commit + push como unidade atômica**. Verificar `git rev-parse --abbrev-ref HEAD` — se não for branch principal (default `main`), parar e reportar. Se for, **um único** `Bash` com `git commit -m "…" && git push origin <branch-atual>` — sem flags. Push falho → reportar erro literal e parar; commit local permanece, `/run-plan` recusará até o operador resolver. (Sem o push, `/run-plan` criaria worktree de estado que o remote desconhece — merge do PR produz artefato no `BACKLOG.md`.)
+- **Caminho com plano:** confirmação cobre **commit + push como unidade atômica**. Verificar `git rev-parse --abbrev-ref HEAD` — se não for branch principal (default `main`), parar e reportar. Se for, **um único** `Bash` com `git commit -m "…" && git push origin <branch-atual>` — sem flags. Push falho → reportar erro literal e parar; commit local permanece, `/run-plan` recusará até o operador resolver. Push imediato materializa o plano como state visível ao restante do sistema — `/run-plan` parte de origin (não local), próximos `/triage` veem o plano em `<plans_dir>` para detectar trabalho em curso, e operador em outra máquina reconcilia. Sem o push, plano existe só localmente e o sistema não tem como reconciliar.
 
 Se não há alterações para commitar (ADR-only que já commitou via `/new-adr`, ou nada alterado), pular.
 
