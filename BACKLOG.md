@@ -2,6 +2,7 @@
 
 ## Próximos
 
+- /run-plan 3.4 sob D2/ADR-004: linha pré-existente em `## Próximos` + transição final que apenas **adiciona** em `## Concluídos` produz duplicata pós-merge. Fix: 3.4 volta a **mover** (remover de Próximos via matching texto exato com `**Linha do backlog:**` + adicionar em Concluídos). Linha não localizada em Próximos → fallback ao comportamento atual (só adicionar). Gap detectado durante /triage do handoff /debug → /triage.
 - /debug → /triage: handoff perde contexto em sessão longa — /debug produz diagnóstico (incluindo ledger de hipóteses) em conversa que cai do contexto antes do operador invocar /triage. Direção possível: /debug passo 6 grava sumário em `.cache/debug-<timestamp>.md` (gitignored) que /triage lê se existir e recente (<24h); ou enriquecer a sugestão final do /debug com snippet pronto de invocação /triage. YAGNI até o pain ser reportado em uso real — registrar para reavaliar. Flagado na revisão arquitetural pós-v1.20.0.
 
 ## Concluídos
