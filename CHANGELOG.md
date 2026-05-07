@@ -2,6 +2,21 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.22.0] - 2026-05-07
+
+### Added
+- Auto-detect de forge em `/run-plan` (passo 7) e `/release` (frase final): parse `git remote get-url origin` mapeia `github.com → gh` / `^gitlab\. → glab` → gate `Forge` antes de executar `gh pr create --fill` / `glab mr create --fill` / `gh release create --generate-notes` / `glab release create --notes <body>`; cai em fallback textual quando CLI ausente ou host desconhecido (#35).
+- Modo local-gitignored no path contract (ADR-005): `paths.<role>: local` para `decisions_dir`, `backlog`, `plans_dir` ativa artefato em `.claude/local/<role>/`, com regra de não-referenciar (ADR/plan slug/backlog line não aparecem em commit/PR/branch metadata). Mecânica de inicialização: `mkdir -p` + probe `git check-ignore` + gate `Gitignore` quando entrada ausente. `/release` recusa modo local em `version_files`/`changelog` (#36).
+- Seção opcional `## Implementação` no template do `/new-adr` — lista de commits que materializaram a decisão (formato `[\`hash\`](url) subject`); aplicada manualmente em ADR-005.
+
+### Changed
+- `disable-model-invocation: true → false` em `/release`, `/run-plan` e `/new-adr` — autoinvocação habilitada; blast radius baixo (release é local até push manual; run-plan opera em worktree isolada; new-adr só cria markdown).
+- `/triage` passo 2: heurística de ADR-worthy expandida — bullet "Persistência" (gatilho potencial) substituído por "Decisão estrutural duradoura?" com 3 sinais explícitos (persistência/schema; inversão de decisão registrada em `decisions_dir`; restrição externa de longa duração).
+
+### Notes
+- ADR-005 introduz o modo local como trilho paralelo aos 3 default behaviors do ADR-003 (cross-ref aplicado em § Limitações).
+- Captura no backlog: wizard de configuração inicial dos papéis; convenção `## Implementação` em ADRs (retrofit dos ADRs 001-004 como follow-up).
+
 ## [1.21.0] - 2026-05-07
 
 ### Added
