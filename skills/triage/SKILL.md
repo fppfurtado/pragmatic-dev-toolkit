@@ -14,6 +14,8 @@ Workflow de **alinhamento prévio** para mudança não-trivial — feature, fix 
 
 Quando o passo 3 escolher "atualizar `ubiquitous_language`/`design_notes`" e o papel resolveu "não temos": propor criação no path canonical via enum (`Criar em <path>` / `Não usamos esse papel`). Segunda opção registra `paths.<role>: null` (oferta única de memorização). Mesmo mecanismo para `backlog` quando o passo 4 vai gravar linha (`Criar em BACKLOG.md` / `Não usamos esse papel`; segunda registra `paths.backlog: null`).
 
+**Modo local** (`paths.<role>: local` declarado): skill cria/lê em `.claude/local/<role>/` em vez de path canonical, sem disparar enum de criação. Mecânica de inicialização (`mkdir`, probe gitignore, gate `Gitignore`) coberta pela seção "Local mode" do CLAUDE.md.
+
 ## Argumentos
 
 Intenção em linguagem natural — frase curta (`/triage exportar movimentos em CSV`), descrição com contexto, ou vaga. Input vazio ou genericamente "o que vamos fazer hoje?" → seguir `skills/next/SKILL.md`.
@@ -78,8 +80,13 @@ Idioma de saída: espelhar o do projeto consumidor (default canonical PT-BR; ver
   - Caminho sem plano (linha pura, ADR-only, atualização de domínio) → grava em `## Próximos`.
   - Itens fora-de-escopo capturados no passo 2 → linhas separadas em `## Próximos`, mesmo quando o artefato principal é plano/ADR.
 - **Papel "não temos":** disparar enum (`AskUserQuestion`, header `Backlog`). `Criar em BACKLOG.md` cria com cabeçalho mínimo (`# Backlog\n\n## Próximos\n\n## Concluídos\n`) e prossegue; `Não usamos esse papel` registra `paths.backlog: null` e prossegue **sem gravar** (itens reportados no passo 6).
+- **Papel em modo `local`:** linha gravada em `.claude/local/BACKLOG.md`. `**Linha do backlog:**` no plano depende do modo cruzado:
+  - Ambos `backlog` e `plans_dir` em modo `local`: linha presente (matching textual entre arquivos locais).
+  - `backlog` canonical + `plans_dir` local: linha presente no plano local (não vaza para git).
+  - `backlog` local + `plans_dir` canonical: **omitir** `**Linha do backlog:**` (texto local não pode vazar para plano commitado); `/run-plan` neste cenário não faz transição automática — operador move manualmente.
+  - Ambos canonical: caso default.
 
-**Plano (papel: `plans_dir`):** ler `${CLAUDE_PLUGIN_ROOT}/templates/plan.md` como esqueleto canônico, copiar para `<plans_dir>/<slug>.md`, adaptar headers ao idioma do projeto consumidor (per `docs/philosophy.md` → "Convenção de idioma"), preencher placeholders com o conteúdo decidido nos passos 2-3.
+**Plano (papel: `plans_dir`):** ler `${CLAUDE_PLUGIN_ROOT}/templates/plan.md` como esqueleto canônico, copiar para `<plans_dir>/<slug>.md`, adaptar headers ao idioma do projeto consumidor (per `docs/philosophy.md` → "Convenção de idioma"), preencher placeholders com o conteúdo decidido nos passos 2-3. Em modo `local` (`paths.plans_dir: local`), copia para `.claude/local/plans/<slug>.md`; resto idêntico.
 
 No `## Contexto`:
 
@@ -106,7 +113,7 @@ Bloco que **contém testes** (saída (i) da heurística de cobertura) recebe `{r
 
 Bloco **doc-only** (paths todos `.md`/`.rst`/`.txt`) recebe `doc-reviewer` como default — omitir anotação ou usar `{reviewer: doc}` para deixar explícito. Diff que toca código E doc adjacente — preferir separar em dois blocos (`{reviewer: code}` e `{reviewer: doc}`); `{reviewer: code,doc}` no mesmo bloco continua válido como exceção rara quando a separação não faz sentido lógico.
 
-**ADR:** invocar `/new-adr "<título>"` (não duplicar lógica). Reportar e seguir.
+**ADR:** invocar `/new-adr "<título>"` (não duplicar lógica). Reportar e seguir. `/new-adr` aplica o modo do `decisions_dir` automaticamente — em modo `local`, ADR criado em `.claude/local/decisions/`.
 
 **`docs/domain.md` / `docs/design.md`:** edit cirúrgico, preservar tom e estrutura.
 
@@ -140,6 +147,7 @@ Após confirmação:
 
 - **Caminho sem plano:** apenas `git commit -m "…"`. Push não exigido.
 - **Caminho com plano:** confirmação cobre **commit + push como unidade atômica**. Verificar `git rev-parse --abbrev-ref HEAD` — se não for branch principal (default `main`), parar e reportar. Se for, **um único** `Bash` com `git commit -m "…" && git push origin <branch-atual>` — sem flags. Push falho → reportar erro literal e parar; commit local permanece, `/run-plan` recusará até o operador resolver. Push imediato materializa o plano como state visível ao restante do sistema — `/run-plan` parte de origin (não local), próximos `/triage` veem o plano em `<plans_dir>` para detectar trabalho em curso, e operador em outra máquina reconcilia. Sem o push, plano existe só localmente e o sistema não tem como reconciliar.
+- **Caminho com plano em modo `local`** (regra de não-referenciar, ADR-005, aplicada por-papel): se `plans_dir: local`, omitir slug do plano na mensagem de commit; se `backlog: local`, omitir texto da linha do backlog. Papéis em modo canonical seguem referenciados normalmente. Artefatos em modo local não entram no commit (gitignored).
 
 Se não há alterações para commitar (ADR-only que já commitou via `/new-adr`, ou nada alterado), pular.
 

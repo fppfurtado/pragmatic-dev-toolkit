@@ -29,10 +29,11 @@ Headers de plano são citados em PT-BR canonical (`## Arquivos a alterar`, `## V
 
 Falha de qualquer pré-condição → parar e reportar.
 
-1. **Plano existe e tem `## Arquivos a alterar`** (papel: `plans_dir`, default: `docs/plans/`). Esqueleto canônico em `${CLAUDE_PLUGIN_ROOT}/templates/plan.md`.
+1. **Plano existe e tem `## Arquivos a alterar`** (papel: `plans_dir`, default: `docs/plans/`). Esqueleto canônico em `${CLAUDE_PLUGIN_ROOT}/templates/plan.md`. Em modo `local` (`paths.plans_dir: local`), plano lido de `.claude/local/plans/<slug>.md`.
 
 2. **Estado git do plano** (`git status --porcelain`):
    - **Bloquear** se `<plans_dir>/<slug>.md` está modificado/untracked. Worktree é criada do HEAD e não veria o plano. Mensagem: commitar antes (ou usar `/triage`, que já propõe commit).
+   - Em modo `local`: plano não é tracked pelo git (artefato gitignored em `.claude/local/plans/`). Verificação de tracking vira no-op — operador edita livremente. **Mas** worktree é criada do HEAD e só enxerga o plano local se `.claude/` (ou `.claude/local/`) está listado em `.worktreeinclude`. Não coberto → **bloquear** com mensagem `worktree não verá plano local — adicionar .claude/local/ ao .worktreeinclude antes de re-executar`.
 
 3. **Gate automático verde no branch atual.** Default: `make test`. Variante: `test_command` no CLAUDE.md. Se canonical ausente E operador não declarou `test_command: null`, perguntar uma vez (oferta única de memorização). Projetos sem suite (`test_command: null` E plano traz `## Verificação end-to-end`) → baseline vira inspeção textual dessa seção. Gate falha → escrever em `## Próximos` do papel `backlog` linha tipo `baseline vermelho no branch ao iniciar /run-plan <slug> — investigar`; informar; parar. Papel `backlog` = "não temos" → só informar.
 
@@ -84,7 +85,7 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
    - Combinações (`{reviewer: code,qa}`, `{reviewer: code,doc}`, etc.) → exceção rara: invoca todos os listados, agregando relatórios. Útil quando o mesmo diff genuinamente merece olhares de eixos diferentes que não cabem em blocos separados.
    - Exemplos: `### Bloco 1 — auth.py {reviewer: security}`; `### Bloco 2 — README {reviewer: doc}`.
 4. **Aplicar correções** dos revisores antes de prosseguir.
-5. **Micro-commit** seguindo a convenção do projeto (ver `docs/philosophy.md` → "Convenção de commits"; default canonical Conventional Commits em inglês). **Um commit por bloco**. Evitar `--amend`/rebase — micro-commits revertíveis são o ponto. Exceção localizada: corrigir o último commit ainda dentro do bloco corrente (typo, arquivo esquecido, footer faltando). Commits de blocos já fechados ficam intocados.
+5. **Micro-commit** seguindo a convenção do projeto (ver `docs/philosophy.md` → "Convenção de commits"; default canonical Conventional Commits em inglês). **Um commit por bloco**. Evitar `--amend`/rebase — micro-commits revertíveis são o ponto. Exceção localizada: corrigir o último commit ainda dentro do bloco corrente (typo, arquivo esquecido, footer faltando). Commits de blocos já fechados ficam intocados. **Modo local** (`paths.plans_dir: local`): mensagem de commit não cita slug do plano (regra de não-referenciar, ADR-005); papel `backlog` em modo `local` análogo (não citar texto da linha).
 
 ### 3. Gate final
 
@@ -97,7 +98,7 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
    - **Skip** se `## Resumo da mudança` não menciona superfície user-facing (CLI/flag nova, env var nova, endpoint novo, comportamento perceptível, integração externa, instalação/configuração).
    - **Cutucar** caso contrário em **prosa livre** (não enum — a maioria das respostas reais é uma listagem de arquivos a atualizar, território de "Other"). Citar a superfície inferida e os candidatos típicos (README, install, docs internas) e pedir resposta livre — `"consistente"` ou listagem dos arquivos a atualizar. `CHANGELOG` fica fora (responsabilidade do `/release`). Resposta listando atualizações → bloco extra (implementar → `test_command` → revisor `code` → micro-commit) antes do done.
 
-4. **Registro em Concluídos.** `**Linha do backlog:**` capturada no passo 2 → **mover** para o topo de `## Concluídos`: se a linha existe em `## Próximos` (matching texto exato), remover de lá e adicionar em Concluídos; se não existe em Próximos (operador registrou via /triage caminho-com-plano sob ADR-004, que não grava no BACKLOG), apenas adicionar em Concluídos. Informar, aplicar como **bloco extra** (atualizar `backlog` → revisor `code` → micro-commit) **antes** do passo 3.5. Plano sem campo, papel `backlog` "não temos" → skip silente.
+4. **Registro em Concluídos.** `**Linha do backlog:**` capturada no passo 2 → **mover** para o topo de `## Concluídos`: se a linha existe em `## Próximos` (matching texto exato), remover de lá e adicionar em Concluídos; se não existe em Próximos (operador registrou via /triage caminho-com-plano sob ADR-004, que não grava no BACKLOG), apenas adicionar em Concluídos. Informar, aplicar como **bloco extra** (atualizar `backlog` → revisor `code` → micro-commit) **antes** do passo 3.5. Plano sem campo, papel `backlog` "não temos" → skip silente. Em modo `local` (`paths.backlog: local`), transição opera sobre `.claude/local/BACKLOG.md` — matching textual e move idênticos ao caso canonical; mensagem de commit do bloco extra não cita o texto da linha (regra de não-referenciar). Caso especial cross-mode: se `**Linha do backlog:**` foi omitido pelo /triage (`backlog: local` + `plans_dir: canonical`, ver /triage step 4), pular o bloco extra e **informar** ao operador: `"backlog em modo local com plano canonical — registro em ## Concluídos pulado para evitar leak; mova manualmente em .claude/local/BACKLOG.md se relevante"`.
 
 5. **Captura automática de imprevistos.** Materializar a lista mantida desde o passo 2 (e desde a fase pré-loop quando aplicável).
 
@@ -133,7 +134,7 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
 
 6. **Declarar done.**
 
-7. **Sugestão de publicação.** Remote configurado (`git remote get-url origin` retorna sucesso) → enum (header `Publicar`):
+7. **Sugestão de publicação.** **Modo `local`** (`plans_dir: local`): antes de oferecer o enum, avisar in situ — `"modo local: branch name '<slug>' será visível ao push como metadata pública (não aparece em mensagens de commit nem em PR --fill, mas o nome da branch é metadata pública). Renomear antes? Sugestão: git branch -m <novo-nome>"`. Operador decide e prossegue para o enum. Remote configurado (`git remote get-url origin` retorna sucesso) → enum (header `Publicar`):
    - `Push` → `git push -u origin <branch-atual>`.
    - `Push + abrir PR/MR` → `git push -u origin <branch-atual>`; em seguida auto-detect do forge:
      1. **Detect host:** parse `git remote get-url origin`. `github.com` → CLI `gh`; host casando regex `^gitlab\.` (gitlab.com ou GitLab corporativo `gitlab.<domínio>`) → CLI `glab`. Outros hosts → fallback textual com instrução genérica (push aconteceu; operador abre PR/MR pela UI web ou CLI específica do forge); skip etapas 2-4.

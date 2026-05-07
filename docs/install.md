@@ -64,6 +64,8 @@ test_command: uv run pytest               # em vez do default make test
 
 Chave ausente = canonical default. Valor `null` = "não usamos esse papel" (skill segue sem o input para papéis informacionais; gap report para `plans_dir` em `/triage`/`/run-plan` e `decisions_dir` em `/new-adr`).
 
+Valor `local` = artefato local-gitignored em `.claude/local/<role>/`, aceito por `decisions_dir`, `backlog` e `plans_dir` (recusado por `version_files`/`changelog`). Mecânica (mkdir, probe gitignore, gate `Gitignore`) em [`CLAUDE.md`](../CLAUDE.md) → "Local mode" (ADR-005).
+
 Pré-requisitos de runtime dos hooks: `python3` no `PATH`. `run_pytest_python` é auto-gated — só dispara em arquivos `.py` que estão sob um diretório com `pyproject.toml`; usa `uv run pytest` quando `uv` está disponível, senão `python -m pytest`.
 
 Esqueleto canônico de plano em [`templates/plan.md`](../templates/plan.md) — referência para autoria manual quando o operador prefere escrever o plano direto, sem `/triage`.
