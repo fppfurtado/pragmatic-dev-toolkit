@@ -2,6 +2,21 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.23.0] - 2026-05-07
+
+### Added
+- Conversões de prosa-com-bifurcação para `AskUserQuestion` enum em 5 SKILLs (ADR-006, #37): `/run-plan` §3.2 (`Validação`: `Validei` Recommended / `Falhou — descrever`), §3.3 (`Docs`: `Consistente` / `Listar arquivos a atualizar`), §3.7 (`Publicar` absorve `Renomear branch antes` em modo local); `/debug` §1 unificada em 1 chamada com 3 questions enum (`Onde`/`Reprod`/`Mudou`) + 1-2 prose follow-ups; `/release` §1b ambíguo (`patch`/`minor`/`major`); `/gen-tests-python` §6 fixture/conftest (`No próprio arquivo` Recommended / `Em conftest.py`).
+- ADR-006 (Aceito): preferência por enum quando há bifurcação discreta na pergunta ao operador — critério "todas-Other → prosa" substitui "maioria-Other → prosa". `philosophy.md` e `CLAUDE.md` "AskUserQuestion mechanics" refinados (bifurcação discreta → enum mesmo com Other comum; unificação preferida sobre sequência; `(Recommended)` só com default estatisticamente estável, caso contrário opções construídas dinamicamente).
+
+### Changed
+- `/triage` §2: unificação de gaps enum-áveis vira preferência (≥2 → agrupar numa chamada) em vez de permissão.
+
+### Fixed
+- `(Recommended)` em `/run-plan` §3.3 removido: heurística de gatilho não favorece caminho dominante quando dispara; `Consistente` e `Listar` igualmente prováveis.
+
+### Notes
+- 7 conversões + 1 cross-cutting fix no plano `forma-perguntas-enum-first` em 9 commits granulares; squash em main como PR #37.
+
 ## [1.22.0] - 2026-05-07
 
 ### Added
