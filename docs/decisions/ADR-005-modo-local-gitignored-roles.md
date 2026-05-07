@@ -48,6 +48,16 @@ paths:
 - Resolution protocol ganha trilho paralelo: role declarado `local` → skill usa o path local diretamente, sem ofertar canonical creation, sem informar+parar. Path local é replicado para worktrees pelo `.worktreeinclude` (já cobre `.claude/`).
 - **Regra de não-referenciar:** quando role está em modo `local`, skills geram mensagens de commit, descrições de PR e nomes de branch sem citar o artefato em modo local (ID do ADR, slug do plano, texto da linha do backlog não aparecem). Em modo canonical (default), comportamento atual de referência preservado.
 
+### Mecânica de inicialização
+
+Quando role declarado em modo `local` é resolvido pela primeira vez na invocação:
+
+1. **Garantir diretório:** `mkdir -p .claude/local/<role>/` se ausente. Operação silenciosa.
+2. **Probe de gitignore:** verificar se o path está coberto pelo `.gitignore` do projeto via `git check-ignore -q .claude/local/<role>/.probe`. Coberto → seguir silente. Não coberto → disparar gate.
+3. **Gate `Gitignore`:** mostrar mensagem explícita ("modo `local` foi declarado mas `.claude/local/` não está coberto pelo `.gitignore` do projeto — adicionar entrada para garantir que artefatos não sejam commitados?"). Opções: `Adicionar entrada` (skill anexa `.claude/local/` ao `.gitignore` do projeto) / `Cancelar` (skill recusa modo local nesta invocação e informa risco).
+
+Plugin **nunca toca em `.claude/` raiz** — território do Claude Code, fora do escopo do plugin. Probe roda uma vez por invocação (não a cada operação). Subsequentes invocações na mesma sessão herdam a resolução.
+
 ### Razões
 
 - **Aplicabilidade ampliada:** plugin vira utilizável em projetos onde a equipe não adotou as estruturas no repo, sem impor imposição estrutural.

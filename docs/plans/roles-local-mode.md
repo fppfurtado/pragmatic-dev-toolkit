@@ -6,7 +6,7 @@ Implementação de [ADR-005](../decisions/ADR-005-modo-local-gitignored-roles.md
 
 **Linha do backlog:** plugin: reavaliar contrato `required` por role individualmente — `decisions_dir` e `backlog` têm semântica de artefato compartilhado (gitignore mata o ponto do ADR e do registro editorial), mas `plans_dir` faz sentido como artefato local-gitignored opcional. Não tratar como bloco único; cada role demanda análise distinta de fallback.
 
-`.claude/` já consta no `.gitignore` raiz; sub-paths `.claude/local/<role>/` herdam o ignore automaticamente. Sem alteração no `.gitignore`.
+Mecânica de inicialização (`mkdir -p`, probe `git check-ignore`, gate `Gitignore` para adicionar `.claude/local/` quando não coberto) coberta por ADR-005 § Mecânica de inicialização. Plano implementa via regra única no Resolution protocol (Bloco 1); demais blocos delegam. Plugin nunca toca em `.claude/` raiz (escopo do Claude Code).
 
 ## Resumo da mudança
 
@@ -30,7 +30,7 @@ Estender o path contract com sintaxe `paths.<role>: local` para `decisions_dir`,
     plans_dir: local       # cria/lê em .claude/local/plans/
   ```
   Adicionar item ao "Schema and semantics" enumerando: `local` → "modo local-gitignored, skill cria/lê em `.claude/local/<role>/`, artefato não é commitado, commit/PR não referenciam (ADR-005)".
-- `CLAUDE.md` (seção "Resolution protocol"): adicionar trilho paralelo aos 3 atuais — "Modo `local` declarado: skill usa path local-gitignored sem aplicar os 3 trilhos default (sem probe canonical, sem ofertar criação, sem informar+parar). Path concreto é `.claude/local/<role>/`. Skills geradoras de commit/PR não referenciam o artefato em mensagens — regra de não-referenciar (ADR-005)."
+- `CLAUDE.md` (seção "Resolution protocol"): adicionar trilho paralelo aos 3 atuais — "Modo `local` declarado: skill (a) cria `.claude/local/<role>/` se ausente (`mkdir -p`); (b) probe `git check-ignore -q .claude/local/<role>/.probe`; coberto → segue silente; não coberto → gate `Gitignore` propondo adicionar entrada `.claude/local/` ao `.gitignore` do projeto (decline = recusa modo local + informa risco). (c) Skill usa path local-gitignored sem aplicar os 3 trilhos default (sem probe canonical, sem ofertar criação, sem informar+parar). Plugin **nunca toca em `.claude/` raiz** (território do Claude Code). Skills geradoras de commit/PR/branch metadata não referenciam o artefato em mensagens — regra de não-referenciar (ADR-005)."
 
 ### Bloco 2 — ADR-003: cross-reference para ADR-005 {reviewer: doc}
 

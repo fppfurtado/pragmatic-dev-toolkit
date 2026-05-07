@@ -3,6 +3,7 @@
 ## Próximos
 
 - plugin: reavaliar contrato `required` por role individualmente — `decisions_dir` e `backlog` têm semântica de artefato compartilhado (gitignore mata o ponto do ADR e do registro editorial), mas `plans_dir` faz sentido como artefato local-gitignored opcional. Não tratar como bloco único; cada role demanda análise distinta de fallback.
+- plugin: wizard de configuração inicial dos papéis — gate único na primeira invocação de skill que toca `pragmatic-toolkit:config`, perguntando cada role (presente? canonical ou local?) e gravando no CLAUDE.md. Alternativa de descoberta para operadores que esquecem de editar o bloco YAML manualmente. Reavaliar se atrito real surgir.
 
 ## Concluídos
 
