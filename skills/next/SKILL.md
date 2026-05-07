@@ -14,7 +14,7 @@ Skill de orientação de sessão: lê o backlog, limpa itens já implementados e
 
 ### 1. Ler o backlog
 
-Ler o arquivo na íntegra. Extrair `## Próximos` — candidatos a analisar.
+Ler o arquivo na íntegra. Extrair `## Próximos` — candidatos a analisar. Em modo `local` (`paths.backlog: local`), arquivo é `.claude/local/BACKLOG.md` (resolvido pelo Resolution protocol do CLAUDE.md); skill segue agnóstica ao path.
 
 `## Próximos` vazio → informar e interromper.
 
@@ -55,8 +55,8 @@ Disparar **apenas** se o passo 3 moveu pelo menos uma linha para `## Concluídos
 
 Mostrar ao operador a lista das linhas movidas e perguntar via enum (`AskUserQuestion`, header `Movimentações`, opções `Confirmar e commitar` / `Reverter movimentações`):
 
-- **`Confirmar e commitar`** → `git commit -m "chore(backlog): mark <N> concluded item(s)"` (mensagem segue a convenção do projeto consumidor; default canonical Conventional Commits em inglês). Push não é forçado — operador pusha quando achar oportuno.
-- **`Reverter movimentações`** → restaurar o arquivo do papel `backlog` ao estado pré-passo-3 (`git restore <path>`). Operador segue para o passo 7 sem mutação persistida.
+- **`Confirmar e commitar`** → em modo canonical: `git commit -m "chore(backlog): mark <N> concluded item(s)"` (mensagem segue a convenção do projeto consumidor; default canonical Conventional Commits em inglês); push não é forçado — operador pusha quando achar oportuno. Em modo `local` (`paths.backlog: local`): skip do commit (arquivo gitignored não é versionado); apenas confirmar a mutação no arquivo e seguir.
+- **`Reverter movimentações`** → em modo canonical: restaurar o arquivo do papel `backlog` ao estado pré-passo-3 (`git restore <path>`). Em modo `local`: reescrever o arquivo a partir do snapshot mantido em memória pela skill (capturado no passo 1 — `git restore` não aplica a arquivo gitignored). Operador segue para o passo 7 sem mutação persistida.
 - **Other** → equivalente a `Reverter movimentações` (default conservador — operador descreve intenção em prosa subsequente).
 
 ### 7. Continuar com `/triage`
