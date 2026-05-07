@@ -63,6 +63,20 @@ Each skill declares its roles in `roles.required` and `roles.informational` in t
 - **Offer canonical creation via enum** — when the role has a clear canonical default and the skill can create it. E.g., `/triage` step 4; `/new-adr` creating `docs/decisions/` on first invocation.
 - **Inform and stop** (default) — when the role is BACKLOG itself (paradox of where to capture) or the skill cannot resolve and the operator must create manually. E.g., `/next` without `backlog`.
 
+### Local mode (`paths.<role>: local`)
+
+Activated at step 2 of the resolution protocol when CLAUDE.md declares the role as `local` (instead of a path or null) — bypasses the absent-role tracks above. Defined by [ADR-005](docs/decisions/ADR-005-modo-local-gitignored-roles.md). Applies to `decisions_dir`, `backlog`, `plans_dir` (`version_files` and `changelog` reject local mode — `/release` stops with a clear message).
+
+On first resolution per invocation:
+
+1. **Ensure directory:** `mkdir -p .claude/local/<role>/` if absent. Silent operation. Plugin **never touches `.claude/` root** — Claude Code's territory, out of the plugin's scope.
+2. **Probe gitignore:** `git check-ignore -q .claude/local/<role>/.probe`. Covered → proceed silent. Uncovered → trigger gate.
+3. **Gate `Gitignore`:** propose adding `.claude/local/` entry to the project's `.gitignore`. Options: `Adicionar entrada` / `Cancelar`. Cancel → refuse local mode for this invocation + report risk. Creates `.gitignore` if absent (first-time setup in the project); aborts with clear message if not a git repo (`git rev-parse` returns non-zero).
+
+Skills that generate commit messages, PR descriptions, or branch metadata (`/triage`, `/run-plan`) **do not reference any identifier of the artifact** in local mode (ADR ID, plan slug, backlog line text) in external messages. In canonical mode (default), current reference behavior is preserved.
+
+Concrete paths: `.claude/local/decisions/`, `.claude/local/BACKLOG.md`, `.claude/local/plans/<slug>.md`.
+
 ## Editing conventions
 
 - The plugin adapts to the consumer project's language at runtime (see `docs/philosophy.md` → "Convenção de idioma"). For **this** repo specifically the canonical default applies: documentation and skill/agent prose are in **Portuguese**; mechanism stays in English — agent names, frontmatter keys, file paths, code, and `CLAUDE.md` itself (it's agent operating instructions, not user-facing prose). Don't translate cosmetically.
@@ -116,6 +130,7 @@ test_command: null  # repo has no test suite; /run-plan falls back to plan's `##
 
 - Missing key → canonical default.
 - `null` (or explicit `false`) → "não usamos esse papel". Skill treats as absent without asking again.
+- `local` (string literal) → local-gitignored mode. Skill creates/reads under `.claude/local/<role>/`, artifact is not committed, commit/PR/branch metadata do not reference it (see "Local mode" section above; full rationale in [ADR-005](docs/decisions/ADR-005-modo-local-gitignored-roles.md)). Applies to `decisions_dir`, `backlog`, `plans_dir`; `version_files`/`changelog` reject this value.
 - Unknown keys are ignored (forward-compat for releases that add new roles).
 - Keys live under `paths.<role>` (top-level `test_command` as exception); reference list in "Roles and canonical defaults" above.
 - The HTML marker `<!-- pragmatic-toolkit:config -->` is what the skill looks for — without it, the YAML block is not interpreted even if under the `## Pragmatic Toolkit` heading.
