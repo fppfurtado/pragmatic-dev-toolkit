@@ -94,7 +94,13 @@ Apresentar diagnóstico do passo 5 em formato curto e sugerir **próximo passo**
 
 - **Revert** — investigação isolou sintoma a commit específico e revert é seguro (ex.: "revert de `<hash>` no branch atual").
 - **Patch local** — mudança cirúrgica que cabe sem alinhamento prévio (ex.: "ajustar `<arquivo>:<linha>` — uma linha; commitar diretamente").
-- **`/triage <intent>`** — fix é mudança maior (multi-arquivo, toca invariante/integração, exige plano). Diagnóstico completo (incluindo *Hipóteses testadas* quando presente) entra como insumo do `## Contexto` do plano.
+- **`/triage`** — fix é mudança maior (multi-arquivo, toca invariante/integração, exige plano). Emitir bloco-comando pronto com a invocação **já preenchida** (substituir o placeholder pela frase derivada da causa-raiz + caminho de correção do passo 5), para o operador copiar/colar. Exemplo do bloco emitido:
+
+  ```
+  /triage corrigir AssertionError em test_export_csv.py:42 — fixture stale
+  ```
+
+  Diagnóstico completo (incluindo *Hipóteses testadas* quando presente) entra como insumo do `## Contexto` do plano produzido pelo /triage.
 
 ## O que NÃO fazer
 
