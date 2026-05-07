@@ -88,6 +88,7 @@ Todas as 7 skills do plugin (`/triage`, `/run-plan`, `/new-adr`, `/debug`, `/rel
 
 - Schema **não** valida estaticamente que role declarado existe no role contract. Confiança operacional: typo em role detectado em runtime quando a skill tenta resolver path inexistente.
 - Não há campo `condicional` no schema. Casos condicionais (`test_command` em `/run-plan`) declaram a categoria mais comum e explicam exceção em prosa. Tentar codificar condicionais cresce schema sem benefício compensador.
+- Modo local-gitignored não previsto neste ADR. [ADR-005](ADR-005-modo-local-gitignored-roles.md) introduz trilho paralelo aos 3 default behaviors descritos aqui — aplica-se quando operador declara `paths.<role>: local` no path contract.
 
 ## Alternativas consideradas
 
