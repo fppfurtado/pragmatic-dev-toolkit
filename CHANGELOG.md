@@ -2,6 +2,33 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.21.0] - 2026-05-07
+
+### Added
+- Skill `/debug` passo 6 emite snippet pronto de invocação `/triage` (paste-ready) — handoff em sessão curta (#34).
+- `templates/plan.md` — esqueleto canônico do plano consumido por `/triage` e `/run-plan` (ADR-001, #30).
+- ADRs 001 (templates), 002 (zero-gate), 003 (frontmatter roles), 004 (state em git/forge) registrando as decisões estruturais do roteiro arquitetural pós-v1.20.0.
+
+### Changed
+- `BACKLOG.md` schema: removida seção `## Em andamento`. State de trabalho em curso vive em git/forge (branches/PRs); `## Próximos` preserva curadoria; `## Concluídos` preserva registro editorial. ADR-004 (#33).
+- `/run-plan`: 4 enums de cutucada na fase pré-loop eliminados — warnings detectados são classificados em trilhos (Aviso/Backlog/Validação) e materializados via captura automática. ADR-002 (#31).
+- `/run-plan` passo 3.4: volta a **mover** linha de `## Próximos` para `## Concluídos` (com fallback "só adicionar" quando linha não está em Próximos).
+- SKILLs: frontmatter declarativo `roles.required` / `roles.informational` em todas as 8 skills; CLAUDE.md "Resolution protocol" absorve regra de despacho automático e os 3 trilhos de comportamento default. ADR-003 (#32).
+- `philosophy.md` ↔ CLAUDE.md fronteira refatorada: tabela de papéis consolidada em CLAUDE.md (single source of truth); mecânica residual (naming, AskUserQuestion, linguagem ubíqua) migrada para consumers; `code-reviewer` ganha aplicabilidade condicional em subseções de infra/settings (#29).
+- Tightening editorial: sanity check de docs como prosa (em vez de enum cosmético); trim disciplinado de `## O que NÃO fazer` em skills + critério editorial em CLAUDE.md; `disable-model-invocation: true` em `/release` e `/run-plan`; single-reviewer como caso normal; `/next` propõe commit das movimentações automáticas (#28).
+
+### Fixed
+- `/run-plan` 3.4 sob ADR-004: gap onde linha pré-existente em `## Próximos` ficava duplicada em Concluídos pós-merge — fix volta a mover.
+
+### Removed
+- Skill `/heal-backlog` — obsoleta sob ADR-004 (state-tracking saiu do markdown, sem merge artifact a curar).
+- Action `validate-backlog` (`.github/workflows/validate-backlog.yml` + `.github/scripts/validate_backlog.py`) — obsoleta sob ADR-004.
+
+### Notes
+- Roteiro arquitetural pós-v1.20.0 fechado: 6 PRs estruturais (Batch 1/2/3/E3/C1/B2 + D2) + 2 commits de polimento (handoff snippet, fix 3.4) + 4 ADRs estabelecidos.
+- Mecanismos defensivos contra merge artifact em BACKLOG.md: 5 → 0 (problema estrutural removido por ADR-004).
+- Pendências de validação registradas nos planos correspondentes — resolvidas via inspeção direta pós-merge ou ficam para invocação subsequente das skills.
+
 ## [1.20.0] - 2026-05-06
 
 ### Added
