@@ -2,6 +2,14 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.24.0] - 2026-05-07
+
+### Added
+- `/release` step 3.5 composes the annotated-tag message from Conventional Commits subjects since the last tag, grouped by category (`feat:` → Added, `fix:` → Fixed, `refactor:`/`perf:` → Changed, `docs:`/`chore:`/`style:`/`test:` → Notes), one short phrase per category with ~120-char truncation. Consolidated block (item 4) shows the full multiline message; sequence (e) uses multiple `-m` flags so git creates one paragraph per line. Fallback to literal `Release <tag>` when no CC-classifiable commits exist. Headers stay in English (Keep-a-Changelog canonical labels); body language follows commit language (ADR-007). Useful for offline archeology via `git tag -n3` / `git show <tag>` (#39).
+
+### Notes
+- Plan `docs/plans/release-tag-synthesis.md` concluded; backlog line moved to `## Concluídos`. First release that ships the tag-synthesis feature; next `/release` invocation dogfoods it (cached SKILL applies the new behavior only after the plugin update lands).
+
 ## [1.23.1] - 2026-05-07
 
 ### Changed
