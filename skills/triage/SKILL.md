@@ -40,7 +40,7 @@ Identificar lacunas e perguntar **só o que for bloqueante**. Checklist mental (
 - **Superfícies além do código:** runtime config (env, segredos, templates), infraestrutura (compose, deploy, CI), docs operacionais, automação do projeto (skills/rules/hooks). Se sim, listar em `## Arquivos a alterar`. Anti-padrão: feature "código-completa" mas "em-produção-quebrada".
 - **Invariantes:** alguma RN do `ubiquitous_language` é tocada?
 - **Integrações:** alguma do `design_notes` entra?
-- **Persistência:** estado novo? Migra schema? (gatilho potencial de ADR.)
+- **Decisão estrutural duradoura?** Gatilho de ADR. Sinais: (i) muda forma/lugar de persistência ou schema; (ii) inverte/contradiz decisão registrada em `decisions_dir` (probe via passo 1.5); (iii) codifica restrição externa de longa duração (regulatória, contratual, integração estável).
 - **Aprendizado de domínio:** bounded context novo, aggregate/entity novo, RN nova, conceito ubíquo novo, ou semântica alterada?
 - **Validação manual?** Comportamento perceptível, fluxo crítico, ou integração frágil → plano inclui `## Verificação manual`. Refactor/internal/doc-only não precisa — `make test` basta.
   - **Surface não-determinística** (parsing, matching de strings contra dado real, comportamento de agente LLM): exigir antes do plano (a) **forma do dado real** — 1-2 exemplos concretos do formato em produção (separadores, prefixos, capitalização, ids internos que não devem vazar); (b) **cenários enumerados** em `## Verificação manual` — passos concretos que exercitem essas formas, não direção genérica. Sem enumeração, validação manual vira improvisação. Sub-bullet não dispara se a primeira pergunta resolveu "não".
