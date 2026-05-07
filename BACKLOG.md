@@ -3,6 +3,7 @@
 ## Próximos
 
 - plugin: wizard de configuração inicial dos papéis — gate único na primeira invocação de skill que toca `pragmatic-toolkit:config`, perguntando cada role (presente? canonical ou local?) e gravando no CLAUDE.md. Alternativa de descoberta para operadores que esquecem de editar o bloco YAML manualmente. Reavaliar se atrito real surgir.
+- plugin: cutucada pós-merge para cleanup de worktree/branch local — `/run-plan` termina na worktree na branch da feature após oferecer Push/Push+PR (skill, linha final do passo 7) e não há retorno após o merge; `git worktree remove .worktrees/<slug>`, `git branch -d <slug>` e `git fetch --prune` ficam manuais. Direção possível: skill nova (`/post-merge-cleanup`) ou passo opcional anexado à próxima invocação de `/triage`/`/release` quando detectar worktrees em `.worktrees/` cuja branch já mergeou em `origin/<main>` (`git branch -r --merged origin/<main>` cruzado com `git worktree list`). Reavaliar se YAGNI: cleanup é trivial e o operador pode preferir manter a worktree para inspeção pós-merge — registrar para reavaliar se atrito recorrer.
 
 ## Concluídos
 
