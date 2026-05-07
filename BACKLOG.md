@@ -8,6 +8,7 @@
 
 ## Concluídos
 
+- plugin: agent design-reviewer — revisor pré-fato de decisões arquiteturais/design em planos e ADRs; free-read de docs/decisions e philosophy.md; invocação manual via @-mention; wiring automático deferido após dogfood.
 - plugin: skills geradoras stack-agnósticas via dispatch interno — inverter sufixo de stack na "Convenção de naming" (philosophy.md/CLAUDE.md); idioms vivem em sub-blocos do SKILL.md. `gen-tests-python` vira `gen-tests`. Hooks ficam fora. Implementa ADR-008.
 - /run-plan: 5º warning pré-loop — plano altera código de produção sem listar arquivo de teste em `## Arquivos a alterar` → capturar como Validação ("cenário sem cobertura nova exercitada"). Análogo aos 4 atuais (alinhamento dirty, `.worktreeinclude`, credencial, escopo divergente); ADR-002 prevê 5º como gatilho de revisão. Heurística stack-agnóstica via patterns (`tests/`, `test_*`, `*_test.*`, `*.test.*`, `*.spec.*`, `__tests__/`, `src/test/`). Não gera teste — apenas cutuca via `## Pendências de validação`. Reavaliar se YAGNI: `/triage` step 2 já tem "Cobertura de teste?" no checklist; warning é belt-and-suspenders quando autor do plano ignora.
 - plugin: `/release` compor mensagem de tag com síntese das mudanças — em vez de `Release vX.Y.Z` fixo, `git tag -a -m` carrega resumo compacto dos headers do CHANGELOG (Added/Changed/Fixed em 1-3 linhas). Útil para archeology offline (`git tag -n3`, `git show <tag>`) onde CHANGELOG não está acessível. Trade-off: duplica conteúdo já versionado; reavaliar se uso real em archeology justificar o custo.
