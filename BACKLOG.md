@@ -3,10 +3,10 @@
 ## Próximos
 
 - plugin: wizard de configuração inicial dos papéis — gate único na primeira invocação de skill que toca `pragmatic-toolkit:config`, perguntando cada role (presente? canonical ou local?) e gravando no CLAUDE.md. Alternativa de descoberta para operadores que esquecem de editar o bloco YAML manualmente. Reavaliar se atrito real surgir.
-- plugin: `/release` compor mensagem de tag com síntese das mudanças — em vez de `Release vX.Y.Z` fixo, `git tag -a -m` carrega resumo compacto dos headers do CHANGELOG (Added/Changed/Fixed em 1-3 linhas). Útil para archeology offline (`git tag -n3`, `git show <tag>`) onde CHANGELOG não está acessível. Trade-off: duplica conteúdo já versionado; reavaliar se uso real em archeology justificar o custo.
 
 ## Concluídos
 
+- plugin: `/release` compor mensagem de tag com síntese das mudanças — em vez de `Release vX.Y.Z` fixo, `git tag -a -m` carrega resumo compacto dos headers do CHANGELOG (Added/Changed/Fixed em 1-3 linhas). Útil para archeology offline (`git tag -n3`, `git show <tag>`) onde CHANGELOG não está acessível. Trade-off: duplica conteúdo já versionado; reavaliar se uso real em archeology justificar o custo.
 - plugin: convenção que CHANGELOG.md e mensagens de tag anotada seguem idioma dos commits (ADR-007); migração retroativa do CHANGELOG histórico de PT para EN
 - plugin: aplicar regra enum-first em SKILLs — converter prosa-com-bifurcação em AskUserQuestion (single/multi + Other auto + Recommended), unificar perguntas relacionadas, eliminar óbvias
 - plugin: elevar convenção `## Implementação` em ADRs — `/new-adr` template ganha seção opcional listando commits implementadores; útil principalmente em modo local onde regra de não-referenciar (ADR-005) impede caminho inverso commit → ADR; em modo canonical é redundante com `git log --grep` mas pode destacar a sequência de implementação. Aplicada manualmente em ADR-005; considerar retrofit dos ADRs 001-004.
