@@ -77,6 +77,7 @@ Idioma: espelhar ADRs existentes no projeto. Diretório vazio → default canoni
 - `## Alternativas consideradas` — comparação concreta entre opções avaliadas (H3 por alternativa com motivo de descarte).
 - `## Comparação objetiva` — trade-off mensurável (tabela ou bullets paralelos).
 - `## Gatilhos de revisão` — condição clara que reabriria o ADR.
+- `## Implementação` — lista de commits que materializaram a decisão (formato `[\`<hash>\`](<url>) <subject>`). Útil principalmente em modo `local` ([ADR-005](docs/decisions/ADR-005-modo-local-gitignored-roles.md)), onde a regra de não-referenciar impede o caminho inverso commit → ADR; em modo canonical é redundante com `git log --grep "ADR-NNN"` mas pode destacar a sequência de implementação. Adicionado pós-implementação, não no skeleton inicial.
 - `## Referências` — material externo essencial (RFCs, posts, threads).
 
 **Bullets de Origem.** Rótulos úteis: `**Investigação:**`, `**Decisão base:**` (link a ADR anterior), `**Direção de produto:**` (link a `product_direction`), `**Regra de domínio:**` (link a RN em `ubiquitous_language`). Múltiplos gatilhos aplicáveis → escolher pelo mais específico: ADR anterior > Direção de produto > Investigação > Regra de domínio.
