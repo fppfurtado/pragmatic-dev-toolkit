@@ -30,17 +30,20 @@ Sintoma vazio ou vago ("não está funcionando", "está bugado") → pedir preci
 
 ### 1. Precisar o sintoma
 
-Perguntas de precisão são **prosa livre** — operador descreve em linguagem natural.
+Entrada genérica → coletar precisão antes de hipotetizar. Mecânica: **uma única chamada** `AskUserQuestion` agrupando os 3 gaps enum-áveis (regra de unificação em `CLAUDE.md` → "AskUserQuestion mechanics"); gaps de descrição livre ficam em prosa subsequente apenas se o argumento original do `/debug` não os cobriu.
 
-Entrada genérica → perguntar antes de hipotetizar:
+Chamada unificada (3 questions, sem `Recommended` — sem default estatisticamente estável neste passo):
+- `Onde` (enum): `dev local` / `CI` / `staging` / `prod`.
+- `Reprod` (enum): `Sempre` / `Às vezes` / `Uma vez só`.
+- `Mudou` (enum): `Sim` / `Não` / `Não sei`.
 
-- Qual ação produz o sintoma (comando, teste, request, fluxo manual)?
+Resposta `Sim` em `Mudou` → perguntar em prosa direta na conversa (sem nova `AskUserQuestion`) "quando começou a falhar?" antes dos gaps de descrição abaixo.
+
+Após a chamada, prosa direta para os gaps de descrição que o argumento original do `/debug` não cobriu:
+- Qual ação dispara o sintoma (comando, teste, request, fluxo manual)?
 - Output observado vs esperado?
-- Onde foi observado (dev local, CI, staging, prod)?
-- Reprodutibilidade: sempre, às vezes, uma vez só?
-- Mudou recentemente? Quando começou a falhar?
 
-Sem sintoma operacionalizável, não avançar.
+Sem sintoma operacionalizável depois das respostas, não avançar.
 
 ### 2. Reproduzir
 

@@ -38,7 +38,7 @@ Caso contrário, três sub-caminhos:
 | Sub-caminho | Quando | Ação |
 | --- | --- | --- |
 | **1a** Bump inferido | ≥70% commits desde a tag seguem CC + tipo dominante claro | Enum (`AskUserQuestion`, header `Release`): `(a) <bump-proposto> → vX.Y.Z` / `(b) Outro bump` (Other → operador especifica). `description` carrega trade-off (tipo + contagem que motivou). |
-| **1b** Histórico ambíguo | <70% CC ou empate entre tipos | Prosa livre — mostrar resumo dos commits agrupados por prefixo, perguntar qual bump. |
+| **1b** Histórico ambíguo | <70% CC ou empate entre tipos | Mostrar resumo dos commits agrupados por prefixo, depois enum (`AskUserQuestion`, header `Release`): `(a) patch → vX.Y.(Z+1)` / `(b) minor → vX.(Y+1).0` / `(c) major → v(X+1).0.0` (sem `Recommended`). `description` de cada opção carrega contagem dos commits relevantes do tipo. Other → operador especifica versão explícita. |
 | **1c** Primeira release | Sem tag prévia | Enum: `(a) 0.1.0` (default canonical) / `(b) 1.0.0` / Other. |
 
 Classificação CC (ignorar escopo entre parênteses):
