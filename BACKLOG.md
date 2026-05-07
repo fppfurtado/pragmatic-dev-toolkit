@@ -2,6 +2,7 @@
 
 ## Próximos
 
+- /run-plan: 5º warning pré-loop — plano altera código de produção sem listar arquivo de teste em `## Arquivos a alterar` → capturar como Validação ("cenário sem cobertura nova exercitada"). Análogo aos 4 atuais (alinhamento dirty, `.worktreeinclude`, credencial, escopo divergente); ADR-002 prevê 5º como gatilho de revisão. Heurística stack-agnóstica via patterns (`tests/`, `test_*`, `*_test.*`, `*.test.*`, `*.spec.*`, `__tests__/`, `src/test/`). Não gera teste — apenas cutuca via `## Pendências de validação`. Reavaliar se YAGNI: `/triage` step 2 já tem "Cobertura de teste?" no checklist; warning é belt-and-suspenders quando autor do plano ignora.
 - plugin: wizard de configuração inicial dos papéis — gate único na primeira invocação de skill que toca `pragmatic-toolkit:config`, perguntando cada role (presente? canonical ou local?) e gravando no CLAUDE.md. Alternativa de descoberta para operadores que esquecem de editar o bloco YAML manualmente. Reavaliar se atrito real surgir.
 
 ## Concluídos
