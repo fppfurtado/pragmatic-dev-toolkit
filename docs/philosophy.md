@@ -42,6 +42,8 @@ Skills e agents adaptam-se ao idioma do projeto consumidor — prosa dirigida ao
 
 O que **não** muda com idioma: nomes de agents, chaves de frontmatter, paths e identificadores de código. Esses elementos pertencem à mecânica do toolkit, não ao discurso do projeto, e ficam sempre em inglês para legibilidade cross-stack. Mensagens de commit têm convenção própria — ver "Convenção de commits".
 
+**Artefatos informativos do registro de mudanças** — `CHANGELOG.md`, mensagens de tag anotada (incluindo síntese), descrições de PR — seguem o idioma da **convenção de commits do projeto** (ver abaixo), não o da prosa operativa. Audiência diferente: leitor de release inspeciona junto com `git log`, prosa operativa é dev escrevendo/lendo durante desenvolvimento. Detalhes em [ADR-007](decisions/ADR-007-idioma-artefatos-informativos.md).
+
 `/run-plan` faz **matching semântico** dos headers de plano — canonical PT-BR é `## Arquivos a alterar`, `## Verificação end-to-end`, `## Verificação manual`, `## Contexto`, `## Resumo da mudança`; equivalentes em outro idioma do projeto (`## Files to change`, `## End-to-end verification`, etc.) são aceitos contanto que a estrutura informacional bata.
 
 ## Convenção de commits
@@ -53,6 +55,8 @@ Quando `/run-plan` produz micro-commits, segue a **política de mensagens de com
 3. **Default canonical** — [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`, `style:`) com mensagens em **inglês**. Aplicado quando não há política explícita e o histórico não revela padrão extraível (repo novo, commits ad-hoc).
 
 A regra "um micro-commit por bloco do plano" permanece invariante — pertence à mecânica de execução, não à política de mensagem. `--amend` e rebase de commits de blocos já fechados ficam proibidos pelo mesmo motivo; emendar o último commit do bloco corrente quando faz sentido (typo, arquivo esquecido) é exceção localizada, não regra.
+
+O idioma extraído desta convenção rege também os artefatos informativos (CHANGELOG, tag annotations, PR descriptions) — ver acima.
 
 ## Convenção de pergunta ao operador
 
