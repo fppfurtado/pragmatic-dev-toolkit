@@ -3,6 +3,7 @@
 ## Próximos
 
 - plugin: wizard de configuração inicial dos papéis — gate único na primeira invocação de skill que toca `pragmatic-toolkit:config`, perguntando cada role (presente? canonical ou local?) e gravando no CLAUDE.md. Alternativa de descoberta para operadores que esquecem de editar o bloco YAML manualmente. Reavaliar se atrito real surgir.
+- plugin: `/release` compor mensagem de tag com síntese das mudanças — em vez de `Release vX.Y.Z` fixo, `git tag -a -m` carrega resumo compacto dos headers do CHANGELOG (Added/Changed/Fixed em 1-3 linhas). Útil para archeology offline (`git tag -n3`, `git show <tag>`) onde CHANGELOG não está acessível. Trade-off: duplica conteúdo já versionado; reavaliar se uso real em archeology justificar o custo.
 
 ## Concluídos
 
