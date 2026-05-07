@@ -6,6 +6,7 @@
 
 ## Concluídos
 
+- plugin: aplicar regra enum-first em SKILLs — converter prosa-com-bifurcação em AskUserQuestion (single/multi + Other auto + Recommended), unificar perguntas relacionadas, eliminar óbvias
 - plugin: elevar convenção `## Implementação` em ADRs — `/new-adr` template ganha seção opcional listando commits implementadores; útil principalmente em modo local onde regra de não-referenciar (ADR-005) impede caminho inverso commit → ADR; em modo canonical é redundante com `git log --grep` mas pode destacar a sequência de implementação. Aplicada manualmente em ADR-005; considerar retrofit dos ADRs 001-004.
 - plugin: reavaliar contrato `required` por role individualmente — `decisions_dir` e `backlog` têm semântica de artefato compartilhado (gitignore mata o ponto do ADR e do registro editorial), mas `plans_dir` faz sentido como artefato local-gitignored opcional. Não tratar como bloco único; cada role demanda análise distinta de fallback.
 - /triage passo 2: heurística de ADR-worthy não cobre inversão de premissa arquitetural documentada nem captura de restrição externa duradoura — observado em uso real: triagem fechou em plano (sem ADR) para mudança que qualificava como política do sistema. Direção: enriquecer critério do passo 2 com dois gatilhos explícitos (a) mudança contradiz/inverte decisão registrada em `decisions_dir`; (b) mudança codifica restrição externa de longa duração (regulatória, contratual, integração estável). Reavaliar se merece sub-fluxo dedicado ou só nota editorial no passo.
