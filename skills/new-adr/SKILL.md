@@ -14,6 +14,8 @@ Esta skill cria o arquivo e devolve o controle ao operador. **Não faz commit** 
 
 `decisions_dir` ausente → sub-fluxo "oferecer criação canonical via enum" (`Criar em <path>` / `Não usamos esse papel`); sem `Criar`, skill para (ADR sem diretório de decisões não tem onde morar).
 
+`decisions_dir` em modo `local` (`paths.decisions_dir: local`) → resolvido para `.claude/local/decisions/` pelo Resolution protocol do CLAUDE.md (mecânica `mkdir`/probe/gate `Gitignore` aplicada lá). Skill segue agnóstica ao path resolvido — passos abaixo operam sobre `<decisions_dir>` que já carrega o path correto.
+
 ## Argumentos
 
 Título da decisão (string curta e descritiva). Exemplo: `/new-adr "Política de retentativas para chamadas HTTP externas"`.
