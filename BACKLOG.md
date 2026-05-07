@@ -3,6 +3,7 @@
 ## Próximos
 
 - plugin: wizard de configuração inicial dos papéis — gate único na primeira invocação de skill que toca `pragmatic-toolkit:config`, perguntando cada role (presente? canonical ou local?) e gravando no CLAUDE.md. Alternativa de descoberta para operadores que esquecem de editar o bloco YAML manualmente. Reavaliar se atrito real surgir.
+- plugin: elevar convenção `## Implementação` em ADRs — `/new-adr` template ganha seção opcional listando commits implementadores; útil principalmente em modo local onde regra de não-referenciar (ADR-005) impede caminho inverso commit → ADR; em modo canonical é redundante com `git log --grep` mas pode destacar a sequência de implementação. Aplicada manualmente em ADR-005; considerar retrofit dos ADRs 001-004.
 
 ## Concluídos
 

@@ -77,7 +77,7 @@ Plugin **nunca toca em `.claude/` raiz** — território do Claude Code, fora do
 ### Trade-offs
 
 - Skills ganham branch "modo local" na prosa — leve aumento editorial (cada skill afetada explicita o trilho).
-- Regra de não-referenciar exige consistência entre skills geradoras de commit/PR (`/triage`, `/run-plan`, `/release`).
+- Regra de não-referenciar exige consistência entre skills geradoras de commit/PR (`/triage`, `/run-plan`). `/release` fica fora — recusa modo local para `version_files`/`changelog`.
 - Artefato local não rastreável pós-fato em outras máquinas — operador é responsável por backup/sincronização individual.
 
 ### Limitações
@@ -110,3 +110,17 @@ Considerado e descartado durante a triagem desta decisão. Quebra o caso self-ho
 - Aparecer caso onde role precisa coexistir canonical + local no mesmo projeto → reabrir limitação atual.
 - Skill nova introduz role passível de modo local não previsto aqui → revisar escopo deste ADR.
 - Regra de não-referenciar gerar atrito (operador esquece, reviewer flag incorretamente) → considerar mecanismo de detecção automática (probe do path contract antes de redigir mensagem).
+
+## Implementação
+
+Commits da branch `roles-local-mode` que estenderam o plugin para suportar esta decisão (skills, CLAUDE.md, docs/install.md, BACKLOG). Útil para rastreabilidade ADR ↔ código, especialmente em modo `local` onde a regra de não-referenciar impede o caminho inverso (commit → ADR):
+
+- [`6fc3749`](https://github.com/fppfurtado/pragmatic-dev-toolkit/commit/6fc3749) feat(claude.md): add local mode to path contract schema and resolution
+- [`3c0ce13`](https://github.com/fppfurtado/pragmatic-dev-toolkit/commit/3c0ce13) docs(adr-003): cross-ref ADR-005 in Limitações
+- [`6e3ffdd`](https://github.com/fppfurtado/pragmatic-dev-toolkit/commit/6e3ffdd) feat(triage): branch local mode + per-role no-reference rule
+- [`a4721e0`](https://github.com/fppfurtado/pragmatic-dev-toolkit/commit/a4721e0) feat(new-adr): note local mode resolution
+- [`40ffb6b`](https://github.com/fppfurtado/pragmatic-dev-toolkit/commit/40ffb6b) feat(run-plan): branch local mode with cross-mode handling
+- [`6c2e64e`](https://github.com/fppfurtado/pragmatic-dev-toolkit/commit/6c2e64e) feat(next): branch local mode for backlog reading and persistence
+- [`3983774`](https://github.com/fppfurtado/pragmatic-dev-toolkit/commit/3983774) feat(release): refuse local mode for version_files and changelog
+- [`e3cc513`](https://github.com/fppfurtado/pragmatic-dev-toolkit/commit/e3cc513) docs(install): document `local` value in path contract schema
+- [`4e659a4`](https://github.com/fppfurtado/pragmatic-dev-toolkit/commit/4e659a4) chore(backlog): move roles-local-mode line to Concluídos
