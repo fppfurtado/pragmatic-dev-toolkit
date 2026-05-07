@@ -22,6 +22,10 @@ Todos opcionais. Argumento explícito vence inferência.
 
 Sem argumento e sem CC extraível → pergunta livre ao operador.
 
+## Cleanup pós-merge
+
+Antes das pré-condições, executar passo de cleanup pós-merge conforme `skills/triage/SKILL.md` `### 0. Cleanup pós-merge`. Mesma detecção, mesma cutucada, mesmas execuções. Skip silente se nada a limpar.
+
 ## Pré-condições
 
 1. **Working tree limpo (bloqueia).** `git status --porcelain` vazio. Release com WT sujo mistura release com mudança não-revisada — broken-by-construction. Skill aborta sem perguntar; mensagem cita o sujo e direciona para stash/commit.
