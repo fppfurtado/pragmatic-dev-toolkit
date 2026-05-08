@@ -19,16 +19,16 @@ Caso real flagado nesta sessão (2026-05-08): pendências (a) e (b) do plano `in
 Adicionar passo de varredura ao `/next` que lista `## Pendências de validação` de planos mergeados, em **seção separada** do top 3:
 
 1. **Varrer** `<plans_dir>/*.md` (papel `plans_dir`; modo local lido de `.claude/local/plans/*.md`).
-2. **Filtrar planos em curso:** plano cujo slug bate com worktree em `.worktrees/<slug>` ou com branch de PR aberto (`gh pr list --state open --json headRefName --jq '.[].headRefName'`) é considerado **em execução** — pendência ainda em escopo do `/run-plan` corrente, não cabe na listagem de "afazer pendente". Pular.
+2. **Filtrar planos em curso:** plano cujo slug bate com worktree em `.worktrees/<slug>` ou com branch de PR/MR aberto (auto-detect de forge análogo ao `/run-plan §3.7`: `github.com` → `gh pr list --state open --json headRefName --jq '.[].headRefName'`; host casando `^gitlab\.` → `glab mr list --opened`; outros hosts ou CLI ausente → fallback só por worktree) é considerado **em execução** — pendência ainda em escopo do `/run-plan` corrente, não cabe na listagem de "afazer pendente". Pular.
 3. **Extrair** `## Pendências de validação` dos planos restantes (mergeados ou nunca executados): cada bullet vira uma entrada.
 4. **Apresentar separadamente** após o top 3 do BACKLOG e antes do enum de escolha. Bloco editorial: cabeçalho `Pendências de validação em planos:` com lista `<slug>: <texto da linha>`. Plano sem pendências → omitir do bloco. Bloco vazio inteiro → omitir.
 5. **Não competir no enum de escolha do `/next`** — top 3 continua sendo do BACKLOG. Pendências aparecem para visibilidade; operador escolhe via `Other` se quiser endereçar uma pendência específica (digita o texto), ou ignora.
 
 Critério de "filtrar planos em curso" combina duas fontes:
 - **Worktree ativa:** `git worktree list --porcelain` → listar paths sob `.worktrees/`; extrair slug do basename.
-- **PR aberto:** `gh pr list --state open --json headRefName` → listar branches; comparar com slug.
+- **PR/MR aberto via forge auto-detect** (mesmo padrão do `/run-plan §3.7`): parse `git remote get-url origin`. `github.com` → `gh pr list --state open --json headRefName --jq '.[].headRefName'`; host casando `^gitlab\.` (gitlab.com ou GitLab corporativo `gitlab.<domínio>`) → `glab mr list --opened`; outros hosts → fallback (só worktree). CLI ausente em host mapeado → fallback (só worktree). Sem flag, sem cutucada — degradação silenciosa porque a filtragem é heurística informativa, não invariante crítica.
 
-Plano cujo slug bate em qualquer das duas fontes é "em curso".
+Plano cujo slug bate em qualquer das fontes ativas é "em curso".
 
 Fica de fora:
 - Cutucada para "atacar pendência X" via enum dedicado — operador escolhe via `Other` no enum existente. YAGNI até pain de digitar emergir.
@@ -46,15 +46,15 @@ Fica de fora:
   - **Inserir antes do passo 5** como passo 4.5 (ou subseção `**Pendências de validação em planos.**` após "## Avaliar"): a varredura é independente do ranking do top 3, então roda em paralelo conceitual mas é apresentada junto.
   - Mecânica:
     1. Listar planos: papel `plans_dir` resolvido (default `docs/plans/`); modo local lê de `.claude/local/plans/`.
-    2. Filtrar em curso: cruzar com `git worktree list --porcelain` e `gh pr list --state open --json headRefName` (gh ausente → fallback só por worktree).
+    2. Filtrar em curso: cruzar com `git worktree list --porcelain` e auto-detect de forge (mesmo padrão do `/run-plan §3.7`) — parse `git remote get-url origin`, `github.com` → `gh pr list --state open`, `^gitlab\.` → `glab mr list --opened`, outros hosts ou CLI ausente → fallback só por worktree.
     3. Para cada plano não-em-curso, extrair `## Pendências de validação` (entre o header e o próximo `##` ou EOF). Sem seção → pular.
     4. Acumular lista; vazio → omitir do relatório do passo 5.
   - Apresentação no passo 5: após o top 3, adicionar bloco `**Pendências de validação em planos:**` listando `- <slug>: <texto da linha>` por entrada. Operador escolhe via `Other` no enum existente caso queira endereçar uma pendência específica.
 
 ## Verificação end-to-end
 
-- `grep -n "Pendências de validação\|plans_dir.*\*\.md\|gh pr list --state open" skills/next/SKILL.md` retorna as linhas novas (varredura, filtragem, apresentação).
-- Releitura textual confirma: (a) varredura roda após avaliar (passo 4) e antes de apresentar (passo 5); (b) filtragem de "em curso" usa as duas fontes; (c) apresentação é seção separada do top 3, não compete no ranking; (d) bloco vazio é omitido (sem ruído).
+- `grep -n "Pendências de validação\|plans_dir.*\*\.md\|gh pr list\|glab mr list" skills/next/SKILL.md` retorna as linhas novas (varredura, filtragem por forge auto-detect, apresentação).
+- Releitura textual confirma: (a) varredura roda após avaliar (passo 4) e antes de apresentar (passo 5); (b) filtragem de "em curso" usa worktree + auto-detect de forge (`gh` para GitHub, `glab` para GitLab, fallback só worktree para outros); (c) apresentação é seção separada do top 3, não compete no ranking; (d) bloco vazio é omitido (sem ruído).
 - Top 3 atual continua sendo o ranking principal — varredura não substitui nem altera o `## Próximos` do BACKLOG.
 
 ## Verificação manual
@@ -77,7 +77,7 @@ Cenários enumerados:
 
 5. **Lista vazia → bloco omitido.** Todos os planos são em curso ou sem pendências. Esperado: nenhum bloco `Pendências de validação em planos:` no relatório do passo 5 — só top 3.
 
-6. **`gh` ausente → fallback só por worktree.** Em ambiente sem `gh` instalado. Esperado: filtragem usa só `git worktree list`; planos com PR aberto mas sem worktree local podem aparecer (degradação aceita; operador descarta via `Other` se necessário).
+6. **CLI do forge ausente ou host não-mapeado → fallback só por worktree.** Subcasos: (a) host `github.com` mas `gh` não-instalado; (b) host casa `^gitlab\.` mas `glab` não-instalado; (c) host fora do mapeamento (Bitbucket, Forgejo, Gitea, etc.) — sem CLI tentado. Esperado em todos: filtragem usa só `git worktree list`; planos com PR/MR aberto mas sem worktree local podem aparecer (degradação aceita; operador descarta via `Other` se necessário). Cenário 6 da `## Verificação manual` análogo ao tratamento do `/run-plan §3.7`.
 
 7. **Plano editado pós-merge (bullets removidos) → omitido.** Plano que tinha pendência foi mergeado, operador editou em commit posterior removendo todos os bullets de `## Pendências de validação` (seção fica vazia ou só com header). Esperado: extração não retorna entradas; plano não aparece na listagem (mesmo comportamento de "plano sem pendências"). Verifica que a extração lê o estado atual do arquivo, não memória do estado pré-edição.
 
@@ -90,3 +90,7 @@ Cenários enumerados:
 - **Apresentação ao operador é interna** (relatório do passo 5, não vai a commit/PR/branch). A regra de não-referenciar de [ADR-005](../decisions/ADR-005-modo-local-gitignored-roles.md) **não se aplica** — slug de plano e texto da pendência podem aparecer no relatório inclusive em modo local (`paths.plans_dir: local`); ADR-005 rege só metadata externa (commit msg, PR descrição, branch name).
 - **Plano `desacoplar-gh-em-skills.md` em `docs/plans/`:** se ativo (não sei o status sem inspecionar), este plano introduz mais um ponto de uso de `gh` (`gh pr list`); ambos podem precisar harmonizar fallback textual genérico no futuro. Hoje aceito porque `gh` já é dependência implícita do toolkit (cleanup pós-merge no `/triage` step 0 e auto-detect de forge no `/run-plan §3.7` já assumem).
 - **Bloco único `{reviewer: code}`** — refinamento editorial em SKILL de implementação; sem teste novo (plugin sem suite); sem doc user-facing tocada. O sanity check 3.3 do `/run-plan` (regra mergeada no PR #46) cobrirá README/install no done — provavelmente vai cutucar com referrers espúrios `/next` (descrição genérica), absorvidos por `Consistente`.
+
+## Pendências de validação
+
+- 1ª invocação real do `design-reviewer` pós-wiring (ADR-011) não detectou que a versão original do plano hardcoded `gh pr list` contradizia o padrão de auto-detect de forge estabelecido no `/run-plan §3.7` e `/release` (item Concluído no BACKLOG `desacoplar-gh-em-skills` + auto-detect implementado). Operador trouxe o ponto manualmente pós-commit (commit `d463bb6`); plano corrigido em commit subsequente. Captura empírica: 1 ocorrência ainda não justifica reabrir critério do agent (`agents/design-reviewer.md`) — YAGNI. Se 2ª ocorrência aparecer (reviewer perde acoplamento a padrão estabelecido do toolkit), reabrir para acrescentar heurística "ao detectar uso de CLI/biblioteca/dependência específica, verificar se há padrão estabelecido no toolkit antes de aprovar". Por enquanto: nota empírica no plano corrente.
