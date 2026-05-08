@@ -76,6 +76,8 @@ Bloqueios (plano sujo, push esquecido, baseline vermelho, worktree órfã) ficam
 
 **Linguagem ubíqua repassada ao reviewer.** Se o `## Contexto` do plano traz `**Termos ubíquos tocados:** <Termo> (<categoria>), ...`, esse subset entra como contexto da invocação do reviewer no bloco — `/run-plan` não relê `ubiquitous_language` em runtime; o plano é o ponto único de transferência entre alinhamento e execução. Plano sem a linha = mudança não toca domínio = nada a carregar.
 
+**Instrumentação de progresso (ADR-010).** Loop por bloco e sub-passos do gate final são instrumentados via `Task` por unidade (bloco do §2; sub-passos do §3 cujas condições de execução disparam). Lifecycle padrão `pending` → `in_progress` → `completed`. Plano de bloco único E gate com ≤1 sub-passo efetivo → skip silente.
+
 Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento lógico):
 
 1. **Implementar** as mudanças.
