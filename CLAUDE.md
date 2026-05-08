@@ -84,6 +84,7 @@ Concrete paths: `.claude/local/decisions/`, `.claude/local/BACKLOG.md`, `.claude
 - Skills end with an explicit `## O que NÃO fazer` section listing scope guards. Preserve that section when editing — it's load-bearing for tight skill focus. **Critério editorial:** lista apenas guardas que documentam anti-padrão não-óbvio. Item que apenas reafirma prosa anterior do skill é ruído — se sua remoção não confundiria um leitor razoável que leu o resto do skill, não pertence aqui. Itens vindos de incidentes ou de anti-padrões sutis (modelo tem viés de autoinvocação, gatilho condicional facilmente esquecido, exceção localizada que não é óbvia) são não-óbvios e devem permanecer.
 - Don't introduce a build system, package manager, or test runner for this repo itself. The hooks are runnable Python scripts (`python3 ${CLAUDE_PLUGIN_ROOT}/hooks/<script>.py`); the rest is markdown.
 - From v1.11.0 onward, version bumps in **this** repo go through `/release` — keep the loop closed by dogfooding rather than editing manifests by hand.
+- **Instrumentação de progresso em skills multi-passo via Tasks**: ver [ADR-010](docs/decisions/ADR-010-instrumentacao-progresso-skills-multi-passo.md) — critério de aplicação, lifecycle conversation-scoped, relação com ADR-004.
 
 ## AskUserQuestion mechanics
 
