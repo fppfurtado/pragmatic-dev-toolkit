@@ -4,6 +4,7 @@
 
 - plugin: wizard de configuração inicial dos papéis — gate único na primeira invocação de skill que toca `pragmatic-toolkit:config`, perguntando cada role (presente? canonical ou local?) e gravando no CLAUDE.md. Alternativa de descoberta para operadores que esquecem de editar o bloco YAML manualmente. Reavaliar se atrito real surgir.
 - plugin: wiring automático do `design-reviewer` — após dogfood acumular evidência, decidir se vira gate em `/run-plan` pré-loop (revisão obrigatória do plano antes do loop de blocos) e/ou em `/new-adr` pré-commit (revisão do ADR draft). Reavaliar trade-off de tokens em alta frequência (free-read de `docs/decisions/` + `philosophy.md` por invocação). Captura prevista no plano `docs/plans/agent-design-reviewer.md`.
+- plugin: paralelizar verificação "já implementado?" em `/next` via Agent (Explore) por candidato — spawn 1 subagent por linha de `## Próximos`, retorna verdict (sim/não/parcial + path). Hoje serial em main; latência cresce linearmente com tamanho do backlog. YAGNI até backlog crescer ≥20 itens ou pain real surgir; backlog atual (~3 itens em Próximos) não justifica overhead de subagent.
 
 ## Concluídos
 
