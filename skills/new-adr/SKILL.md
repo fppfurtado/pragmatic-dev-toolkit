@@ -45,6 +45,8 @@ Sem título → pedir antes de prosseguir.
 
 4. **Criar arquivo** `<decisions_dir>/ADR-<NNN>-<slug>.md` com o template abaixo. Não preencher conteúdo — deixar placeholders explícitos para o operador.
 
+5. **Revisão pré-retorno.** Invocar `@design-reviewer` apontando para o ADR draft recém-criado. Sem cutucada de pré-execução — o reviewer dispara automaticamente conforme [ADR-011](../../docs/decisions/ADR-011-wiring-design-reviewer-automatico.md). Reportar findings ao operador antes de devolver controle; findings são informativos, operador edita o ADR antes do commit (que é responsabilidade externa: `/triage` orquestra ou operador commita manualmente). Cobre tanto invocação standalone quanto delegada por `/triage` no caminho ADR-only — `/triage` passo 6 reconhece que `/new-adr` já cobriu e não redispara o reviewer.
+
 ## Template
 
 Idioma: espelhar ADRs existentes no projeto. Diretório vazio → default canonical PT-BR. Headers em PT-BR canonical:
