@@ -2,6 +2,19 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.0.0] - 2026-05-08
+
+### Added
+- `/run-plan` 5th pre-loop warning: plans that touch production code without listing a test file in `## Arquivos a alterar` are captured as Validação ("cenário sem cobertura nova exercitada"). Stack-agnostic heuristic via 7 test patterns; production-code detection excludes doc/test/manifest/infra/meta paths. Implements ADR-002's review trigger for 5th+ warning. (#40)
+- `design-reviewer` agent: pre-fact reviewer for architectural/design decisions in plans and ADRs; free-read of `docs/decisions/` and `philosophy.md`; manual invocation via `@design-reviewer`; automatic wiring in `/run-plan` and `/new-adr` deferred until dogfood evidence accumulates. (#42)
+- `/run-plan` §3.7 post-merge cleanup cutucada — next-invocation hint detecting orphan worktrees and local branches whose PRs already landed in `origin/<main>`. (#43)
+
+### Changed
+- **BREAKING**: skill `/gen-tests-python` renamed to `/gen-tests` — stack-agnostic generator with internal stack dispatch (per ADR-008). Idioms (pytest + respx + asyncio_mode auto + tmp_path for SQLite) preserved verbatim in a Python sub-block; future stacks add sub-blocks in the same SKILL.md. Marker-based detection (`pyproject.toml` → Python) with `AskUserQuestion` fallback. Naming convention in `docs/philosophy.md` and `CLAUDE.md` reflects the new doctrine: skills geradoras lose stack suffix; hooks executores keep suffix + auto-gating triplo. (#41)
+
+### Notes
+- ADR-008 (Accepted): "Skills geradoras stack-agnósticas via dispatch interno" — formalizes the inversion of the naming convention; registers fallback mechanics and review triggers.
+
 ## [1.24.0] - 2026-05-07
 
 ### Added
