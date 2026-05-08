@@ -172,6 +172,8 @@ Reportar em formato curto:
 
 Quando `backlog` resolveu "não temos", acrescentar **"Itens não registrados (papel `backlog` desativado):"** listando (a) a frase de intenção que teria sido gravada e (b) cada item fora-de-escopo do passo 2.
 
+**Revisão pré-commit (caminho-com-plano).** Quando o passo 4 produziu plano (caminho-com-plano, com ou sem ADR delegada via `/new-adr`), invocar `@design-reviewer` apontando para o plano. Sem cutucada de pré-execução — o reviewer dispara automaticamente conforme [ADR-011](../../docs/decisions/ADR-011-wiring-design-reviewer-automatico.md). Reportar findings ao operador antes de propor commit; findings são informativos, operador aplica ajustes ou segue como está. **Não dispara** quando o caminho fechou em linha de backlog pura, atualização cirúrgica de `docs/domain.md`/`docs/design.md`, ou ADR-only delegada sem plano — ADR-only é coberta pelo wiring de `/new-adr` (evita dispatch duplo no caminho `/triage` → `/new-adr` → reviewer).
+
 Propor commit único agrupando os artefatos. Mensagem segue a convenção do projeto consumidor (default Conventional Commits em inglês, `docs:` ou `chore:`). Confirmação via enum (`AskUserQuestion`, header `Commit`, opções `Confirmar e commitar` / `Editar mensagem`).
 
 Após confirmação:

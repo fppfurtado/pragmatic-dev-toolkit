@@ -13,7 +13,7 @@ The companion repo is [`scaffold-kit`](https://github.com/fppfurtado/scaffold-ki
 Three component types, each with its own discovery mechanism:
 
 - **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests`, `/release`). Skills only act when invoked by the user.
-- **Agents** — `agents/<name>.md` with frontmatter. Subagents called by name (`code-reviewer`, `qa-reviewer`, `security-reviewer`, `doc-reviewer`, `design-reviewer`). The first four analyze a diff post-fact and return findings. `design-reviewer` operates on a document pre-fact (plan or ADR draft) — invoked manually via `@design-reviewer`, not by `/run-plan`.
+- **Agents** — `agents/<name>.md` with frontmatter. Subagents called by name (`code-reviewer`, `qa-reviewer`, `security-reviewer`, `doc-reviewer`, `design-reviewer`). The first four analyze a diff post-fact and return findings. `design-reviewer` operates on a document pre-fact (plan or ADR draft) — invoked automatically by `/triage` (when producing a plan) and `/new-adr` (standalone or delegated) per [ADR-011](docs/decisions/ADR-011-wiring-design-reviewer-automatico.md); manually via `@design-reviewer` for other entry points. Not invoked by `/run-plan`.
 - **Hooks** — `hooks/hooks.json` declares lifecycle bindings; the bound scripts (`hooks/*.py`) run on every matching tool call in any project that has the plugin installed. Therefore hooks **must auto-gate**. `PostToolUse` exits 0; `PreToolUse` uses exit 2 to block (see `block_env.py`).
 
 Manifests:
@@ -40,7 +40,7 @@ Skills consume **roles**, not literal paths. Each role has a canonical default; 
 | `changelog` | `CHANGELOG.md` | Release history. `/release` prepends a new block at each bump. |
 | `test_command` | `make test` (with `Makefile`) | Automatic gate at execution steps. |
 | (plugin-internal) | `.worktreeinclude` | Optional gitignored paths to replicate in fresh worktrees. Consumed by `/run-plan`. |
-| (agents shipped by the plugin) | `qa-reviewer`, `security-reviewer`, `doc-reviewer`, `design-reviewer` | `qa-reviewer`, `security-reviewer`, `doc-reviewer` are invoked by `/run-plan` per `{reviewer: qa\|security\|doc}` annotation on the plan block. `design-reviewer` operates on documents pre-fact (plan/ADR draft); invoked manually via `@design-reviewer`. Consumer projects can shadow any of them with project-level `.claude/agents/<name>.md` (project-level wins on collision). |
+| (agents shipped by the plugin) | `qa-reviewer`, `security-reviewer`, `doc-reviewer`, `design-reviewer` | `qa-reviewer`, `security-reviewer`, `doc-reviewer` are invoked by `/run-plan` per `{reviewer: qa\|security\|doc}` annotation on the plan block. `design-reviewer` operates on documents pre-fact (plan/ADR draft); invoked automatically by `/triage` (plan-producing path) and `/new-adr` (standalone or delegated) per [ADR-011](docs/decisions/ADR-011-wiring-design-reviewer-automatico.md), or manually via `@design-reviewer`. Consumer projects can shadow any of them with project-level `.claude/agents/<name>.md` (project-level wins on collision). |
 
 ### Resolution protocol
 
@@ -85,6 +85,7 @@ Concrete paths: `.claude/local/decisions/`, `.claude/local/BACKLOG.md`, `.claude
 - Don't introduce a build system, package manager, or test runner for this repo itself. The hooks are runnable Python scripts (`python3 ${CLAUDE_PLUGIN_ROOT}/hooks/<script>.py`); the rest is markdown.
 - From v1.11.0 onward, version bumps in **this** repo go through `/release` — keep the loop closed by dogfooding rather than editing manifests by hand.
 - **Instrumentação de progresso em skills multi-passo via Tasks**: ver [ADR-010](docs/decisions/ADR-010-instrumentacao-progresso-skills-multi-passo.md) — critério de aplicação, lifecycle conversation-scoped, relação com ADR-004.
+- **Wiring automático do design-reviewer**: ver [ADR-011](docs/decisions/ADR-011-wiring-design-reviewer-automatico.md) — quando dispara em `/triage` e `/new-adr`, override por inação, custo de tokens.
 
 ## AskUserQuestion mechanics
 
