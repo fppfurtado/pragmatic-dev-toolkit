@@ -2,6 +2,18 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.1.0] - 2026-05-08
+
+### Added
+- ADR-010 (Accepted): "Instrumentação de progresso em skills multi-passo via Tasks" — formalizes the criterion "≥3 passos sequenciais discretos", conversation-scoped lifecycle, scope of application (`/run-plan`, `/debug` apply; `/triage`, `/new-adr`, `/gen-tests`, `/release` do not).
+- `/run-plan` instruments loop blocks and gate sub-steps via `TaskCreate`/`TaskUpdate` (per ADR-010). One Task per block (`pending` → `in_progress` → `completed`); gate sub-steps create Tasks only for those that effectively execute (skip-aware). (#44)
+- `/debug` hypothesis ledger instrumented via `TaskCreate` per hypothesis with `content="Hipótese: <descrição>"`; status semântico (confirmada/refutada/inconclusiva) preserved in prose ledger. Skip when single-hypothesis diagnosis closes fast. (#44)
+- `/run-plan` streams `test_command` stdout via `Monitor` in §1.3 baseline and §3.1 gate (replaces silent wait). (#44)
+
+### Notes
+- `CLAUDE.md` `## Editing conventions` gets pointer to ADR-010 — convention lives in ADR, not duplicated.
+- Plan `docs/plans/instrumentar-skills-multi-passo.md` concluded; `## Pendências de validação` registered: (a) Skill tool explicit pattern doesn't trivially compose with worktree cwd in `/run-plan` execution; (b) parallelism explicit mandates redundant with harness defaults.
+
 ## [2.0.0] - 2026-05-08
 
 ### Added
