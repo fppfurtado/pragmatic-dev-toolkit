@@ -121,6 +121,11 @@ Repo sem suite (`test_command: null`). Inspeção textual:
 7. **Paralelismo reviewer combination**: plano com bloco `{reviewer: code,qa}`. Esperado: code-reviewer e qa-reviewer invocados em paralelo (single message com 2 Agent calls).
 8. **Skill explícito em /triage step 4**: triage que decide produzir ADR. Esperado: skill chama Skill tool com `pragmatic-dev-toolkit:new-adr`, NÃO cria arquivo manualmente.
 
+## Pendências de validação
+
+- Bloco 5 revertido pelo `code-reviewer` durante execução: pattern "Skill tool explícito" não compõe trivialmente com worktree do `/run-plan` (Skill tool roda em cwd da sessão, não da worktree — verificado durante Bloco 1, onde criar ADR via Skill criaria no main repo). Investigar handling de cwd antes de re-propagar; cenário 8 da `## Verificação manual` (Skill explícito em /triage step 4) fica não-exercitado.
+- Bloco 5 revertido pelo `code-reviewer` durante execução: instruções de paralelismo explícito em `/triage` §0 e `/run-plan` §2.3 são redundantes com defaults do harness ("If you intend to call multiple tools and there are no dependencies between the calls, make all of the independent calls in the same block" no system prompt). Manter em prosa de skill é ruído editorial. Cenários 6 e 7 da `## Verificação manual` (paralelismo cleanup + reviewer combination) ficam não-exercitados como instrução de skill — comportamento default cobre na prática.
+
 ## Notas operacionais
 
 - **Blocos 2, 4 e 5 tocam mesmo arquivo** (`skills/run-plan/SKILL.md`). Sequenciar: Bloco 2 (Tasks) → Bloco 4 (Monitor) → Bloco 5 (paralelismo) — todos editam o mesmo arquivo, mas em seções distintas; conflito de edit improvável.
