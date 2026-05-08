@@ -3,7 +3,7 @@ name: next
 description: Lê o backlog, descarta itens já implementados e sugere top 3 candidatos por impacto estratégico. Invocável direto ou como pré-passo de /triage sem argumento.
 roles:
   required: [backlog]
-  informational: [product_direction]
+  informational: [product_direction, plans_dir]
 ---
 
 # next
@@ -39,6 +39,18 @@ Para cada item que sobrou:
 
 Combinar os dois critérios para ranking. Empate → ordem de aparição (mais antigo sobe). Mostrar o raciocínio por item — operador deve poder discordar sem aceitar caixa-preta.
 
+### 4.5. Varrer pendências de validação em planos
+
+Independente do ranking do top 3 (rationale diferente: fechamento de plano específico, não estratégia × amplitude). Resultado é exibido em bloco separado no passo 5; não compete no enum.
+
+1. **Listar planos:** papel `plans_dir` resolvido (default `docs/plans/`); modo local lê de `.claude/local/plans/`. Sem planos → skip silente desta seção.
+2. **Filtrar planos em curso:**
+   - **Worktree ativa:** `git worktree list --porcelain` → paths sob `.worktrees/`; extrair slug do basename. Plano cujo slug bate é "em curso" (pendência ainda em escopo de `/run-plan` corrente).
+   - **PR/MR aberto via forge auto-detect** (mesmo padrão do `/run-plan §3.7`): parse `git remote get-url origin`. `github.com` → `gh pr list --state open --json headRefName --jq '.[].headRefName'`. Host casando regex `^gitlab\.` → `glab mr list --opened`. Outros hosts ou CLI ausente → fallback (só worktree). Plano cujo slug bate em qualquer fonte ativa é "em curso".
+   - Sem flag, sem cutucada — degradação silenciosa quando CLI ausente porque a filtragem é heurística informativa, não invariante crítica.
+3. **Extrair `## Pendências de validação`** dos planos restantes (não-em-curso): conteúdo entre o header e o próximo `##` ou EOF. Sem seção, ou seção vazia/sem bullets ativos → pular o plano.
+4. **Acumular** pares `(slug, texto-da-linha)` para cada bullet extraído. Lista vazia → omitir o bloco no passo 5.
+
 ### 5. Apresentar resultado e colher escolha
 
 Reportar em formato curto:
@@ -46,6 +58,7 @@ Reportar em formato curto:
 - **Movidos para `## Concluídos`** (evidência forte): listar com justificativa.
 - **Evidência fraca:** listar com o que foi encontrado.
 - **Top 3 candidatos** em ordem decrescente de impacto, com raciocínio de alinhamento + amplitude.
+- **Pendências de validação em planos** (lista do passo 4.5, quando não-vazia): bloco separado listando `<slug>: <texto da linha>` por entrada. Lista vazia → omitir o bloco. Pendências **não competem** no enum a seguir — top 3 continua sendo do BACKLOG; operador escolhe via `Other` se quiser endereçar uma pendência específica.
 
 Em seguida, enum (`AskUserQuestion`, header `Próximo`) com as 3 opções nomeadas pelo texto exato da linha + Other (operador digita intenção diferente). Escolha alimenta diretamente `/triage`.
 
