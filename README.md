@@ -7,7 +7,7 @@ Claude Code plugin para o workflow **flat & pragmatic**: skills genéricas, revi
 | Componente | Tipo | O que faz |
 |------------|------|-----------|
 | `/triage` | Skill | Alinha intenção, levanta gaps e decide qual artefato (linha de backlog, plano, ADR, atualização de domínio/design) é necessário antes de implementar. Sem argumento, delega para `/next`. |
-| `/next` | Skill | Orientação de sessão: lê o backlog, verifica no código o que já foi implementado e sugere os três candidatos de maior impacto para triagem. |
+| `/next` | Skill | Orientação de sessão: lê o backlog, verifica no código o que já foi implementado e sugere os três candidatos de maior impacto para triagem. Lista também `## Pendências de validação` de planos mergeados como bloco separado (não compete no top 3). |
 | `/new-adr` | Skill | Cria um novo ADR em `docs/decisions/` com numeração automática e template padronizado. |
 | `/run-plan` | Skill | Executa um plano de `docs/plans/<slug>.md` em worktree isolada, micro-commits Conventional Commits, revisão dirigida por bloco, gate de validação manual quando aplicável e sugestão de push/PR ao concluir. |
 | `/debug <sintoma>` | Skill | Diagnostica causa-raiz por método científico (reproduzir → isolar → hipótese-teste → evidência). Produz diagnóstico, não fix — operador escolhe revert / patch direto / `/triage` depois. Stack-agnóstico. |
