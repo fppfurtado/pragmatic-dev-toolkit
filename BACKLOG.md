@@ -8,6 +8,7 @@
 
 ## Concluídos
 
+- plugin: instrumentar skills multi-passo via tools do harness — TaskCreate em `/run-plan` loop e `/debug` ledger; Monitor para `test_command` longo; explicitar paralelismo em `/run-plan` §0 e §2.3 e Skill tool em `/triage`; convenção em CLAUDE.md.
 - plugin: cutucada pós-merge para cleanup de worktree/branch local — `/run-plan` termina na worktree na branch da feature após oferecer Push/Push+PR (skill, linha final do passo 7) e não há retorno após o merge; `git worktree remove .worktrees/<slug>`, `git branch -d <slug>` e `git fetch --prune` ficam manuais. Direção possível: skill nova (`/post-merge-cleanup`) ou passo opcional anexado à próxima invocação de `/triage`/`/release` quando detectar worktrees em `.worktrees/` cuja branch já mergeou em `origin/<main>` (`git branch -r --merged origin/<main>` cruzado com `git worktree list`). Reavaliar se YAGNI: cleanup é trivial e o operador pode preferir manter a worktree para inspeção pós-merge — registrar para reavaliar se atrito recorrer.
 - plugin: agent design-reviewer — revisor pré-fato de decisões arquiteturais/design em planos e ADRs; free-read de docs/decisions e philosophy.md; invocação manual via @-mention; wiring automático deferido após dogfood.
 - plugin: skills geradoras stack-agnósticas via dispatch interno — inverter sufixo de stack na "Convenção de naming" (philosophy.md/CLAUDE.md); idioms vivem em sub-blocos do SKILL.md. `gen-tests-python` vira `gen-tests`. Hooks ficam fora. Implementa ADR-008.

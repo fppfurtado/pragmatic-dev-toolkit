@@ -67,6 +67,8 @@ Estreitar a área suspeita antes de hipotetizar:
 
 ### 4. Hipotetizar e testar
 
+**Instrumentação de progresso (ADR-010).** Cada hipótese é instrumentada via `Task` com `content="Hipótese: <descrição>"`; lifecycle conforme ADR-010 §Mecânica. Status semântico (confirmada/refutada/inconclusiva) vai no ledger-prosa, não na Task. Diagnóstico fechando com 1 hipótese → skip silente da instrumentação.
+
 Para cada hipótese plausível:
 
 1. **Estado** em uma frase: "X falha porque Y".
@@ -76,7 +78,7 @@ Para cada hipótese plausível:
 
 Limite: **parar após duas hipóteses consecutivas refutadas sem ganho de evidência** (mesmo erro, mesmo escopo, nenhuma pista nova) e reportar status no passo 5 (ramo "nenhuma hipótese fechou").
 
-Manter ledger das hipóteses (frase + status + evidência) para o passo 5. ≥2 hipóteses examinadas → ledger entra como campo *Hipóteses testadas*.
+Manter ledger das hipóteses em prosa (frase + status + evidência) para o passo 5 — Tasks tracking-only, prosa carrega raciocínio causal. ≥2 hipóteses examinadas → ledger entra como campo *Hipóteses testadas*.
 
 ### 5. Causa-raiz
 
