@@ -48,6 +48,7 @@ Sem seleção (todas desmarcadas + confirmar) → skip esse candidato; segue par
 **Execução das seleções.** Ordem importa para isolamento — `worktree remove` antes de `branch -d` (worktree em uso bloqueia delete). Ordem padrão: Worktree → Branch local → Branch remota.
 
 - `Branch local`: tentar `git branch -d <slug>` primeiro. Falha com "not fully merged" → executar `git branch -D <slug>` e reportar `"branch <slug> não mergeada via fast-forward — squash detectado via gh; usando -D"` (caso real para PRs squash-merged onde ancestry local não bate).
+- `Branch remota`: tentar `git push origin --delete <slug>`. Falha com `remote ref does not exist` no stderr → branch já estava apagada no remoto (auto-delete pós-merge do GitHub, etc.); reportar `"branch <slug> já estava apagada no remoto"` e seguir.
 - Falha em qualquer comando após o primeiro → reportar erro literal e parar (sem `--force` adicional, sem retry). Comandos já executados permanecem aplicados; operador resolve o resto manual.
 
 **Após todos os candidatos:** `git fetch origin --prune` para limpar refs remotos órfãos.
