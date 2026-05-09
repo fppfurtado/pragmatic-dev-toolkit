@@ -144,7 +144,7 @@ Bloco que **contém testes** (saída (i) da heurística de cobertura) recebe `{r
 
 Bloco **doc-only** (paths todos `.md`/`.rst`/`.txt`) recebe `doc-reviewer` como default — omitir anotação ou usar `{reviewer: doc}` para deixar explícito. Diff que toca código E doc adjacente — preferir separar em dois blocos (`{reviewer: code}` e `{reviewer: doc}`); `{reviewer: code,doc}` no mesmo bloco continua válido como exceção rara quando a separação não faz sentido lógico.
 
-**ADR:** invocar `/new-adr "<título>"` (não duplicar lógica). Reportar e seguir. `/new-adr` aplica o modo do `decisions_dir` automaticamente — em modo `local`, ADR criado em `.claude/local/decisions/`.
+**ADR:** chamar a tool `Skill` com `name="pragmatic-dev-toolkit:new-adr"` e `args=<título>` (não duplicar lógica nem criar arquivo manualmente). Reportar e seguir. `/new-adr` aplica o modo do `decisions_dir` automaticamente — em modo `local`, ADR criado em `.claude/local/decisions/`.
 
 **`docs/domain.md` / `docs/design.md`:** edit cirúrgico, preservar tom e estrutura.
 
