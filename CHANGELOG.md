@@ -2,6 +2,21 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.2.0] - 2026-05-09
+
+### Added
+- `/run-plan` §3.3 (sanity check of user-facing docs) gains a 3rd empirical skip condition via grep of touched identifiers in user-facing paths. Concrete referrers (`<path>:<line>`) replace generic candidates in the prompt. (#46)
+- ADR-011 + automatic wiring for `design-reviewer`: dispatched automatically in `/triage` (plan-producing path) and `/new-adr` (standalone or delegated). Override by inaction; no pre-execution prompt. (#47)
+- `/next` scans `## Pendências de validação` in plans as a separate listing from the top 3; in-progress plans filtered via worktree + forge auto-detect (`gh`/`glab`/fallback). (#48)
+- `/triage` step 4 invokes `Skill(name="pragmatic-dev-toolkit:new-adr", ...)` instead of prose "invocar /new-adr" — partial re-enable of plan #44 Bloco 5 part 1.
+
+### Fixed
+- `/triage` step 0 post-merge cleanup treats `git push origin --delete` failing with `remote ref does not exist` as silent success (covers GitHub's auto-delete-branches); other failures keep reporting literal and stopping. (#45)
+
+### Notes
+- ADR-011 (Accepted): "Wiring automático do design-reviewer no /triage e /new-adr" — formalizes dispatch points, override by inaction, and calibrated token cost.
+- Plans/backlog captures and editorial follow-ups for the items above; memory `project_design_reviewer_dogfood` archived (3/3 window closed).
+
 ## [2.1.0] - 2026-05-08
 
 ### Added
