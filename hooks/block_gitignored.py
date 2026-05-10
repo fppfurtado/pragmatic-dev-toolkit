@@ -10,6 +10,13 @@ Triple auto-gating so this is safe to ship in a multi-stack plugin:
   1. extension-equivalent: empty `file_path` → exit 0.
   2. stack marker: file is not inside a git working tree → exit 0.
   3. toolchain: `git` not found on `PATH` → exit 0.
+
+Allowlist: edits under `<repo>/.claude/` are never blocked. That root is
+Claude Code's territory (skill state, local-mode artifacts per ADR-005);
+the plugin's stated principle is to never touch it, which includes not
+gating it. Without this carve-out, consumers that adopt local mode
+(`paths.<role>: local`) would see `/triage`, `/new-adr`, `/run-plan`
+fail to write under `.claude/local/`.
 """
 import json
 import os
@@ -28,20 +35,37 @@ def main() -> int:
         return 0
 
     abspath = os.path.abspath(file_path)
-    anchor = os.path.dirname(abspath) or "/"
 
-    # Layer 2: stack marker — bail unless `git -C <anchor>` reports a work tree.
+    # The file's parent may not exist yet (Write creating a new tree under
+    # a gitignored dir). Walk up to the nearest existing ancestor so
+    # `git -C <anchor>` can locate the repo.
+    anchor = os.path.dirname(abspath) or "/"
+    while anchor != "/" and not os.path.isdir(anchor):
+        anchor = os.path.dirname(anchor) or "/"
+
+    # Layer 2 + toplevel resolution in a single git call.
     try:
-        inside = subprocess.run(
-            ["git", "-C", anchor, "rev-parse", "--is-inside-work-tree"],
+        meta = subprocess.run(
+            ["git", "-C", anchor, "rev-parse",
+             "--is-inside-work-tree", "--show-toplevel"],
             capture_output=True, text=True,
         )
     except FileNotFoundError:
         return 0
-    if inside.returncode != 0 or inside.stdout.strip() != "true":
+    if meta.returncode != 0:
+        return 0
+    lines = meta.stdout.splitlines()
+    if len(lines) < 2 or lines[0].strip() != "true":
+        return 0
+    toplevel = lines[1].strip()
+    if not toplevel:
         return 0
 
-    # Layer 3 already covered above (FileNotFoundError → exit 0).
+    # Allowlist: harness territory under `<repo>/.claude/` is never gated.
+    relpath = os.path.relpath(abspath, toplevel)
+    if relpath == ".claude" or relpath.startswith(".claude" + os.sep):
+        return 0
+
     try:
         check = subprocess.run(
             ["git", "-C", anchor, "check-ignore", "-q", abspath],
