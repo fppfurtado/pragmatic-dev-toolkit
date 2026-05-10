@@ -1,7 +1,8 @@
 {
-  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "fppfurtado-pragmatic-dev-toolkit",
-  "description": "Curated marketplace for Fernando Furtado's Claude Code plugins — flat & pragmatic dev workflow tooling.",
+  "metadata": {
+    "description": "Curated marketplace for Fernando Furtado's Claude Code plugins — flat & pragmatic dev workflow tooling."
+  },
   "owner": {
     "name": "Fernando Furtado",
     "email": "fppfurtado@outlook.com"
