@@ -125,7 +125,7 @@ Refactor textual sem suite executável; gate é inspeção dirigida:
 
 ## Pendências de validação
 
-- Smoke comportamental dos 3 cenários (`/triage` caminho-com-plano sem gravar em Em andamento; `/run-plan` done que adiciona em Concluídos sem origem; `/next` sem reportar Em andamento) exige merge + reload do plugin (cache instalado pré-D2). Inspeção direta pós-merge cobre o core do contrato (refactors em SKILLs presentes, Em andamento ausente, /heal-backlog removida, Action removida); smoke comportamental real fica para invocação subsequente.
+- ~~Smoke comportamental dos 3 cenários (`/triage` caminho-com-plano sem gravar em Em andamento; `/run-plan` done que adiciona em Concluídos sem origem; `/next` sem reportar Em andamento) exige merge + reload do plugin (cache instalado pré-D2). Inspeção direta pós-merge cobre o core do contrato (refactors em SKILLs presentes, Em andamento ausente, /heal-backlog removida, Action removida); smoke comportamental real fica para invocação subsequente.~~ **Encerrada 2026-05-10:** uso real subsequente do plugin sem regressão observada nos 3 cenários; contrato D2/ADR-004 estável.
 
 ## Notas operacionais
 

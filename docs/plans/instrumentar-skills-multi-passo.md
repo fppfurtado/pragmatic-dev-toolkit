@@ -123,7 +123,7 @@ Repo sem suite (`test_command: null`). Inspeção textual:
 
 ## Pendências de validação
 
-- Bloco 5 revertido pelo `code-reviewer` durante execução: instruções de paralelismo explícito em `/triage` §0 e `/run-plan` §2.3 são redundantes com defaults do harness ("If you intend to call multiple tools and there are no dependencies between the calls, make all of the independent calls in the same block" no system prompt). Manter em prosa de skill é ruído editorial. Cenários 6 e 7 da `## Verificação manual` (paralelismo cleanup + reviewer combination) ficam não-exercitados como instrução de skill — comportamento default cobre na prática.
+- ~~Bloco 5 revertido pelo `code-reviewer` durante execução: instruções de paralelismo explícito em `/triage` §0 e `/run-plan` §2.3 são redundantes com defaults do harness ("If you intend to call multiple tools and there are no dependencies between the calls, make all of the independent calls in the same block" no system prompt). Manter em prosa de skill é ruído editorial. Cenários 6 e 7 da `## Verificação manual` (paralelismo cleanup + reviewer combination) ficam não-exercitados como instrução de skill — comportamento default cobre na prática.~~ **Atualizada 2026-05-10:** Bloco 5 ficou parcialmente revertido. (a) Parte 2 (paralelismo explícito em prosa de skill) permanece descartada como redundante com defaults do harness — cenários 6 e 7 encerrados (comportamento default cobre na prática). (b) Parte 1 (Skill tool em `/triage` step 4) foi reabilitada via commit `57e0880`; cenário 8 encerrado por uso real subsequente sem regressão.
 
 ## Notas operacionais
 

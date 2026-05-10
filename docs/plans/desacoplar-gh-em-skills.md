@@ -64,5 +64,5 @@ Cenários (1) e (2) cobrem ambos os pontos de mudança. Não há surface não-de
 
 ## Pendências de validação
 
-- Cenário 1 do `## Verificação manual` (enum `Publicar` neutro) — não exercitável nesta execução porque o próprio `/run-plan` que aplicou as mudanças roda da versão instalada do plugin (sem os diffs). Validar na próxima invocação de `/run-plan` em consumidor com remote configurado, após estas mudanças entrarem em `main` e o plugin local ser atualizado.
-- Cenário 2 do `## Verificação manual` (frase final neutra de `/release`) — observar visualmente na próxima release dogfood deste repo.
+- ~~Cenário 1 do `## Verificação manual` (enum `Publicar` neutro) — não exercitável nesta execução porque o próprio `/run-plan` que aplicou as mudanças roda da versão instalada do plugin (sem os diffs). Validar na próxima invocação de `/run-plan` em consumidor com remote configurado, após estas mudanças entrarem em `main` e o plugin local ser atualizado.~~ **Encerrada 2026-05-10:** uso real subsequente do plugin (incluindo auto-detect de forge implementado posteriormente) sem regressão no enum `Publicar`.
+- ~~Cenário 2 do `## Verificação manual` (frase final neutra de `/release`) — observar visualmente na próxima release dogfood deste repo.~~ **Encerrada 2026-05-10:** dogfood pós-mudanças (releases sucessivas até v2.2.0) sem regressão na frase final neutra do `/release`.

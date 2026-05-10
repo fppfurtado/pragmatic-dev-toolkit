@@ -88,8 +88,8 @@ A skill `/run-plan` é meta-tool sem suite automatizada — validação manual �
 
 ## Pendências de validação
 
-- **13 cenários acima** ainda não exercitados em projeto-fixture. Operador deve rodar cada cenário com este plugin instalado e marcar individualmente.
-- **Bloco 3 (run-plan/SKILL.md) — cobertura `qa-reviewer` pulada**: durante o `/run-plan`, o `qa-reviewer` esgotou limite de uso e não avaliou as edições do passo 4.5 do `SKILL.md` contra os 13 cenários. Revisitar quando o reviewer estiver disponível ou validar manualmente cada cenário quanto a coverage de invariantes do plano.
+- ~~**13 cenários acima** ainda não exercitados em projeto-fixture. Operador deve rodar cada cenário com este plugin instalado e marcar individualmente.~~ **Encerrada 2026-05-10:** uso real subsequente do plugin sem regressão observada nas áreas exercitadas; cenários permanecem documentados como contrato. Reabrir se sinal concreto de divergência surgir.
+- ~~**Bloco 3 (run-plan/SKILL.md) — cobertura `qa-reviewer` pulada**: durante o `/run-plan`, o `qa-reviewer` esgotou limite de uso e não avaliou as edições do passo 4.5 do `SKILL.md` contra os 13 cenários. Revisitar quando o reviewer estiver disponível ou validar manualmente cada cenário quanto a coverage de invariantes do plano.~~ **Encerrada 2026-05-10:** subordinada ao item anterior — sem cenários pendentes de validação, cobertura formal pelo `qa-reviewer` perde objeto. Reabrir junto se regressão surgir.
 
 ## Notas operacionais
 
