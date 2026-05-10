@@ -46,6 +46,8 @@ O que **não** muda com idioma: nomes de agents, chaves de frontmatter, paths e 
 
 **Artefatos informativos do registro de mudanças** — `CHANGELOG.md`, mensagens de tag anotada (incluindo síntese), descrições de PR — seguem o idioma da **convenção de commits do projeto** (ver abaixo), não o da prosa operativa. Audiência diferente: leitor de release inspeciona junto com `git log`, prosa operativa é dev escrevendo/lendo durante desenvolvimento. Detalhes em [ADR-007](decisions/ADR-007-idioma-artefatos-informativos.md).
 
+**Artefatos de discoverability/landing** — `README.md` do plugin e descrições em manifests de marketplace (`plugin.json`, `marketplace.json`) — seguem o idioma do **público alvo do canal de descoberta** (default canonical EN para Claude Code marketplace). Audiência distinta da operativa e da informativa: leitor pré-adoção decidindo se vai instalar, em vez de dev no projeto ou leitor de release. Detalhes em [ADR-012](decisions/ADR-012-idioma-artefatos-discoverability-landing.md).
+
 `/run-plan` faz **matching semântico** dos headers de plano — canonical PT-BR é `## Arquivos a alterar`, `## Verificação end-to-end`, `## Verificação manual`, `## Contexto`, `## Resumo da mudança`; equivalentes em outro idioma do projeto (`## Files to change`, `## End-to-end verification`, etc.) são aceitos contanto que a estrutura informacional bata.
 
 ## Convenção de commits
