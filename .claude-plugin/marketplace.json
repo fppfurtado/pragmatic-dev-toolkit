@@ -1,7 +1,8 @@
 {
-  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "fppfurtado-pragmatic-dev-toolkit",
-  "description": "Curated marketplace for Fernando Furtado's Claude Code plugins — flat & pragmatic dev workflow tooling.",
+  "metadata": {
+    "description": "Curated marketplace for Fernando Furtado's Claude Code plugins — flat & pragmatic dev workflow tooling."
+  },
   "owner": {
     "name": "Fernando Furtado",
     "email": "fppfurtado@outlook.com"
@@ -9,7 +10,7 @@
   "plugins": [
     {
       "name": "pragmatic-dev-toolkit",
-      "description": "Workflow skills for alignment, execution and diagnosis; YAGNI/QA/security reviewers; Python testing scaffolder; self-gated hooks; configurable path contract via CLAUDE.md. For flat & pragmatic projects.",
+      "description": "Workflow skills for alignment, execution and diagnosis; YAGNI/QA/security/doc/design reviewers; stack-aware test scaffolder (Python today); self-gated hooks; configurable path contract via CLAUDE.md. For flat & pragmatic projects.",
       "author": {
         "name": "Fernando Furtado",
         "email": "fppfurtado@outlook.com",
@@ -23,7 +24,7 @@
       },
       "homepage": "https://github.com/fppfurtado/pragmatic-dev-toolkit",
       "version": "2.2.0",
-      "tags": ["workflow", "yagni", "scaffold", "adr", "planning", "code-review", "debugging", "diagnosis", "python", "pytest", "testing"]
+      "tags": ["workflow", "yagni", "adr", "decision-records", "planning", "code-review", "doc-review", "design-review", "debugging", "worktree", "self-gated-hooks"]
     }
   ]
 }
