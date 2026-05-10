@@ -34,7 +34,7 @@ git clone git@github.com:fppfurtado/pragmatic-dev-toolkit.git
 
 1. Confirmar `.claude-plugin/plugin.json` válido como JSON.
 2. Após instalar, abrir o Claude Code no workspace e confirmar que `/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests`, `/release` aparecem em `/help` ou `/plugin list`.
-3. Smoke das skills + edição direta de `.env` (verifica `block_env`) + edição de um `.py` num projeto Python (verifica `run_pytest_python`).
+3. Smoke das skills + edição direta de `.env` (verifica `block_env`) + tentativa de edição em path coberto pelo `.gitignore` do consumer (ex.: `.venv/foo.py`, `node_modules/x/index.js` — verifica `block_gitignored`) + edição de um `.py` num projeto Python (verifica `run_pytest_python`).
 4. Invocar `qa-reviewer` num diff que adiciona função pública sem teste correspondente → flag esperado de "caminho feliz sem teste".
 5. Invocar `security-reviewer` num diff que faz `logger.info(f"token={token}")` → flag esperado de "credencial em log".
 5a. Invocar `doc-reviewer` num diff que adiciona, num `.md` qualquer, link `[ver](docs/inexistente.md)` ou referência a flag/comando inexistente no projeto → flag esperado de drift (`cross-ref/anchor quebrado` ou `identificador inexistente`).
@@ -66,7 +66,7 @@ Chave ausente = canonical default. Valor `null` = "não usamos esse papel" (skil
 
 Valor `local` = artefato local-gitignored em `.claude/local/<role>/`, aceito por `decisions_dir`, `backlog` e `plans_dir` (recusado por `version_files`/`changelog`). Mecânica (mkdir, probe gitignore, gate `Gitignore`) em [`CLAUDE.md`](../CLAUDE.md) → "Local mode" (ADR-005).
 
-Pré-requisitos de runtime dos hooks: `python3` no `PATH`. `run_pytest_python` é auto-gated — só dispara em arquivos `.py` que estão sob um diretório com `pyproject.toml`; usa `uv run pytest` quando `uv` está disponível, senão `python -m pytest`.
+Pré-requisitos de runtime dos hooks: `python3` no `PATH`. `run_pytest_python` é auto-gated — só dispara em arquivos `.py` que estão sob um diretório com `pyproject.toml`; usa `uv run pytest` quando `uv` está disponível, senão `python -m pytest`. `block_gitignored` é auto-gated em três camadas (file_path vazio, fora de repo git, ou `git` ausente do `PATH` → no-op silencioso); quando dispara, executa `git check-ignore` uma vez e bloqueia (exit 2) se o path estiver coberto pelo `.gitignore` do consumer.
 
 Esqueleto canônico de plano em [`templates/plan.md`](../templates/plan.md) — referência para autoria manual quando o operador prefere escrever o plano direto, sem `/triage`.
 

@@ -1,5 +1,5 @@
 {
-  "description": "Block direct edits to .env files; run pytest after Python edits in projects with a pyproject.toml ancestor.",
+  "description": "Block direct edits to .env files and gitignored paths; run pytest after Python edits in projects with a pyproject.toml ancestor.",
   "hooks": {
     "PreToolUse": [
       {
@@ -9,6 +9,17 @@
           {
             "type": "command",
             "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/block_env.py",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "description": "Timeout 10s — block_gitignored runs `git check-ignore` once; non-git repos no-op.",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/block_gitignored.py",
             "timeout": 10
           }
         ]
