@@ -1,0 +1,26 @@
+name: validate
+
+on: pull_request
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JSON parse manifests and hooks.json
+        run: |
+          python3 -m json.tool .claude-plugin/plugin.json > /dev/null
+          python3 -m json.tool .claude-plugin/marketplace.json > /dev/null
+          python3 -m json.tool hooks/hooks.json > /dev/null
+
+      - name: Manifest invariants (required keys)
+        run: |
+          python3 -c "import json; d=json.load(open('.claude-plugin/plugin.json')); assert {'name','version','description'} <= set(d.keys()), f'plugin.json missing required keys: {set(d.keys())}'"
+          python3 -c "import json; d=json.load(open('.claude-plugin/marketplace.json')); assert {'name','plugins'} <= set(d.keys()), f'marketplace.json missing required top-level keys: {set(d.keys())}'; assert all({'name','source'} <= set(p.keys()) for p in d['plugins']), 'marketplace.json plugin entries missing name/source'"
+
+      - name: Hook AST parse
+        run: |
+          for f in hooks/*.py; do
+            python3 -c "import ast; ast.parse(open('$f').read())"
+          done
