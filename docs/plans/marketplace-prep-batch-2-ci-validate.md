@@ -120,3 +120,8 @@ Cenários enumerados (não direção genérica), per critério para superfícies
 - **Bloco 1 (ADR-013) status final `Aceito`.** Padrão do repo é heterogêneo (ADR-007/009/012 `Aceito`; ADR-011 `Proposto`); plano prescreve `Aceito` por consistência com a sessão atual de decisão (operador re-alinhou após reviewer; conteúdo materializa decisão tomada, não proposta a discutir).
 - **Bloco 3 reviewer `code` — cerimônia previsível.** YAML de Action é DSL declarativa sem classe/abstração. `code-reviewer` provavelmente reporta "nada substantivo a flagar" (per finding 6 marginal do reviewer no plano). Aceitável manter — alternativa (`{reviewer: doc}`) é defensável mas convenção do template não cobre YAML; manter `code` como default sem-extensão-md/rst/txt.
 - **Sem badge no README** neste plano (per Resumo da mudança "fica de fora"). Reabrir como follow-up se publicação ampla justificar.
+
+## Pendências de validação
+
+- Cenário 1 da `## Verificação manual` (Action verde no PR via `gh pr checks`) — só validável após push; operador valida pós-`gh pr create`.
+- Cenário 3 da `## Verificação manual` (Python ≥ 3.10 no runner via inspeção do log) — só validável inspecionando log do step após push; operador valida pós-`gh pr create`. Gap real do escopo de Verificação se runner trouxe versão menor — gatilho de revisão do ADR-013 já contempla.
