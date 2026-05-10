@@ -39,11 +39,12 @@ Cobertura resultante (bloqueia):
 
 - `.env`, `.env.production`, `.env.local` (status quo preservado).
 - `1g.env`, `production.env`, `staging.env`, `1g.integ.env` (cobertura nova).
+- `.env.jinja`, `1g.env.tmpl`, `production.env.j2` — templates **do env-file principal** continuam bloqueando após o strip de `TEMPLATE_SUFFIXES` deixar base = `.env`/`<nome>.env`. Defensivo: template do principal pode conter ou produzir secrets ao ser instanciado.
 
-Continua passando (templates):
+Continua passando (apenas templates *example*):
 
 - `.env.example`, `1g.env.example`, `production.env.example`.
-- `.env.jinja`, `1g.env.jinja`, `production.env.tmpl` (via `TEMPLATE_SUFFIXES` + exceção `.example` após strip).
+- `.env.example.jinja`, `1g.env.example.tmpl`, `production.env.example.j2` — templates dos próprios *example*-templates passam, pois após o strip a base é `*.env.example`.
 
 ## Consequências
 

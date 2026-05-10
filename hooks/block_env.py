@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""PreToolUse hook: block direct edits to `.env` files.
+"""PreToolUse hook: block direct edits to env-files.
 
-Reads a JSON event from stdin (Claude Code hook payload). If the targeted file
-is `.env` or `.env.<anything>` other than `.env.example`, write a short message
-to stderr and exit 2 (block). Otherwise exit 0 (continue).
+Reads a JSON event from stdin (Claude Code hook payload). The hook blocks
+when the filename (after stripping a `TEMPLATE_SUFFIXES` suffix) ends in
+`.env` or starts with `.env.`, with one exception: any name ending in
+`.env.example` passes. This covers both the dotfile convention (`.env`,
+`.env.production`) and the per-instance convention common in Java/PHP/Rails
+legacy (`1g.env`, `production.env`), per ADR-015.
 """
 import json
 import sys
@@ -29,7 +32,7 @@ def main() -> int:
             base = base[: -len(suffix)]
             break
 
-    if base == ".env" or (base.startswith(".env.") and base != ".env.example"):
+    if (base.endswith(".env") or base.startswith(".env.")) and not base.endswith(".env.example"):
         sys.stderr.write(
             f"Blocked: direct edit of {name} is not allowed. "
             f"Use .env.example as the versioned template; keep secrets out of git.\n"
