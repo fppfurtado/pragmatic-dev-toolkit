@@ -2,6 +2,23 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.3.0] - 2026-05-10
+
+### Added
+- `block_gitignored` hook (PreToolUse `Edit|Write`): blocks edits in paths covered by the consumer's `.gitignore` (`.venv/`, `node_modules/`, `dist/`, `target/`, `.cache/`). Triple auto-gating (file_path empty / non-git / `git` absent → exit 0); allowlist for `<repo>/.claude/` keeps local-mode artifacts under `.claude/local/<role>/` writable per ADR-005. Signal comes from the consumer's declared `.gitignore`, not codified heuristics.
+
+### Fixed
+- `block_env` hook predicate extends to any filename ending in `.env` (e.g., `1g.env`, `production.env`) — was dotfile-only and missed the per-instance env convention common in Java/PHP/Rails legacy. The `*.env.example` exception is mirrored for any prefix; defensive template handling preserved (`.env.jinja`/`1g.env.tmpl` keep blocking after `TEMPLATE_SUFFIXES` strip). Policy in ADR-015; origin: smoke-test on a Java consumer (PJe) where `envs/1g.env` with real DB credentials passed the previous regex.
+- `block_gitignored` post-shipping: allowlist `<repo>/.claude/` (was blocking `.claude/local/<role>/` writes for consumers using `paths.<role>: local`) and anchor `git -C` at first existing ancestor (regression where missing parent dir released edits instead of blocking).
+
+### Notes
+- ADR-012 (Accepted): "Idioma de artefatos de discoverability/landing" — README in EN for marketplace discoverability; partial inversion of the docs-language doctrine. (#49)
+- ADR-013 (Accepted): "CI lint mínimo sem build/runner" — minimal GitHub Action validating manifests + Python hooks syntax via `json.tool` + `ast.parse`. (#51)
+- ADR-014 (Accepted): "Manter `main` único — descartar refator estrutural" — pack-size/clone-history math doesn't justify branch-dev/orphan-publish cost; concrete review triggers registered.
+- ADR-015 (Proposed): "Bloquear env-files por sufixo `.env`, não apenas dotfile" — codifies the `block_env` policy extension shipped in this release.
+- Marketplace prep batches: `marketplace.json` cleanup (`$schema` removed, description moved to `metadata.description` per `claude plugin validate`); `docs/install.md` cites `claude plugin validate` and documents Python 3.10+; keywords/tags re-aligned (removed `python`/`pytest`/`testing`; added `decision-records`/`doc-review`/`design-review`/`worktree`/`self-gated-hooks`); descriptions updated to "stack-aware test scaffolder (Python today)". (#49, #50, #51)
+- Reusable audit prompts in `docs/audits/runs/` (prose-tokens, architecture-logic).
+
 ## [2.2.0] - 2026-05-09
 
 ### Added

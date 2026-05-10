@@ -23,7 +23,7 @@
         "ref": "main"
       },
       "homepage": "https://github.com/fppfurtado/pragmatic-dev-toolkit",
-      "version": "2.2.0",
+      "version": "2.3.0",
       "tags": ["workflow", "yagni", "adr", "decision-records", "planning", "code-review", "doc-review", "design-review", "debugging", "worktree", "self-gated-hooks"]
     }
   ]
