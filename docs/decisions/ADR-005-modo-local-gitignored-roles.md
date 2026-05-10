@@ -110,6 +110,7 @@ Considerado e descartado durante a triagem desta decisão. Quebra o caso self-ho
 - Aparecer caso onde role precisa coexistir canonical + local no mesmo projeto → reabrir limitação atual.
 - Skill nova introduz role passível de modo local não previsto aqui → revisar escopo deste ADR.
 - Regra de não-referenciar gerar atrito (operador esquece, reviewer flag incorretamente) → considerar mecanismo de detecção automática (probe do path contract antes de redigir mensagem).
+- Para o **repo do plugin** especificamente, decisão de NÃO adotar modo local em `paths.backlog`/`paths.plans_dir` codificada em [ADR-014](ADR-014-inventario-editorial-main-unico.md) (perderia sync entre máquinas; transparência editorial preferida).
 
 ## Implementação
 

@@ -85,3 +85,4 @@ State vivo:
 - Equipe maior ou colaboração distribuída onde `## Em andamento` em markdown era coordenação visível → reabrir para considerar caminho explícito (status labels, dashboard externo, ou retorno).
 - `## Concluídos` cresce ao ponto de fricção (ex.: 200+ linhas) → considerar política de archival por release ou por trimestre.
 - Surge novo padrão de merge artifact em outra superfície do plugin → reabrir critério "state em markdown" para arquivo afetado.
+- Refinamento sobre inventário editorial estável (Concluídos do BACKLOG, planos históricos, audits) — onde mora vs. state in-flight tratado por este ADR — codificado em [ADR-014](ADR-014-inventario-editorial-main-unico.md) para o repo do plugin.
