@@ -76,3 +76,4 @@ Razões:
 - Projeto consumidor com fluxo bilíngue real (releases internos em PT, externos em EN) precisar suporte → reabrir para considerar dual-lang artifacts ou idioma override por artefato.
 - Surgir novo artefato informativo no toolkit (release notes em formato distinto, summary boards, etc.) que não caiba na regra → re-avaliar definição de "informativo".
 - Commits do projeto consumidor mudarem de idioma (raro, mas possível em refactor de processo) — Convenção de commits já cobre detecção; CHANGELOG/tag acompanham automaticamente a partir desse ponto, mas migração retroativa do CHANGELOG fica como decisão separada.
+- Surgir artefato cuja função primária é discoverability/landing (README, manifest descriptions) → coberto por [ADR-012](ADR-012-idioma-artefatos-discoverability-landing.md); README sai da lista "fora do escopo" desta ADR via ADR-012.
