@@ -1,50 +1,53 @@
 # pragmatic-dev-toolkit
 
-Claude Code plugin para o workflow **flat & pragmatic**: skills genéricas, revisor YAGNI e proteção de `.env`. Companion do [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit).
+Claude Code plugin codifying the **flat & pragmatic** dev workflow: workflow skills for alignment, execution and diagnosis; YAGNI/QA/security/doc/design reviewers; self-gated hooks. Companion to [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit).
 
-## O que vem
+## What's inside
 
-| Componente | Tipo | O que faz |
-|------------|------|-----------|
-| `/triage` | Skill | Alinha intenção, levanta gaps e decide qual artefato (linha de backlog, plano, ADR, atualização de domínio/design) é necessário antes de implementar. Sem argumento, delega para `/next`. |
-| `/next` | Skill | Orientação de sessão: lê o backlog, verifica no código o que já foi implementado e sugere os três candidatos de maior impacto para triagem. Lista também `## Pendências de validação` de planos mergeados como bloco separado (não compete no top 3). |
-| `/new-adr` | Skill | Cria um novo ADR em `docs/decisions/` com numeração automática e template padronizado. |
-| `/run-plan` | Skill | Executa um plano de `docs/plans/<slug>.md` em worktree isolada, micro-commits Conventional Commits, revisão dirigida por bloco, gate de validação manual quando aplicável e sugestão de push/PR ao concluir. |
-| `/debug <sintoma>` | Skill | Diagnostica causa-raiz por método científico (reproduzir → isolar → hipótese-teste → evidência). Produz diagnóstico, não fix — operador escolhe revert / patch direto / `/triage` depois. Stack-agnóstico. |
-| `/gen-tests` | Skill | Gera testes para um módulo/função/descrição livre, com idioms da stack do projeto consumidor. Stacks suportadas hoje: Python (pytest + respx + asyncio_mode auto + tmp_path para SQLite). |
-| `/release [<bump>\|<version>]` | Skill | Bump de versão coordenado em `version_files`, entrada no `changelog`, commit unificado e tag anotada local. Não faz push — publicação fica com o operador. |
-| `code-reviewer` | Agent | Rubrica YAGNI: flagra abstrações prematuras, comentários redundantes, defensividade desnecessária e backwards-compat fantasma. |
-| `qa-reviewer` | Agent | Princípios de cobertura de testes: caminho feliz, invariantes documentadas, edge cases declarados, mock vs real. Stack-agnóstico. |
-| `security-reviewer` | Agent | Credenciais, validação de entrada, HTTP externo, dados sensíveis e invariantes documentadas em ADRs. Stack-agnóstico. |
-| `doc-reviewer` | Agent | Drift entre doc e código: identificadores citados em docs que não existem no repo, cross-refs/anchors quebrados, exemplos/snippets contraditórios. Default em blocos doc-only no `/run-plan`. Stack-agnóstico. |
-| `design-reviewer` | Agent | Revisor pré-fato de decisões estruturais e de design em planos e ADRs draft: abstrações prematuras, alternativas ausentes, ADR-worthiness não-formalizada, contradição com ADRs existentes ou `docs/philosophy.md`. Free-read autônomo de `docs/decisions/` e `docs/philosophy.md`. Acionado automaticamente em `/triage` (caminho-com-plano) e `/new-adr` (standalone ou delegada) per ADR-011; manualmente via `@design-reviewer`. Stack-agnóstico. |
-| `block_env` | Hook | `PreToolUse` que bloqueia edição direta a `.env` (e variantes), aceitando apenas `.env.example`. |
-| `run_pytest_python` | Hook | `PostToolUse` auto-gated (`.py` + ancestral `pyproject.toml`) que roda pytest após edits e imprime saída só em falha. |
-| `templates/plan.md` | Template | Esqueleto canônico do plano (consumido por `/triage` e `/run-plan`). Referência para autoria manual de planos. |
+| Component | Type | What it does |
+|-----------|------|--------------|
+| `/triage` | Skill | Aligns intent, surfaces gaps, decides which artifact (backlog line, plan, ADR, domain/design update) is needed before implementing. Without an argument, delegates to `/next`. |
+| `/next` | Skill | Session orientation: reads the backlog, checks the codebase for what's already implemented, and suggests the top three impact candidates for triage. Also lists `## Pendências de validação` from merged plans as a separate block (not competing in the top 3). |
+| `/new-adr` | Skill | Creates a new ADR in `docs/decisions/` with auto-numbering and a standardized template. |
+| `/run-plan` | Skill | Executes a plan from `docs/plans/<slug>.md` in an isolated worktree, with Conventional Commits micro-commits, per-block reviewer dispatch, manual validation gate when applicable, and a push/PR suggestion at the end. |
+| `/debug <symptom>` | Skill | Diagnoses root cause via scientific method (reproduce → isolate → hypothesize → evidence). Produces a diagnosis, not a fix — operator chooses revert / direct patch / `/triage` next. Stack-agnostic. |
+| `/gen-tests` | Skill | Generates tests for a module/function/free description, using the consumer project's stack idioms. Stacks supported today: Python (pytest + respx + asyncio_mode auto + tmp_path for SQLite). |
+| `/release [<bump>\|<version>]` | Skill | Coordinated version bump across `version_files`, `changelog` entry, unified commit, and local annotated tag. Doesn't push — publication stays with the operator. |
+| `code-reviewer` | Agent | YAGNI rubric: flags premature abstractions, redundant comments, defensive overhead, phantom backwards-compat. |
+| `qa-reviewer` | Agent | Test coverage principles: happy path, documented invariants, declared edge cases, mock vs real. Stack-agnostic. |
+| `security-reviewer` | Agent | Credentials, input validation, external HTTP, sensitive data, and ADR-documented invariants. Stack-agnostic. |
+| `doc-reviewer` | Agent | Doc/code drift: identifiers cited in docs that don't exist in the repo, broken cross-refs/anchors, contradictory examples/snippets. Default for doc-only blocks in `/run-plan`. Stack-agnostic. |
+| `design-reviewer` | Agent | Pre-fact reviewer for structural and design decisions in plans and ADR drafts: premature abstractions, missing alternatives, unformalized ADR-worthiness, contradictions with existing ADRs or `docs/philosophy.md`. Auto-read of `docs/decisions/` and `docs/philosophy.md`. Auto-dispatched in `/triage` (plan-producing path) and `/new-adr` (standalone or delegated) per ADR-011; manually via `@design-reviewer`. Stack-agnostic. |
+| `block_env` | Hook | `PreToolUse` blocking direct edits to `.env` (and variants), accepting only `.env.example`. |
+| `block_gitignored` | Hook | `PreToolUse` blocking edits in gitignored paths (dependencies, build artifacts, local caches). Triple auto-gating (empty path / non-git / `git` missing → no-op); `.claude/` is allowlisted (Claude Code territory). |
+| `run_pytest_python` | Hook | `PostToolUse`, auto-gated (`.py` + ancestor `pyproject.toml`), runs pytest after edits and prints output only on failure. |
+| `templates/plan.md` | Template | Canonical plan skeleton (consumed by `/triage` and `/run-plan`). Reference for hand-writing plans. |
 
-## Instalação
+## Installation
 
 ```
 /plugin marketplace add fppfurtado/pragmatic-dev-toolkit
 /plugin install pragmatic-dev-toolkit@fppfurtado-pragmatic-dev-toolkit
 ```
 
-Detalhes e alternativa de path direto em [`docs/install.md`](docs/install.md).
+Details and direct-path alternative in [`docs/install.md`](docs/install.md).
 
-## Filosofia
+## Philosophy
 
-Bounded contexts e linguagem ubíqua sim, cerimônia tática (camadas formais, ports/adapters universais, mappers em cascata) **não**. YAGNI por padrão; abstrações só quando há dor real. Ler [`docs/philosophy.md`](docs/philosophy.md) para o detalhe e o **path contract** que as skills assumem.
+**Bounded contexts and ubiquitous language yes, tactical ceremony no.** Bounded contexts (strategic DDD) and shared vocabulary between code and business are foundational. Tactical ceremony (formal `application/`/`domain/`/`infrastructure/` layers, universal ports/adapters, cascading mappers) creates many files for little value — add abstraction only when there's **real pain** (an unstable integration, a substitution you can already see coming). YAGNI by default.
 
-Funciona em qualquer projeto alinhado à filosofia, não só os gerados por `scaffold-kit`. As skills consomem **papéis** (linguagem ubíqua, plano, decisão, gate de testes…), não paths literais — projeto com layout diferente declara variantes uma vez via bloco `<!-- pragmatic-toolkit:config -->` no `CLAUDE.md`. Detalhe e schema em [`docs/install.md`](docs/install.md).
+For the full doctrine and path contract, see [`docs/philosophy.md`](docs/philosophy.md) (Portuguese).
 
 ## Companion
 
-[`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit) é o template Copier que produz a estrutura inicial de um projeto novo já alinhada ao path contract default (`IDEA.md`, `docs/domain.md`, `docs/design.md`, `docs/decisions/`, `docs/plans/`, `BACKLOG.md`, `Makefile`, `.worktreeinclude`). Os dois artefatos são desacoplados — você pode usar um sem o outro.
+[`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit) is the Copier template that produces the canonical default layout the skills assume (`IDEA.md`, `docs/domain.md`, `docs/design.md`, `docs/decisions/`, `docs/plans/`, `BACKLOG.md`, `Makefile`, `.worktreeinclude`). The two artifacts are decoupled — you can use one without the other.
 
-## Contribuir
+The toolkit works in any project aligned with the philosophy, not only those generated by `scaffold-kit`. Skills consume **roles** (ubiquitous language, plan, decision, test gate…), not literal paths — projects with a different layout declare variants once via the `<!-- pragmatic-toolkit:config -->` block in their `CLAUDE.md`. Schema and details in [`docs/install.md`](docs/install.md).
 
-Issues e PRs bem-vindos. Mudanças estruturais nas skills/agents passam por ADR no [próprio repo](docs/) (a ser adicionado se virar útil).
+## Contributing
 
-## Licença
+Issues and PRs welcome. Structural changes to skills/agents go through ADRs in [`docs/decisions/`](docs/decisions/).
 
-MIT — ver [LICENSE](LICENSE).
+## License
+
+MIT — see [LICENSE](LICENSE).
