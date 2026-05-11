@@ -156,6 +156,10 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
 
 A skill termina na worktree com a branch da feature após oferecer publicação.
 
+**Cutucada de descoberta** (per [ADR-017](../../docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md)). Antes de encerrar, verificar: (a) `CLAUDE.md` existe; (b) `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` retorna não-zero (marker ausente); (c) string canonical da cutucada não aparece no contexto visível desta conversa CC. Todas as três satisfeitas → emitir como última linha do relatório a string canonical abaixo. Caso contrário → suprimir silenciosamente.
+
+> Dica: este projeto não declara o bloco `pragmatic-toolkit:config` no CLAUDE.md. Rode `/init-config` para configurar todos os papéis de uma vez.
+
 ## O que NÃO fazer
 
 - Não declarar done sem confirmação humana **quando o plano exige validação manual**.
