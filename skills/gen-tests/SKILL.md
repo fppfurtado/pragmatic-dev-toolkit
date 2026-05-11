@@ -1,6 +1,6 @@
 ---
 name: gen-tests
-description: Gera arquivo de teste para módulo, função ou descrição livre, com idioms da stack do projeto consumidor. Stacks suportadas hoje, Python (pytest + respx + tmp_path). Use quando o operador pedir testes.
+description: Gera arquivo de teste para módulo, função ou descrição livre, com idioms da stack do projeto consumidor. Stacks suportadas hoje, Python (pytest + respx + tmp_path) e Java (JUnit 5 + Mockito + Maven). Use quando o operador pedir testes.
 roles:
   informational: [ubiquitous_language, design_notes]
 ---
@@ -32,12 +32,13 @@ Walking ancestors do diretório corrente até encontrar marker:
 | Marker | Stack |
 |---|---|
 | `pyproject.toml` | Python |
+| `pom.xml` | Java |
 
 (Stacks futuras adicionam linha + sub-bloco abaixo.)
 
 **Fallback:**
 
-- **Marker ausente** → `AskUserQuestion` (header `Stack`) listando stacks com sub-bloco implementado (hoje só `Python`).
+- **Marker ausente** → `AskUserQuestion` (header `Stack`) listando stacks com sub-bloco implementado (hoje `Python`, `Java`).
 - **Múltiplos markers** (monorepo) → mesma pergunta, citando os markers detectados como contexto da prosa introdutória.
 - **Stack detectada sem sub-bloco** → parar com mensagem `"stack <X> detectada mas sub-bloco ausente em skills/gen-tests/SKILL.md — abrir issue ou contribuir sub-bloco"`.
 
@@ -97,6 +98,71 @@ Não entregar teste vermelho. Falha por bug no código alvo (não no teste) → 
 
 - Não mockar SQLite — usar `tmp_path`.
 - Não usar `unittest.mock` para HTTP — usar `respx`.
+
+### Stack: Java
+
+#### Stack assumida
+
+- **JUnit 5** (Jupiter API): `org.junit.jupiter.api.Test`, `org.junit.jupiter.api.Assertions.*`.
+- **Mockito** para mock de dependências injetáveis (não mockar tipos de JDK como `List`/`Map`; não mockar `Connection`/`ResultSet` — sintoma de design ruim sob teste).
+- Layout Maven padrão: `<módulo>/src/main/java/<package>/`, `<módulo>/src/test/java/<package>/`.
+- **Maven Surefire** (default) descobre testes por convenção de nome — `*Test.java` (unit) roda em `mvn test`; `*IT.java` (Failsafe) ou `*IntegrationTest.java` em fase separada.
+
+`pom.xml` contradiz alguma premissa (`<dependency>` em `junit:junit:4.*` sem `junit-jupiter`; uso de TestNG; PowerMock) → parar e reportar antes de gerar. JUnit 4 entra como gatilho de revisão da skill se aparecer em consumer real — v1 cobre JUnit 5 only.
+
+**Não cobrir** aqui idioms Spring/Spring Boot (`@SpringBootTest`, `@WebMvcTest`, `MockMvc`, `@DataJpaTest`) — escopo deste sub-bloco é Java puro + Maven legacy/Seam. Spring entra como sub-bloco futuro se demandar.
+
+#### Estrutura
+
+- **Unit** (`*Test.java`) — rápido, sem I/O real, sem rede, sem DB. Mockar dependências injetáveis com Mockito.
+- **Integration** (`*IT.java` ou `*IntegrationTest.java` conforme convenção do projeto) — toca DB real (H2 in-memory ou Testcontainers), rede real (WireMock/MockWebServer), ou exerce pipeline ponta-a-ponta. Pode estar excluído do default `mvn test` por design (PJe exclui `*IntegrationTest.java` via Surefire excludes); confirmar com o operador antes de gerar nessa categoria.
+
+#### Argumentos
+
+Alvo do teste:
+
+- Classe: `<módulo>/src/main/java/<package>/<Classe>.java`
+- Método: `<módulo>/src/main/java/<package>/<Classe>.java::<método>`
+- Descrição livre: `"o caso de uso de remeter manifestação processual"`
+
+`<módulo>` é o nome do diretório do módulo Maven (ex.: `pje-web`, `pje-comum`). Projeto single-module → omitir.
+
+#### Passos
+
+1. **Ler o alvo.** `Read` no arquivo, identificar métodos públicos e assinaturas. Descrição livre → localizar entry point com `grep`. Verificar encoding do arquivo (`<sourceEncoding>` em `pom.xml`) — se ISO-8859-1, preservar.
+2. **Mapear invariantes.** Consultar `ubiquitous_language` e identificar RNs que o alvo exerce. Para cada invariante exercida, gerar **dois testes**: caminho feliz (satisfeita) e violação (deve falhar/recusar via `assertThrows` ou retorno explícito). Papel "não temos" → derivar do próprio código (`throw new ...`, validações, branches de erro).
+3. **Decidir unit vs integration.** Unit se não toca DB real, file system, ou rede. Integration se toca. Em monolitos com `Seam`/CDI, classes com `@In`/`@Inject` exigem inversão da injeção via constructor ou setter para mock; se a classe usa lookup de contexto Seam direto (`Component.getInstance(...)`), considerar refactor antes do teste — flagar ao operador.
+4. **Edge cases típicos.** Revisar `design_notes`. Sem → cobrir branches de erro/`throw` explícitos no código. Para classes que tocam Hibernate, atenção a lazy-loading (`LazyInitializationException` em testes sem sessão aberta).
+5. **Gerar arquivo** em `<módulo>/src/test/java/<package>/<Classe>Test.java` (unit) ou `<Classe>IT.java`/`<Classe>IntegrationTest.java` (integration, espelhando convenção observada no projeto).
+6. **Decisão de mock-vs-real para dependências.** Se a classe tem ≥1 dependência injetável e ≥1 dependência pode ser substituída por implementação real leve (DTO, value object, repository in-memory), cutucar `AskUserQuestion` (header `Mock`) com opções `Mockito para externos, real para interno (Recommended)` / `Mockito para tudo`. `description` carrega trade-off (fidelidade do teste vs. isolamento puro).
+
+#### Padrões úteis
+
+- Tempo: injetar `Clock` ou `Supplier<Instant>` — não usar `LocalDateTime.now()`/`Instant.now()` direto.
+- IDs externos repetidos: chave determinística (hash de campos estáveis), não `UUID.randomUUID()`.
+- Nomes de teste no idioma do projeto. JUnit 5 idiomatic é camelCase (`matchingRejectsEntriesWithoutSettlementDate`); `@DisplayName("Pareamento recusa movimentos sem data de liquidação")` complementa quando o nome técnico é longo demais. PJe usa identificadores PT-BR — método pode ser `pareamentoRecusaMovimentosSemDataLiquidacao` para alinhar com vocabulário do código.
+- Asserts diretos: `assertEquals(expected, actual)`, `assertTrue(condition)`, `assertThrows(SomeException.class, () -> ...)`. Não introduzir AssertJ/Hamcrest sem necessidade — reduz dep externa.
+- Estrutura `Arrange / Act / Assert` (ou `Given / When / Then`) em comentários só quando o teste tem ≥3 passos de setup; teste de 1 linha não precisa.
+
+#### Validação
+
+```bash
+# Multi-module
+mvn -pl <módulo> test -Dtest=<NomeClasse> -DfailIfNoTests=false
+
+# Single-module
+mvn test -Dtest=<NomeClasse> -DfailIfNoTests=false
+```
+
+Para integration excluída por padrão (PJe `*IntegrationTest`): override do exclude — `mvn -pl <módulo> test -Dtest=<NomeClasse> -Dsurefire.excludes= -DfailIfNoTests=false`.
+
+Não entregar teste vermelho. Falha por bug no código alvo (não no teste) → reportar ao operador em vez de "consertar" o teste.
+
+#### O que NÃO fazer (Java)
+
+- Não usar PowerMock — sinal de design ruim sob teste (estática/final/private inevitáveis); preferir refatorar para injeção ou marcar como integration.
+- Não mockar tipos de JDK (`List`, `Map`, `String`) nem `java.sql.*` (`Connection`, `ResultSet`, `PreparedStatement`) — mockar interfaces de domínio/integração; persistência via DAO/Repository mockado ou H2 in-memory.
+- Não cobrir Spring/Spring Boot test idioms — fora de escopo do sub-bloco v1.
 
 ## O que NÃO fazer
 
