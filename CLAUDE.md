@@ -120,6 +120,28 @@ Skill whose output is fixed (always produces an ADR, always executes a plan) car
 
 This makes it safe to ship `run_pytest_python.py` alongside `run_gradle_test_java.sh` in the same plugin: each hook is silent in projects outside its stack, with no flags or env vars to disable.
 
+## Cutucada de descoberta
+
+Skills that consume the Resolution protocol via `roles.required` emit a one-line discovery hint at the end of their final reporting step when the consumer project hasn't declared the `<!-- pragmatic-toolkit:config -->` block in `CLAUDE.md`. Defined by [ADR-017](docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md).
+
+**Scope:** 4 skills with `roles.required` — `/triage`, `/new-adr`, `/run-plan`, `/next`. The other 3 skills (`/debug`, `/release`, `/gen-tests`) declare only `roles.informational` and don't reactively traverse step 3 of the Resolution protocol — they don't emit the hint.
+
+**Triple gating** (each skill probes independently — duplication of 1 line in 4 sites accepted as YAGNI over shared helper per ADR-017 § Alternativa (g)):
+
+1. `CLAUDE.md` exists.
+2. `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` returns non-zero (marker absent).
+3. The canonical hint string is not present in the visible context of the current CC conversation (conversation-scoped dedup aligned with [ADR-010](docs/decisions/ADR-010-instrumentacao-progresso-skills-multi-passo.md)).
+
+All three satisfied → emit as the last line of the report; otherwise → suppress silently.
+
+**Canonical hint string** (identical across all 4 skills; in PT-BR per toolkit canonical):
+
+> Dica: este projeto não declara o bloco `pragmatic-toolkit:config` no CLAUDE.md. Rode `/init-config` para configurar todos os papéis de uma vez.
+
+**Editorial inheritance.** New skills declaring `roles.required` adopt the convention manually — author adds the gating + emission paragraph at the end of the final reporting step, following the existing 4 skills as template. Checklist for human reviewer or `code-reviewer` on PRs introducing new `roles.required` SKILLs. No mechanical enforcement; convention sustained by editorial discipline.
+
+The complementary `/init-config` skill is the proactive setup path; the hint exists to surface it when reactive memoization (Resolution protocol step 4) hasn't been enough.
+
 ## Pragmatic Toolkit
 
 Consumer projects declare path-contract variants in a fenced YAML block marked by the HTML comment below. Skills search for the marker; absence = all canonical defaults.
