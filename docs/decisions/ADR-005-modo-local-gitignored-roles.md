@@ -45,7 +45,7 @@ paths:
   - `decisions_dir: local` → `.claude/local/decisions/`
   - `backlog: local` → `.claude/local/BACKLOG.md`
   - `plans_dir: local` → `.claude/local/plans/`
-- Resolution protocol ganha trilho paralelo: role declarado `local` → skill usa o path local diretamente, sem ofertar canonical creation, sem informar+parar. Path local é replicado para worktrees pelo `.worktreeinclude` (já cobre `.claude/`).
+- Resolution protocol ganha trilho paralelo: role declarado `local` → skill usa o path local diretamente, sem ofertar canonical creation, sem informar+parar. Path local é replicado para worktrees pelo `.worktreeinclude`; invariante `.claude/` em `.worktreeinclude` é **garantida proativamente por `/init-config`** em modo local (per [ADR-018](ADR-018-replicacao-claude-em-modo-local-init-config.md)); consumer-only `.worktreeinclude` permanece válido (skill detecta cobertura existente e faz skip silente).
 - **Regra de não-referenciar:** quando role está em modo `local`, skills geram mensagens de commit, descrições de PR e nomes de branch sem citar o artefato em modo local (ID do ADR, slug do plano, texto da linha do backlog não aparecem). Em modo canonical (default), comportamento atual de referência preservado.
 
 ### Mecânica de inicialização
@@ -72,7 +72,7 @@ Plugin **nunca toca em `.claude/` raiz** — território do Claude Code, fora do
 - Plugin aplicável em projetos que não adotam ADRs/planos/backlog no repo.
 - Operador escolhe explicitamente nível de compartilhamento via path contract — sem flag implícita.
 - Resolution protocol estende sem quebrar comportamento canonical.
-- Worktree replication via `.worktreeinclude` já cobre `.claude/` — sem nova mecânica.
+- Worktree replication coberta por `.worktreeinclude` — mecânica de garantia formalizada em [ADR-018](ADR-018-replicacao-claude-em-modo-local-init-config.md), com fallback de safety net no `/run-plan` SKILL.md:36.
 
 ### Trade-offs
 
