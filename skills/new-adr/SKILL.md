@@ -47,6 +47,10 @@ Sem título → pedir antes de prosseguir.
 
 5. **Revisão pré-retorno.** Invocar `@design-reviewer` apontando para o ADR draft recém-criado. Sem cutucada de pré-execução — o reviewer dispara automaticamente conforme [ADR-011](../../docs/decisions/ADR-011-wiring-design-reviewer-automatico.md). Reportar findings ao operador antes de devolver controle; findings são informativos, operador edita o ADR antes do commit (que é responsabilidade externa: `/triage` orquestra ou operador commita manualmente). Cobre tanto invocação standalone quanto delegada por `/triage` no caminho ADR-only — `/triage` passo 6 reconhece que `/new-adr` já cobriu e não redispara o reviewer.
 
+   **Cutucada de descoberta** (per [ADR-017](../../docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md)). Após reportar findings do design-reviewer e antes de devolver controle, verificar: (a) `CLAUDE.md` existe; (b) `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` retorna não-zero (marker ausente); (c) string canonical da cutucada não aparece no contexto visível desta conversa CC. Todas as três satisfeitas → emitir como última linha do relatório a string canonical abaixo. Caso contrário → suprimir silenciosamente.
+
+   > Dica: este projeto não declara o bloco `pragmatic-toolkit:config` no CLAUDE.md. Rode `/init-config` para configurar todos os papéis de uma vez.
+
 ## Template
 
 Idioma: espelhar ADRs existentes no projeto. Diretório vazio → default canonical PT-BR. Headers em PT-BR canonical:

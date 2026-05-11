@@ -49,7 +49,7 @@ Use `claude plugin validate <path>` (ferramenta oficial) — aceita o caminho de
 
 As skills consomem **papéis**, não paths literais. Projeto que segue os defaults canonicais funciona zero-config — o caminho mais simples é gerar com [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit). Lista canônica de papéis (papel | default | descrição) no [`CLAUDE.md`](../CLAUDE.md) do plugin → "The role contract".
 
-Projeto com layout diferente declara variantes uma vez no `CLAUDE.md` raiz, sob o marcador HTML `<!-- pragmatic-toolkit:config -->`:
+Projeto com layout diferente declara variantes uma vez no `CLAUDE.md` raiz, sob o marcador HTML `<!-- pragmatic-toolkit:config -->`. **Caminho recomendado:** rodar `/init-config` em vez de editar manualmente — wizard interativo que pergunta cada role (canonical/local/null), detecta `test_command` stack-aware (Maven, pytest/uv, npm, make) e grava o bloco. Alternativa proativa à memorização one-shot per role do Resolution protocol (passo 4). Edição manual segue válida — esquema YAML descrito abaixo:
 
 ````markdown
 ## Pragmatic Toolkit

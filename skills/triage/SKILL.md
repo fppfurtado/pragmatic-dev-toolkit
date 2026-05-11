@@ -186,6 +186,10 @@ Se não há alterações para commitar (ADR-only que já commitou via `/new-adr`
 
 Sugerir próximo passo (uma frase): "implementar via /run-plan <slug>", "validar o plano antes de codar", "preencher o ADR".
 
+**Cutucada de descoberta** (per [ADR-017](../../docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md)). Antes de devolver controle, verificar: (a) `CLAUDE.md` existe; (b) `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` retorna não-zero (marker ausente); (c) string canonical da cutucada não aparece no contexto visível desta conversa CC. Todas as três satisfeitas → emitir como última linha do relatório a string canonical abaixo. Caso contrário → suprimir silenciosamente.
+
+> Dica: este projeto não declara o bloco `pragmatic-toolkit:config` no CLAUDE.md. Rode `/init-config` para configurar todos os papéis de uma vez.
+
 ## O que NÃO fazer
 
 - Não duplicar conteúdo de `CLAUDE.md`, `docs/domain.md` ou `docs/design.md` no plano — referenciar.
