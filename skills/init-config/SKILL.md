@@ -89,19 +89,30 @@ Reportar path final ao operador:
 
 > `Bloco config gravado em <path> linha <N>. Confirme com: grep -A8 'pragmatic-toolkit:config' CLAUDE.md`
 
+### 4.5. Garantir `.claude/` em `.worktreeinclude` (invariante de modo local)
+
+**Critério de disparo:** ≥1 role configurada como `local` no passo 3, **independente do caminho de entrada do passo 2** (bloco ausente → gravar novo; bloco presente + `Editar` → gravar atualizado). Sem role local → skip silente.
+
+Mecânica determinística (sem `AskUserQuestion` — operação tem resultado óbvio, sem trade-off cross-team a confirmar per [ADR-018](../../docs/decisions/ADR-018-replicacao-claude-em-modo-local-init-config.md)):
+
+1. Probe `.worktreeinclude`:
+   - **Ausente** → criar com header de comentário (`# Gitignored paths to replicate into worktrees created by /run-plan.`) + linha em branco + linha `.claude/`.
+   - **Presente, sem `.claude/`** (regex `grep -qE "^\.claude(/|$)" .worktreeinclude` retorna não-zero) → adicionar linha `.claude/` ao fim. Falso-negativo benigno: se consumer já lista subpath `.claude/local/<algo>`, regex não detecta e adição é redundante (sem dano funcional per ADR-018 § Limitações).
+   - **Presente com `.claude/`** → skip silente (invariante já satisfeita; passo 4.5 é idempotente).
+
+2. Reportar no relatório final:
+
+   > `.worktreeinclude <criado|atualizado|inalterado> em <path>; .claude/ replicado nas worktrees subsequentes do /run-plan.`
+
+Compatível com `.worktreeinclude` tracked ou gitignored — decisão organizacional do consumer.
+
 ### 5. Informar interações pendentes (não age)
 
-Skill emite avisos informativos no relatório final — **não modifica** `.gitignore` nem `.worktreeinclude` automaticamente. Responsabilidade do operador.
+Skill emite avisos informativos no relatório final — **não modifica** `.gitignore` automaticamente. Responsabilidade do operador.
 
 **Modo local declarado em ≥1 role:**
 
 > `Roles em modo local: <lista>. O gate "Gitignore" per ADR-005 dispara na primeira escrita subsequente sob .claude/local/<role>/ — quando você rodar /new-adr, /run-plan ou outra skill que grave lá. Naquele momento, operador confirma adicionar .claude/local/ ao .gitignore.`
-
-**Modo local em `plans_dir` AND `.worktreeinclude` do consumer não cobre `.claude/local/` (ou `.claude/`):**
-
-> `Atenção: /run-plan em modo local exige .claude/local/ replicado para a worktree fresca. Adicione .claude/local/ (ou .claude/) ao .worktreeinclude antes de rodar /run-plan — caso contrário a worktree não enxergará o plano local.`
-
-Probe: existe `.worktreeinclude`? `grep -qE "^\.claude(/|$)" .worktreeinclude` em caso afirmativo (regex cobre `.claude`, `.claude/`, `.claude/local/`, `.claude/local/**`, etc. — falso-positivo é mais barato que falso-negativo aqui). Se ausente OU sem cobertura, emitir o aviso.
 
 ## Probe stack-aware — adicionando stacks novas
 
@@ -109,8 +120,8 @@ A tabela de §3 é v1. Stacks adicionais (Gradle, Cargo, Cargo workspace, Bun, e
 
 ## O que NÃO fazer
 
-- **Não modificar `.gitignore` automaticamente.** Modo local pode exigir entrada — esse gate é responsabilidade de ADR-005, dispara na primeira escrita subsequente em `.claude/local/<role>/`, não dentro de `/init-config`.
-- **Não modificar `.worktreeinclude` automaticamente.** Interação é responsabilidade do operador; skill apenas informa no passo 5.
+- **Não criar `CLAUDE.md` se ausente.** Propósito mais amplo que o bloco config (instrução geral ao Claude Code). Passo 1 para com mensagem orientando o operador.
+- **Não modificar `.gitignore` automaticamente.** Política git do consumer; gate específico do ADR-005 cobre quando necessário (primeira escrita sob `.claude/local/<role>/`).
 - **Não reescrever bloco config malformado / duplicado / órfão.** Parar com diagnóstico; operador resolve manualmente. Postura editorial, não reparativa.
 - **Não invocar outras skills do toolkit em cascata.** `/init-config` é setup, não orquestrador. Operador chama as skills seguintes manualmente após config gravado.
 - **Não emitir cutucada de descoberta de ADR-017 dentro desta skill.** Escopo da cutucada (ADR-017) é skills com `roles.required`; `/init-config` é fora desse universo.
