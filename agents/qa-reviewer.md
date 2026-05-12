@@ -34,6 +34,9 @@ Layout pode ser `tests/unit/+tests/integration/`, `test/unit+test/integration`, 
 4. **Mock vs real:**
    - Camada de persistência mockada em integration → bug. Mock/prod divergence é o caso clássico de teste verde com produção quebrada.
    - HTTP externo: usar a ferramenta de mock idiomática da stack, não bibliotecas genéricas tipo `unittest.mock`.
+   - **Testing mock behavior**: assert valida o que o mock retorna em vez do efeito observável do código sob teste. Sintoma: `assert mock.return_value == X` ou inspeção de `mock.call_args` como conclusão do teste em vez de verificar o comportamento da função.
+   - **Test-only methods**: método público no código-fonte criado apenas para teste (ex.: `_set_state_for_test()`, getters expondo estado interno só usados no test). Deforma design de produção — preferir dependency injection, fixtures, ou refactor que torne o teste possível via API legítima.
+   - **Mocking without understanding**: mock estabelece comportamento que a dependência real não tem (retorno divergente, ausência de side-effect, ordem de chamadas inventada). Verificar contrato real (docs, fonte da dependência, fixture gravada) antes de mockar.
 
 ## Como reportar
 
