@@ -11,7 +11,7 @@ Origem: proposta E_arch da auditoria arquitetural 2026-05-12 (`docs/audits/runs/
 ## Resumo da mudança
 
 Criar skill nova `/archive-plans` per spec do ADR-022:
-- 6 critérios cumulativos de elegibilidade (linha BACKLOG presente + matchável + em Concluídos + ≥4 semanas + sem worktree + sem PR aberto).
+- 6 critérios cumulativos de elegibilidade (linha BACKLOG presente + matchável + em Concluídos + ≥2 semanas + sem worktree + sem PR aberto).
 - Layout `docs/plans/archive/<YYYY-Qx>/<slug>.md`.
 - Operação preview-first com gate `Aplicar / Cancelar` (paralelo a `/release §4`).
 - `git mv` preserva blame e `--follow`.
@@ -45,7 +45,7 @@ Skill nova seguindo formato canonical do toolkit. Estrutura:
     - **(1) `**Linha do backlog:**`** presente — `grep -E "^\\*\\*Linha do backlog:\\*\\*" docs/plans/<slug>.md` retorna não-vazio. Ausente → editorial.
     - **(2) Linha matchável** em `BACKLOG.md` (qualquer seção) — `grep -F "<texto>" BACKLOG.md` retorna não-vazio. Não localizada → editorial.
     - **(3) Linha em `## Concluídos`** — varrer BACKLOG.md de `## Concluídos` até EOF ou próximo `##`; verificar se `<texto>` aparece. Em Próximos → silente (item não terminou).
-    - **(4) Idade ≥ N=4 semanas** — `git log -S "<texto>" --diff-filter=A --reverse BACKLOG.md | head -1` → primeiro commit que adicionou o texto. Comparar timestamp com `date -d '4 weeks ago' +%s`. Mais recente → silente.
+    - **(4) Idade ≥ N=2 semanas** — `git log -S "<texto>" --diff-filter=A --reverse BACKLOG.md | head -1` → primeiro commit que adicionou o texto. Comparar timestamp com `date -d '2 weeks ago' +%s`. Mais recente → silente.
     - **(5) Sem worktree** — `git worktree list --porcelain | grep -q ".worktrees/<slug>$"` E `test -d .worktrees/<slug>` ambos falsos. Worktree registrada OU órfã → aviso.
     - **(6) Sem PR aberto** — auto-detect forge per `/run-plan §3.7` (parse `git remote get-url origin`; `github.com` → `gh pr list --search <slug> --state open`; regex `^gitlab\.` → `glab mr list --search <slug>`). PR encontrado → aviso. Forge inacessível (CLI ausente, host não-mapeado) → `degraded:` reportado (plano não-elegível nesta invocação).
   - **2. Detectar cross-refs por elegível.** `grep -rn "docs/plans/<slug>.md" docs/decisions/` — lista links em prosa de ADRs.
@@ -76,7 +76,7 @@ Skill nova seguindo formato canonical do toolkit. Estrutura:
 **`README.md`:** adicionar linha na tabela "What's inside" após `/release`:
 
 ```markdown
-| `/archive-plans [--quarter <YYYY-Qx>]` | Skill | Periodic editorial archival: moves plans in `docs/plans/` whose backlog line entered `## Concluídos` ≥4 weeks ago to `docs/plans/archive/<YYYY-Qx>/`. Preview-first with `Apply / Cancel` gate; non-destructive (`git mv` preserves history). Doesn't push. |
+| `/archive-plans [--quarter <YYYY-Qx>]` | Skill | Periodic editorial archival: moves plans in `docs/plans/` whose backlog line entered `## Concluídos` ≥2 weeks ago to `docs/plans/archive/<YYYY-Qx>/`. Preview-first with `Aplicar / Cancelar` gate; non-destructive (`git mv` preserves history). Doesn't push. |
 ```
 
 EN per ADR-012 (artefato de discoverability/landing).
@@ -84,7 +84,7 @@ EN per ADR-012 (artefato de discoverability/landing).
 **`docs/install.md`:** adicionar item ao smoke checklist (após o item 10 do `/release`), exercitando preview + cancel:
 
 ```markdown
-11. Em projeto com ≥1 plano em `docs/plans/` cuja `**Linha do backlog:**` está em `BACKLOG.md ## Concluídos` há ≥4 semanas, invocar `/archive-plans` → confirmar preview lista o plano com destino `archive/<YYYY-Qx>/`; ao selecionar `Cancelar`, confirmar que nenhum `git mv` foi executado (`git status` limpo). Ao re-invocar e selecionar `Aplicar`, confirmar `git mv` + commit `chore: archive <N> historical plans`, **sem push**.
+11. Em projeto com ≥1 plano em `docs/plans/` cuja `**Linha do backlog:**` está em `BACKLOG.md ## Concluídos` há ≥2 semanas, invocar `/archive-plans` → confirmar preview lista o plano com destino `archive/<YYYY-Qx>/`; ao selecionar `Cancelar`, confirmar que nenhum `git mv` foi executado (`git status` limpo). Ao re-invocar e selecionar `Aplicar`, confirmar `git mv` + commit `chore: archive <N> historical plans`, **sem push**.
 ```
 
 PT-BR (install.md é operativo per ADR-012).
@@ -100,7 +100,7 @@ Sem `test_command` neste repo (per `CLAUDE.md`). Inspeção textual:
 
 Cenários **enumerados** (per `/triage` § Surface não-determinística — skill matcha strings contra BACKLOG real). Smoke pós-shipping no plugin meta-toolkit:
 
-1. **Cenário "plano antigo elegível":** invocar `/archive-plans` no plugin (que tem ~55 planos hoje, vários cujo Concluído tem >4 semanas) → confirmar preview lista os elegíveis com destino `archive/<YYYY-Qx>/` correto; confirmar que planos do refactor sweep recente (2026-05-06 → 12) **não** entram (idade < 4 semanas).
+1. **Cenário "plano antigo elegível":** invocar `/archive-plans` no plugin (que tem ~55 planos hoje, vários cujo Concluído tem >2 semanas) → confirmar preview lista os elegíveis com destino `archive/<YYYY-Qx>/` correto; confirmar que planos do refactor sweep recente (2026-05-06 → 12) **não** entram (idade < 2 semanas).
 2. **Cenário "plano sem `**Linha do backlog:**`":** plantar um plano de teste sem o campo (ou identificar plano histórico sem) → confirmar relatório editorial `not eligible: <slug>.md — sem **Linha do backlog:**`.
 3. **Cenário "worktree" em dois sub-casos** — exercitar ambos os ramos do critério (5):
    - **3a (registrada e ativa):** `git worktree add .worktrees/<slug>-test <commit>` onde `<slug>` é plano elegível por idade → confirmar aviso `not eligible: ... — worktree em .worktrees/<slug>`. Cleanup: `git worktree remove .worktrees/<slug>-test`.
@@ -119,6 +119,6 @@ Captura: qualquer divergência entre comportamento observado e ADR-022 vai para 
 - **Roadmap** (`docs/audits/runs/2026-05-12-execution-roadmap.md`) tem entrada `[ ] E_arch` que vira `[~]` em andamento ao commitar este plano (decisão + plano shippados; implementação via `/run-plan` pendente). Atualização manual no commit unificado do `/triage` (mesma convenção de B_arch).
 - **Smoke pós-shipping no consumer externo** (PJe ou outro) é gatilho de validação adicional — observar se `/archive-plans` em projeto pequeno (<10 planos) faz sentido, e se forge GitLab-corporativo é detectado corretamente.
 - **Cenário 7 (cross-ref em ADR)** pode revelar que ADRs do plugin têm cross-refs em prosa que não foram migrados para path do `archive/`. Captura como Validação se acontecer.
-- **N=4 semanas** é heurística; primeira invocação no plugin é o calibrador empírico. Se arquivar planos que deveriam permanecer ativos, gatilho de revisão #1 do ADR-022 aplica.
+- **N=2 semanas** é heurística (calibrada de N=4 para N=2 pelo operador antes do primeiro uso real — ver ADR-022 § Origem); primeira invocação no plugin é o calibrador empírico. Se arquivar planos que deveriam permanecer ativos, gatilho de revisão #1 do ADR-022 aplica.
 - **Cross-refs quebrados em ADRs após `Aplicar`** é **comportamento esperado** per ADR-022 § Trade-offs (preview delega a decisão; autor pode aceitar link quebrado como referência histórica). Se o operador quiser atualizar ADR antes do `Aplicar`, faz manualmente fora da skill — `/archive-plans` reporta no preview mas não edita ADRs.
 - **CHANGELOG.md é responsabilidade do `/release`** no próximo bump (skill agrupa CC desde a última tag; este plano shippa via `feat: /archive-plans skill` que `/release` classifica como Added). `marketplace.json` description permanece abstract — não exige update por skill nova.
