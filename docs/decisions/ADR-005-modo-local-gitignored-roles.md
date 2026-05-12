@@ -83,6 +83,9 @@ Plugin **nunca toca em `.claude/` raiz** — território do Claude Code, fora do
 ### Limitações
 
 - Modo `local` não interopera com canonical — operador não pode ter ADRs versionados E ADRs locais no mesmo projeto sem fricção. Por design: simplicidade vence flexibilidade.
+
+  Estendido por [ADR-025](ADR-025-recusar-cross-mode-backlog-local-init-config.md): o princípio "simplicidade vence flexibilidade" aplicado ao par cross-papel `backlog × plans_dir` recusa mecanicamente a combinação `backlog: local + plans_dir: canonical` (leak de texto privado para plano público). Outras combinações cross-mode permanecem válidas.
+
 - Path concreto (`.claude/local/<role>/`) é hardcoded — sem opção de customizar destino do modo local. Reavaliar se atrito surgir.
 - `/release` em modo local fica anômalo (release pessoal não-publicada faz pouco sentido) — release segue exigindo `version_files` e `changelog` em modo canonical; modo local não se aplica a esses roles.
 
