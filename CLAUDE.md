@@ -20,9 +20,9 @@ Manifests:
 - `.claude-plugin/plugin.json` — plugin name/version/description.
 - `.claude-plugin/marketplace.json` — exposes the plugin to `/plugin marketplace add fppfurtado/pragmatic-dev-toolkit`.
 
-From v1.11.0 onward, version bumps go through `/release` (dogfood). The skill resolves `version_files` from this repo's config to update **both** manifests, composes the `CHANGELOG.md` entry from the CC log since the last tag, commits and tags locally. Push remains manual.
+Version bumps go through `/release` (dogfood). The skill resolves `version_files` from this repo's config to update **both** manifests, composes the `CHANGELOG.md` entry from the CC log since the last tag, commits and tags locally. Push remains manual.
 
-Release cadence: accumulate merges in `main` and trigger `/release` when there's a coherent set to publish (feature complete, urgent fix, or a deliberate cadence drop) — not after every PR. The skill already groups commits since the last tag; bumping per-PR generates noisy changelog entries and version churn without proportionate value.
+Release cadence: trigger `/release` when there's a coherent set to publish (feature complete, urgent fix, or deliberate cadence drop); per-PR bumps generate noisy changelog entries and version churn.
 
 ## The role contract (load-bearing)
 
@@ -81,9 +81,8 @@ Concrete paths: `.claude/local/decisions/`, `.claude/local/BACKLOG.md`, `.claude
 
 - The plugin adapts to the consumer project's language at runtime (see `docs/philosophy.md` → "Convenção de idioma"). For **this** repo specifically the canonical default applies: documentation and skill/agent prose are in **Portuguese**, except `README.md` (governed by [ADR-012](docs/decisions/ADR-012-idioma-artefatos-discoverability-landing.md), follows discovery channel target audience: EN); mechanism stays in English — agent names, frontmatter keys, file paths, code, and `CLAUDE.md` itself (it's agent operating instructions, not user-facing prose). Don't translate cosmetically.
 - Commit messages follow the consumer project's commit convention (see `docs/philosophy.md` → "Convenção de commits"). For **this** repo the git log shows a stable pattern of Conventional Commits in English — keep it.
-- Skills end with an explicit `## O que NÃO fazer` section listing scope guards. Preserve that section when editing — it's load-bearing for tight skill focus. **Critério editorial:** lista apenas guardas que documentam anti-padrão não-óbvio. Item que apenas reafirma prosa anterior do skill é ruído — se sua remoção não confundiria um leitor razoável que leu o resto do skill, não pertence aqui. Itens vindos de incidentes ou de anti-padrões sutis (modelo tem viés de autoinvocação, gatilho condicional facilmente esquecido, exceção localizada que não é óbvia) são não-óbvios e devem permanecer.
+- Skills end with an explicit `## O que NÃO fazer` section listing scope guards. Preserve that section when editing — it's load-bearing for tight skill focus. **Critério editorial:** lista apenas guardas que documentam anti-padrão não-óbvio. Itens vindos de incidentes ou de vieses sutis (modelo tende a autoinvocar, gatilho condicional facilmente esquecido, exceção localizada) são não-óbvios e devem permanecer.
 - Don't introduce a build system, package manager, or test runner for this repo itself. The hooks are runnable Python scripts (`python3 ${CLAUDE_PLUGIN_ROOT}/hooks/<script>.py`); the rest is markdown. (Manifest/syntax invariant checks via CI lint are a distinct category — see [ADR-013](docs/decisions/ADR-013-ci-lint-minimo-no-build-runner.md).)
-- From v1.11.0 onward, version bumps in **this** repo go through `/release` — keep the loop closed by dogfooding rather than editing manifests by hand.
 - **Instrumentação de progresso em skills multi-passo via Tasks**: ver [ADR-010](docs/decisions/ADR-010-instrumentacao-progresso-skills-multi-passo.md) — critério de aplicação, lifecycle conversation-scoped, relação com ADR-004.
 - **Wiring automático do design-reviewer**: ver [ADR-011](docs/decisions/ADR-011-wiring-design-reviewer-automatico.md) — quando dispara em `/triage` e `/new-adr`, override por inação, custo de tokens.
 - **`disable-model-invocation` em SKILL.md**: critério mecânico cumulativo em [ADR-023](docs/decisions/ADR-023-criterio-mecanico-disable-model-invocation-skills.md) — blast radius local + pushes/PRs gateados por enum upstream + sem autoinvocação cross-turn → `false`; tabela retroativa às 9 skills atuais no próprio ADR. Skill nova com `true` justifica explicitamente.
