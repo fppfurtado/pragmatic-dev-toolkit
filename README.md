@@ -13,6 +13,7 @@ Claude Code plugin codifying the **flat & pragmatic** dev workflow: workflow ski
 | `/debug <symptom>` | Skill | Diagnoses root cause via scientific method (reproduce → isolate → hypothesize → evidence). Produces a diagnosis, not a fix — operator chooses revert / direct patch / `/triage` next. Stack-agnostic. |
 | `/gen-tests` | Skill | Generates tests for a module/function/free description, using the consumer project's stack idioms. Stacks supported today: Python (pytest + respx + asyncio_mode auto + tmp_path for SQLite). |
 | `/release [<bump>\|<version>]` | Skill | Coordinated version bump across `version_files`, `changelog` entry, unified commit, and local annotated tag. Doesn't push — publication stays with the operator. |
+| `/archive-plans [--quarter <YYYY-Qx>]` | Skill | Periodic editorial archival: moves plans in `docs/plans/` whose backlog line entered `## Concluídos` ≥4 weeks ago to `docs/plans/archive/<YYYY-Qx>/`. Preview-first with `Aplicar / Cancelar` gate; non-destructive (`git mv` preserves history). Doesn't push. |
 | `code-reviewer` | Agent | YAGNI rubric: flags premature abstractions, redundant comments, defensive overhead, phantom backwards-compat. |
 | `qa-reviewer` | Agent | Test coverage principles: happy path, documented invariants, declared edge cases, mock vs real. Stack-agnostic. |
 | `security-reviewer` | Agent | Credentials, input validation, external HTTP, sensitive data, and ADR-documented invariants. Stack-agnostic. |
