@@ -1,6 +1,7 @@
 ---
 name: next
 description: Lê o backlog, descarta itens já implementados e sugere top 3 candidatos por impacto estratégico. Invocável direto ou como pré-passo de /triage sem argumento.
+disable-model-invocation: false
 roles:
   required: [backlog]
   informational: [product_direction, plans_dir]

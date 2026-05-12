@@ -86,6 +86,7 @@ Concrete paths: `.claude/local/decisions/`, `.claude/local/BACKLOG.md`, `.claude
 - From v1.11.0 onward, version bumps in **this** repo go through `/release` — keep the loop closed by dogfooding rather than editing manifests by hand.
 - **Instrumentação de progresso em skills multi-passo via Tasks**: ver [ADR-010](docs/decisions/ADR-010-instrumentacao-progresso-skills-multi-passo.md) — critério de aplicação, lifecycle conversation-scoped, relação com ADR-004.
 - **Wiring automático do design-reviewer**: ver [ADR-011](docs/decisions/ADR-011-wiring-design-reviewer-automatico.md) — quando dispara em `/triage` e `/new-adr`, override por inação, custo de tokens.
+- **`disable-model-invocation` em SKILL.md**: critério mecânico cumulativo em [ADR-023](docs/decisions/ADR-023-criterio-mecanico-disable-model-invocation-skills.md) — blast radius local + pushes/PRs gateados por enum upstream + sem autoinvocação cross-turn → `false`; tabela retroativa às 9 skills atuais no próprio ADR. Skill nova com `true` justifica explicitamente.
 
 ## AskUserQuestion mechanics
 
