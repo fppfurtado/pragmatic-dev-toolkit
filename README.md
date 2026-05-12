@@ -13,6 +13,7 @@ Claude Code plugin codifying the **flat & pragmatic** dev workflow: workflow ski
 | `/debug <symptom>` | Skill | Diagnoses root cause via scientific method (reproduce → isolate → hypothesize → evidence). Produces a diagnosis, not a fix — operator chooses revert / direct patch / `/triage` next. Stack-agnostic. |
 | `/gen-tests` | Skill | Generates tests for a module/function/free description, using the consumer project's stack idioms. Stacks supported today: Python and Java. |
 | `/release [<bump>\|<version>]` | Skill | Coordinated version bump across `version_files`, `changelog` entry, unified commit, and local annotated tag. Doesn't push — publication stays with the operator. |
+| `/init-config` | Skill | Interactive wizard for the `<!-- pragmatic-toolkit:config -->` block in `CLAUDE.md`. Asks per role (`decisions_dir`, `backlog`, `plans_dir` canonical/local/null + `test_command` stack-aware probe) and writes the YAML block. Proactive alternative to the one-shot memoization of the Resolution protocol. |
 | `/archive-plans [--quarter <YYYY-Qx>]` | Skill | Periodic editorial archival: moves plans in `docs/plans/` whose backlog line entered `## Concluídos` ≥2 weeks ago to `docs/plans/archive/<YYYY-Qx>/`. Preview-first with `Aplicar / Cancelar` gate; non-destructive (`git mv` preserves history). Doesn't push. |
 | `code-reviewer` | Agent | YAGNI rubric: flags premature abstractions, redundant comments, defensive overhead, phantom backwards-compat. |
 | `qa-reviewer` | Agent | Test coverage principles: happy path, documented invariants, declared edge cases, mock vs real. Stack-agnostic. |
@@ -23,6 +24,7 @@ Claude Code plugin codifying the **flat & pragmatic** dev workflow: workflow ski
 | `block_gitignored` | Hook | `PreToolUse` blocking edits in gitignored paths (dependencies, build artifacts, local caches). Triple auto-gating (empty path / non-git / `git` missing → no-op); `.claude/` is allowlisted (Claude Code territory). |
 | `run_pytest_python` | Hook | `PostToolUse`, auto-gated (`.py` + ancestor `pyproject.toml`), runs pytest after edits and prints output only on failure. |
 | `templates/plan.md` | Template | Canonical plan skeleton (consumed by `/triage` and `/run-plan`). Reference for hand-writing plans. |
+| `docs/procedures/cleanup-pos-merge.md` | Procedure | Shared executable procedure consumed via `Read` by `/triage` (step 0) and `/release` (before preconditions). Detects merged worktrees and cuts cleanup via `gh`/`glab` auto-detect. Per ADR-024. |
 
 ## Installation
 
