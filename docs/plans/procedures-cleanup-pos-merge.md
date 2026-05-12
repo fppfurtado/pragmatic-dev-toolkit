@@ -36,9 +36,9 @@ Duas frentes consecutivas no mesmo arquivo novo + 1 addendum em ADR-001:
 
 ### Bloco 2 — Estender auto-detect forge bilateral em docs/procedures/cleanup-pos-merge.md
 
-- `docs/procedures/cleanup-pos-merge.md`: ajustar passo 3 da "Detecção de candidatos" (atual: só `gh pr list`). Wording-alvo: detectar host via `git remote get-url origin`; `github.com` → `gh pr list --state merged --head <branch> --json number --jq '.[0].number'`; regex `^gitlab\.` → equivalente `glab mr list` (consultar `--state merged --source-branch <branch>` + flag de output JSON — sintaxe exata a confirmar via comando abaixo); host não-mapeado → fallback `git branch -r --merged origin/<main>` (perde squash). Cutucada (texto da pergunta) e mensagens de execução omitem "PR #" / "MR !" no fallback git-only (preservar comportamento atual). Quando forge for GitLab, identificador é "MR !<num>" em vez de "PR #<num>".
+- `docs/procedures/cleanup-pos-merge.md`: ajustar passo 3 da "Detecção de candidatos" (atual: só `gh pr list`). Wording aplicado (sintaxe `glab` confirmada via docs oficiais durante o gate abaixo): detectar host via `git remote get-url origin`; `github.com` → `gh pr list --state merged --head <branch> --json number --jq '.[0].number'`; regex `^gitlab\.` → `glab mr list --merged --source-branch <branch> --output json | jq -r '.[0].iid // empty'`; host não-mapeado ou CLI ausente → fallback `git branch -r --merged origin/<main>` (perde squash). Cutucada (texto da pergunta) e mensagens de execução omitem "PR #" / "MR !" no fallback git-only (preservar comportamento atual). Quando forge for GitLab, identificador é "MR !<num>" em vez de "PR #<num>".
 
-**Gate explícito de sintaxe `glab` (gap real, maior do que o pattern canonical existente cobre):** os 3 sites canonical do toolkit (`/run-plan §3.7`, `/release §5`, `/next §4.5`) usam `glab mr create --fill`, `glab release create --notes` e `glab mr list --opened` — **nenhum** cobre `glab mr list --state merged --source-branch`. Antes de finalizar o Bloco 2 e commitar, executar `glab mr list --help` em consumer GitLab de smoke-test (ou contra documentação oficial atualizada) e validar que `--state merged --source-branch <branch>` + flag de output JSON (`--output json --fields iid` ou equivalente) existem. Sintaxe divergente → reportar ao operador antes do commit; ajustar wording-alvo conforme verificado e atualizar a § Verificação manual cenário 2 com a query confirmada.
+**Gate explícito de sintaxe `glab` (executado durante Bloco 2):** os 3 sites canonical do toolkit (`/run-plan §3.7`, `/release §5`, `/next §4.5`) usam `glab mr create --fill`, `glab release create --notes` e `glab mr list --opened` — **nenhum** cobre `glab mr list --merged --source-branch`. Gate executado contra docs oficiais (https://gitlab.com/gitlab-org/cli/-/raw/main/docs/source/mr/list.md). Sintaxe **divergente** do wording-alvo inicial detectada: `--merged` é flag única (não `--state merged`); `--output json` produz JSON completo (sem `--fields iid`). Wording acima atualizado com sintaxe confirmada; § Verificação manual cenário 2 + "Forma do dado real" GitLab também sincronizados.
 
 ### Bloco 3 — Wire /triage e /release para referenciar o procedimento
 
@@ -76,7 +76,7 @@ Procedimento toca **comportamento observável** de `/triage` (passo 0) e `/relea
 **Forma do dado real:**
 
 - `gh pr list --state merged --head <branch> --json number --jq '.[0].number'` em PR squash-merged retorna número simples (ex: `54`).
-- `glab mr list --state merged --source-branch <branch> --output json --fields iid` em GitLab retorna lista JSON com `iid` numérico (ex: `[{"iid": 12}]`); sintaxe exata a confirmar via `glab mr list --help` durante Bloco 2.
+- `glab mr list --merged --source-branch <branch> --output json` em GitLab retorna lista JSON completa de MRs mergeadas com a source-branch indicada; pipe via `jq -r '.[0].iid // empty'` extrai o IID numérico (ex: `12`) ou string vazia se nenhum match. Sintaxe confirmada via docs oficiais durante gate do Bloco 2.
 - `git remote get-url origin` em consumer GitHub retorna `git@github.com:user/repo.git` ou `https://github.com/user/repo.git`.
 - Em consumer GitLab corporativo retorna `git@gitlab.empresa.com:user/repo.git` ou `https://gitlab.empresa.com/user/repo.git`.
 - Slug de branch típico: kebab-case sem prefixo (ex: `curadoria-free-read-design-reviewer`).
@@ -84,7 +84,7 @@ Procedimento toca **comportamento observável** de `/triage` (passo 0) e `/relea
 **Cenários enumerados (executar em consumer real após release):**
 
 1. **GitHub squash-merge detection (regressão):** PR squash-merged no GitHub; invocar `/triage <intenção>`; passo 0 detecta worktree, identifica PR mergeado, oferece cleanup. Esperado: comportamento idêntico ao atual.
-2. **GitLab squash-merge detection (novo via D_arch):** consumer GitLab corporativo; MR squash-mergeada; invocar `/triage`; passo 0 detecta worktree, executa query `glab mr list` (sintaxe `<a confirmar em smoke-test>` — gate explícito no Bloco 2 garante validação pré-commit), identifica MR mergeada, oferece cleanup com identificador "MR !<num>". Esperado: comportamento novo funcional.
+2. **GitLab squash-merge detection (novo via D_arch):** consumer GitLab corporativo; MR squash-mergeada; invocar `/triage`; passo 0 detecta worktree, executa `glab mr list --merged --source-branch <branch> --output json | jq -r '.[0].iid // empty'` (sintaxe confirmada durante gate do Bloco 2), identifica MR mergeada, oferece cleanup com identificador "MR !<num>". Esperado: comportamento novo funcional.
 3. **Host não-mapeado (fallback):** consumer com remote `bitbucket.org`; invocar `/triage`; passo 0 cai no fallback `git branch -r --merged`. Esperado: cleanup procede sem squash-awareness, com nota.
 4. **`gh` ausente no PATH:** desinstalar/desautenticar gh temporariamente em consumer GitHub; invocar `/triage`; fallback git-only. Esperado: mesmo comportamento de (3).
 5. **`glab` ausente no PATH:** consumer GitLab sem glab instalado; invocar `/triage`; fallback git-only. Esperado: mesmo comportamento de (3).
@@ -92,6 +92,7 @@ Procedimento toca **comportamento observável** de `/triage` (passo 0) e `/relea
 7. **Skip silente (nada a limpar):** estado limpo sem worktrees em `.worktrees/`; invocar `/triage`; passo 0 silente. Esperado: nenhuma cutucada.
 8. **Mix de worktrees mergeada/não-mergeada:** ≥1 worktree mergeada + ≥1 worktree não-mergeada sob `.worktrees/`; invocar `/triage`. Esperado: cutucada só para worktrees mergeadas; não-mergeadas filtradas silenciosamente no passo 1 condição 3 do procedimento (sem detecção de merge → não é candidato).
 9. **Worktree órfã (branch sumiu):** worktree presente sob `.worktrees/<slug>/` mas `git worktree list --porcelain` não retorna `branch refs/heads/<slug>` válida. Esperado: skip silente do candidato (passo 1 extrai branch da saída porcelain — ausente, pula); warning informativo opcional.
+10. **GitLab sem `jq` no PATH (gap operacional):** consumer GitLab com `glab` instalado mas `jq` ausente; MR squash-mergeada existente; invocar `/triage`. Esperado: pipe `glab mr list ... | jq` produz saída vazia (jq: command not found no stderr), candidato cai em "sem detecção" e é silenciosamente pulado — NÃO cai no fallback git-only. Confirma o gap operacional documentado no procedure file. Workaround: instalar `jq` ou remover `glab` do PATH para forçar fallback.
 
 ## Notas operacionais
 
@@ -99,6 +100,22 @@ Procedimento toca **comportamento observável** de `/triage` (passo 0) e `/relea
 - **Reviewer dispatch:** Blocos 1-3 default code-reviewer — arquivo novo carrega procedimento executado em runtime pelas skills (behavioral content); SKILL.md edits em Bloco 3 são behavior change. Blocos 4-5 `{reviewer: doc}` — edição cirúrgica em ADR + tracking de roadmap. `design-reviewer` **não** redisparado por `/run-plan` (ADR-011 — opera pré-fato; já disparou neste `/triage` no draft de ADR-024 e dispara automaticamente no plano).
 - **BACKLOG (sem transição automática nesta onda):** linha umbrella em `## Próximos` (linha 5) cobre as 4 ondas como um todo; **não** transita para `## Concluídos` ao fim desta Onda 3a — só quando a última onda ativada fechar. `/run-plan §3.4` é mecânica determinística (move `**Linha do backlog:**` para Concluídos sem gate de skip), portanto **este plano omite deliberadamente o campo `**Linha do backlog:**` no `## Contexto`**. `/run-plan §3.4` pula silente quando o campo está ausente; o tracking da Onda 3a fica no Bloco 5 (atualização do roadmap) em vez do BACKLOG. Quando a última onda fechar, a linha umbrella transita para `## Concluídos` via plano dedicado dessa onda final (que pode preencher `**Linha do backlog:**` com o texto exato da linha 5 atual para acionar a transição mecânica do `/run-plan §3.4`).
 - **Re-rodar prose-tokens depois deste plano:** roadmap linha 63 prevê — G_arch sozinho remove ~200 palavras de `/triage §0` e muda alvos restantes da Onda 4. Auditoria pode ser refeita após esta Onda fechar.
-- **glab syntax confirmada na execução:** `glab mr list --state merged --source-branch <branch>` é o pattern conceitual; sintaxe exata (flags `--output`, `--fields`, equivalente a `--jq`) deve ser verificada via `glab mr list --help` durante implementação do Bloco 2. Mesmo pattern aplicado em `/run-plan §3.7`, `/release §5`, `/next §4.5` deve servir como referência canonical.
+- **glab syntax confirmada durante Bloco 2:** sintaxe final aplicada é `glab mr list --merged --source-branch <branch> --output json | jq -r '.[0].iid // empty'`. Wording-alvo inicial divergiu (`--state merged` em vez de `--merged`; `--fields iid` que não existe). Gate detectou e ajustou pré-commit per docs oficiais. Pattern bilateral (gh+glab) é o segundo caso forge-bilateral no toolkit (paralelo ao `mr create --fill` / `pr create --fill` já em `/run-plan §3.7`).
 - **ADR-024 já criado neste /triage:** ADR existe em `docs/decisions/ADR-024-categoria-docs-procedures-procedimentos-compartilhados.md` (sucessor parcial de ADR-001); plano referencia, não cria. Design-reviewer findings absorvidos pré-commit (7 findings: 2 altos rename `protocols`→`procedures` e reinterpretação ADR-001; 3 médios endurecendo mitigações; 2 baixos polish).
 - **Bloco 4 é load-bearing.** Sem cross-reference em ADR-001, ADR-024 § Decisão fica violado e o plano fica incompleto. Não tratar como bloco editorial opcional.
+
+## Pendências de validação
+
+Capturadas no gate final do `/run-plan` — smoke-test pós-release em consumer real:
+
+- **Cenário 1** — GitHub squash-merge detection (regressão); invocar `/triage` em consumer GitHub com worktree de PR squash-merged.
+- **Cenário 2** — GitLab squash-merge detection (novo via D_arch); invocar `/triage` em consumer GitLab corporativo com MR squash-mergeada.
+- **Cenário 3** — Host não-mapeado (fallback); consumer com remote `bitbucket.org`.
+- **Cenário 4** — `gh` ausente no PATH; consumer GitHub sem `gh`.
+- **Cenário 5** — `glab` ausente no PATH; consumer GitLab sem `glab` (fallback git-only).
+- **Cenário 6** — `/release` squash-detection; mesmo path do cenário 1 ou 2 via `/release`.
+- **Cenário 8** — Mix mergeada/não-mergeada em `.worktrees/`.
+- **Cenário 9** — Worktree órfã (branch sumiu).
+- **Cenário 10** — GitLab sem `jq` no PATH (gap operacional); consumer GitLab com `glab` instalado mas `jq` ausente. Esperado: candidato cai em "sem detecção" (não fallback git-only).
+
+Cenário 7 (skip silente) foi auto-validado no worktree do `/run-plan` (sem `.worktrees/` sub-worktrees).

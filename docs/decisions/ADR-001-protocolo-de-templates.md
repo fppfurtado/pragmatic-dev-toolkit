@@ -60,3 +60,7 @@ Razões objetivas:
 
 - Pain reportado em manter ADR template inline em `/new-adr` (drift detectado, edit fraturado, ou nova skill que precisa do mesmo template) → reabrir para estender o protocolo a `templates/adr.md`.
 - Plugin ganha 3+ artefatos com estrutura compartilhada além de plano → reabrir para considerar formato de manifesto (ex.: `templates/index.json` listando artefatos disponíveis) em vez de scan ad-hoc.
+
+## Addendum (2026-05-12)
+
+Esta nota é adendo informativo posterior à aceitação; não altera a decisão original. [ADR-024](ADR-024-categoria-docs-procedures-procedimentos-compartilhados.md) estabelece categoria paralela `docs/procedures/` para procedimentos operacionais compartilhados; complementa este ADR sem revogá-lo. Fronteira: `templates/` = esqueletos preenchidos quando o artefato é produzido; `docs/procedures/` = procedimentos executados quando referenciados.
