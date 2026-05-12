@@ -56,7 +56,7 @@ Identificar lacunas e perguntar **só o que for bloqueante**. Checklist mental (
 
 Se o operador já forneceu o necessário, pular as perguntas. Se houver 1–3 gaps reais, perguntar direto e curto. **Não fazer entrevista exaustiva.** Modo: gaps de escolha discreta via `AskUserQuestion`; gaps que pedem explicação livre (forma do dado real, justificativa de escopo) em prosa **separada** após a chamada. **Quando ≥2 gaps são enum-áveis, agrupar numa única chamada** (até 4 questions, regra de unificação em `CLAUDE.md` → "AskUserQuestion mechanics") — sequenciar prompts fragmenta foco.
 
-**Itens fora de escopo emergidos.** Coisas que o operador menciona mas não pertencem a esta feature (TODO adjacente, tech-debt revelado, bug menor avistado): capturar como candidatos. Papel `backlog` resolvido normalmente → linhas separadas em `## Próximos`. Papel "não temos" → reportadas no passo 6. "Deixa pra lá" → descartar.
+**Itens fora de escopo emergidos.** Coisas que o operador menciona mas não pertencem a esta feature (TODO adjacente, tech-debt revelado, bug menor avistado): capturar como candidatos. Papel `backlog` resolvido normalmente → linhas separadas em `## Próximos`. Papel "não temos" → reportadas no passo 5. "Deixa pra lá" → descartar.
 
 **Bifurcação detectada → pergunta nominal-comparativa obrigatória antes do plano.** Modo: enum com opções `(a) caminho-default-barato` e `(b) caminho-rico`, `description` carregando o trade-off concreto. Operador escolhe ou usa "Other". Escolha vai para `## Contexto` ou `## Resumo da mudança`. Se o operador já citou explicitamente uma opção na frase original (`/triage exportar CSV usando streaming`), pular a pergunta e registrar direto.
 
@@ -84,7 +84,7 @@ Idioma de saída: per `CLAUDE.md` → 'Reviewer/skill report idioma'.
   - Caminho com plano → não grava no BACKLOG (state vivo é a worktree/PR aberto, ADR-004); a linha em `**Linha do backlog:**` no `## Contexto` do plano alimenta `/run-plan` para registrar conclusão em `## Concluídos` no done.
   - Caminho sem plano (linha pura, ADR-only, atualização de domínio) → grava em `## Próximos`.
   - Itens fora-de-escopo capturados no passo 2 → linhas separadas em `## Próximos`, mesmo quando o artefato principal é plano/ADR.
-- **Papel "não temos":** disparar enum (`AskUserQuestion`, header `Backlog`). `Criar em BACKLOG.md` cria com cabeçalho mínimo (`# Backlog\n\n## Próximos\n\n## Concluídos\n`) e prossegue; `Não usamos esse papel` registra `paths.backlog: null` e prossegue **sem gravar** (itens reportados no passo 6).
+- **Papel "não temos":** disparar enum (`AskUserQuestion`, header `Backlog`). `Criar em BACKLOG.md` cria com cabeçalho mínimo (`# Backlog\n\n## Próximos\n\n## Concluídos\n`) e prossegue; `Não usamos esse papel` registra `paths.backlog: null` e prossegue **sem gravar** (itens reportados no passo 5).
 - **Papel em modo `local`:** linha gravada em `.claude/local/BACKLOG.md`. `**Linha do backlog:**` no plano depende do modo cruzado:
   - Ambos `backlog` e `plans_dir` em modo `local`: linha presente (matching textual entre arquivos locais).
   - `backlog` canonical + `plans_dir` local: linha presente no plano local (não vaza para git).
@@ -125,20 +125,18 @@ Bloco **doc-only** (paths todos `.md`/`.rst`/`.txt`) recebe `doc-reviewer` como 
 
 Slug de plano: lowercase, espaços/acentos→hífens, curto e descritivo (ex.: `exportar-movimentos-csv`).
 
-### 5. Consolidação do backlog
-
-Se o passo 4 modificou o arquivo do papel `backlog` (linha da feature, linhas fora-de-escopo, ou ambas), consolidar antes de fechar:
+**Consolidação (quando há edit em `backlog`).** Após gravar linha da feature ou itens fora-de-escopo:
 
 1. **Reler** o backlog na íntegra após edits.
 2. **Flagar** (não decidir):
    - **Duplicatas** entre linhas recém-adicionadas e linhas pré-existentes em qualquer seção.
    - **Obsolescência:** linha em `## Próximos` que vira redundante pela nova (ex.: nova "exportar movimentos em CSV" cobre antiga "exportar movimentos como planilha"). Critério conservador — só flagar quando a sobreposição é nítida no texto, não em similaridade vaga.
 3. **Sem flags → skip silente.** Linhas recém-gravadas já foram decididas no fluxo corrente.
-4. **Com flags →** mostrar ao operador o estado tocado (com linhas recém-adicionadas marcadas) e perguntar uma vez via enum (`AskUserQuestion`, header `Backlog`, opções `Está bom, prosseguir` / `Aplicar edits`; Other → operador descreve em prosa quais edits — consolidar duplicatas, remover obsoleta, reordenar). Edits descritos entram no mesmo commit unificado do passo 6.
+4. **Com flags →** mostrar ao operador o estado tocado (com linhas recém-adicionadas marcadas) e perguntar uma vez via enum (`AskUserQuestion`, header `Backlog`, opções `Está bom, prosseguir` / `Aplicar edits`; Other → operador descreve em prosa quais edits — consolidar duplicatas, remover obsoleta, reordenar). Edits descritos entram no mesmo commit unificado do passo 5.
 
-Caminho que não tocou backlog (atualização pura de `ubiquitous_language`/`design_notes`, ADR delegada sem linha, papel `backlog` "não temos") → skip silente.
+Caminho que não tocou backlog (atualização pura de `ubiquitous_language`/`design_notes`, ADR delegada sem linha, papel `backlog` "não temos") → skip silente desta etapa.
 
-### 6. Reportar, propor commit e devolver controle
+### 5. Reportar, propor commit e devolver controle
 
 Reportar em formato curto:
 
@@ -168,5 +166,5 @@ Sugerir próximo passo (uma frase): "implementar via /run-plan <slug>", "validar
 ## O que NÃO fazer
 
 - Não duplicar conteúdo de `CLAUDE.md`, `docs/domain.md` ou `docs/design.md` no plano — referenciar.
-- Não separar `git commit` e `git push` no caminho-com-plano — a unidade atômica do passo 6 elimina a janela em que push é esquecido.
+- Não separar `git commit` e `git push` no caminho-com-plano — a unidade atômica do passo 5 elimina a janela em que push é esquecido.
 - Não recuperar push falho via `--force`, `--force-with-lease`, retry automático ou flags equivalentes — parar, reportar erro literal e deixar manual.

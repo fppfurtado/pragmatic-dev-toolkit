@@ -140,7 +140,7 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
    **Materialização no gate final:**
    - Ambas as listas vazias → skip silente.
    - Lista de validação não-vazia → escrever em `## Pendências de validação` do plano (uma linha por item).
-   - Lista de backlog não-vazia → escrever em `## Próximos` do `backlog`; aplicar consolidação (releitura → flag de duplicatas/obsolescência → sem flags skip silente; com flags enum `Backlog` único — algoritmo completo em `/triage` SKILL → passo 5).
+   - Lista de backlog não-vazia → escrever em `## Próximos` do `backlog`; aplicar consolidação (releitura → flag de duplicatas/obsolescência → sem flags skip silente; com flags enum `Backlog` único — algoritmo completo em `/triage` SKILL → passo 4 sub-fluxo "Consolidação (quando há edit em `backlog`)").
    - As partes não-vazias entram em **um único** bloco extra (revisor `code` + micro-commit). Sem confirmação adicional sobre as capturas — operador foi informado a cada detecção.
    - Caso especial: papel `backlog` = "não temos" → lista de backlog vira relato final (sem registro persistido); lista de validação grava no plano sempre.
 
