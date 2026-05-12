@@ -2,6 +2,23 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.6.0] - 2026-05-12
+
+### Added
+- `docs/procedures/` category established for shared executable procedures — fourth category under `docs/` alongside `templates/`/`decisions/`/`plans/`. `Cleanup pós-merge` extracted from `/triage §0` to `docs/procedures/cleanup-pos-merge.md`; consumed via `Read` by `/triage` and `/release` at runtime. Bilateral forge auto-detect (`gh`/`glab`) applied — GitLab path requires `jq` (`glab` does not bundle jq like `gh --jq`). Per ADR-024 (sucessor parcial de ADR-001). (#57)
+- Reviewer/skill report idioma hub in CLAUDE.md — operationalizes the mother rule from `philosophy.md` → "Convenção de idioma" for the 5 reviewers + `/triage`. 6 spokes reference the hub; ADR-007 covers informational artifacts. `philosophy.md` "Linguagem ubíqua na implementação" trimmed to pure principle (3 sentences, no operational pipeline). (#58)
+- Mechanical refusal of cross-mode `backlog: local + plans_dir: canonical` in `/init-config` step 3 — asymmetric per ADR-025 ("direction of leak" criterion: private→public is incoherent; public→private is normal). Defensive check in `/triage` step 1 covers legacy block; `/run-plan` without check (plan outside `/triage` is out-of-scope). ~10 lines of edge prose removed cross-skill. (#60)
+
+### Changed
+- `/triage` step 5 ("Consolidação do backlog") absorbed as sub-flow of step 4 — anatomy reduces from 7 visible steps (0-6) to 6 (0-5). Behavior unchanged — refactor editorial puro. Cross-refs in `/run-plan §3.5` and `/new-adr` step 5 updated. F_arch via direct commit `066e1ae`.
+
+### Notes
+- ADR-024 (Proposed): "Categoria `docs/procedures/` para procedimentos compartilhados" — fourth category under `docs/` for executable shared procedures (vs `templates/` for fillable skeletons); sucessor parcial de ADR-001 (template-protocol scope narrowed to scaffolds). (#57)
+- ADR-025 (Proposed): "Recusar cross-mode `backlog: local + plans_dir: canonical` no `/init-config`" — sucessor parcial de ADR-005 § Limitações; asymmetric refusal based on direction of leak. 11 findings absorbed pre-commit (6 in ADR draft + 5 in plan). Reopened from Deferred section of the 2026-05-12 roadmap; operator absorbed YAGNI trade-off without empirical evidence registered. (#60)
+- Onda 4 closed via PR #59 (`trim-residual-editorial-onda4` plan): 7 prose edits (4 from re-run audit `2026-05-12b-prose-tokens.md` + 3 pending E/F/G_prose). Aggregate reduction: -122 words across 6 files. Auto-loaded payload trim in CLAUDE.md (-40) + `doc-reviewer` description (-26). Editorial design-reviewer high-finding absorbed: G_prose shrunk vs removed to preserve check-list function per CLAUDE.md → "Editing conventions".
+- Audit re-run 2026-05-12b prose-tokens: companion audit run post-closure of Ondas 1-3b. Confirmed 3 pending items + identified 4 residual scars (A/B/C/D-NEW). Total residual reduction: -122 words (vs -370 estimated pre-Ondas).
+- **Roadmap 2026-05-12 fully fulfilled**: 4 ondas + Deferred item (H_arch reopened) closed. 6 new ADRs (020-025), 5 plans shipped, 5 PRs (#54-#60) + 1 direct surgical commit (`066e1ae`).
+
 ## [2.5.1] - 2026-05-12
 
 ### Notes
