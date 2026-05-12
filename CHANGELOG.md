@@ -2,6 +2,21 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.4.0] - 2026-05-12
+
+### Added
+- `/init-config` skill — interactive wizard for `decisions_dir`, `backlog`, `plans_dir` (canonical/local/null) + `test_command` (stack-aware probe: Maven, pytest/uv, npm, make), writing the `<!-- pragmatic-toolkit:config -->` block in `CLAUDE.md`. Companion: uniform discovery hint emitted by the 4 skills with `roles.required` (`/triage`, `/new-adr`, `/run-plan`, `/next`) when the marker is absent. Triple gating + canonical phrasing per ADR-017. Sub-case `CLAUDE.md` gitignored stops with message aligned to ADR-016. (#52)
+- `/init-config` step 4.5 — ensures `.claude/` is in `.worktreeinclude` when ≥1 role is in local mode (ADR-018). Deterministic mechanic without `AskUserQuestion`: absent → create with header + `.claude/`; without `.claude/` → add line; with `.claude/` → silent skip. Idempotent; compatible with tracked or gitignored `.worktreeinclude`. (#53)
+- `/gen-tests` Java/Maven sub-block — first second-stack application since ADR-008. JUnit 5 + Mockito + Maven layout (`<module>/src/test/java/<package>/`) + validation command `mvn -pl <module> test -Dtest=<ClassName> -DfailIfNoTests=false`. JUnit 5 only in v1; Spring/Spring Boot deferred.
+- `qa-reviewer` mocking anti-patterns in item "Mock vs real" — three new sub-bullets: *Testing mock behavior* (assert validates mock return instead of observable effect), *Test-only methods* (`_set_state_for_test()` deforming production design), *Mocking without understanding* (mock with divergent return/side-effect/order from real contract). Reviewer remains compact.
+- `qa-reviewer` references `/gen-tests` stack sub-blocks as canonical idioms (ADR-019). New section `## Idioms canonical por stack` points marker → stack (`pyproject.toml` → Python; `pom.xml`/`build.gradle*` → JVM); lazy-load when diff touches test paths; stack-without-sub-block falls back to conceptual cross-stack rules and reports gap.
+
+### Notes
+- ADR-016 (Accepted): "Manter `block_gitignored` como está para scripts operacionais" — 7 alternatives discarded; consumer pattern (gitignored script as workflow entrypoint) resolves via Makefile/Dockerfile/compose.
+- ADR-017 (Accepted): "Cutucada uniforme de descoberta config-ausente" — triple gating (CLAUDE.md exists + marker absent + conversation-scoped dedup); canonical phrasing; editorial inheritance.
+- ADR-018 (Accepted): "Replicação `.claude/` em modo local — responsabilidade proativa do `/init-config`" — deterministic mechanic to ensure `.claude/` reaches fresh worktrees when ≥1 role is in local mode.
+- ADR-019 (Accepted): "qa-reviewer referencia sub-blocos canonical de /gen-tests" — single source of truth for stack idioms; reviewer imports by reference. Rejected alternative: dispatching `/gen-tests` from `/run-plan` during qa block execution.
+
 ## [2.3.0] - 2026-05-10
 
 ### Added
