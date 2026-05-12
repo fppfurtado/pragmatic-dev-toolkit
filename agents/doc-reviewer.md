@@ -49,7 +49,7 @@ Code fences ou comandos exemplo cujos identificadores divergem do código atual:
 
 ## Como reportar
 
-Idioma do relatório: **espelhar o idioma do projeto consumidor** (ver "Convenção de idioma" em `docs/philosophy.md`). Default canonical PT-BR.
+Idioma do relatório: per `CLAUDE.md` → 'Reviewer/skill report idioma'.
 
 Para cada drift:
 

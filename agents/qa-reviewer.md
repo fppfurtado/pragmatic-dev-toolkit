@@ -48,7 +48,7 @@ Idioms específicos da stack do projeto consumidor (ferramenta de mock HTTP idio
 
 ## Como reportar
 
-Idioma do relatório: **espelhar o idioma do projeto consumidor** (ver "Convenção de idioma" em `docs/philosophy.md`). Default canonical PT-BR.
+Idioma do relatório: per `CLAUDE.md` → 'Reviewer/skill report idioma'.
 
 Para cada gap:
 1. **Localização:** função ou cenário não coberto.

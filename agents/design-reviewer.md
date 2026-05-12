@@ -97,7 +97,7 @@ Reportar referenciando o ADR ou seção da philosophy. Se o plano reconhece a co
 
 ## Como reportar
 
-Idioma do relatório: **espelhar o idioma do projeto consumidor** (default canonical PT-BR).
+Idioma do relatório: per `CLAUDE.md` → 'Reviewer/skill report idioma'.
 
 Para cada problema:
 
