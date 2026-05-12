@@ -14,7 +14,7 @@ Antes de carregar contexto, varrer worktrees mergeadas em `.worktrees/` e oferec
    - **GitLab via `glab`:** `glab mr list --merged --source-branch <branch> --output json | jq -r '.[0].iid // empty'` (squash-aware; **requer `jq` no PATH** — `glab` não embute jq como `gh --jq`). Saída numérica → mergeado, capturar MR IID (identificador `MR !<num>`). `jq` ausente → pipe retorna vazio e o candidato é silenciosamente pulado (cai em "sem detecção" abaixo, não em fallback git-only — operador remove `glab` do PATH ou instala `jq` para forçar caminho desejado).
    - **CLI ausente** (`gh`/`glab` não no PATH) ou **host não-mapeado**: fallback `git branch -r --merged origin/<main>` checando se `<branch>` está listada (perde squash; identificador omitido — sem `PR #` / `MR !`).
    - Sem detecção em nenhum dos modos → não é candidato; pular.
-4. Lista de candidatos mergeados vazia → **skip silente**; segue para o passo 1.
+4. Lista de candidatos mergeados vazia → **skip silente**; retorna controle à skill consumidora.
 
 ## Cutucada por candidato
 

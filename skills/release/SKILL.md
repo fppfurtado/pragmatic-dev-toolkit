@@ -24,7 +24,7 @@ Sem argumento e sem CC extraível → pergunta livre ao operador.
 
 ## Cleanup pós-merge
 
-Antes das pré-condições, executar passo de cleanup pós-merge conforme `skills/triage/SKILL.md` `### 0. Cleanup pós-merge`. Mesma detecção, mesma cutucada, mesmas execuções. Skip silente se nada a limpar.
+Antes das pré-condições, executar passo de cleanup pós-merge conforme `${CLAUDE_PLUGIN_ROOT}/docs/procedures/cleanup-pos-merge.md`. Skip silente se nada a limpar.
 
 ## Pré-condições
 
