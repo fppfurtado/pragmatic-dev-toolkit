@@ -18,6 +18,11 @@ Campos especiais (incluir só quando aplicáveis):
   Categorias: bounded context, agregado, entidade, RN, conceito ubíquo.
   Inclui apenas quando o pedido toca o domínio (papel `ubiquitous_language`); refactor puro/doc-only omite.
 
+**ADRs candidatos:** ADR-NNN (motivo curto), ADR-MMM (motivo curto)
+  Inclui ADRs que o operador identifica como tocados/contradictados pela mudança.
+  Reviewer prioriza leitura integral desses; scan automático cobre os demais (per ADR-021).
+  Campo opcional — operador que não sabe quais ADRs aplicam simplesmente omite.
+
 **Linha do backlog:** <texto exato da linha gravada no BACKLOG>
   Inclui apenas quando há linha de backlog correspondente — mensageiro de matching para /run-plan operar transições de estado.
 -->
