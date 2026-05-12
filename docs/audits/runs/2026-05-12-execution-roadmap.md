@@ -17,7 +17,7 @@ Sequência recomendada para implementar as propostas das duas auditorias do dia:
 
 Cada item sozinho. ADR-worthy ou addendum. Ordem: mais barato primeiro; ADRs novos depois.
 
-- [ ] **C_arch** — critério mecânico de admissão de warnings pré-loop em `/run-plan`. Addendum ao ADR-002 antes do 6º warning bater no gatilho de reabertura ("Surge 5º+ warning na fase pré-loop com natureza distinta..."). Estamos em 5/5.
+- [x] **C_arch** — [ADR-020](../../decisions/ADR-020-criterio-mecanico-admissao-warnings-pre-loop.md) (2026-05-12): critério mecânico de admissão de warnings pré-loop em `/run-plan`. Reabertura preventiva de ADR-002 antes do 6º warning. ADR sucessor (não adendo — rebatida em § Alternativas (a)) com 7 findings do `design-reviewer` absorvidos pré-commit.
 - [ ] **B_arch** — curadoria de free-read do `design-reviewer`. ADR sucessor de ADR-009/011. Antecipar antes do gatilho "≥30 ADRs" (hoje 19, ritmo recente sugere 1-2 semanas).
 - [ ] **E_arch** — política de archival para `docs/plans/`. ADR sucessor de ADR-014. Antecipar antes do gatilho "≥100 planos" (hoje ~55).
 
