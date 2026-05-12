@@ -100,6 +100,10 @@ Concrete shape for the `AskUserQuestion` tool when used by skills (philosophy an
 - **Recommended option**: place first and append "(Recommended)" to the label.
 - **`(Recommended)` só quando o default é estatisticamente estável.** Marcar apenas quando uma resposta é dominante na maioria das invocações da skill. Quando o "recomendado" depende de contexto runtime (modo, estado, decisão anterior), o SKILL deve **construir opções dinamicamente** em vez de fixar `(Recommended)` na prosa — ex.: `/run-plan` §3.7 escolhe Recommended por `plans_dir` mode. Recommended sem default real é viés enganoso.
 
+## Reviewer/skill report idioma
+
+Reviewer ou skill que produz relatório/texto-de-saída espelha o idioma do projeto consumidor (default canonical PT-BR). Esta seção operacionaliza, para reviewers shippados e `/triage`, a regra-mãe em `docs/philosophy.md` → "Convenção de idioma"; [ADR-007](docs/decisions/ADR-007-idioma-artefatos-informativos.md) cobre artefatos informativos (changelog, tag messages, commits) fora deste escopo. Aplica-se aos 5 reviewers (`code-reviewer`, `qa-reviewer`, `security-reviewer`, `doc-reviewer`, `design-reviewer`) e ao texto produzido por `/triage`. Cada artefato preserva sua estrutura interna traduzindo-a junto.
+
 ## Plugin component naming and hook auto-gating
 
 Skills and hooks stack-specific coexist with generic components in the same plugin. The name carries the contract:

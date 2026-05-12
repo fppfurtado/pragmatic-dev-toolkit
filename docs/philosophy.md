@@ -72,6 +72,6 @@ Mecânica concreta de `AskUserQuestion` (limites de header, contagem de opções
 
 ## Linguagem ubíqua na implementação
 
-Bounded contexts e linguagem ubíqua só são pilares se chegarem ao código. Vocabulário registrado no domínio mas ausente nos identificadores produzidos vira ornamento de alinhamento — exatamente o que a frase-tese rejeita. O pipeline que garante a chegada está documentado nos próprios consumidores: `/triage` passo 4 grava `**Termos ubíquos tocados:**` no plano, `/run-plan` passo 2 repassa ao reviewer, `code-reviewer` seção "Identificadores" valida no diff.
+Bounded contexts e linguagem ubíqua só são pilares se chegarem ao código. Vocabulário registrado no domínio mas ausente nos identificadores produzidos vira ornamento de alinhamento. Pipeline operacional vive em skills/agents; aqui só o princípio.
 
 Papel `ubiquitous_language` resolveu para "não temos" → toda a cadeia segue funcional sem fricção em projetos que ainda não formalizaram domínio.

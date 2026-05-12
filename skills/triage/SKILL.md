@@ -76,7 +76,7 @@ Combinações são comuns (linha de backlog + ADR; plano + atualização de doma
 
 ### 4. Produzir os artefatos
 
-Idioma de saída: espelhar o do projeto consumidor (default canonical PT-BR; ver "Convenção de idioma" em `docs/philosophy.md`).
+Idioma de saída: per `CLAUDE.md` → 'Reviewer/skill report idioma'.
 
 **BACKLOG (papel: `backlog`):**
 
