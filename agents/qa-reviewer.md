@@ -20,6 +20,14 @@ Quando o diff toca lógica que exerce invariantes documentadas pelo papel `ubiqu
 
 Layout pode ser `tests/unit/+tests/integration/`, `test/unit+test/integration`, `__tests__/unit+__tests__/integration`, ou marker-only sem separação por path. O reviewer **infere a categoria pelo marker** (ou pela ausência de I/O/rede no caso unit), **não pela path**.
 
+## Idioms canonical por stack
+
+Idioms específicos da stack do projeto consumidor (ferramenta de mock HTTP idiomática, padrão de persistência, layout unit/integration, anti-patterns particulares) vivem em `skills/gen-tests/SKILL.md` sub-bloco correspondente à stack detectada — `pyproject.toml` → Python (`respx`, `tmp_path`, `pytest-asyncio`); `pom.xml`/`build.gradle*` → JVM (JUnit 5, Mockito, layout Maven). Fonte canonical única per [ADR-019](../docs/decisions/ADR-019-qa-reviewer-referencia-sub-blocos-gen-tests.md) — não duplicar idioms aqui.
+
+**Carregamento lazy.** Diff toca paths de teste → `Read` no sub-bloco da stack detectada como input adicional da revisão. Diff sem mudança em teste → sub-bloco não é lido.
+
+**Stack sem sub-bloco implementado** → prosseguir com as regras conceituais cross-stack desta página e citar a ausência no relatório como gap (não bloquear revisão).
+
 ## Qualidade dos testes
 
 - Datas explícitas (parâmetros), não relógio do sistema.
