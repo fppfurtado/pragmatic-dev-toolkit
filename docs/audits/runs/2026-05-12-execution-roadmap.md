@@ -52,9 +52,20 @@ Dois `/triage` independentes; cada um produz um plano próprio.
 Um único `/triage` produz plano "trim residual". Baixo risco, ganho cumulativo em clareza. Pode rodar em paralelo à Onda 3 se houver fôlego.
 
 - [ ] **F_arch** — reposicionar `/triage` passo 5 (Consolidação do backlog) como sub-fluxo do passo 4.
-- [ ] **F_prose** — compactar preâmbulo de `/init-config` (cicatriz "Diferente das demais skills do toolkit..." que explica doutrina interna).
-- [ ] **G_prose** — remover bullet redundante em `/init-config ## O que NÃO fazer` ("Não emitir cutucada de descoberta de ADR-017 dentro desta skill" — já dito no preâmbulo).
-- [ ] **E_prose** — trocar prosa por tabela em `/run-plan §3.3` (sanity check de docs).
+- [x] **F_prose** — [plano](../../plans/trim-residual-editorial-onda4.md) Bloco 5(a) + [PR #59](https://github.com/fppfurtado/pragmatic-dev-toolkit/pull/59) (2026-05-12): preâmbulo de `/init-config` linha 13 compactado de ~50 → 32 palavras preservando refs ADR-003 + ADR-017 e a ratio (define o bloco vs consume).
+- [x] **G_prose** — [plano](../../plans/trim-residual-editorial-onda4.md) Bloco 5(b) + [PR #59](https://github.com/fppfurtado/pragmatic-dev-toolkit/pull/59) (2026-05-12): bullet de `/init-config ## O que NÃO fazer` linha 128 **encolhido** (~30 → 15 palavras) em vez de removido — design-reviewer flagou bullet como guarda-checklist contra exceção localizada (per critério editorial em CLAUDE.md + ADR-017 § Editorial inheritance); operador escolheu opção "encolher" sobre 3 alternativas pós-finding, preservando função-checklist sem duplicar a ratio do preâmbulo.
+- [x] **E_prose** — [plano](../../plans/trim-residual-editorial-onda4.md) Bloco 4 + [PR #59](https://github.com/fppfurtado/pragmatic-dev-toolkit/pull/59) (2026-05-12): `/run-plan §3.3` sanity check de docs convertido de 3 bullets de skip + 1 cutucada em prosa contínua → tabela `Condição | Skip silente? | Ação` + prosa pós-tabela com definições + mecânica da cutucada. Comportamento preservado integralmente.
+
+### Onda 4 — achados extras absorvidos no mesmo PR
+
+Re-execução de `prose-tokens` ([2026-05-12b](2026-05-12b-prose-tokens.md)) pós-fechamento das Ondas 1-3b identificou 4 cicatrizes residuais não-flagadas na run anterior. Incorporadas ao mesmo plano `trim-residual-editorial-onda4` como blocos adicionais:
+
+- [x] **B-NEW** — [plano](../../plans/trim-residual-editorial-onda4.md) Bloco 1 + [PR #59](https://github.com/fppfurtado/pragmatic-dev-toolkit/pull/59) (2026-05-12): `agents/doc-reviewer.md` description 48 → 22 palavras removendo enumeração de 3 tipos de drift que duplicava `## O que flagrar` do body. **Auto-loaded por roteador a cada turn**.
+- [x] **C-NEW** — [plano](../../plans/trim-residual-editorial-onda4.md) Bloco 2 + [PR #59](https://github.com/fppfurtado/pragmatic-dev-toolkit/pull/59) (2026-05-12): `CLAUDE.md` linhas 15-17 (Plugin layout / Agents) reduzidas a 1 frase apontando para "The role contract" table (linha 43). Single source para dispatch de reviewers. **Auto-loaded por turn**.
+- [x] **A-NEW** — [plano](../../plans/trim-residual-editorial-onda4.md) Bloco 3 + [PR #59](https://github.com/fppfurtado/pragmatic-dev-toolkit/pull/59) (2026-05-12): `templates/plan.md` comentário dos 3 campos especiais (Termos ubíquos, ADRs candidatos, Linha do backlog) condensado de 2-3 linhas cada → 1 linha cada. Doc-reviewer flagou drift `conceito` vs `conceito ubíquo` no vocabulário canonical; corrigido pré-commit.
+- [x] **D-NEW** — [plano](../../plans/trim-residual-editorial-onda4.md) Bloco 6 + [PR #59](https://github.com/fppfurtado/pragmatic-dev-toolkit/pull/59) (2026-05-12): `/release §4.5 item 5 "Aplicar"` sentença ~250 palavras reescrita como 4 sub-itens enumerados (Recovery condicional → Sync sempre → Reportar → Aplicar (a)-(e)). Tentativa inicial usou tabela `Estado | Ação | Sub-ações`; doc-reviewer flagou drift de comportamento (Recovery/Sync como mutuamente excludentes); reescrita preserva pipeline sequencial.
+
+**Onda 4 fechada (2026-05-12).** Bundle E/F/G_prose + A/B/C/D-NEW shipped via [PR #59](https://github.com/fppfurtado/pragmatic-dev-toolkit/pull/59) (plano `trim-residual-editorial-onda4`). Redução agregada: -122 palavras em 6 arquivos (CLAUDE.md, agents/doc-reviewer.md, templates/plan.md, skills/run-plan, skills/init-config, skills/release). Item residual: F_arch (structural — reposicionar `/triage` passo 5; YAGNI até pain real surgir).
 
 ## Diferida
 
