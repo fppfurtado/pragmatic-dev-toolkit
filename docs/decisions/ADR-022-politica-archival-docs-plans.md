@@ -8,6 +8,7 @@
 - **Decisão base:** [ADR-014](ADR-014-inventario-editorial-main-unico.md) — manter main único com inventário editorial público. Gatilho § "Gatilhos de revisão" #4: *"`docs/plans/` ultrapassar 100 arquivos sem rotação — gestão editorial fica difícil; reabrir para considerar arquivamento (mover para tag/release archive) ou refatoração estrutural."*
 - **Decisão base:** [ADR-004](ADR-004-state-tracking-em-git.md) — state-tracking em git/forge; pipeline canonical `**Linha do backlog:**` no plano → matching textual em `/run-plan §3.4`. Archival precisa preservar esse pipeline.
 - **Investigação:** Auditoria arquitetural 2026-05-12 (`docs/audits/runs/2026-05-12-architecture-logic.md`, achado E2 + proposta E_arch). Hoje ~55 planos em `docs/plans/`. Ritmo recente do refactor sweep sugere atingir 100 em ~5 dias se mantido. Reabertura **preventiva**.
+- **Calibração inicial:** N=2 semanas (era N=4 candidato no draft). Calibrado para 2 semanas em 2026-05-12 pelo operador antes do primeiro uso real — exercício antecipado do gatilho de revisão #1 (§ Gatilhos), consistente com a natureza heurística do parâmetro reconhecida em § Trade-offs.
 
 ## Contexto
 
@@ -40,7 +41,7 @@ Plano em `docs/plans/<slug>.md` (não em `archive/`) é **elegível** quando sat
 1. **Tem `**Linha do backlog:**`** no `## Contexto`. Sem o campo → não-elegível (skill reporta; archival manual).
 2. **Linha matchável no `BACKLOG.md`** (matching textual exato em qualquer seção). Linha não localizada → editorial: `not eligible: <slug>.md — **Linha do backlog:** não localizada em BACKLOG.md; verificar matching`.
 3. **Linha está em `## Concluídos`, não em `## Próximos`.** Linha em Próximos → **silente** (item não terminou; sem ruído no relatório).
-4. **Linha entrou em Concluídos há ≥ N semanas.** Datação via **pickaxe** — `git log -S "<texto-da-linha>" --diff-filter=A --reverse BACKLOG.md | head -1` → primeiro commit que **adicionou** o texto exato (independente de reedições in-place posteriores). N=4 candidato (calibração heurística — ver § Trade-offs).
+4. **Linha entrou em Concluídos há ≥ N semanas.** Datação via **pickaxe** — `git log -S "<texto-da-linha>" --diff-filter=A --reverse BACKLOG.md | head -1` → primeiro commit que **adicionou** o texto exato (independente de reedições in-place posteriores). **N=2 semanas** (calibração inicial — ver § Origem; era N=4 candidato no draft).
 5. **Sem worktree ativa nem órfã do slug:** `git worktree list --porcelain` não inclui `.worktrees/<slug>` **E** `test -d .worktrees/<slug>` falha (probe orphan — failure mode coberto também pela precondição 4 do `/run-plan`).
 6. **Sem PR aberto referenciando o slug:** auto-detect forge — `gh pr list --search <slug>` (GitHub) ou `glab mr list --search <slug>` (GitLab regex `^gitlab\.`). **Forge inacessível** (CLI ausente, host não-mapeado) → plano **não-elegível nesta invocação** com mensagem `degraded: <slug>.md — forge inacessível; not eligible this run, retry após restaurar gh/glab`. **Não** assume seguro: vetor do risco é arquivar plano com PR aberto durante trabalho em curso.
 
@@ -114,7 +115,7 @@ Operador querendo retomar plano arquivado: `git mv docs/plans/archive/<YYYY-Qx>/
 ### Trade-offs
 
 - **+1 skill no plugin** (8 → 9). Custo de manutenção marginal; superfície semelhante a `/release` (operação periódica do mantenedor, baixa frequência).
-- **N=4 semanas é heurística com observabilidade pior que N=15 do ADR-021.** ADR-021 N=15 erra para baixo/alto e operador detecta na invocação do reviewer (loop frequente). ADR-022 N=4 semanas erra para baixo arquivando plano ativo — só detectado quando operador ou cross-ref tenta achar o plano e falha. **Preview-first mitiga** (operador vê lista antes do `git mv`); gatilho de revisão registra incidentes pós-fato. Trade-off explícito: assimetria de observabilidade reconhecida; preview cobre o gap sem instrumentação automatizada.
+- **N=2 semanas é heurística com observabilidade pior que N=15 do ADR-021.** ADR-021 N=15 erra para baixo/alto e operador detecta na invocação do reviewer (loop frequente). ADR-022 N=2 semanas erra para baixo arquivando plano ativo — só detectado quando operador ou cross-ref tenta achar o plano e falha. **Preview-first mitiga** (operador vê lista antes do `git mv`); gatilho de revisão registra incidentes pós-fato. Trade-off explícito: assimetria de observabilidade reconhecida; preview cobre o gap sem instrumentação automatizada.
 - **Granularidade YYYY-Qx é heurística.** Vincula ao calendário, não ao ritmo de release (irregular no plugin). Plugin sem cadência fixa pode ter quarters com 0 archivals (diretório vazio nunca criado — sem dano). Aceito.
 - **Detecção de PR via forge auto-detect** herda fragilidade de `/run-plan §3.7` / `/release §5` (CLI ausente → degradação por plano específico, **não** assume seguro). Plano fica em `docs/plans/` até forge voltar.
 - **Datação via `git log -S` pickaxe** captura primeiro commit que **adicionou** o texto, robusto a reedições in-place pós-Concluído (typo fix, reword cosmético). Frágil apenas a `filter-repo` retroativo — não previsto por ADR-014.
@@ -191,13 +192,13 @@ Descartada:
 
 ## Gatilhos de revisão
 
-- **N=4 semanas mal-calibrado** (mecanismo arquiva cedo demais OU plano ativo é arquivado por confusão) — ajustar; primeira evidência empírica vem do primeiro `/archive-plans` no plugin.
+- **N=2 semanas mal-calibrado** (mecanismo arquiva cedo demais OU plano ativo é arquivado por confusão) — ajustar; primeira evidência empírica vem do primeiro `/archive-plans` no plugin.
 - **Plano arquivado por erro 2+ vezes** apesar do preview — sinal de que preview é insuficientemente informativo; reabrir formato (mais cross-refs? mostrar última modificação do arquivo do plano?).
 - **Cross-refs quebrados em ADRs `## Implementação`** após archival recorrente E operador reclama — sinal de que preview-first delega decisão demais. Considerar `--strict` flag que bloqueia archival quando cross-ref encontrado.
 - **`docs/plans/archive/<YYYY-Qx>/` ficar grande demais** (> 50 planos por quarter) — granularidade quarter insuficiente; considerar mês ou layout (h) por release tag se cadência estabilizar.
 - **Operador rodar `/archive-plans` < 1× por ano** — sinal de under-use; archival não atrai atenção. Considerar nudge editorial em `/release` (gesto opcional, não obrigatório).
 - **Plano arquivado precisa ser des-arquivado >1× em janela curta** — sinal de critério inadequado; reabrir.
-- **Consumer externo adota workflow muito diferente** (releases mensais com many planos por release) — N=4 semanas pode ser confuso. Considerar threshold custom via path contract.
+- **Consumer externo adota workflow muito diferente** (releases mensais com many planos por release) — N=2 semanas pode ser confuso. Considerar threshold custom via path contract.
 - **Volume de `docs/plans/archive/`** crescer ao ponto de exigir sub-rotação (archive de archive) — extremo; revisitar layout.
 - **Forge-degraded recorrente** (plano fica não-elegível 3+ invocações seguidas por forge inacessível) — sinal de que detecção de PR precisa fallback robusto. Considerar dispensar critério (6) se forge não-mapeado é o pattern do consumer.
 - **Pickaxe falha** (linha movida sem reformatar Próximos → Concluídos sem alterar caracteres) — promover datação para cruzamento com `git log -G "## Concluídos"`.

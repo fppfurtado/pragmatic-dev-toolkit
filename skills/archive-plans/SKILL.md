@@ -31,7 +31,7 @@ Mecânica per [ADR-022](../../docs/decisions/ADR-022-politica-archival-docs-plan
 1. **`**Linha do backlog:**` presente** — `grep -E "^\*\*Linha do backlog:\*\*" docs/plans/<slug>.md` retorna não-vazio. Ausente → **editorial** (`not eligible: <slug>.md — sem **Linha do backlog:**; archival manual`).
 2. **Linha matchável** em `BACKLOG.md` (qualquer seção) — extrair `<texto>` do campo, `grep -F "<texto>" BACKLOG.md` retorna não-vazio. Não localizada → **editorial** (`not eligible: <slug>.md — **Linha do backlog:** não localizada; verificar matching`).
 3. **Linha está em `## Concluídos`, não em `## Próximos`.** Varrer BACKLOG.md de `## Concluídos` até EOF (ou próximo `##`); verificar `<texto>` aparece. Em Próximos → **silente** (item não terminou; sem reporte).
-4. **Idade ≥ 4 semanas** — `git log -S "<texto>" --diff-filter=A --reverse BACKLOG.md | head -1` → primeiro commit que adicionou o texto (pickaxe; robusto a reedições in-place). Comparar timestamp com `date -d '4 weeks ago' +%s`. Mais recente → **silente**.
+4. **Idade ≥ 2 semanas** — `git log -S "<texto>" --diff-filter=A --reverse BACKLOG.md | head -1` → primeiro commit que adicionou o texto (pickaxe; robusto a reedições in-place). Comparar timestamp com `date -d '2 weeks ago' +%s`. Mais recente → **silente**.
 5. **Sem worktree** — `git worktree list --porcelain | grep -q "\.worktrees/<slug>$"` E `test -d .worktrees/<slug>` ambos falsos. Worktree registrada OU órfã → **aviso** (`not eligible: <slug>.md — worktree em .worktrees/<slug> (registrada/órfã); trabalho em curso`).
 6. **Sem PR aberto referenciando o slug** — auto-detect forge (parse `git remote get-url origin`):
    - `github.com` → `gh pr list --search <slug> --state open --json number --jq 'length'`.
@@ -51,7 +51,7 @@ Reportar ao operador:
 
 - **Elegíveis** (N): cada um como `<slug>.md → archive/<YYYY-Qx>/`.
 - **Cross-refs detectados** (M): por plano elegível, listar `ADR-NNN:<linha>: <trecho>` (informação ao operador; não bloqueia).
-- **Não-elegíveis reportados** (K): mensagem por categoria — `Editorial` (ausência do campo / linha não localizada), `Aviso` (worktree ativa, PR aberto), `Degraded` (forge inacessível). Silentes (linha em Próximos, idade < 4 semanas) omitidos do reporte.
+- **Não-elegíveis reportados** (K): mensagem por categoria — `Editorial` (ausência do campo / linha não localizada), `Aviso` (worktree ativa, PR aberto), `Degraded` (forge inacessível). Silentes (linha em Próximos, idade < 2 semanas) omitidos do reporte.
 - **Resumo final:** `N planos elegíveis; M cross-refs detectados; K não-elegíveis reportados; <Q> silentes.`
 
 ### 4. Gate `AskUserQuestion`
