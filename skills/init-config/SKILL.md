@@ -66,6 +66,12 @@ Pergunta via `AskUserQuestion` (header `TestCmd`):
 - Probe deu match → opções `<valor proposto>` (Recommended) / `Não declarar (null) — /run-plan cai em "## Verificação end-to-end" manual` / Other (operador customiza).
 - Probe sem match → opções `Não declarar (null)` (Recommended) / Other.
 
+**Recusa de cross-mode (ADR-025).** Após coletar as 4 respostas, **antes** de prosseguir para step 4, verificar se a combinação resultante é `paths.backlog: local` AND `paths.plans_dir: canonical` (canonical = operador escolheu `Canonical` OR `paths.plans_dir` ficaria omitido como default). Combinação detectada → parar com mensagem literal:
+
+> Combinação `backlog: local + plans_dir: canonical` recusada ([ADR-025](../../docs/decisions/ADR-025-recusar-cross-mode-backlog-local-init-config.md)). `**Linha do backlog:**` viraria mensageiro de texto privado para plano público — semanticamente incoerente. Re-execute `/init-config` escolhendo uma das combinações suportadas: `ambos canonical` (default — registro coletivo), `ambos local` (uso individual), `backlog canonical + plans_dir local` (registro coletivo + planos privados).
+
+Postura editorial não-reparativa — sem re-prompt automático via `AskUserQuestion`, operador re-executa com escolhas corrigidas. Bloco YAML **não é gravado** quando a combinação inválida é detectada.
+
 ### 4. Compor e gravar bloco YAML no CLAUDE.md
 
 Estratégia de composição (compactar — chave omitida significa canonical default per schema):
@@ -126,3 +132,4 @@ A tabela de §3 é v1. Stacks adicionais (Gradle, Cargo, Cargo workspace, Bun, e
 - **Não reescrever bloco config malformado / duplicado / órfão.** Parar com diagnóstico; operador resolve manualmente. Postura editorial, não reparativa.
 - **Não invocar outras skills do toolkit em cascata.** `/init-config` é setup, não orquestrador. Operador chama as skills seguintes manualmente após config gravado.
 - **Não emitir cutucada de descoberta (ADR-017):** `/init-config` define o bloco em vez de consumir.
+- **Não acomodar cross-mode `backlog: local + plans_dir: canonical` via warning, re-prompt ou cobertura defensiva** ([ADR-025](../../docs/decisions/ADR-025-recusar-cross-mode-backlog-local-init-config.md)) — recusa hard é o ponto; "amaciar" a recusa em futura edição re-introduz leak de texto privado para plano público.
