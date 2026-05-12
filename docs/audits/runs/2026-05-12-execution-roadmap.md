@@ -1,0 +1,72 @@
+# Roadmap de execução — auditorias 2026-05-12
+
+Sequência recomendada para implementar as propostas das duas auditorias do dia:
+
+- `docs/audits/runs/2026-05-12-architecture-logic.md` — propostas com sufixo `_arch`.
+- `docs/audits/runs/2026-05-12-prose-tokens.md` — propostas com sufixo `_prose`.
+
+**Nota para sessão futura:** leia os 2 audits do dia antes de pegar um item daqui — cada proposta refere-se a achados específicos com contexto que não cabe nesta lista.
+
+**Convenção de status:** `[ ]` pendente · `[~]` em andamento · `[x]` concluído (atualizar com link a commit/PR/ADR shippado + data curta).
+
+**Convenção de encaminhamento:** cada item entra pelo fluxo padrão `/triage <proposta>` que decide artefato (linha de backlog, plano, ADR, atualização cirúrgica). Bundles indicados explicitamente abaixo passam por **um único** `/triage` produzindo plano cobrindo os itens agrupados.
+
+---
+
+## Onda 1 — antecipar gatilhos críticos
+
+Cada item sozinho. ADR-worthy ou addendum. Ordem: mais barato primeiro; ADRs novos depois.
+
+- [ ] **C_arch** — critério mecânico de admissão de warnings pré-loop em `/run-plan`. Addendum ao ADR-002 antes do 6º warning bater no gatilho de reabertura ("Surge 5º+ warning na fase pré-loop com natureza distinta..."). Estamos em 5/5.
+- [ ] **B_arch** — curadoria de free-read do `design-reviewer`. ADR sucessor de ADR-009/011. Antecipar antes do gatilho "≥30 ADRs" (hoje 19, ritmo recente sugere 1-2 semanas).
+- [ ] **E_arch** — política de archival para `docs/plans/`. ADR sucessor de ADR-014. Antecipar antes do gatilho "≥100 planos" (hoje ~55).
+
+## Onda 2 — bundle editorial auto-loaded
+
+Um único `/triage` produz plano "tightening editorial — auto-loaded". Tudo toca CLAUDE.md + frontmatters; cada turn paga footprint inteiro — atacar junto faz a redução render imediatamente.
+
+- [ ] **A_arch** — uniformizar `disable-model-invocation` nas 5 skills que omitem (`/triage`, `/debug`, `/gen-tests`, `/next`, `/init-config`).
+- [ ] **A_prose** — compactar 3 cicatrizes em CLAUDE.md: linha 23 "From v1.11.0 onward", linhas 25-28 "Release cadence", linha 84 "Critério editorial" expandido.
+- [ ] **C_prose** — encurtar `description` de 4 frontmatters (`/gen-tests`, `/init-config`, `design-reviewer`, `security-reviewer`) para gatilho puro.
+
+## Onda 3 — bundles estruturais cross-skill
+
+Dois `/triage` independentes; cada um produz um plano próprio.
+
+### 3a — cleanup pós-merge extraído + forge bilateral
+
+- [ ] **G_arch** — extrair "Cleanup pós-merge" de `/triage §0` para `templates/cleanup-pos-merge.md`. Toca `/triage` + `/release` (que referencia textualmente o passo 0 hoje).
+- [ ] **D_arch** — estender auto-detect forge bilateral (`gh` + `glab`) ao cleanup extraído. **Depende de G_arch** — executar G primeiro torna D wire-up trivial.
+
+### 3b — hub-and-spoke de doutrina
+
+- [ ] **B_prose** — consolidar fórmula "Idioma do relatório" em CLAUDE.md (seção curta `## Reviewer/skill report idioma`) + referenciar nos 6 sites (5 agents + `/triage`).
+- [ ] **D_prose** — migrar "Linguagem ubíqua na implementação" de `philosophy.md` para princípio puro (remover descrição do pipeline operacional).
+
+## Onda 4 — trim cirúrgico em skills
+
+Um único `/triage` produz plano "trim residual". Baixo risco, ganho cumulativo em clareza. Pode rodar em paralelo à Onda 3 se houver fôlego.
+
+- [ ] **F_arch** — reposicionar `/triage` passo 5 (Consolidação do backlog) como sub-fluxo do passo 4.
+- [ ] **F_prose** — compactar preâmbulo de `/init-config` (cicatriz "Diferente das demais skills do toolkit..." que explica doutrina interna).
+- [ ] **G_prose** — remover bullet redundante em `/init-config ## O que NÃO fazer` ("Não emitir cutucada de descoberta de ADR-017 dentro desta skill" — já dito no preâmbulo).
+- [ ] **E_prose** — trocar prosa por tabela em `/run-plan §3.3` (sanity check de docs).
+
+## Diferida
+
+- [ ] **H_arch** — recusar cross-mode `backlog: local + plans_dir: canonical` no `/init-config`. Só com evidência empírica de uso não-intencional (não acionar agora).
+
+---
+
+## Pontos de atenção cross-onda
+
+- **Re-rodar `prose-tokens` depois da Onda 3a.** G_arch sozinho remove ~200 palavras de `/triage §0`; números finais da auditoria mudam materialmente. Refinar alvos restantes evita gastar prosa sobre realidade já alterada.
+- **Release cadence.** Onda 1 sozinha já é coherent set (3 ADRs + addendum) → considerar `/release minor` ao fim. Ondas 2-4 podem acumular em `main` ou bumpar entre, conforme energia.
+- **`design-reviewer` em B_arch.** Ele lê todos os ADRs por invocação (ADR-009), incluindo ADR-009/011 que B_arch refina. Ponto cego conhecido (ADR-009 § Limitações). Ler findings com atenção; pode rebater contradição com sua própria doutrina-base que está sendo reescrita.
+- **Não bundle entre auditorias se a área não for a mesma.** Bundle válido: A_arch + A_prose + C_prose (mesmo eixo auto-loaded). Bundle inválido: B_arch (ADR de reviewer) + B_prose (consolidar idioma do relatório) — cross-purpose.
+
+---
+
+## Histórico de execução
+
+(Atualizar conforme cada item shippa — link a commit/PR/ADR + data curta.)
