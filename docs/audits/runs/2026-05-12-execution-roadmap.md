@@ -42,8 +42,10 @@ Dois `/triage` independentes; cada um produz um plano próprio.
 
 ### 3b — hub-and-spoke de doutrina
 
-- [ ] **B_prose** — consolidar fórmula "Idioma do relatório" em CLAUDE.md (seção curta `## Reviewer/skill report idioma`) + referenciar nos 6 sites (5 agents + `/triage`).
-- [ ] **D_prose** — migrar "Linguagem ubíqua na implementação" de `philosophy.md` para princípio puro (remover descrição do pipeline operacional).
+- [x] **B_prose** — [plano](../../plans/hub-and-spoke-doutrina.md) Bloco 1 (2026-05-12): nova seção `## Reviewer/skill report idioma` em CLAUDE.md operacionaliza, para 5 reviewers + `/triage`, a regra-mãe em `philosophy.md` → "Convenção de idioma"; ADR-007 cobre artefatos informativos fora deste escopo. 6 spokes referenciam o hub. Assimetria intencional: `code-reviewer` retém linha sobre rótulos estruturados (`Localização`/`Problema`/`Filosofia violada`/`Sugestão`) — subagent isolado não tem CLAUDE.md auto-loaded. Findings altos do design-reviewer absorvidos pré-commit (operacionalização vs fonte; rótulos no spoke; anti-drift grep).
+- [x] **D_prose** — [plano](../../plans/hub-and-spoke-doutrina.md) Bloco 2 (2026-05-12): seção "Linguagem ubíqua na implementação" em `philosophy.md` trimmed de 3 frases (princípio + dangling "frase-tese" + descrição de pipeline operacional `/triage` passo 4 → `/run-plan` passo 2 → `code-reviewer`) para 3 frases enxutas (princípio + frase-âncora sem dangling + remete a skills/agents). Sustenta onda anterior "philosophy.md: refatorar para conter apenas princípios" (BACKLOG `## Concluídos`). "no domínio" preservado vs `ubiquitous_language` (finding 3 do design-reviewer — papel é mecânica do toolkit; princípio em philosophy deve ler em termos universais).
+
+**Onda 3b fechada (2026-05-12).** Bundle B_prose + D_prose shipped no mesmo PR via plano `hub-and-spoke-doutrina`. PR # adicionado pós-merge.
 
 ## Onda 4 — trim cirúrgico em skills
 
