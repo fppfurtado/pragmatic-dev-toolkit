@@ -19,7 +19,7 @@ Cada item sozinho. ADR-worthy ou addendum. Ordem: mais barato primeiro; ADRs nov
 
 - [x] **C_arch** — [ADR-020](../../decisions/ADR-020-criterio-mecanico-admissao-warnings-pre-loop.md) (2026-05-12): critério mecânico de admissão de warnings pré-loop em `/run-plan`. Reabertura preventiva de ADR-002 antes do 6º warning. ADR sucessor (não adendo — rebatida em § Alternativas (a)) com 7 findings do `design-reviewer` absorvidos pré-commit.
 - [~] **B_arch** — [ADR-021](../../decisions/ADR-021-curadoria-free-read-design-reviewer.md) + [plano](../../plans/curadoria-free-read-design-reviewer.md) (2026-05-12): curadoria de free-read do `design-reviewer` em modo híbrido (anotação `**ADRs candidatos:**` + scan + threshold N=15). Decisão tomada; 6 findings do design-reviewer absorvidos no ADR + 6 no plano. Implementação editorial pendente via `/run-plan curadoria-free-read-design-reviewer`.
-- [ ] **E_arch** — política de archival para `docs/plans/`. ADR sucessor de ADR-014. Antecipar antes do gatilho "≥100 planos" (hoje ~55).
+- [~] **E_arch** — [ADR-022](../../decisions/ADR-022-politica-archival-docs-plans.md) + [plano](../../plans/archive-plans.md) (2026-05-12): política de archival para `docs/plans/` via skill nova `/archive-plans` (preview-first; layout `archive/<YYYY-Qx>/`; `git mv` non-destructive). ADR sucessor de ADR-014; 7 findings do `design-reviewer` absorvidos no ADR + 7 críticos + 3 informativos no plano. Implementação editorial pendente via `/run-plan archive-plans`.
 
 ## Onda 2 — bundle editorial auto-loaded
 
