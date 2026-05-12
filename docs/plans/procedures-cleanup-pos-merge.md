@@ -103,3 +103,19 @@ Procedimento toca **comportamento observável** de `/triage` (passo 0) e `/relea
 - **glab syntax confirmada durante Bloco 2:** sintaxe final aplicada é `glab mr list --merged --source-branch <branch> --output json | jq -r '.[0].iid // empty'`. Wording-alvo inicial divergiu (`--state merged` em vez de `--merged`; `--fields iid` que não existe). Gate detectou e ajustou pré-commit per docs oficiais. Pattern bilateral (gh+glab) é o segundo caso forge-bilateral no toolkit (paralelo ao `mr create --fill` / `pr create --fill` já em `/run-plan §3.7`).
 - **ADR-024 já criado neste /triage:** ADR existe em `docs/decisions/ADR-024-categoria-docs-procedures-procedimentos-compartilhados.md` (sucessor parcial de ADR-001); plano referencia, não cria. Design-reviewer findings absorvidos pré-commit (7 findings: 2 altos rename `protocols`→`procedures` e reinterpretação ADR-001; 3 médios endurecendo mitigações; 2 baixos polish).
 - **Bloco 4 é load-bearing.** Sem cross-reference em ADR-001, ADR-024 § Decisão fica violado e o plano fica incompleto. Não tratar como bloco editorial opcional.
+
+## Pendências de validação
+
+Capturadas no gate final do `/run-plan` — smoke-test pós-release em consumer real:
+
+- **Cenário 1** — GitHub squash-merge detection (regressão); invocar `/triage` em consumer GitHub com worktree de PR squash-merged.
+- **Cenário 2** — GitLab squash-merge detection (novo via D_arch); invocar `/triage` em consumer GitLab corporativo com MR squash-mergeada.
+- **Cenário 3** — Host não-mapeado (fallback); consumer com remote `bitbucket.org`.
+- **Cenário 4** — `gh` ausente no PATH; consumer GitHub sem `gh`.
+- **Cenário 5** — `glab` ausente no PATH; consumer GitLab sem `glab` (fallback git-only).
+- **Cenário 6** — `/release` squash-detection; mesmo path do cenário 1 ou 2 via `/release`.
+- **Cenário 8** — Mix mergeada/não-mergeada em `.worktrees/`.
+- **Cenário 9** — Worktree órfã (branch sumiu).
+- **Cenário 10** — GitLab sem `jq` no PATH (gap operacional); consumer GitLab com `glab` instalado mas `jq` ausente. Esperado: candidato cai em "sem detecção" (não fallback git-only).
+
+Cenário 7 (skip silente) foi auto-validado no worktree do `/run-plan` (sem `.worktrees/` sub-worktrees).
