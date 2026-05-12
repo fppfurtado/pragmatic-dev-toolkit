@@ -1,6 +1,7 @@
 ---
 name: triage
 description: Alinha intenção e decide artefato (backlog, plano, ADR, atualização de domain/design) antes de implementar. Use quando o operador propuser feature, fix ou refactor sem plano nem linha de backlog.
+disable-model-invocation: false
 roles:
   required: [plans_dir]
   informational: [backlog, ubiquitous_language, design_notes, decisions_dir, product_direction]

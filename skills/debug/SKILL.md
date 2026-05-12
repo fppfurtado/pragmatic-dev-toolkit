@@ -1,6 +1,7 @@
 ---
 name: debug
 description: Diagnostica causa-raiz de sintoma (teste falhando, erro inesperado, comportamento divergente) por método científico. Produz diagnóstico, não fix. Stack-agnóstico.
+disable-model-invocation: false
 roles:
   informational: [test_command, ubiquitous_language, decisions_dir, design_notes]
 ---
