@@ -123,7 +123,15 @@ Disparar **apenas** se papel resolvido. "Não temos" → skip silente.
    Caso degenerado (ambos os papéis desativados): apenas Commit + Tag.
 
 5. **Gate único** via `AskUserQuestion` (header `Release`) com três opções:
-   - **`Aplicar`** — verificar HEAD: rodar `git symbolic-ref --short HEAD`. Se falha (detached) ou difere do branch da pré-condição 2, recovery proativo — `git status --porcelain`; se não-vazio, `git stash push -m "release v<X.Y.Z> auto-stash"`; depois `git checkout <branch-da-pré-condição-2>`. Em seguida, **antes da sequência (a)-(e)**: `git fetch origin <branch-da-pré-condição-2> 2>/dev/null`; `behind=$(git rev-list --count HEAD..@{u} 2>/dev/null || echo 0)`; se `behind > 0`, `git pull --ff-only origin <branch-da-pré-condição-2>` — falha → abortar release com erro literal do git e instruir `git pull` manual. Reportar ao operador a ref-atual encontrada no início, o branch esperado, o nome da stash se criada, e o número de commits trazidos pelo pull se aplicável (operador roda `git stash pop` manualmente após release se desejar). Em seguida, executar em sequência: (a) escrever cada `version_file`; (b) inserir entrada no changelog; (c) `git add <paths-específicos>` (**não** `git add -A` — risco de capturar arquivos não-relacionados); (d) `git commit -m "<msg>"`; (e) `git tag -a <tag>` com **um `-m` por linha** da mensagem composta no item 3.5 (`-m "Release <tag>" -m "Added: ..." -m "Changed: ..." ...`); fallback (sem síntese) usa `-m "Release <tag>"` único.
+   - **`Aplicar`** — executar em sequência:
+
+     1. **Recovery proativo (condicional).** `git symbolic-ref --short HEAD`. Detached ou branch ≠ pré-condição 2 → `git status --porcelain`; se não-vazio, `git stash push -m "release v<X.Y.Z> auto-stash"`; depois `git checkout <branch-da-pré-condição-2>`. Branch já correto → skip.
+
+     2. **Sync com upstream (sempre, após 1).** `git fetch origin <branch-da-pré-condição-2> 2>/dev/null`; `behind=$(git rev-list --count HEAD..@{u} 2>/dev/null || echo 0)`; `behind > 0` → `git pull --ff-only origin <branch-da-pré-condição-2>` (falha → abortar release com erro literal do git e instruir `git pull` manual). `behind = 0` → skip.
+
+     3. **Reportar ao operador** a ref-atual encontrada no início, o branch esperado, o nome da stash se criada, e o número de commits trazidos pelo pull se aplicável (operador roda `git stash pop` manualmente após release se desejar).
+
+     4. **Aplicar sequência:** (a) escrever cada `version_file`; (b) inserir entrada no changelog; (c) `git add <paths-específicos>` (**não** `git add -A` — risco de capturar arquivos não-relacionados); (d) `git commit -m "<msg>"`; (e) `git tag -a <tag>` com **um `-m` por linha** da mensagem composta no item 3.5 (`-m "Release <tag>" -m "Added: ..." -m "Changed: ..." ...`); fallback (sem síntese) usa `-m "Release <tag>"` único.
    - **`Editar`** — prosa livre. Operador descreve ajuste em qualquer elemento (bullet do changelog, mensagem do commit, nome da tag). Skill aplica no rascunho em memória, volta ao item 4 e re-pergunta.
    - **`Cancelar`** — abort silente. Nada para reverter em disco. Reportar.
 

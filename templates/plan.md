@@ -14,17 +14,9 @@ Seções opcionais (## Verificação manual, ## Notas operacionais) só aparecem
 <!--
 Campos especiais (incluir só quando aplicáveis):
 
-**Termos ubíquos tocados:** <Termo> (<categoria>), ...
-  Categorias: bounded context, agregado, entidade, RN, conceito ubíquo.
-  Inclui apenas quando o pedido toca o domínio (papel `ubiquitous_language`); refactor puro/doc-only omite.
-
-**ADRs candidatos:** ADR-NNN (motivo curto), ADR-MMM (motivo curto)
-  Inclui ADRs que o operador identifica como tocados/contradictados pela mudança.
-  Reviewer prioriza leitura integral desses; scan automático cobre os demais (per ADR-021).
-  Campo opcional — operador que não sabe quais ADRs aplicam simplesmente omite.
-
-**Linha do backlog:** <texto exato da linha gravada no BACKLOG>
-  Inclui apenas quando há linha de backlog correspondente — mensageiro de matching para /run-plan operar transições de estado.
+**Termos ubíquos tocados:** <Termo> (<categoria>) — bounded context|agregado|entidade|RN|conceito ubíquo; omitir em refactor/doc-only.
+**ADRs candidatos:** ADR-NNN (motivo) — opcional; reviewer prioriza esses, scan cobre os demais (ADR-021).
+**Linha do backlog:** <texto exato> — incluir quando há linha no BACKLOG; mensageiro pra /run-plan operar transições.
 -->
 
 ## Resumo da mudança
