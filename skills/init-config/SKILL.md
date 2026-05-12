@@ -10,7 +10,7 @@ Wizard interativo para configurar o bloco `<!-- pragmatic-toolkit:config -->` no
 
 **Cobertura v1:** 4 roles com dor concreta — `decisions_dir`, `backlog`, `plans_dir` (aceitam local mode per [ADR-005](../../docs/decisions/ADR-005-modo-local-gitignored-roles.md)) e `test_command` (top-level no schema). Informational roles (`product_direction`, `ubiquitous_language`, `design_notes`) e `version_files`/`changelog` ficam fora — operador edita manualmente quando precisar.
 
-Diferente das demais skills do toolkit, `/init-config` **não** consome roles via Resolution protocol — ela **define** o bloco que o protocol lê. Frontmatter sem `roles:` por design (per [ADR-003](../../docs/decisions/ADR-003-frontmatter-roles.md) § Schema, listas vazias podem ser omitidas). Cutucada de descoberta do [ADR-017](../../docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md) **não dispara dentro de `/init-config`**.
+Frontmatter sem `roles:` por design ([ADR-003](../../docs/decisions/ADR-003-frontmatter-roles.md) § Schema) — `/init-config` define o bloco que o Resolution protocol lê em vez de consumi-lo; cutucada de descoberta ([ADR-017](../../docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md)) não se aplica dentro desta skill.
 
 ## Argumentos
 
@@ -125,4 +125,4 @@ A tabela de §3 é v1. Stacks adicionais (Gradle, Cargo, Cargo workspace, Bun, e
 - **Não modificar `.gitignore` automaticamente.** Política git do consumer; gate específico do ADR-005 cobre quando necessário (primeira escrita sob `.claude/local/<role>/`).
 - **Não reescrever bloco config malformado / duplicado / órfão.** Parar com diagnóstico; operador resolve manualmente. Postura editorial, não reparativa.
 - **Não invocar outras skills do toolkit em cascata.** `/init-config` é setup, não orquestrador. Operador chama as skills seguintes manualmente após config gravado.
-- **Não emitir cutucada de descoberta de ADR-017 dentro desta skill.** Escopo da cutucada (ADR-017) é skills com `roles.required`; `/init-config` é fora desse universo.
+- **Não emitir cutucada de descoberta (ADR-017):** `/init-config` define o bloco em vez de consumir.
