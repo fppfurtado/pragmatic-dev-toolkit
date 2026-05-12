@@ -2,6 +2,12 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.5.1] - 2026-05-12
+
+### Notes
+- ADR-023 (Proposed): "Critério mecânico para declaração explícita de `disable-model-invocation` em skills" — cumulative criterion (local blast radius + upstream-gated cross-team actions + no cross-turn autoinvocation) + retroactive table classifying the 9 shipped skills (all qualify for `false`). Generalizes the embryo criterion from BACKLOG `## Concluídos`. (#56)
+- Onda 2 of the 2026-05-12 audits closed (PR #56): bundle editorial auto-loaded. 5 omitting skills (`/triage`, `/debug`, `/gen-tests`, `/next`, `/init-config`) uniformized on `disable-model-invocation: false` per ADR-023; 4 cicatrizes compacted in CLAUDE.md ("From v1.11.0 onward" pattern eradicated, "Release cadence" + "Critério editorial" condensed); 4 frontmatter descriptions shortened for routing-payload trim (Python/Java lexical anchors preserved per design-reviewer finding). Extra block absorbed pre-existing user-facing drifts surfaced by the contrast (README.md `/gen-tests` stack list, install.md smoke list + `/init-config` prose duplication, CLAUDE.md slash command enumeration).
+
 ## [2.5.0] - 2026-05-12
 
 ### Added
