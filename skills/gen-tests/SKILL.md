@@ -1,6 +1,6 @@
 ---
 name: gen-tests
-description: Gera arquivo de teste para módulo, função ou descrição livre, com idioms da stack do projeto consumidor. Stacks suportadas hoje, Python (pytest + respx + tmp_path) e Java (JUnit 5 + Mockito + Maven). Use quando o operador pedir testes.
+description: Gera arquivo de teste para módulo, função ou descrição livre, com idioms da stack do projeto consumidor (Python e Java suportadas). Use quando o operador pedir testes.
 disable-model-invocation: false
 roles:
   informational: [ubiquitous_language, design_notes]

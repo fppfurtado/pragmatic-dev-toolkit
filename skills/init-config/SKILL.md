@@ -1,6 +1,6 @@
 ---
 name: init-config
-description: Wizard de configuração inicial dos papéis do plugin no consumer — pergunta cada role (canonical/local/null), detecta `test_command` stack-aware, grava o bloco `<!-- pragmatic-toolkit:config -->` no CLAUDE.md. Use quando o operador quer configurar o plugin de uma vez em projeto novo ou reconfigurar bloco existente.
+description: Wizard interativo para configurar o bloco `<!-- pragmatic-toolkit:config -->` no `CLAUDE.md`. Use quando o operador quer configurar o plugin de uma vez em projeto novo ou reconfigurar bloco existente.
 disable-model-invocation: false
 ---
 
