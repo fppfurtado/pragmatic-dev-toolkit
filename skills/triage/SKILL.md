@@ -122,6 +122,7 @@ Idioma de saída: espelhar o do projeto consumidor (default canonical PT-BR; ver
 No `## Contexto`:
 
 - Se o passo 1 identificou termos do `ubiquitous_language` tocados, incluir `**Termos ubíquos tocados:** <Termo> (<categoria>), ...` — categorias: `bounded context`, `agregado`, `entidade`, `RN`, `conceito ubíquo`. Pedidos que não tocam o domínio → omitir.
+- Se o passo 1 (listar ADRs relacionados em `decisions_dir`) identificou ADRs concretos tocados/contradictados pela mudança, incluir `**ADRs candidatos:** ADR-NNN (motivo curto), ADR-MMM (motivo curto)` — mensageiro para o `design-reviewer` priorizar leitura integral desses ADRs (paralelo a `**Termos ubíquos tocados:**`; mecanismo em [ADR-021](../../docs/decisions/ADR-021-curadoria-free-read-design-reviewer.md)). Campo opcional: operador que não identifica ADR específico omite, e o reviewer faz scan dos demais.
 - Se a feature foi gravada como linha no backlog, incluir `**Linha do backlog:** <texto exato>` — mensageiro de matching para `/run-plan` operar transições de estado.
 
 `BACKLOG.md` **não aparece** em `## Arquivos a alterar` — transições são geridas pelo campo acima e pelo mecanismo do `/run-plan`.
