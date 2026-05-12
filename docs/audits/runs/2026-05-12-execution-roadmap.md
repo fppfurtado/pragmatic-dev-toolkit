@@ -18,7 +18,7 @@ Sequência recomendada para implementar as propostas das duas auditorias do dia:
 Cada item sozinho. ADR-worthy ou addendum. Ordem: mais barato primeiro; ADRs novos depois.
 
 - [x] **C_arch** — [ADR-020](../../decisions/ADR-020-criterio-mecanico-admissao-warnings-pre-loop.md) (2026-05-12): critério mecânico de admissão de warnings pré-loop em `/run-plan`. Reabertura preventiva de ADR-002 antes do 6º warning. ADR sucessor (não adendo — rebatida em § Alternativas (a)) com 7 findings do `design-reviewer` absorvidos pré-commit.
-- [ ] **B_arch** — curadoria de free-read do `design-reviewer`. ADR sucessor de ADR-009/011. Antecipar antes do gatilho "≥30 ADRs" (hoje 19, ritmo recente sugere 1-2 semanas).
+- [~] **B_arch** — [ADR-021](../../decisions/ADR-021-curadoria-free-read-design-reviewer.md) + [plano](../../plans/curadoria-free-read-design-reviewer.md) (2026-05-12): curadoria de free-read do `design-reviewer` em modo híbrido (anotação `**ADRs candidatos:**` + scan + threshold N=15). Decisão tomada; 6 findings do design-reviewer absorvidos no ADR + 6 no plano. Implementação editorial pendente via `/run-plan curadoria-free-read-design-reviewer`.
 - [ ] **E_arch** — política de archival para `docs/plans/`. ADR sucessor de ADR-014. Antecipar antes do gatilho "≥100 planos" (hoje ~55).
 
 ## Onda 2 — bundle editorial auto-loaded
