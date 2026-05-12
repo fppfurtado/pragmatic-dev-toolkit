@@ -2,6 +2,18 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.5.0] - 2026-05-12
+
+### Added
+- `/archive-plans` skill — periodic editorial archival from `docs/plans/` to `docs/plans/archive/<YYYY-Qx>/`, preview-first, non-destructive (`git mv` preserves blame). 6 cumulative eligibility criteria per ADR-022 (`**Linha do backlog:**` + age ≥N weeks in `## Concluídos` + no worktree + no open PR). Threshold N=2 weeks calibrated by operator before first real use. (#55)
+- `design-reviewer` curated free-read — hybrid mode per ADR-021 (`**ADRs candidatos:**` priority annotation + keyword scan over non-annotated ADR headers + threshold N=15 below which legacy integral free-read stays). Report invariant: agent lists analyzed subset (annotated + scan-matched vs filtered). (#54)
+
+### Notes
+- ADR-020 (Proposed): "Critério mecânico de admissão de warnings pré-loop em /run-plan" — 3 cumulative criteria + prerequisite (warning vs blocker); preemptive exercise of ADR-002 revision trigger (5/5 warnings at limit).
+- ADR-021 (Proposed): "Curadoria do free-read do design-reviewer (anotação + scan)" — preemptive of ADR-009/011 revision trigger before "≥30 ADRs" threshold (20 today).
+- ADR-022 (Proposed): "Política de archival para docs/plans/" — defines the rotation trigger left undefined by ADR-014. Threshold calibrated N=4 → N=2 weeks by operator (early exercise of revision trigger #1).
+- Audit run 2026-05-12 in `docs/audits/runs/`: `prose-tokens` (7 proposals, ~370 words / ~480 tokens) + `architecture-logic` (8 proposals, 4 ADR-worthy) + `execution-roadmap` sequencing 4 ondas. Onda 1 closed (3 ADRs + 2 implementations).
+
 ## [2.4.0] - 2026-05-12
 
 ### Added
