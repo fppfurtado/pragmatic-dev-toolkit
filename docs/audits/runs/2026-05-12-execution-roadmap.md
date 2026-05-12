@@ -35,8 +35,10 @@ Dois `/triage` independentes; cada um produz um plano próprio.
 
 ### 3a — cleanup pós-merge extraído + forge bilateral
 
-- [ ] **G_arch** — extrair "Cleanup pós-merge" de `/triage §0` para `templates/cleanup-pos-merge.md`. Toca `/triage` + `/release` (que referencia textualmente o passo 0 hoje).
-- [ ] **D_arch** — estender auto-detect forge bilateral (`gh` + `glab`) ao cleanup extraído. **Depende de G_arch** — executar G primeiro torna D wire-up trivial.
+- [x] **G_arch** — [ADR-024](../../decisions/ADR-024-categoria-docs-procedures-procedimentos-compartilhados.md) + [plano](../../plans/procedures-cleanup-pos-merge.md) (2026-05-12): extração de "Cleanup pós-merge" de `/triage §0` para `docs/procedures/cleanup-pos-merge.md` (categoria nova estabelecida em ADR-024 — sucessor parcial de ADR-001, paralela a `templates/`). `/triage` e `/release` referenciam o procedimento via `${CLAUDE_PLUGIN_ROOT}/docs/procedures/cleanup-pos-merge.md`. Resolve L1 do audit (acoplamento textual). Path original `templates/cleanup-pos-merge.md` (proposto pelo audit) rejeitado por design-reviewer: colisão lexical com "Resolution protocol" + estiraria semântica de `templates/` (esqueletos preenchíveis vs procedimentos executáveis); decidido por pureza semântica via 4ª categoria sob `docs/`.
+- [x] **D_arch** — [plano](../../plans/procedures-cleanup-pos-merge.md) Bloco 2 (2026-05-12): auto-detect forge bilateral (`gh`+`glab`) aplicado no procedimento extraído (após G_arch). Sintaxe canonical para GitLab: `glab mr list --merged --source-branch <branch> --output json | jq -r '.[0].iid // empty'` (confirmada via docs oficiais durante gate; wording-alvo inicial divergia em `--state merged` e `--fields iid`). Gap operacional documentado: GitLab via `glab` requer `jq` no PATH — `glab` não embute jq como `gh --jq`.
+
+**Onda 3a fechada (2026-05-12).** Bundle G_arch + D_arch shipped no mesmo PR via plano `procedures-cleanup-pos-merge`. PR # adicionado pós-merge.
 
 ### 3b — hub-and-spoke de doutrina
 
