@@ -39,6 +39,12 @@ Ler **só o que o pedido tocar**, nesta ordem:
 
 Não ler código aqui — é alinhamento de intenção, não design técnico.
 
+**Pre-condição cross-mode ([ADR-025](../../docs/decisions/ADR-025-recusar-cross-mode-backlog-local-init-config.md)).** Após resolver `backlog` e `plans_dir`, se a combinação for `backlog` em modo `local` AND `plans_dir` em modo canonical, parar com mensagem:
+
+> Combinação `backlog: local + plans_dir: canonical` recusada (ADR-025). `**Linha do backlog:**` viraria mensageiro de texto privado para plano público — semanticamente incoerente. Rode `/init-config` para corrigir o bloco config antes de continuar com `/triage`. Combinações suportadas: `ambos canonical`, `ambos local`, `backlog canonical + plans_dir local`.
+
+Demais combinações seguem normalmente.
+
 ### 2. Esclarecer gaps com o usuário
 
 Identificar lacunas e perguntar **só o que for bloqueante**. Checklist mental (não questionário):
@@ -85,11 +91,12 @@ Idioma de saída: per `CLAUDE.md` → 'Reviewer/skill report idioma'.
   - Caminho sem plano (linha pura, ADR-only, atualização de domínio) → grava em `## Próximos`.
   - Itens fora-de-escopo capturados no passo 2 → linhas separadas em `## Próximos`, mesmo quando o artefato principal é plano/ADR.
 - **Papel "não temos":** disparar enum (`AskUserQuestion`, header `Backlog`). `Criar em BACKLOG.md` cria com cabeçalho mínimo (`# Backlog\n\n## Próximos\n\n## Concluídos\n`) e prossegue; `Não usamos esse papel` registra `paths.backlog: null` e prossegue **sem gravar** (itens reportados no passo 5).
-- **Papel em modo `local`:** linha gravada em `.claude/local/BACKLOG.md`. `**Linha do backlog:**` no plano depende do modo cruzado:
+- **Papel em modo `local`:** linha gravada em `.claude/local/BACKLOG.md`. `**Linha do backlog:**` no plano:
   - Ambos `backlog` e `plans_dir` em modo `local`: linha presente (matching textual entre arquivos locais).
   - `backlog` canonical + `plans_dir` local: linha presente no plano local (não vaza para git).
-  - `backlog` local + `plans_dir` canonical: **omitir** `**Linha do backlog:**` (texto local não pode vazar para plano commitado); `/run-plan` neste cenário não faz transição automática — operador move manualmente.
   - Ambos canonical: caso default.
+
+  Combinação `backlog: local + plans_dir: canonical` recusada upstream por [ADR-025](../../docs/decisions/ADR-025-recusar-cross-mode-backlog-local-init-config.md) (`/init-config` step 3 + `/triage` step 1) — não ocorre.
 
 **Plano (papel: `plans_dir`):** ler `${CLAUDE_PLUGIN_ROOT}/templates/plan.md` como esqueleto canônico, copiar para `<plans_dir>/<slug>.md`, adaptar headers ao idioma do projeto consumidor (per `docs/philosophy.md` → "Convenção de idioma"), preencher placeholders com o conteúdo decidido nos passos 2-3. Em modo `local` (`paths.plans_dir: local`), copia para `.claude/local/plans/<slug>.md`; resto idêntico.
 
