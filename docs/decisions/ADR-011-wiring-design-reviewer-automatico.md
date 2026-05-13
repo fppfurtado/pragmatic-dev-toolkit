@@ -25,9 +25,11 @@ ADR-009 estabeleceu o `design-reviewer` como revisor document-level pré-fato co
 
 `design-reviewer` dispara automaticamente em:
 
-1. **`/triage` que produz plano** (com ou sem ADR delegada), no passo 6 (antes do commit unificado). Findings reportados ao operador, que decide aplicar antes de commitar ou seguir como está. Sem cutucada de pré-execução — o gate é a presença dos findings, não uma pergunta binária. **Não dispara** em `/triage` que fecha em linha de backlog pura, atualização cirúrgica de `docs/domain.md`/`docs/design.md`, ou ADR-only delegada sem plano (esse último é coberto via #2 abaixo).
+1. **`/triage` que produz plano** (com ou sem ADR delegada), no passo 5 (antes do commit unificado). Findings reportados ao operador, que decide aplicar antes de commitar ou seguir como está. Sem cutucada de pré-execução — o gate é a presença dos findings, não uma pergunta binária. **Não dispara** em `/triage` que fecha em linha de backlog pura, atualização cirúrgica de `docs/domain.md`/`docs/design.md`, ou ADR-only delegada sem plano (esse último é coberto via #2 abaixo).
 
-2. **`/new-adr`** (standalone OU delegada por `/triage`), antes de retornar controle. Cobre tanto ADR criada diretamente pelo operador quanto ADR criada pelo `/triage` no caminho ADR-only — evita dispatch duplo no caminho `/triage` → `/new-adr` → reviewer (o passo 6 do `/triage` reconhece que `/new-adr` já cobriu).
+   Refinado por [ADR-026](ADR-026-criterio-mecanico-absorcao-findings-design-reviewer.md): default da aplicação invertido para absorção pré-commit + commit message estruturado; cutucada do operador via `AskUserQuestion` reservada para findings que satisfazem ≥1 das 3 condições (alternativas competindo / contradiz doutrina / contexto externo). Mecânica do wiring (quando dispara, override por inação) preservada.
+
+2. **`/new-adr`** (standalone OU delegada por `/triage`), antes de retornar controle. Cobre tanto ADR criada diretamente pelo operador quanto ADR criada pelo `/triage` no caminho ADR-only — evita dispatch duplo no caminho `/triage` → `/new-adr` → reviewer (o passo 5 do `/triage` reconhece que `/new-adr` já cobriu).
 
 `/run-plan` permanece sem wiring de `design-reviewer` — gate seria tarde (plano já no remote) e a frequência alta multiplicaria o custo de tokens sem ganho proporcional.
 
@@ -49,7 +51,7 @@ Razões objetivas:
 ### Trade-offs
 
 - **`/triage` que produz plano/ADR fica ~12k tokens mais caro por invocação.** Aceitável dado o ROI empírico (5+ findings editoriais por release de plano/ADR — cada um corrigiria depois 5x mais caro).
-- **Operador acostumado ao opt-in pode estranhar findings sem ter pedido:** mitigação editorial — `/triage` passo 6 cita explicitamente que findings são reportados antes do commit (não surpresa).
+- **Operador acostumado ao opt-in pode estranhar findings sem ter pedido:** mitigação editorial — `/triage` passo 5 cita explicitamente que findings são reportados antes do commit (não surpresa).
 - **`/run-plan` continua sem gate document-level:** se uma decisão estrutural escapou do `/triage` e só apareceu durante a implementação no `/run-plan`, o ciclo só pega no merge ou em revisão pós-fato. Aceitável — caso raro; `code-reviewer` por bloco já cobre eixo de design no diff.
 - **Findings em prosa volátil (assimetria com ADR-002):** o trilho automático de findings descrito acima reporta em prosa ao operador antes da cutucada de commit, sem persistir em artefato como o `## Pendências de validação` de ADR-002 faz para warnings de `/run-plan`. Se o operador rola o terminal e commita, o finding desaparece sem trace. Aceitável porque o artefato (plano/ADR) está editável e o operador acabou de ver — janela curta, baixa probabilidade de perda. Reabrir se operador reportar findings importantes perdidos sistematicamente (gatilho registrado abaixo).
 
