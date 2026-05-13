@@ -12,7 +12,7 @@ The companion repo is [`scaffold-kit`](https://github.com/fppfurtado/scaffold-ki
 
 Three component types, each with its own discovery mechanism:
 
-- **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests`, `/release`, `/next`, `/init-config`, `/archive-plans`). Skills only act when invoked by the user.
+- **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/draft-idea`, `/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests`, `/release`, `/next`, `/init-config`, `/archive-plans`). Skills only act when invoked by the user.
 - **Agents** — `agents/<name>.md` with frontmatter. Five reviewers shipped: `code-reviewer`, `qa-reviewer`, `security-reviewer`, `doc-reviewer`, `design-reviewer`. Dispatch rules in "The role contract" table below.
 - **Hooks** — `hooks/hooks.json` declares lifecycle bindings; the bound scripts (`hooks/*.py`) run on every matching tool call in any project that has the plugin installed. Therefore hooks **must auto-gate**. `PostToolUse` exits 0; `PreToolUse` uses exit 2 to block (see `block_env.py`).
 
@@ -85,7 +85,7 @@ Concrete paths: `.claude/local/decisions/`, `.claude/local/BACKLOG.md`, `.claude
 - Don't introduce a build system, package manager, or test runner for this repo itself. The hooks are runnable Python scripts (`python3 ${CLAUDE_PLUGIN_ROOT}/hooks/<script>.py`); the rest is markdown. (Manifest/syntax invariant checks via CI lint are a distinct category — see [ADR-013](docs/decisions/ADR-013-ci-lint-minimo-no-build-runner.md).)
 - **Instrumentação de progresso em skills multi-passo via Tasks**: ver [ADR-010](docs/decisions/ADR-010-instrumentacao-progresso-skills-multi-passo.md) — critério de aplicação, lifecycle conversation-scoped, relação com ADR-004.
 - **Wiring automático do design-reviewer**: ver [ADR-011](docs/decisions/ADR-011-wiring-design-reviewer-automatico.md) — quando dispara em `/triage` e `/new-adr`, override por inação, custo de tokens.
-- **`disable-model-invocation` em SKILL.md**: critério mecânico cumulativo em [ADR-023](docs/decisions/ADR-023-criterio-mecanico-disable-model-invocation-skills.md) — blast radius local + pushes/PRs gateados por enum upstream + sem autoinvocação cross-turn → `false`; tabela retroativa às 9 skills atuais no próprio ADR. Skill nova com `true` justifica explicitamente.
+- **`disable-model-invocation` em SKILL.md**: critério mecânico cumulativo em [ADR-023](docs/decisions/ADR-023-criterio-mecanico-disable-model-invocation-skills.md) — blast radius local + pushes/PRs gateados por enum upstream + sem autoinvocação cross-turn → `false`; tabela retroativa às 9 skills no próprio ADR. Skill nova com `true` justifica explicitamente.
 
 ## AskUserQuestion mechanics
 
@@ -128,9 +128,9 @@ This makes it safe to ship `run_pytest_python.py` alongside `run_gradle_test_jav
 
 Skills that consume the Resolution protocol via `roles.required` emit a one-line discovery hint at the end of their final reporting step when the consumer project hasn't declared the `<!-- pragmatic-toolkit:config -->` block in `CLAUDE.md`. Defined by [ADR-017](docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md).
 
-**Scope:** 4 skills with `roles.required` — `/triage`, `/new-adr`, `/run-plan`, `/next`. The other 3 skills (`/debug`, `/release`, `/gen-tests`) declare only `roles.informational` and don't reactively traverse step 3 of the Resolution protocol — they don't emit the hint.
+**Scope:** 5 skills with `roles.required` — `/triage`, `/new-adr`, `/run-plan`, `/next`, `/draft-idea`. The other 3 skills (`/debug`, `/release`, `/gen-tests`) declare only `roles.informational` and don't reactively traverse step 3 of the Resolution protocol — they don't emit the hint.
 
-**Triple gating** (each skill probes independently — duplication of 1 line in 4 sites accepted as YAGNI over shared helper per ADR-017 § Alternativa (g)):
+**Triple gating** (each skill probes independently — duplication of 1 line in 5 sites accepted as YAGNI over shared helper per ADR-017 § Alternativa (g)):
 
 1. `CLAUDE.md` exists.
 2. `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` returns non-zero (marker absent).
@@ -138,11 +138,11 @@ Skills that consume the Resolution protocol via `roles.required` emit a one-line
 
 All three satisfied → emit as the last line of the report; otherwise → suppress silently.
 
-**Canonical hint string** (identical across all 4 skills; in PT-BR per toolkit canonical):
+**Canonical hint string** (identical across all 5 skills; in PT-BR per toolkit canonical):
 
 > Dica: este projeto não declara o bloco `pragmatic-toolkit:config` no CLAUDE.md. Rode `/init-config` para configurar todos os papéis de uma vez.
 
-**Editorial inheritance.** New skills declaring `roles.required` adopt the convention manually — author adds the gating + emission paragraph at the end of the final reporting step, following the existing 4 skills as template. Checklist for human reviewer or `code-reviewer` on PRs introducing new `roles.required` SKILLs. No mechanical enforcement; convention sustained by editorial discipline.
+**Editorial inheritance.** New skills declaring `roles.required` adopt the convention manually — author adds the gating + emission paragraph at the end of the final reporting step, following the existing 5 skills as template. Checklist for human reviewer or `code-reviewer` on PRs introducing new `roles.required` SKILLs. No mechanical enforcement; convention sustained by editorial discipline.
 
 The complementary `/init-config` skill is the proactive setup path; the hint exists to surface it when reactive memoization (Resolution protocol step 4) hasn't been enough.
 
