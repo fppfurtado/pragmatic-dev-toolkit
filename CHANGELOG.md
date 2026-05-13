@@ -2,6 +2,15 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.7.0] - 2026-05-13
+
+### Added
+- Mechanical criterion for absorbing `design-reviewer` findings pre-commit (ADR-026). Default inverted: assistant absorbs caminho-único findings and reports them in a structured commit message section `## design-reviewer findings absorvidos`; cutucates operator via `AskUserQuestion` only when finding satisfies ≥1 of 3 disjunctive conditions (≥2 legitimate alternatives competing / contradicts documented doctrine / requires context outside diff/plan/ADR). Stack-agnostic, stable under recursion. Applied to `/triage` step 5 and `/new-adr` step 5; ADR-011 § Decisão #1 gains textual cross-ref (status `Proposto` preserved per ADR-005 ↔ ADR-025 precedent). (#61)
+
+### Notes
+- ADR-026 (Proposed): "Critério mecânico de absorção de findings do design-reviewer pré-commit" — partial successor of ADR-011 § Decisão #1. Inverts default (absorb) + 3 disjunctive conditions for cutucada + default-conservadora clause (doubt → cutucar). Retroactive validation in § Contexto enumerates ~17 absorptions caminho-único + ~4 cutucadas (Cond 1) across the 11 sessions post-ADR-011. Dogfood: PR #61 applied the mechanic before merge formalized it — commit message of the plan is the first real specimen of the structured section. (#61)
+- README.md drift sanitized pre-release v2.6.0: `/init-config` skill (shipped v2.4.0) listed in "What's inside" table; `docs/procedures/cleanup-pos-merge.md` added as "Procedure" entry (ADR-024 category, v2.6.0). Commit cirúrgico separado (release commit `a5dab43` pushed by parallel session before drift was detected — README fix shipped as follow-up).
+
 ## [2.6.0] - 2026-05-12
 
 ### Added
