@@ -61,7 +61,7 @@ Razões:
 
 ### Limitações
 
-- Cutucada **ainda não diferencia** `CLAUDE.md` gitignored — probe textual ("arquivo existe + marker ausente") dispara string-A em projeto onde o arquivo está gitignored sem o bloco. Operador roda `/init-config`, que recusa o caso per ADR-016 (postura editorial não-reparativa). Sub-caso permanece coberto pelo direcionamento doutrinário de ADR-016 — cutucada apenas adiciona um passo de fricção sem regressão. Alternativa "endurecer probe" (excluir gitignored via `git check-ignore`) descartada para não introduzir I/O git no hot path nem reabrir o over-reach já rebatido por ADR-017 § Alternativa (f).
+- Cutucada **ainda não diferencia** `CLAUDE.md` gitignored — probe textual ("arquivo existe + marker ausente") dispara string-A em projeto onde o arquivo está gitignored sem o bloco. Operador roda `/init-config`, que opera dentro do gitignore garantindo replicação via `.worktreeinclude` per [ADR-030](ADR-030-aceitar-claude-md-gitignored-via-worktreeinclude.md) — caminho construtivo, sem recusa intermediária (substitui leitura inicial deste ADR que dependia da extrapolação de ADR-016 em `/init-config` step 3, agora revertida). Alternativa "endurecer probe" (excluir gitignored via `git check-ignore`) segue descartada para não introduzir I/O git no hot path nem reabrir o over-reach já rebatido por ADR-017 § Alternativa (f) — cutucada permanece silente quanto ao status de gitignore; `/init-config` resolve o caso quando invocado.
 - Dedup conversation-scoped sob context compression em sessões muito longas: cada string pode reaparecer (aceito; gatilho de revisão idêntico ao de ADR-017).
 
 ## Alternativas consideradas
