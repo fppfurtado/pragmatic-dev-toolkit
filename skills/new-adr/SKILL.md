@@ -54,9 +54,13 @@ Sem título → pedir antes de prosseguir.
 
    **Reportar absorções no relatório de retorno em forma pronta para colar.** Quando ≥1 finding foi absorvido, relatório final inclui o **bloco formatado** `## design-reviewer findings absorvidos` (idioma da convenção de commits per [ADR-007](../../docs/decisions/ADR-007-idioma-artefatos-informativos.md)) com bullets curtos no formato `- <localização breve>: <correção aplicada> (caminho-único).` — idêntico à forma prescrita no `/triage` step 5. Caller cola integralmente no commit message: no caminho delegado, `/triage` step 5 cola no commit unificado; no caminho standalone, operador cola no commit do ADR. `/new-adr` não faz commit diretamente (responsabilidade externa per spec).
 
-   **Cutucada de descoberta** (per [ADR-017](../../docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md)). Após reportar findings do design-reviewer e antes de devolver controle, verificar: (a) `CLAUDE.md` existe; (b) `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` retorna não-zero (marker ausente); (c) string canonical da cutucada não aparece no contexto visível desta conversa CC. Todas as três satisfeitas → emitir como última linha do relatório a string canonical abaixo. Caso contrário → suprimir silenciosamente.
+   **Cutucada de descoberta** (per [ADR-017](../../docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md) + [ADR-029](../../docs/decisions/ADR-029-cutucada-descoberta-cobre-claude-md-ausente.md)). Após reportar findings do design-reviewer e antes de devolver controle, escolher caminho conforme estado de `CLAUDE.md`:
 
-   > Dica: este projeto não declara o bloco `pragmatic-toolkit:config` no CLAUDE.md. Rode `/init-config` para configurar todos os papéis de uma vez.
+   - **`CLAUDE.md` ausente** + a string abaixo não aparece no contexto visível desta conversa CC → emitir como última linha do relatório:
+     > Dica: este projeto não tem `CLAUDE.md`. Crie o arquivo e rode `/init-config` para configurar os papéis do plugin.
+   - **`CLAUDE.md` presente** + `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` retorna não-zero (marker ausente) + a string abaixo não aparece no contexto visível → emitir como última linha do relatório:
+     > Dica: este projeto não declara o bloco `pragmatic-toolkit:config` no CLAUDE.md. Rode `/init-config` para configurar todos os papéis de uma vez.
+   - **`CLAUDE.md` presente com marker** OU **dedup hit na string aplicável** → suprimir silenciosamente.
 
 ## Template
 

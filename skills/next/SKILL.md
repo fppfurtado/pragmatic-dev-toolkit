@@ -61,9 +61,13 @@ Reportar em formato curto:
 - **Top 3 candidatos** em ordem decrescente de impacto, com raciocínio de alinhamento + amplitude.
 - **Pendências de validação em planos** (lista do passo 4.5, quando não-vazia): bloco separado listando `<slug>: <texto da linha>` por entrada. Lista vazia → omitir o bloco. Pendências **não competem** no enum a seguir — top 3 continua sendo do BACKLOG; operador escolhe via `Other` se quiser endereçar uma pendência específica.
 
-**Cutucada de descoberta** (per [ADR-017](../../docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md)). Antes do enum a seguir, verificar: (a) `CLAUDE.md` existe; (b) `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` retorna não-zero (marker ausente); (c) string canonical da cutucada não aparece no contexto visível desta conversa CC. Todas as três satisfeitas → emitir como última linha do relatório (antes do enum) a string canonical abaixo. Caso contrário → suprimir silenciosamente.
+**Cutucada de descoberta** (per [ADR-017](../../docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md) + [ADR-029](../../docs/decisions/ADR-029-cutucada-descoberta-cobre-claude-md-ausente.md)). Antes do enum a seguir, escolher caminho conforme estado de `CLAUDE.md`:
 
-> Dica: este projeto não declara o bloco `pragmatic-toolkit:config` no CLAUDE.md. Rode `/init-config` para configurar todos os papéis de uma vez.
+- **`CLAUDE.md` ausente** + a string abaixo não aparece no contexto visível desta conversa CC → emitir como última linha do relatório (antes do enum):
+  > Dica: este projeto não tem `CLAUDE.md`. Crie o arquivo e rode `/init-config` para configurar os papéis do plugin.
+- **`CLAUDE.md` presente** + `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` retorna não-zero (marker ausente) + a string abaixo não aparece no contexto visível → emitir como última linha do relatório (antes do enum):
+  > Dica: este projeto não declara o bloco `pragmatic-toolkit:config` no CLAUDE.md. Rode `/init-config` para configurar todos os papéis de uma vez.
+- **`CLAUDE.md` presente com marker** OU **dedup hit na string aplicável** → suprimir silenciosamente.
 
 Em seguida, enum (`AskUserQuestion`, header `Próximo`) com as 3 opções nomeadas pelo texto exato da linha + Other (operador digita intenção diferente). Escolha alimenta diretamente `/triage`.
 
