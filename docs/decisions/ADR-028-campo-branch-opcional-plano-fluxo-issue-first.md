@@ -53,7 +53,11 @@ Branch atual == default → omitir pergunta (silêncio); o cenário comum de "es
 
 - Presente → `git worktree add .worktrees/<slug> <branch>` (sem `-b`). git resolve nome em ordem natural (heads, depois remotes via DWIM se houver fetch prévio).
 - Ausente → comportamento atual: `git worktree add .worktrees/<slug> -b <slug>`.
-- Falha em criar worktree (branch inexistente, digitação errada) → escrever em `## Próximos` do `backlog` linha tipo `branch <branch> referenciada em **Branch:** do plano <slug> não existe — verificar nome ou rodar git fetch antes de re-executar`; informar; parar (mesmo padrão dos demais bloqueios pré-loop).
+- Falha em criar worktree → discriminar pela stderr do `git worktree add` e escrever em `## Próximos` do `backlog` linha específica para cada motivo (mesmo padrão dos demais bloqueios pré-loop; informar; parar):
+  - **Branch inexistente / digitação errada / refs não-fetchadas** (`fatal: invalid reference: <nome>`): `branch <nome> referenciada em **Branch:** do plano <slug> não existe — verificar nome ou rodar git fetch antes de re-executar`.
+  - **Branch já checked out em outro worktree** (`fatal: '<nome>' is already used by worktree at '<path>'`): `branch <nome> referenciada em **Branch:** do plano <slug> está checked out em <path> — fazer checkout de outra branch lá antes de re-executar`. Não emitir `git checkout`/`git switch` no working tree principal para liberar a branch — operação altera estado externo ao plugin (ver `## O que NÃO fazer` de `/run-plan SKILL.md`).
+  - **Diretório `.worktrees/<slug>/` já existe sem registro git** (race com sessão paralela ou execução interrompida que escapou da pré-condição 4): `diretório .worktrees/<slug>/ existe mas não está registrado como worktree git — remover manualmente antes de re-executar`.
+  - **Outras falhas**: `falha em git worktree add para <nome> do plano <slug>: <stderr>` (operador investiga manual).
 
 ### Razões
 
