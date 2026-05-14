@@ -2,6 +2,12 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.8.1] - 2026-05-14
+
+### Notes
+- `/run-plan` §1.1: enumerate four categories of `git worktree add` failure (branch missing / branch already checked out elsewhere / `.worktrees/<slug>/` orphan dir / other), each with a specific backlog message. Add `## O que NÃO fazer` bullet forbidding state-altering recovery on the main working tree (`git checkout`/`git switch`/`git branch -D`/`git worktree remove`/`git reset --hard`). Origin: real session in `connector-pje-mandamus-tjpa` where the agent read the prior parenthetical cause list as exhaustive and improvised `git checkout master` without `git status` first. (#66)
+- ADR-028 § Mecânica synced in-place (status Proposto) to mirror the four-category enumeration in the SKILL — backlog message templates literally identical between ADR and SKILL. (#66)
+
 ## [2.8.0] - 2026-05-14
 
 ### Added
