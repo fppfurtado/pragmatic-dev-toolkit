@@ -59,7 +59,10 @@ Bloqueios (plano sujo, push esquecido, baseline vermelho, worktree órfã) ficam
 
 ### 1. Setup da worktree
 
-1. `git worktree add .worktrees/<slug> -b <slug>` a partir do branch atual.
+1. **Criar worktree.** Detectar campo `**Branch:** <nome>` no `## Contexto` do plano (per [ADR-028](../../docs/decisions/ADR-028-campo-branch-opcional-plano-fluxo-issue-first.md)).
+   - **Presente:** `git worktree add .worktrees/<slug> <nome>` (sem `-b`). git resolve `<nome>` em ordem natural (heads, depois remotes via DWIM se houver fetch prévio).
+   - **Ausente:** `git worktree add .worktrees/<slug> -b <slug>` a partir do branch atual (comportamento default preservado).
+   - Falha de criação (branch inexistente, digitação errada, refs não-fetchadas) → escrever em `## Próximos` do `backlog` linha tipo `branch <nome> referenciada em **Branch:** do plano <slug> não existe — verificar nome ou rodar git fetch antes de re-executar`; informar; parar. Papel `backlog` = "não temos" → só informar.
 
 2. **Replicar gitignored essenciais.** `.worktreeinclude` existe → ler e copiar cada path para a worktree (cópia, não symlink — isolamento real). Formato: 1 path por linha relativo à raiz do repo; `#` para comentário; linhas em branco ignoradas; globs são roadmap (hoje só paths literais). `.worktreeinclude` ausente → skip silente (warning já capturado na detecção pré-loop quando aplicável).
 
@@ -147,7 +150,8 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
 6. **Declarar done.**
 
 7. **Sugestão de publicação.** Remote configurado (`git remote get-url origin` retorna sucesso) → `AskUserQuestion` (header `Publicar`) com opções montadas conforme o modo:
-   - **Modo `local`** (`plans_dir: local`): `Renomear branch antes (Recommended)` / `Push` / `Push + abrir PR/MR` / `Nenhum`. `Renomear branch antes` emite `git branch -m <novo-nome>` como sugestão (`description` informa: "branch name é metadata pública — não aparece em mensagem de commit nem em PR --fill, mas o nome é visível ao push") e encerra; operador roda o `git branch -m` manual e re-invoca para escolher Push.
+   - **Modo `local`** (`plans_dir: local`) **com campo `**Branch:**` ausente**: `Renomear branch antes (Recommended)` / `Push` / `Push + abrir PR/MR` / `Nenhum`. `Renomear branch antes` emite `git branch -m <novo-nome>` como sugestão (`description` informa: "branch name é metadata pública — não aparece em mensagem de commit nem em PR --fill, mas o nome é visível ao push") e encerra; operador roda o `git branch -m` manual e re-invoca para escolher Push.
+   - **Modo `local`** com campo `**Branch:**` **presente**: enum cai para `Push (Recommended)` / `Push + abrir PR/MR` / `Nenhum` (idêntico ao modo canonical) — branch pré-existente já carrega decisão de exposição do operador (cf. [ADR-028](../../docs/decisions/ADR-028-campo-branch-opcional-plano-fluxo-issue-first.md) § Modo local; oferta de rename inverteria a intenção).
    - **Modo canonical**: `Push (Recommended)` / `Push + abrir PR/MR` / `Nenhum`.
 
    Comportamento das opções de push (idêntico nos dois modos):
