@@ -6,6 +6,7 @@ Claude Code plugin codifying the **flat & pragmatic** dev workflow: workflow ski
 
 | Component | Type | What it does |
 |-----------|------|--------------|
+| `/draft-idea` | Skill | Structured elicitation of `IDEA.md` (the `product_direction` role) via a multi-turn interview covering problem, persona, constraints, success criteria, and discarded alternatives. Upstream of `/triage` — invoke when the idea is still vague. Probe-canonical dual mode: absent → one-shot full; present → section-by-section update via enum. |
 | `/triage` | Skill | Aligns intent, surfaces gaps, decides which artifact (backlog line, plan, ADR, domain/design update) is needed before implementing. Without an argument, delegates to `/next`. |
 | `/next` | Skill | Session orientation: reads the backlog, checks the codebase for what's already implemented, and suggests the top three impact candidates for triage. Also lists `## Pendências de validação` from merged plans as a separate block (not competing in the top 3). |
 | `/new-adr` | Skill | Creates a new ADR in `docs/decisions/` with auto-numbering and a standardized template. |
