@@ -24,11 +24,7 @@ Sem argumentos. Skill puramente interativa — perguntas via `AskUserQuestion` p
 
 2. **Em repo git?** `git rev-parse --is-inside-work-tree`. Falha (não-git) → pular probe de gitignore (passo 3), prosseguir.
 
-3. **`CLAUDE.md` gitignored?** `git check-ignore -q CLAUDE.md`. Retorno zero (gitignored) → **parar** com mensagem alinhada com [ADR-016](../../docs/decisions/ADR-016-manter-block-gitignored-scripts-no-consumer.md):
-
-   > `CLAUDE.md está gitignored neste projeto (.gitignore). Per ADR-016 do toolkit, o caminho doutrinário é reconsiderar a decisão organizacional de gitignorar CLAUDE.md — é artefato compartilhável por design. Plugin não prescreve workaround manual nem oferece caminho alternativo de gravação.`
-
-   Sem ação adicional. Operador resolve no consumer.
+3. **`CLAUDE.md` gitignored?** `git check-ignore -q CLAUDE.md`. Retorno zero (gitignored) → **registrar flag interna** `claude_md_gitignored = true` para o step 4.5; prosseguir normalmente (per [ADR-030](../../docs/decisions/ADR-030-aceitar-claude-md-gitignored-via-worktreeinclude.md): plugin honra o sinal do consumer via `.gitignore` e garante replicação via `.worktreeinclude` em vez de recusar). Retorno não-zero → flag fica falsa; comportamento canonical (tracked).
 
 ### 2. Detectar bloco config existente
 
@@ -96,26 +92,42 @@ Reportar path final ao operador:
 
 > `Bloco config gravado em <path> linha <N>. Confirme com: grep -A8 'pragmatic-toolkit:config' CLAUDE.md`
 
-### 4.5. Garantir `.claude/` em `.worktreeinclude` (invariante de modo local)
+### 4.5. Garantir paths replicados em `.worktreeinclude` (invariantes de setup)
 
-**Critério de disparo:** ≥1 role configurada como `local` no passo 3, **independente do caminho de entrada do passo 2** (bloco ausente → gravar novo; bloco presente + `Editar` → gravar atualizado). Sem role local → skip silente.
+**Critério de disparo:** ≥1 role configurada como `local` no passo 3 OR `claude_md_gitignored = true` (sinalizado pelo step 3), **independente do caminho de entrada do passo 2** (bloco ausente → gravar novo; bloco presente + `Editar` → gravar atualizado). Nenhuma condição ativa → skip silente.
 
 Mecânica determinística (sem `AskUserQuestion` — operação tem resultado óbvio, sem trade-off cross-team a confirmar per [ADR-018](../../docs/decisions/ADR-018-replicacao-claude-em-modo-local-init-config.md)):
 
-1. Probe `.worktreeinclude`:
-   - **Ausente** → criar com header de comentário (`# Gitignored paths to replicate into worktrees created by /run-plan.`) + linha em branco + linha `.claude/`.
-   - **Presente, sem `.claude/`** (regex `grep -qE "^\.claude(/|$)" .worktreeinclude` retorna não-zero) → adicionar linha `.claude/` ao fim. Falso-negativo benigno: se consumer já lista subpath `.claude/local/<algo>`, regex não detecta e adição é redundante (sem dano funcional per ADR-018 § Limitações).
-   - **Presente com `.claude/`** → skip silente (invariante já satisfeita; passo 4.5 é idempotente).
+**Lista composta de paths a garantir** (cada adição é independente e idempotente; cada condição testada isoladamente; presença prévia da linha — de run anterior — é skip silente; step 4.5 nunca remove linhas):
 
-2. Reportar no relatório final:
+| Path | Condição de disparo | Probe (presença) | ADR de origem |
+|---|---|---|---|
+| `.claude/` | ≥1 role local | `grep -qE "^\.claude(/|$)" .worktreeinclude` | [ADR-018](../../docs/decisions/ADR-018-replicacao-claude-em-modo-local-init-config.md) |
+| `CLAUDE.md` | `claude_md_gitignored = true` | `grep -qE "^CLAUDE\.md$" .worktreeinclude` | [ADR-030](../../docs/decisions/ADR-030-aceitar-claude-md-gitignored-via-worktreeinclude.md) |
 
-   > `.worktreeinclude <criado|atualizado|inalterado> em <path>; .claude/ replicado nas worktrees subsequentes do /run-plan.`
+Procedimento por path com condição ativa:
+
+1. **`.worktreeinclude` ausente** (primeira condição ativa do run) → criar com header de comentário (`# Gitignored paths to replicate into worktrees created by /run-plan.`) + linha em branco + linha do path.
+2. **`.worktreeinclude` presente, probe retorna não-zero** (path ausente) → adicionar linha do path ao fim. Falso-negativo benigno aceito por simetria editorial — regex simples + linha redundante = sem dano funcional (replicação de path já replicado por entrada anterior é no-op real; per ADR-018 § Limitações).
+3. **`.worktreeinclude` presente, probe retorna zero** (path já listado) → skip silente (idempotência).
+
+Após processar todos os paths com condição ativa, reportar no relatório final:
+
+> `.worktreeinclude <criado|atualizado|inalterado> em <path>; <lista de paths replicados> nas worktrees subsequentes do /run-plan.`
+
+Onde `<lista de paths replicados>` é composta dos paths cujas condições dispararam (ex.: `.claude/`; `CLAUDE.md`; `.claude/ + CLAUDE.md` quando ambos).
 
 Compatível com `.worktreeinclude` tracked ou gitignored — decisão organizacional do consumer.
 
 ### 5. Informar interações pendentes (não age)
 
 Skill emite avisos informativos no relatório final — **não modifica** `.gitignore` automaticamente. Responsabilidade do operador.
+
+**`CLAUDE.md` gitignored detectado** (`claude_md_gitignored = true`):
+
+> `CLAUDE.md gitignored detectado — replicação garantida via .worktreeinclude por ADR-030.`
+
+Substitui semanticamente a mensagem doutrinária revogada do step 3; cobre a transição da recusa anterior tornando a aceitação um ato deliberado visível.
 
 **Modo local declarado em ≥1 role:**
 
@@ -129,6 +141,7 @@ A tabela de §3 é v1. Stacks adicionais (Gradle, Cargo, Cargo workspace, Bun, e
 
 - **Não criar `CLAUDE.md` se ausente.** Propósito mais amplo que o bloco config (instrução geral ao Claude Code). Passo 1 para com mensagem orientando o operador.
 - **Não modificar `.gitignore` automaticamente.** Política git do consumer; gate específico do ADR-005 cobre quando necessário (primeira escrita sob `.claude/local/<role>/`).
+- **Não pressionar doutrinariamente quando `CLAUDE.md` está gitignored.** [ADR-030](../../docs/decisions/ADR-030-aceitar-claude-md-gitignored-via-worktreeinclude.md) estabelece aceitação como ato deliberado da skill (operador sinaliza via `.gitignore`, plugin opera dentro); reintroduzir mensagem "reconsidere o gitignore" no step 3 ou step 5 revoga a decisão.
 - **Não reescrever bloco config malformado / duplicado / órfão.** Parar com diagnóstico; operador resolve manualmente. Postura editorial, não reparativa.
 - **Não invocar outras skills do toolkit em cascata.** `/init-config` é setup, não orquestrador. Operador chama as skills seguintes manualmente após config gravado.
 - **Não emitir cutucada de descoberta (ADR-017):** `/init-config` define o bloco em vez de consumir.
