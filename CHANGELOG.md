@@ -2,6 +2,20 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.8.0] - 2026-05-14
+
+### Added
+- `/init-config` accepts gitignored `CLAUDE.md` and ensures replication via `.worktreeinclude` (ADR-030). Step 3 stops refusing and registers an internal `claude_md_gitignored` flag; step 4.5 extends with OR-clause criterion and composite path table (`.claude/` per ADR-018; `CLAUDE.md` per ADR-030 — each addition independent and idempotent). Step 5 emits an acceptance message replacing the revoked doctrinal one. Partially reverts the informal extrapolation of ADR-016 in `/init-config` step 3 (preserves ADR-016 literal scope: hooks/scripts). (#65)
+- Discovery hint covers `CLAUDE.md` absent altogether (ADR-029, partial successor of ADR-017 § Limitações). The 5 skills with `roles.required` emit a new string-B (`CLAUDE.md` absent) alongside the existing string-A (marker absent). Per-string conversation-scoped dedup; suppression on marker present. (#64)
+- Optional `**Branch:**` field in plans (ADR-028) — supports issue-first flow where the branch name is known before `/triage` materializes the plan. `/run-plan` honors the field when present; falls back to the plan slug otherwise. (#63)
+- `/draft-idea` skill for structured `IDEA.md` (`product_direction`) elicitation (ADR-027). Multi-turn interview covering problem, persona, constraints, success criteria, alternatives discarded. Probe canonical + dual: absent → one-shot full elicitation; present → seção-a-seção update via enum multi-select. Stack-agnostic per ADR-008; upstream of `/triage`. (#62)
+
+### Notes
+- ADR-030 (Proposed): "`/init-config` aceita CLAUDE.md gitignored com replicação via `.worktreeinclude`" — partial successor of the informal ADR-016 extrapolation in `/init-config` step 3. 4 design-reviewer findings absorbed in ADR + 3 in plan + 1 cutucada absorbed (operator chose to reopen ADR-029 § Limitações editorially). (#65)
+- ADR-029 (Proposed): "Cutucada de descoberta cobre `CLAUDE.md` ausente" — partial successor of ADR-017 § Limitações. (#64)
+- ADR-028 (Proposed): "Campo `**Branch:**` opcional no plano para fluxo issue-first". (#63)
+- ADR-027 (Proposed): "Skill `/draft-idea` para elicitação estruturada de `IDEA.md`" — producer of the `product_direction` role, upstream of `/triage`. (#62)
+
 ## [2.7.0] - 2026-05-13
 
 ### Added
