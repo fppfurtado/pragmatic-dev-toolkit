@@ -33,7 +33,7 @@ git clone git@github.com:fppfurtado/pragmatic-dev-toolkit.git
 Use `claude plugin validate <path>` (ferramenta oficial) — aceita o caminho de `.claude-plugin/plugin.json` ou `.claude-plugin/marketplace.json` e reporta erros de schema mais warnings. Para validações adicionais não cobertas pelo subcomando (smoke das skills, edição de `.env`, hooks disparando), siga o checklist:
 
 1. Confirmar `.claude-plugin/plugin.json` e `.claude-plugin/marketplace.json` válidos via `claude plugin validate`.
-2. Após instalar, abrir o Claude Code no workspace e confirmar que `/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests`, `/release`, `/next`, `/init-config`, `/archive-plans` aparecem em `/help` ou `/plugin list`.
+2. Após instalar, abrir o Claude Code no workspace e confirmar que `/draft-idea`, `/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests`, `/release`, `/next`, `/init-config`, `/archive-plans` aparecem em `/help` ou `/plugin list`.
 3. Smoke das skills + edição direta de `.env` (verifica `block_env`) + tentativa de edição em path coberto pelo `.gitignore` do consumer (ex.: `.venv/foo.py`, `node_modules/x/index.js` — verifica `block_gitignored`) + edição de um `.py` num projeto Python (verifica `run_pytest_python`).
 4. Invocar `qa-reviewer` num diff que adiciona função pública sem teste correspondente → flag esperado de "caminho feliz sem teste".
 5. Invocar `security-reviewer` num diff que faz `logger.info(f"token={token}")` → flag esperado de "credencial em log".
