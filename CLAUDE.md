@@ -126,25 +126,28 @@ This makes it safe to ship `run_pytest_python.py` alongside `run_gradle_test_jav
 
 ## Cutucada de descoberta
 
-Skills that consume the Resolution protocol via `roles.required` emit a one-line discovery hint at the end of their final reporting step when the consumer project hasn't declared the `<!-- pragmatic-toolkit:config -->` block in `CLAUDE.md`. Defined by [ADR-017](docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md).
+Skills that consume the Resolution protocol via `roles.required` emit a one-line discovery hint at the end of their final reporting step. The hint covers **two distinct gaps**: (i) `CLAUDE.md` absent altogether, and (ii) `CLAUDE.md` present but missing the `<!-- pragmatic-toolkit:config -->` block. Defined by [ADR-017](docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md) (case ii — original) and extended by [ADR-029](docs/decisions/ADR-029-cutucada-descoberta-cobre-claude-md-ausente.md) (case i — added).
 
 **Scope:** 5 skills with `roles.required` — `/triage`, `/new-adr`, `/run-plan`, `/next`, `/draft-idea`. The other 3 skills (`/debug`, `/release`, `/gen-tests`) declare only `roles.informational` and don't reactively traverse step 3 of the Resolution protocol — they don't emit the hint.
 
-**Triple gating** (each skill probes independently — duplication of 1 line in 5 sites accepted as YAGNI over shared helper per ADR-017 § Alternativa (g)):
+**Gating with three outcomes** (each skill probes independently — duplication of probe + two strings in 5 sites accepted as YAGNI over shared helper per ADR-017 § Alternativa (g); reopen condition recalibrated in ADR-029 § Gatilhos to "6th `roles.required` skill"):
 
-1. `CLAUDE.md` exists.
-2. `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` returns non-zero (marker absent).
-3. The canonical hint string is not present in the visible context of the current CC conversation (conversation-scoped dedup aligned with [ADR-010](docs/decisions/ADR-010-instrumentacao-progresso-skills-multi-passo.md)).
+- **`CLAUDE.md` absent** + string-B is not present in the visible context of the current CC conversation → emit **string-B** as the last line of the report.
+- **`CLAUDE.md` present** + `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` returns non-zero (marker absent) + string-A is not present in the visible context → emit **string-A** as the last line of the report.
+- **`CLAUDE.md` present with marker** OR **dedup hit on the applicable string** → suppress silently.
 
-All three satisfied → emit as the last line of the report; otherwise → suppress silently.
+Dedup is **per string** (conversation-scoped, aligned with [ADR-010](docs/decisions/ADR-010-instrumentacao-progresso-skills-multi-passo.md)). String-A and string-B observe the visible context independently: a transition absent → present-without-marker mid-session may emit string-A even after string-B has appeared, because A and B address semantically distinct gaps.
 
-**Canonical hint string** (identical across all 5 skills; in PT-BR per toolkit canonical):
+**Canonical hint strings** (in PT-BR per toolkit canonical; literal text reproduced in all 5 sites):
 
-> Dica: este projeto não declara o bloco `pragmatic-toolkit:config` no CLAUDE.md. Rode `/init-config` para configurar todos os papéis de uma vez.
+- **string-A** — `CLAUDE.md` present without marker:
+  > Dica: este projeto não declara o bloco `pragmatic-toolkit:config` no CLAUDE.md. Rode `/init-config` para configurar todos os papéis de uma vez.
+- **string-B** — `CLAUDE.md` absent:
+  > Dica: este projeto não tem `CLAUDE.md`. Crie o arquivo e rode `/init-config` para configurar os papéis do plugin.
 
 **Editorial inheritance.** New skills declaring `roles.required` adopt the convention manually — author adds the gating + emission paragraph at the end of the final reporting step, following the existing 5 skills as template. Checklist for human reviewer or `code-reviewer` on PRs introducing new `roles.required` SKILLs. No mechanical enforcement; convention sustained by editorial discipline.
 
-The complementary `/init-config` skill is the proactive setup path; the hint exists to surface it when reactive memoization (Resolution protocol step 4) hasn't been enough.
+The complementary `/init-config` skill is the proactive setup path; the hint surfaces it when reactive memoization (Resolution protocol step 4) hasn't been enough. `/init-config` step 1 stops with a guidance message when `CLAUDE.md` is absent — it does not create the file (`CLAUDE.md` has broader purpose than the config block; non-reparative editorial stance preserved per [ADR-016](docs/decisions/ADR-016-manter-block-gitignored-scripts-no-consumer.md)).
 
 ## Pragmatic Toolkit
 
