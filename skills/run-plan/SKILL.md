@@ -167,9 +167,13 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
 
 A skill termina na worktree com a branch da feature após oferecer publicação.
 
-**Cutucada de descoberta** (per [ADR-017](../../docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md)). Antes de encerrar, verificar: (a) `CLAUDE.md` existe; (b) `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` retorna não-zero (marker ausente); (c) string canonical da cutucada não aparece no contexto visível desta conversa CC. Todas as três satisfeitas → emitir como última linha do relatório a string canonical abaixo. Caso contrário → suprimir silenciosamente.
+**Cutucada de descoberta** (per [ADR-017](../../docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md) + [ADR-029](../../docs/decisions/ADR-029-cutucada-descoberta-cobre-claude-md-ausente.md)). Antes de encerrar, escolher caminho conforme estado de `CLAUDE.md`:
 
-> Dica: este projeto não declara o bloco `pragmatic-toolkit:config` no CLAUDE.md. Rode `/init-config` para configurar todos os papéis de uma vez.
+- **`CLAUDE.md` ausente** + a string abaixo não aparece no contexto visível desta conversa CC → emitir como última linha do relatório:
+  > Dica: este projeto não tem `CLAUDE.md`. Crie o arquivo e rode `/init-config` para configurar os papéis do plugin.
+- **`CLAUDE.md` presente** + `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` retorna não-zero (marker ausente) + a string abaixo não aparece no contexto visível → emitir como última linha do relatório:
+  > Dica: este projeto não declara o bloco `pragmatic-toolkit:config` no CLAUDE.md. Rode `/init-config` para configurar todos os papéis de uma vez.
+- **`CLAUDE.md` presente com marker** OU **dedup hit na string aplicável** → suprimir silenciosamente.
 
 ## O que NÃO fazer
 

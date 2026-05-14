@@ -89,9 +89,13 @@ Ordem fixa do relatório final, três linhas potenciais:
 
 1. **Path do arquivo gravado** — confirmação literal do path.
 2. **Sugestão de próximo passo** — `próximo passo: /triage <intenção concreta>` (paralelo à cutucada do `/init-config` em ADR-017). Operador pode ignorar; a sugestão materializa o pipeline `/draft-idea` → `/triage`.
-3. **Cutucada de descoberta** (per [ADR-017](../../docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md)) — **última linha** quando triple gating satisfeito. Verificar: (a) `CLAUDE.md` existe; (b) `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` retorna não-zero (marker ausente); (c) string canonical da cutucada não aparece no contexto visível desta conversa CC. Todas as três satisfeitas → emitir; caso contrário → suprimir.
+3. **Cutucada de descoberta** (per [ADR-017](../../docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md) + [ADR-029](../../docs/decisions/ADR-029-cutucada-descoberta-cobre-claude-md-ausente.md)) — **última linha** do relatório. Escolher caminho conforme estado de `CLAUDE.md`:
 
-> Dica: este projeto não declara o bloco `pragmatic-toolkit:config` no CLAUDE.md. Rode `/init-config` para configurar todos os papéis de uma vez.
+   - **`CLAUDE.md` ausente** + a string abaixo não aparece no contexto visível desta conversa CC → emitir:
+     > Dica: este projeto não tem `CLAUDE.md`. Crie o arquivo e rode `/init-config` para configurar os papéis do plugin.
+   - **`CLAUDE.md` presente** + `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` retorna não-zero (marker ausente) + a string abaixo não aparece no contexto visível → emitir:
+     > Dica: este projeto não declara o bloco `pragmatic-toolkit:config` no CLAUDE.md. Rode `/init-config` para configurar todos os papéis de uma vez.
+   - **`CLAUDE.md` presente com marker** OU **dedup hit na string aplicável** → suprimir silenciosamente.
 
 ## O que NÃO fazer
 
