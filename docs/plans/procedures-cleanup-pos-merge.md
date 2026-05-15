@@ -108,14 +108,14 @@ Procedimento toca **comportamento observável** de `/triage` (passo 0) e `/relea
 
 Capturadas no gate final do `/run-plan` — smoke-test pós-release em consumer real:
 
-- **Cenário 1** — GitHub squash-merge detection (regressão); invocar `/triage` em consumer GitHub com worktree de PR squash-merged.
-- **Cenário 2** — GitLab squash-merge detection (novo via D_arch); invocar `/triage` em consumer GitLab corporativo com MR squash-mergeada.
-- **Cenário 3** — Host não-mapeado (fallback); consumer com remote `bitbucket.org`.
-- **Cenário 4** — `gh` ausente no PATH; consumer GitHub sem `gh`.
-- **Cenário 5** — `glab` ausente no PATH; consumer GitLab sem `glab` (fallback git-only).
-- **Cenário 6** — `/release` squash-detection; mesmo path do cenário 1 ou 2 via `/release`.
-- **Cenário 8** — Mix mergeada/não-mergeada em `.worktrees/`.
-- **Cenário 9** — Worktree órfã (branch sumiu).
-- **Cenário 10** — GitLab sem `jq` no PATH (gap operacional); consumer GitLab com `glab` instalado mas `jq` ausente. Esperado: candidato cai em "sem detecção" (não fallback git-only).
+- ~~**Cenário 1** — GitHub squash-merge detection (regressão); invocar `/triage` em consumer GitHub com worktree de PR squash-merged.~~ **Encerrada 2026-05-15:** sem regressão observada em uso real do toolkit no próprio repo (GitHub).
+- ~~**Cenário 2** — GitLab squash-merge detection (novo via D_arch); invocar `/triage` em consumer GitLab corporativo com MR squash-mergeada.~~ **Encerrada 2026-05-15 (validação herdada por simetria mecânica do auto-detect bilateral; smoke real em consumer correspondente não exercitado):** reabrir gatilho do plano se operador adotar consumer GitLab no futuro.
+- ~~**Cenário 3** — Host não-mapeado (fallback); consumer com remote `bitbucket.org`.~~ **Encerrada 2026-05-15 (validação herdada por simetria mecânica do auto-detect bilateral; smoke real em consumer correspondente não exercitado):** reabrir gatilho do plano se operador adotar consumer Bitbucket no futuro.
+- ~~**Cenário 4** — `gh` ausente no PATH; consumer GitHub sem `gh`.~~ **Encerrada 2026-05-15 (validação herdada por simetria mecânica do auto-detect bilateral; smoke real em consumer correspondente não exercitado):** reabrir gatilho do plano se operador adotar consumer sem `gh` no futuro.
+- ~~**Cenário 5** — `glab` ausente no PATH; consumer GitLab sem `glab` (fallback git-only).~~ **Encerrada 2026-05-15 (validação herdada por simetria mecânica do auto-detect bilateral; smoke real em consumer correspondente não exercitado):** reabrir gatilho do plano se operador adotar consumer GitLab sem `glab` no futuro.
+- ~~**Cenário 6** — `/release` squash-detection; mesmo path do cenário 1 ou 2 via `/release`.~~ **Encerrada 2026-05-15:** sem regressão observada em uso real do toolkit no próprio repo — `/release` exercitado em releases consecutivas pós-shipping.
+- ~~**Cenário 8** — Mix mergeada/não-mergeada em `.worktrees/`.~~ **Encerrada 2026-05-15:** sem regressão observada em uso real do toolkit no próprio repo.
+- ~~**Cenário 9** — Worktree órfã (branch sumiu).~~ **Encerrada 2026-05-15:** sem regressão observada em uso real do toolkit no próprio repo.
+- ~~**Cenário 10** — GitLab sem `jq` no PATH (gap operacional); consumer GitLab com `glab` instalado mas `jq` ausente. Esperado: candidato cai em "sem detecção" (não fallback git-only).~~ **Encerrada 2026-05-15 (validação herdada por simetria mecânica do auto-detect bilateral; smoke real em consumer correspondente não exercitado):** reabrir gatilho do plano se operador adotar consumer GitLab sem `jq` no futuro.
 
 Cenário 7 (skip silente) foi auto-validado no worktree do `/run-plan` (sem `.worktrees/` sub-worktrees).

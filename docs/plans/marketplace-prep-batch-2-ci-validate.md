@@ -123,5 +123,5 @@ Cenários enumerados (não direção genérica), per critério para superfícies
 
 ## Pendências de validação
 
-- Cenário 1 da `## Verificação manual` (Action verde no PR via `gh pr checks`) — só validável após push; operador valida pós-`gh pr create`.
-- Cenário 3 da `## Verificação manual` (Python ≥ 3.10 no runner via inspeção do log) — só validável inspecionando log do step após push; operador valida pós-`gh pr create`. Gap real do escopo de Verificação se runner trouxe versão menor — gatilho de revisão do ADR-013 já contempla.
+- ~~Cenário 1 da `## Verificação manual` (Action verde no PR via `gh pr checks`) — só validável após push; operador valida pós-`gh pr create`.~~ **Encerrada 2026-05-15:** sem regressão observada — Action verde exercitada em todos PRs #54-#66 da Onda 2026-05-12 e subsequentes.
+- ~~Cenário 3 da `## Verificação manual` (Python ≥ 3.10 no runner via inspeção do log) — só validável inspecionando log do step após push; operador valida pós-`gh pr create`. Gap real do escopo de Verificação se runner trouxe versão menor — gatilho de revisão do ADR-013 já contempla.~~ **Encerrada 2026-05-15:** sem regressão observada — runners GitHub ubuntu-latest mantiveram Python ≥3.10 nas Actions verdes acumuladas; gatilho do ADR-013 permanece registrado para reabertura se runner default cair.
