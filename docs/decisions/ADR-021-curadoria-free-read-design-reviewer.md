@@ -1,7 +1,7 @@
 # ADR-021: Curadoria do free-read do design-reviewer (anotação + scan)
 
 **Data:** 2026-05-12
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 

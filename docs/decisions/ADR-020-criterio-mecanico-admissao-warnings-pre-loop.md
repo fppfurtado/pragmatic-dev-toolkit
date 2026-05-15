@@ -1,7 +1,7 @@
 # ADR-020: Critério mecânico de admissão de warnings pré-loop em /run-plan
 
 **Data:** 2026-05-12
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 

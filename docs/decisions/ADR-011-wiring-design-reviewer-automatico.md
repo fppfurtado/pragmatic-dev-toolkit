@@ -1,7 +1,7 @@
 # ADR-011: Wiring automático do design-reviewer no /triage e /new-adr
 
 **Data:** 2026-05-08
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 
