@@ -1,7 +1,7 @@
 # ADR-015: Bloquear env-files por sufixo `.env`, não apenas dotfile
 
 **Data:** 2026-05-10
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 

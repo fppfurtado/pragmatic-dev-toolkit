@@ -1,7 +1,7 @@
 # ADR-026: Critério mecânico de absorção de findings do `design-reviewer` pré-commit
 
 **Data:** 2026-05-13
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 
@@ -63,7 +63,7 @@ Cutucar operador via `AskUserQuestion` **somente quando** o finding satisfaz **q
 
 **Cláusula default-conservadora.** Se o assistente não consegue classificar com confiança em qualquer das 3 condições (domínio desconhecido, shape ambíguo do finding), cutucar. Dúvida → cutucada.
 
-**Posição vs ADR-011.** ADR-026 sucede parcialmente ADR-011 § Decisão #1. Mecânica do wiring (quando dispara, override por inação) permanece vigente; atribuição literal "operador decide aplicar" é refinada pela cláusula de absorção pré-commit deste ADR. Status de ADR-011 preservado em `Proposto` (paralelo a ADR-005 ↔ ADR-025: extensão semântica não obriga revisão de status). Cross-ref textual em ADR-011 prescrito pelo plano de implementação deste ADR (atualização editorial recíproca, paralelo a ADR-009 § Gatilhos sendo referenciado por ADR-011 § Origem).
+**Posição vs ADR-011.** ADR-026 sucede parcialmente ADR-011 § Decisão #1. Mecânica do wiring (quando dispara, override por inação) permanece vigente; atribuição literal "operador decide aplicar" é refinada pela cláusula de absorção pré-commit deste ADR. Status de ADR-011 à época era `Proposto` (promovido a `Aceito` na onda 2026-05-15) — paralelo a ADR-005 ↔ ADR-025: extensão semântica não obrigou revisão de status do ancestral à época. Cross-ref textual em ADR-011 prescrito pelo plano de implementação deste ADR (atualização editorial recíproca, paralelo a ADR-009 § Gatilhos sendo referenciado por ADR-011 § Origem).
 
 Critério é **stack-agnóstico** — opera sobre shape do finding (alternativas / contradição / contexto externo), não sobre conteúdo da correção ou stack do projeto consumidor. Funciona em Python, Java, ou qualquer stack futura. Estável sob recursão — `design-reviewer` revisando ADR sobre seu próprio dispatching passa pelo mesmo critério (caso testado durante revisão deste ADR).
 

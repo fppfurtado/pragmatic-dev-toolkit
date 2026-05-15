@@ -1,7 +1,7 @@
 # ADR-005: Modo local-gitignored para roles do path contract
 
 **Data:** 2026-05-07
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 

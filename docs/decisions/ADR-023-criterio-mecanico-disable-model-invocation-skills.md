@@ -1,7 +1,7 @@
 # ADR-023: Critério mecânico para declaração explícita de `disable-model-invocation` em skills
 
 **Data:** 2026-05-12
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 

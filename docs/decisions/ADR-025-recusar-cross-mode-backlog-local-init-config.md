@@ -49,7 +49,7 @@ ADR-005 reconheceu a fricção mas implementou cobertura defensiva nas skills co
 
    > Estendido por [ADR-025](ADR-025-recusar-cross-mode-backlog-local-init-config.md): o princípio "simplicidade vence flexibilidade" aplicado ao par cross-papel `backlog × plans_dir` recusa mecanicamente a combinação `backlog: local + plans_dir: canonical` (leak de texto privado para plano público). Outras combinações cross-mode permanecem válidas.
 
-   Status de ADR-005 preservado em `Proposto` — extensão semântica não obriga revisão do status; sucessor parcial via cross-ref textual basta.
+   Status de ADR-005 à época era `Proposto` (promovido a `Aceito` na onda 2026-05-15) — extensão semântica não obrigou revisão do status do ancestral; sucessor parcial via cross-ref textual bastou.
 
 ### Razões
 
