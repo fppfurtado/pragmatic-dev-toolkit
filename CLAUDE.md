@@ -30,7 +30,7 @@ Skills consume **roles**, not literal paths. Each role has a canonical default; 
 
 | Role | Default | Description |
 |------|---------|-------------|
-| `product_direction` | `IDEA.md` | What we're building and why. Product direction. |
+| `product_direction` | `IDEA.md` | Why the project exists and what direction it carries — about the project as a whole, not a feature/initiative within it. Features and local initiatives go through `/triage`. |
 | `ubiquitous_language` | `docs/domain.md` | Bounded contexts, ubiquitous language, aggregates/entities, invariants (RNxx) — when the domain warrants formalization. |
 | `design_notes` | `docs/design.md` | Quirks of external integrations not covered by official docs. |
 | `decisions_dir` | `docs/decisions/` | Directory of immutable structural decisions. Numbering and slug owned by `/new-adr`. |
