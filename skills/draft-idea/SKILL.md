@@ -27,7 +27,7 @@ Ideia em frase curta (opcional). Exemplo: `/draft-idea "uma ferramenta pra ajuda
 
 ## Passos
 
-Instrumentação de progresso via Tasks per [ADR-010](../../docs/decisions/ADR-010-instrumentacao-progresso-skills-multi-passo.md): 5 passos substantivos com lifecycle `pending` → `in_progress` → `completed`. Skip silente quando o operador encerra cedo (modo update com zero seções escolhidas).
+Instrumentação de progresso via Tasks per [ADR-010](../../docs/decisions/ADR-010-instrumentacao-progresso-skills-multi-passo.md): 6 passos substantivos com lifecycle `pending` → `in_progress` → `completed`. Passo 1.5 tem lifecycle condicional — `pending` → `completed` skip silente quando não-maduro detectado sem ambiguidade, ou → `in_progress` → cutucada → `completed` quando maduro ou ambíguo. Skip silente do passo 2 quando o operador encerra cedo (modo update com zero seções escolhidas) ou aborta no passo 1.5 (resposta "feature → /triage").
 
 ### 1. Resolver papel `product_direction` e decidir modo
 
@@ -35,8 +35,38 @@ Aplicar Resolution protocol do CLAUDE.md sobre `product_direction`. Probe canoni
 
 Path resolvido:
 
-- Arquivo **ausente** → modo **one-shot full** (passo 2).
-- Arquivo **presente** → modo **update** (passo 3).
+- Arquivo **ausente** → modo **one-shot full** (passo 2, passando pelo passo 1.5).
+- Arquivo **presente** → modo **update** (passo 3; passo 1.5 não dispara — decisão já implicitamente tomada).
+
+### 1.5 Cutucada condicional em projeto maduro
+
+Só roda quando o passo 1 resolveu modo **one-shot full** (`IDEA.md` ausente). Modo update não dispara — decisão já implicitamente tomada.
+
+1. **Probe de versão.** Resolver `version_files` do bloco `<!-- pragmatic-toolkit:config -->` no `CLAUDE.md`. Para cada arquivo declarado, tentar parsear versão semver por tipo:
+   - JSON (`*.json`): campo `version` na raiz.
+   - TOML (`*.toml`): campo `version` sob `[project]` ou raiz.
+   - YAML (`*.yml`/`*.yaml`): campo `version`.
+   - XML (canonical Maven, `pom.xml`): elemento `/project/version`.
+   - Outros formatos → não-suportado, cair em ambíguo (não silente).
+   - Falha de parse (exception, JSON inválido, syntax error TOML/YAML/XML) → log uma linha (`aviso: falha ao parsear <path>: <erro curto>`), cair em ambíguo.
+
+   Primeiro arquivo com versão parseável bem-sucedida → usar. Multi-arquivo declarado com versões divergentes entre os arquivos parseáveis → ambíguo (não escolher arbitrariamente).
+
+2. **Critério mecânico "projeto maduro":** versão semver `^\d+\.\d+\.\d+` (major.minor.patch) ≥ `1.0.0`. Pré-release (`-alpha`, `-rc`) trata-se como mesma major (`1.0.0-rc1` → maduro).
+
+3. **Decisão de cutucada:**
+   - **Não-maduro detectado sem ambiguidade** (versão parseável < 1.0.0): skip cutucada silente, prossegue para modo definido pelo passo 1.
+   - **Maduro detectado** (versão parseável ≥ 1.0.0) **OU ambíguo** (formato não-suportado, parse failure, multi-arquivo divergente, `version_files` ausente/null): disparar `AskUserQuestion`:
+     - `header`: `Direção`
+     - `question`: `O argumento descreve direção do projeto inteiro ou direção de feature/iniciativa dentro do projeto?`
+     - Opções:
+       - `Direção do projeto` — *Continuar /draft-idea normalmente. IDEA.md descreverá o produto como um todo.*
+       - `Direção de feature → /triage` — *Abortar /draft-idea. Feature dentro de projeto maduro é alvo de /triage.*
+
+4. **Tratamento de respostas:**
+   - `Direção do projeto` → seguir para passo 2 (interview completo).
+   - `Direção de feature → /triage` → abortar skill com relatório: `Direção de feature em projeto maduro vai para /triage. Rode /triage <intenção> para o próximo passo.`
+   - `Other` (resposta livre via prosa) → tratar como `Direção do projeto` (não abortar o trabalho do operador quando a resposta livre não é interpretável como gatilho de `/triage` explícito). Anotar a resposta literal no contexto inicial do interview do passo 2.
 
 ### 2. Modo one-shot — interview completo
 
@@ -99,6 +129,7 @@ Ordem fixa do relatório final, três linhas potenciais:
 
 ## O que NÃO fazer
 
+- Não gravar feature/iniciativa local em `<product_direction>` — esse papel carrega direção do projeto inteiro. Para feature, usar `/triage`.
 - Não inventar conteúdo — operador é a fonte; skill **estrutura** o interview, não preenche por conta própria. Resposta vazia/genérica → cutucar uma vez, depois aceitar e seguir (não pressionar).
 - Não fazer interview exaustivo — ≤2 perguntas por seção, depois prosseguir. Quem chega com ideia vaga não sabe todas as respostas; forçar resposta detalhada vira teatro.
 - Não detectar inconsistências cross-seção (ex.: critério de sucesso que não bate com persona declarada) — limitação registrada em [ADR-027](../../docs/decisions/ADR-027-skill-draft-idea-elicitacao-product-direction.md) § Consequências. Operador é responsável pela coerência global.
