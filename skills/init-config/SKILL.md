@@ -1,6 +1,6 @@
 ---
 name: init-config
-description: Wizard interativo para configurar o bloco `<!-- pragmatic-toolkit:config -->` no `CLAUDE.md`. Use quando o operador quer configurar o plugin de uma vez em projeto novo ou reconfigurar bloco existente.
+description: Wizard interativo para configurar o bloco `<!-- pragmatic-toolkit:config -->` no `CLAUDE.md`. Use quando o operador quer configurar o plugin de uma vez.
 disable-model-invocation: false
 ---
 
