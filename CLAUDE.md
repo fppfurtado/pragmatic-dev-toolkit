@@ -40,6 +40,7 @@ Skills consume **roles**, not literal paths. Each role has a canonical default; 
 | `changelog` | `CHANGELOG.md` | Release history. `/release` prepends a new block at each bump. |
 | `test_command` | `make test` (with `Makefile`) | Automatic gate at execution steps. |
 | (plugin-internal) | `.worktreeinclude` | Optional gitignored paths to replicate in fresh worktrees. Consumed by `/run-plan`. |
+| (plugin-internal) | `.claude/local/NOTES.md` | Cross-session context store written by `/note` (append-only, local-gitignored per [ADR-005](docs/decisions/ADR-005-modo-local-gitignored-roles.md) extended in [ADR-032](docs/decisions/ADR-032-skill-note-contexto-compartilhado.md); non-role). |
 | (agents shipped by the plugin) | `qa-reviewer`, `security-reviewer`, `doc-reviewer`, `design-reviewer` | `qa-reviewer`, `security-reviewer`, `doc-reviewer` are invoked by `/run-plan` per `{reviewer: qa\|security\|doc}` annotation on the plan block. `design-reviewer` operates on documents pre-fact (plan/ADR draft); invoked automatically by `/triage` (plan-producing path) and `/new-adr` (standalone or delegated) per [ADR-011](docs/decisions/ADR-011-wiring-design-reviewer-automatico.md), or manually via `@design-reviewer`. Consumer projects can shadow any of them with project-level `.claude/agents/<name>.md` (project-level wins on collision). |
 
 ### Resolution protocol
