@@ -33,10 +33,10 @@ Mecânica per [ADR-022](../../docs/decisions/ADR-022-politica-archival-docs-plan
 3. **Linha está em `## Concluídos`, não em `## Próximos`.** Varrer BACKLOG.md de `## Concluídos` até EOF (ou próximo `##`); verificar `<texto>` aparece. Em Próximos → **silente** (item não terminou; sem reporte).
 4. **Idade ≥ 2 semanas** — `git log -S "<texto>" --diff-filter=A --reverse BACKLOG.md | head -1` → primeiro commit que adicionou o texto (pickaxe; robusto a reedições in-place). Comparar timestamp com `date -d '2 weeks ago' +%s`. Mais recente → **silente**.
 5. **Sem worktree** — `git worktree list --porcelain | grep -q "\.worktrees/<slug>$"` E `test -d .worktrees/<slug>` ambos falsos. Worktree registrada OU órfã → **aviso** (`not eligible: <slug>.md — worktree em .worktrees/<slug> (registrada/órfã); trabalho em curso`).
-6. **Sem PR aberto referenciando o slug** — auto-detect forge (parse `git remote get-url origin`):
-   - `github.com` → `gh pr list --search <slug> --state open --json number --jq 'length'`.
-   - regex `^gitlab\.` → `glab mr list --search <slug>`.
-   - Outros hosts ou CLI ausente → **plano não-elegível nesta invocação** (`degraded: <slug>.md — forge inacessível; not eligible this run, retry após restaurar gh/glab`). **Não** assume seguro — vetor do risco é arquivar plano com PR aberto durante trabalho em curso.
+6. **Sem PR aberto referenciando o slug** — seguir `${CLAUDE_PLUGIN_ROOT}/docs/procedures/forge-auto-detect.md` para detectar forge:
+   - Output `gh` → `gh pr list --search <slug> --state open --json number --jq 'length'`.
+   - Output `glab` → `glab mr list --search <slug>`.
+   - Output `no-detection` ou `unsupported-host` → **plano não-elegível nesta invocação** (`degraded: <slug>.md — forge não-mapeado ou CLI ausente; not eligible this run, retry após restaurar gh/glab`). **Não** assume seguro — vetor do risco é arquivar plano com PR aberto durante trabalho em curso.
    - PR encontrado → **aviso** (`not eligible: <slug>.md — PR/MR aberto referenciando <slug>; trabalho em curso`).
 
 Filtrar candidatos por `--quarter` quando especificado: elegíveis cujo `<YYYY-Qx>` (derivado do critério 4) bate.
