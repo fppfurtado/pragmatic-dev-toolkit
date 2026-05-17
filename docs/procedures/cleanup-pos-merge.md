@@ -8,11 +8,11 @@ Antes de carregar contexto, varrer worktrees mergeadas em `.worktrees/` e oferec
 
 1. `git worktree list --porcelain` → filtrar entradas cujo `worktree` está sob `.worktrees/` (excluir worktree principal).
 2. Para cada candidato, extrair branch (`branch refs/heads/<slug>` da saída porcelain).
-3. Verificar merge status com auto-detect de forge:
-   - **Host detection:** parse `git remote get-url origin`. `github.com` → CLI `gh`; host casando regex `^gitlab\.` (gitlab.com ou GitLab corporativo `gitlab.<domínio>`) → CLI `glab`. Outros hosts → pular host detection, ir direto ao fallback git-only abaixo.
-   - **GitHub via `gh`:** `gh pr list --state merged --head <branch> --json number --jq '.[0].number'` (squash-aware). Saída numérica → mergeado, capturar PR number (identificador `PR #<num>`).
-   - **GitLab via `glab`:** `glab mr list --merged --source-branch <branch> --output json | jq -r '.[0].iid // empty'` (squash-aware; **requer `jq` no PATH** — `glab` não embute jq como `gh --jq`). Saída numérica → mergeado, capturar MR IID (identificador `MR !<num>`). `jq` ausente → pipe retorna vazio e o candidato é silenciosamente pulado (cai em "sem detecção" abaixo, não em fallback git-only — operador remove `glab` do PATH ou instala `jq` para forçar caminho desejado).
-   - **CLI ausente** (`gh`/`glab` não no PATH) ou **host não-mapeado**: fallback `git branch -r --merged origin/<main>` checando se `<branch>` está listada (perde squash; identificador omitido — sem `PR #` / `MR !`).
+3. Verificar merge status. Detectar forge seguindo `${CLAUDE_PLUGIN_ROOT}/docs/procedures/forge-auto-detect.md`; output discrimina policy local:
+   - Output `gh` → `gh pr list --state merged --head <branch> --json number --jq '.[0].number'` (squash-aware). Saída numérica → mergeado, capturar PR number (identificador `PR #<num>`).
+   - Output `glab` → `glab mr list --merged --source-branch <branch> --output json | jq -r '.[0].iid // empty'` (squash-aware). Saída numérica → mergeado, capturar MR IID (identificador `MR !<num>`).
+   - Output `no-detection` (CLI ausente em host mapeado, ou jq ausente em GitLab path) → candidato **silenciosamente pulado** (não cai em fallback git-only — operador instala dependência ou remove CLI do PATH para forçar caminho desejado).
+   - Output `unsupported-host` (Bitbucket, Codeberg, host customizado, ou sem remote) → fallback `git branch -r --merged origin/<main>` checando se `<branch>` está listada (perde squash; identificador omitido — sem `PR #` / `MR !`).
    - Sem detecção em nenhum dos modos → não é candidato; pular.
 4. Lista de candidatos mergeados vazia → **skip silente**; retorna controle à skill consumidora.
 
