@@ -1,7 +1,7 @@
 # ADR-024: Categoria docs/procedures/ para procedimentos operacionais compartilhados
 
 **Data:** 2026-05-12
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 
@@ -87,6 +87,7 @@ Razões objetivas:
 ### Limitações
 
 - `docs/procedures/` é estabelecida com 1 arquivo inicial. Categoria nova com 1 item é YAGNI suspeito; justifica-se aqui por dois fatores cumulativos: (1) a extração resolve acoplamento concreto pré-existente (L1 do audit), não é especulação; (2) auditoria já registra **segundo candidato pipeline**: o pattern `auto-detect forge bilateral` replicado em 3 sites (`/run-plan §3.7`, `/release §5`, `/next §4.5`) é elegível para futura extração para `docs/procedures/auto-detect-forge.md` quando justificar. Categoria não nasce com 1 item teórico — nasce com 1 implementado + 1 candidato auditado concreto.
+- **Pós-Onda 3 do ciclo 2026-05-15/16 (PRs #71 + #72):** segundo candidato (forge auto-detect) materializado + terceiro item (cutucada de descoberta) adicionado. Categoria atinge 3 itens (cleanup-pos-merge + cutucada-descoberta + forge-auto-detect) em 4 dias após este ADR — fator YAGNI suspeito resolvido empiricamente. Critério Strong-stable atingido; Status promovido Proposto→Aceito (2026-05-16).
 
 ## Alternativas consideradas
 
