@@ -78,7 +78,7 @@ Edições que mexem em doutrina. Memória "Limiar de ADR para mudanças em doutr
 
 ## Onda 6 — débito conhecido / cosmético
 
-- [ ] **H_arch** — documentar dependência implícita `block_gitignored.py` ↔ convenção Claude Code (allowlist `.claude/` hardcoded na linha 64-66). L2 da auditoria 2026-05-12 persiste; risco baixo (convenção CC estável). Comentário no script + opcional ADR cirúrgico explicitando gatilho de revisão (mudança da convenção CC). Linha de backlog.
+- [x] **H_arch** (2026-05-16) — comentário no `hooks/block_gitignored.py` registra a dependência implícita do allowlist `.claude/` na convenção Claude Code: trigger de revisão (CC muda convenção) + cross-ref para audit L2. ADR cirúrgico não criado (gatilho concreto ausente; comentário inline + cross-ref bastam).
 
 ---
 
