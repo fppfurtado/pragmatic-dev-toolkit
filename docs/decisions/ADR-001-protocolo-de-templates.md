@@ -64,3 +64,7 @@ Razões objetivas:
 ## Addendum (2026-05-12)
 
 Esta nota é adendo informativo posterior à aceitação; não altera a decisão original. [ADR-024](ADR-024-categoria-docs-procedures-procedimentos-compartilhados.md) estabelece categoria paralela `docs/procedures/` para procedimentos operacionais compartilhados; complementa este ADR sem revogá-lo. Fronteira: `templates/` = esqueletos preenchidos quando o artefato é produzido; `docs/procedures/` = procedimentos executados quando referenciados.
+
+## Addendum (2026-05-16)
+
+Esta nota é adendo informativo posterior à aceitação; não altera a decisão original. [ADR-033](ADR-033-templates-admite-single-consumer-declarativo.md) estende o critério de `templates/` para o caso single-consumer + artefato declarativo (esqueleto preenchível processado via `Read`). O "por ora" do § Decisão linha 33 ("ADR template fica inline em `/new-adr` por ora — single consumer, sem ganho imediato em extrair") fica explicitamente convertido em critério mecânico em ADR-033: templates/ admite single-consumer **quando declarativo**; inline permanece quando o template é tutorial entrelaçado com instruções da skill.
