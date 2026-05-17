@@ -2,6 +2,32 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.9.0] - 2026-05-17
+
+### Added
+- New skill `/note` for shared-context capture in `.claude/local/NOTES.md` (ADR-032). Local-gitignored, non-role; covers intra-session and cross-project context parallelism. (#69)
+- `docs/audits/execution-roadmap.md` as third audit prompt alongside `architecture-logic.md` and `prose-tokens.md`. Consumes 1-N runs in `docs/audits/runs/` and produces consolidated execution roadmap identifying cross-axis overlaps and dependencies. (#70)
+- `docs/procedures/cutucada-descoberta.md` and `docs/procedures/forge-auto-detect.md`: 2 new shared procedures extracted from inline duplicates in SKILLs and CLAUDE.md. Category `docs/procedures/` reaches 3 items, promoting ADR-024 Proposto→Aceito. (#71, #72)
+- Conditional `/draft-idea` discovery hint for mature projects (ADR-031). (#68)
+
+### Changed
+- `/triage` frontmatter: `plans_dir` reclassified `roles.required` → `roles.informational` (only 1 of 4 outputs needs the role; aligns with ADR-003). Sub-fluxo de criação canonical extended to cover `plans_dir`.
+- `/run-plan` §1.1: 4 stderr cases of `git worktree add` failure tableized. Destructive-cmd bullet in `## O que NÃO fazer` compacted while preserving CLAUDE.md global blast-radius cross-ref.
+- `/draft-idea` passo 4: explicit guard makes the Read of `templates/IDEA.md` self-documenting as conditional on caller mode.
+- 4 auto-loaded descriptions trimmed (security-reviewer, init-config, triage, release — ~50 w/turn reduction).
+- 5 SKILLs + CLAUDE.md replace inline `cutucada-descoberta` mechanics with line-ref to the shared procedure. CLAUDE.md `## Cutucada de descoberta` trimmed ~25→~6 lines preserving scope + editorial inheritance rule.
+- 4 SKILLs + `cleanup-pos-merge.md` replace inline `forge-auto-detect` mechanics with line-ref to the shared procedure (4 distinct outputs: `gh` / `glab` / `no-detection` / `unsupported-host`).
+- 7 ADRs promoted Proposto→Aceito in editorial wave 2026-05-15 (ADRs 005, 011, 015, 020, 021, 023, 026). ADR-024 promoted separately after Onda 3 brings docs/procedures/ to 3 items. (#67)
+
+### Notes
+- ADR-033 (Proposed): "templates/ admite single-consumer quando artefato é declarativo (esqueleto preenchível)" — partial successor of ADR-001. Includes 2 mechanical tests for boundary cases. ADR-001 gains Addendum 2026-05-16.
+- ADR-034 (Proposed): "Critério editorial — adendo em ADR existente vs novo ADR para refinamento doutrinal" — meta-doctrine codifying the criterion observed across 34 ADRs (5 conditions for new ADR; 4 cumulative for addendum; 4 forms of addendum catalogued). CLAUDE.md § "Editing conventions" gains cross-ref bullet.
+- ADR-032 (Proposed): "Skill `/note` + store de contexto compartilhado". (#69)
+- ADR-031 (Proposed): "Cutucada condicional `/draft-idea` projeto maduro". (#68)
+- F_arch dogfood: `/archive-plans` preview run reports finding for ADR-022 refinement — pickaxe-based age criterion sensitive to in-place edits in `## Concluídos` lines. 3 resolution paths captured.
+- `hooks/block_gitignored.py`: 5-line comment records the `.claude/` allowlist dependency on Claude Code's convention. Trigger for review: CC changes the convention.
+- Audit roadmap 2026-05-15/16 fully shipped (PRs #71+#72 + 11 direct commits closing Ondas 1-6 except A_arch [~] residual — 8 ADRs awaiting use-real signal).
+
 ## [2.8.1] - 2026-05-14
 
 ### Notes
