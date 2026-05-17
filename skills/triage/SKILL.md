@@ -3,8 +3,7 @@ name: triage
 description: Alinha intenção e decide artefato (backlog, plano, ADR, atualização de domain/design) antes de implementar. Use quando o operador propuser mudança não-trivial sem plano ou linha de backlog.
 disable-model-invocation: false
 roles:
-  required: [plans_dir]
-  informational: [backlog, ubiquitous_language, design_notes, decisions_dir, product_direction]
+  informational: [plans_dir, backlog, ubiquitous_language, design_notes, decisions_dir, product_direction]
 ---
 
 # triage
@@ -13,7 +12,7 @@ Workflow de **alinhamento prévio** para mudança não-trivial — feature, fix 
 
 ## Sub-fluxo de criação canonical
 
-Quando o passo 3 escolher "atualizar `ubiquitous_language`/`design_notes`" e o papel resolveu "não temos": propor criação no path canonical via enum (`Criar em <path>` / `Não usamos esse papel`). Segunda opção registra `paths.<role>: null` (oferta única de memorização). Mesmo mecanismo para `backlog` quando o passo 4 vai gravar linha (`Criar em BACKLOG.md` / `Não usamos esse papel`; segunda registra `paths.backlog: null`).
+Quando o passo 3 escolher "atualizar `ubiquitous_language`/`design_notes`" e o papel resolveu "não temos": propor criação no path canonical via enum (`Criar em <path>` / `Não usamos esse papel`). Segunda opção registra `paths.<role>: null` (oferta única de memorização). Mesmo mecanismo para `backlog` quando o passo 4 vai gravar linha (`Criar em BACKLOG.md` / `Não usamos esse papel`; segunda registra `paths.backlog: null`), e para `plans_dir` quando o passo 3 escolhe "plano" e o papel resolveu "não temos" (`Criar em docs/plans/` / `Não usamos esse papel`; segunda registra `paths.plans_dir: null`).
 
 **Modo local** (`paths.<role>: local` declarado): skill cria/lê em `.claude/local/<role>/` em vez de path canonical, sem disparar enum de criação. Mecânica de inicialização (`mkdir`, probe gitignore, gate `Gitignore`) coberta pela seção "Local mode" do CLAUDE.md.
 
