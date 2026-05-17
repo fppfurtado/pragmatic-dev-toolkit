@@ -176,13 +176,7 @@ Se não há alterações para commitar (ADR-only que já commitou via `/new-adr`
 
 Sugerir próximo passo (uma frase): "implementar via /run-plan <slug>", "validar o plano antes de codar", "preencher o ADR".
 
-**Cutucada de descoberta** (per [ADR-017](../../docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md) + [ADR-029](../../docs/decisions/ADR-029-cutucada-descoberta-cobre-claude-md-ausente.md)). Antes de devolver controle, escolher caminho conforme estado de `CLAUDE.md`:
-
-- **`CLAUDE.md` ausente** + a string abaixo não aparece no contexto visível desta conversa CC → emitir como última linha do relatório:
-  > Dica: este projeto não tem `CLAUDE.md`. Crie o arquivo e rode `/init-config` para configurar os papéis do plugin.
-- **`CLAUDE.md` presente** + `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` retorna não-zero (marker ausente) + a string abaixo não aparece no contexto visível → emitir como última linha do relatório:
-  > Dica: este projeto não declara o bloco `pragmatic-toolkit:config` no CLAUDE.md. Rode `/init-config` para configurar todos os papéis de uma vez.
-- **`CLAUDE.md` presente com marker** OU **dedup hit na string aplicável** → suprimir silenciosamente.
+**Cutucada de descoberta.** Antes de devolver controle, executar a cutucada conforme `${CLAUDE_PLUGIN_ROOT}/docs/procedures/cutucada-descoberta.md`.
 
 ## O que NÃO fazer
 
