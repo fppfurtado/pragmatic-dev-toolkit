@@ -62,6 +62,11 @@ def main() -> int:
         return 0
 
     # Allowlist: harness territory under `<repo>/.claude/` is never gated.
+    # Hardcoded dependency on Claude Code's convention of placing harness
+    # state under `.claude/`. Trigger for review: CC changes that convention
+    # (e.g., `.claudecode/`, `.cc/`) — update the literal below and the
+    # docstring. Audit `docs/audits/runs/2026-05-12-architecture-logic.md`
+    # § L2 records this implicit dependency.
     relpath = os.path.relpath(abspath, toplevel)
     if relpath == ".claude" or relpath.startswith(".claude" + os.sep):
         return 0
