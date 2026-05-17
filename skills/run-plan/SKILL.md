@@ -62,11 +62,15 @@ Bloqueios (plano sujo, push esquecido, baseline vermelho, worktree órfã) ficam
 1. **Criar worktree.** Detectar campo `**Branch:** <nome>` no `## Contexto` do plano (per [ADR-028](../../docs/decisions/ADR-028-campo-branch-opcional-plano-fluxo-issue-first.md)).
    - **Presente:** `git worktree add .worktrees/<slug> <nome>` (sem `-b`). git resolve `<nome>` em ordem natural (heads, depois remotes via DWIM se houver fetch prévio).
    - **Ausente:** `git worktree add .worktrees/<slug> -b <slug>` a partir do branch atual (comportamento default preservado).
-   - Falha de criação → escrever em `## Próximos` do `backlog` linha descrevendo o motivo concreto. Discriminar pela stderr do `git worktree add`:
-     - **Branch inexistente / digitação errada / refs não-fetchadas** (`fatal: invalid reference: <nome>` ou similar): linha `branch <nome> referenciada em **Branch:** do plano <slug> não existe — verificar nome ou rodar git fetch antes de re-executar`.
-     - **Branch já checked out em outro worktree** (`fatal: '<nome>' is already used by worktree at '<path>'`): linha `branch <nome> referenciada em **Branch:** do plano <slug> está checked out em <path> — fazer checkout de outra branch lá antes de re-executar`. Nomear o `<path>` literal extraído da stderr; é o suficiente para o operador identificar o worktree.
-     - **Diretório `.worktrees/<slug>/` já existe sem registro git** (`fatal: '.worktrees/<slug>' already exists` ou similar — race com sessão paralela ou execução interrompida que escapou da pré-condição 4): linha `diretório .worktrees/<slug>/ existe mas não está registrado como worktree git — remover manualmente antes de re-executar`.
-     - **Outras falhas**: linha `falha em git worktree add para <nome> do plano <slug>: <stderr>` (operador investiga manual).
+   - Falha de criação → escrever em `## Próximos` do `backlog` linha descrevendo o motivo concreto, discriminado pela stderr do `git worktree add`:
+
+     | Detecção (stderr regex) | Linha do backlog |
+     |---|---|
+     | `fatal: invalid reference: <nome>` (branch inexistente / digitação errada / refs não-fetchadas) | `branch <nome> referenciada em **Branch:** do plano <slug> não existe — verificar nome ou rodar git fetch antes de re-executar` |
+     | `fatal: '<nome>' is already used by worktree at '<path>'` (branch checked out em outro worktree) | `branch <nome> referenciada em **Branch:** do plano <slug> está checked out em <path> — fazer checkout de outra branch lá antes de re-executar` (`<path>` literal extraído da stderr) |
+     | `fatal: '.worktrees/<slug>' already exists` (diretório existe sem registro git — race com sessão paralela ou execução interrompida que escapou da pré-condição 4) | `diretório .worktrees/<slug>/ existe mas não está registrado como worktree git — remover manualmente antes de re-executar` |
+     | Demais falhas | `falha em git worktree add para <nome> do plano <slug>: <stderr>` (operador investiga manual) |
+
      Todos os casos: informar; parar. Papel `backlog` = "não temos" → só informar.
 
 2. **Replicar gitignored essenciais.** `.worktreeinclude` existe → ler e copiar cada path para a worktree (cópia, não symlink — isolamento real). Formato: 1 path por linha relativo à raiz do repo; `#` para comentário; linhas em branco ignoradas; globs são roadmap (hoje só paths literais). `.worktreeinclude` ausente → skip silente (warning já capturado na detecção pré-loop quando aplicável).
@@ -179,6 +183,6 @@ A skill termina na worktree com a branch da feature após oferecer publicação.
 - Não pular revisor, mesmo em bloco trivial.
 - Não interpretar `{revisor: ...}` (PT) — schema canônico é `{reviewer: ...}` em inglês. Recusar antes de começar o bloco com mensagem indicando bloco e anotação ofensora.
 - Não contornar plano sujo copiando o conteúdo manualmente para a worktree — bloqueio na pré-condição 2 existe para forçar commit no branch correto.
-- Não emitir comando que altere estado externo ao escopo do plugin (working tree principal, refs locais, branches de terceiros) para contornar falha de `git worktree add` no §1.1 — incluindo mas não limitado a `git checkout`/`git switch` no principal, `git branch -D`, `git worktree remove`, `git reset --hard`. A doutrina é parar e escrever no backlog (CLAUDE.md global exige confirmação explícita para ações de blast-radius compartilhado; este SKILL não autoriza recovery silenciosa).
+- Não emitir comando destrutivo no working tree principal (ex.: `git reset --hard`, `git worktree remove`) para contornar falha de `git worktree add` no §1.1. A doutrina é parar e escrever no backlog — CLAUDE.md global exige confirmação explícita para ações de blast-radius compartilhado.
 - Não silenciar warnings detectados pré-loop com base em estado prévio do `.worktreeinclude` — quando o plano corrente exige `## Verificação manual` e há credencial gitignored não coberta, a captura em Validação é obrigatória, mesmo se o operador declarou anteriormente `paths.worktreeinclude: null` ou "não preciso".
 - Não executar push sem confirmação explícita via enum `Publicar`.
