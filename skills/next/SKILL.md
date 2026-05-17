@@ -47,7 +47,7 @@ Independente do ranking do top 3 (rationale diferente: fechamento de plano espec
 1. **Listar planos:** papel `plans_dir` resolvido (default `docs/plans/`); modo local lê de `.claude/local/plans/`. Sem planos → skip silente desta seção.
 2. **Filtrar planos em curso:**
    - **Worktree ativa:** `git worktree list --porcelain` → paths sob `.worktrees/`; extrair slug do basename. Plano cujo slug bate é "em curso" (pendência ainda em escopo de `/run-plan` corrente).
-   - **PR/MR aberto via forge auto-detect** (mesmo padrão do `/run-plan §3.7`): parse `git remote get-url origin`. `github.com` → `gh pr list --state open --json headRefName --jq '.[].headRefName'`. Host casando regex `^gitlab\.` → `glab mr list --opened`. Outros hosts ou CLI ausente → fallback (só worktree). Plano cujo slug bate em qualquer fonte ativa é "em curso".
+   - **PR/MR aberto via forge auto-detect:** seguir `${CLAUDE_PLUGIN_ROOT}/docs/procedures/forge-auto-detect.md`. Output `gh` → `gh pr list --state open --json headRefName --jq '.[].headRefName'`; output `glab` → `glab mr list --opened --output json | jq -r '.[].source_branch'`. Output `no-detection` ou `unsupported-host` → fallback (só worktree). Plano cujo slug bate em qualquer fonte ativa é "em curso".
    - Sem flag, sem cutucada — degradação silenciosa quando CLI ausente porque a filtragem é heurística informativa, não invariante crítica.
 3. **Extrair `## Pendências de validação`** dos planos restantes (não-em-curso): conteúdo entre o header e o próximo `##` ou EOF. Sem seção, ou seção vazia/sem bullets ativos → pular o plano.
 4. **Acumular** pares `(slug, texto-da-linha)` para cada bullet extraído. Lista vazia → omitir o bloco no passo 5.
