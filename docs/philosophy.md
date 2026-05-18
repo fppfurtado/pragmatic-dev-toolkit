@@ -6,6 +6,8 @@
 
 **Bounded contexts e linguagem ubíqua sim, cerimônia tática não.** Bounded contexts (DDD estratégico) e vocabulário compartilhado entre código e negócio são fundamentais. Já a cerimônia tática (camadas formais `application/`/`domain/`/`infrastructure/`, ports/adapters universais, mappers em cascata) cria muitos arquivos para pouco valor — adicionar abstração só quando há **dor real** (uma integração instável, uma substituição prevista). YAGNI por padrão.
 
+**Escopo:** YAGNI aqui é princípio transmitido a projetos consumidores; decisões internas do próprio plugin (ADRs, roles, mecanismos de skill, formalização doutrinal) seguem critério distinto — ver [ADR-035](decisions/ADR-035-escopo-aplicacao-yagni-proprio-plugin.md).
+
 Refatorar mais tarde costuma ser mais barato do que abstrair cedo.
 
 ## Nomear bifurcações arquiteturais
