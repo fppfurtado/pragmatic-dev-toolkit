@@ -2,6 +2,11 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.9.2] - 2026-05-20
+
+### Notes
+- `docs/procedures/cutucada-descoberta.md` refactored: `## Gating tri-state` (declarative table) → `## Algoritmo` (numbered prescriptive). Step 1 emits literal `Bash` mapping stdout (`NO_FILE`/`NO_MARKER`/`MARKER`) to next action; steps 2-3 cover dedup probe and emission positioning. Doctrine (ADR-017 + ADR-029) intact — refactor sits below decision layer; no ADR/addendum per ADR-034. Triggered by real incident in consumer `h3-finance-agent` (string-A emitted 4 times with marker present at `CLAUDE.md:93`, zero `Bash` with `grep pragmatic-toolkit:config` in session log).
+
 ## [2.9.1] - 2026-05-20
 
 ### Notes
