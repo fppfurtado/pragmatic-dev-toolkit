@@ -4,15 +4,39 @@ Procedimento compartilhado executado em runtime pelas 5 skills que reativamente 
 
 A cutucada surfa proativamente o caminho `/init-config` em projetos onde o bloco `<!-- pragmatic-toolkit:config -->` está fora de uso (CLAUDE.md ausente ou presente sem o marker).
 
-## Gating tri-state
+## Algoritmo
 
-| Estado | Ação |
-|---|---|
-| `CLAUDE.md` ausente + string-B não aparece no contexto visível desta conversa CC | Emitir **string-B** como última linha do relatório |
-| `CLAUDE.md` presente + `grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md` retorna não-zero (marker ausente) + string-A não aparece no contexto visível | Emitir **string-A** como última linha do relatório |
-| `CLAUDE.md` presente com marker **OR** dedup hit na string aplicável | Suprimir silenciosamente |
+Executar os 3 passos em ordem. **Cada passo é uma ação concreta com tool call literal — não interpretar como condição declarativa.** Inspeção visual do `CLAUDE.md` (via Read, contexto auto-loaded ou similar) **não substitui** o probe `Bash` do passo 1; incidente real em consumer `h3-finance-agent` (sessão `remove-n8n`, 2026-05-20) emitiu string-A 4 vezes com marker presente em `CLAUDE.md:93` porque o procedure foi lido como tabela declarativa em vez de algoritmo executado.
 
-Dedup é **por string** (conversation-scoped, alinhado com [ADR-010](../decisions/ADR-010-instrumentacao-progresso-skills-multi-passo.md)). String-A e string-B observam o contexto visível independentemente — transição `ausente → presente-sem-marker` mid-session pode emitir string-A mesmo após string-B já ter aparecido na mesma sessão, porque o gating de dedup é por string distinta (não por presença genérica de cutucada).
+### 1. Probe estado do `CLAUDE.md`
+
+Executar via `Bash`:
+
+```bash
+if [ ! -f CLAUDE.md ]; then echo NO_FILE; elif grep -q '<!-- pragmatic-toolkit:config -->' CLAUDE.md; then echo MARKER; else echo NO_MARKER; fi
+```
+
+Path relativo ao CWD — em worktree, resolve para o `CLAUDE.md` do worktree (semântica correta: cutucada reflete o contexto operacional corrente).
+
+Mapear stdout para próxima ação:
+
+| Stdout | Estado | Próxima ação |
+|---|---|---|
+| `MARKER` | `marker-presente` | **Suprimir e retornar.** Skill termina sem emitir cutucada. |
+| `NO_MARKER` | `marker-ausente` | Seguir passo 2 com **string-A**. |
+| `NO_FILE` | `claude-md-ausente` | Seguir passo 2 com **string-B**. |
+
+### 2. Probe de dedup conversation-scoped
+
+Para a string-X selecionada no passo 1, verificar se a literal exata da string-X já aparece em mensagem anterior do assistant no contexto visível desta conversa CC. Match → **suprimir e retornar**. Sem match → seguir passo 3.
+
+Granularidade alinhada com [ADR-010](../decisions/ADR-010-instrumentacao-progresso-skills-multi-passo.md) — state mecânico vive na sessão CC, não em git/forge. Sob context compression em sessões muito longas, a string canonical pode sair da janela visível e o passo emiti-la novamente; aceito.
+
+Dedup é **por string** — string-A e string-B observam o contexto visível independentemente. Transição `claude-md-ausente → marker-ausente` mid-session pode emitir string-A mesmo após string-B já ter aparecido na mesma sessão, porque o gating de dedup é por string distinta (não por presença genérica de cutucada).
+
+### 3. Emitir string canonical
+
+Inserir a string-X como **última linha do relatório final** da skill, após qualquer outra saída (commit, push, sugestão de próximo passo).
 
 ## Strings canonical
 
@@ -26,6 +50,6 @@ Dedup é **por string** (conversation-scoped, alinhado com [ADR-010](../decision
 
   > Dica: este projeto não tem `CLAUDE.md`. Crie o arquivo e rode `/init-config` para configurar os papéis do plugin.
 
-## Posicionamento da emissão
+## Escopo de aplicação
 
-Última linha do relatório final da skill, após qualquer outra saída (commit, push, sugestão de próximo passo). Skills com `roles.informational` apenas (sem `roles.required`) **não** emitem a cutucada — escopo restrito às 5 listadas acima (escopo + regra de herança editorial em `CLAUDE.md` → `## Cutucada de descoberta`).
+Skills com `roles.informational` apenas (sem `roles.required`) **não** emitem a cutucada — escopo restrito às 5 listadas no topo deste arquivo (escopo + regra de herança editorial em `CLAUDE.md` → `## Cutucada de descoberta`).
