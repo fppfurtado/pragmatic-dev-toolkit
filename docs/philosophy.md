@@ -20,6 +20,10 @@ Modo de coleta: enum via `AskUserQuestion` (ver "Convenção de pergunta ao oper
 
 Operacionalização no checklist de gaps de `/triage`. Sem nomear, a bifurcação fica baked-in no plano sem ter sido discutida.
 
+## Brainstorm/exploração não-codificado
+
+Brainstorm/exploração de ideias e abordagens é **intencionalmente não-codificado** como skill no toolkit. Raw-chat com Claude é a ferramenta primária — o operador conduz diálogo informal até intenção cristalizar, depois entra no pipeline estruturado (`/draft-idea` para direção de projeto, `/triage` para alinhamento e decisão de artefato, `/debug` para diagnóstico, `/new-adr` para decisão estrutural). Skills cobrem cenários com fronteiras nítidas e output materializável; trabalho inerentemente exploratório resiste a essa codificação sem virar entrevista exaustiva (ver `/triage` step 2) ou competir com skills existentes. Detalhes, alternativas analisadas e gatilhos de revisão em [ADR-036](decisions/ADR-036-brainstorm-intencionalmente-nao-codificado-em-skill.md).
+
 ## Path contract
 
 As skills consomem **papéis**, não paths literais. Projeto declara variantes uma vez via bloco de config; layout diferente do canonical é cidadão de primeira classe, não exceção. O que importa em runtime é a função do arquivo (direção de produto, linguagem ubíqua, plano de mudança), não o nome.
