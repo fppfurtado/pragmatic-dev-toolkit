@@ -48,6 +48,7 @@ Demais combinações seguem normalmente.
 
 Identificar lacunas e perguntar **só o que for bloqueante**. Checklist mental (não questionário):
 
+- **Intenção vaga demais para triar:** input é abordagem aberta sem critério operacional de sucesso (verbos abstratos "melhorar", "modernizar", "aprimorar", "otimizar" sem métrica/cenário; objeto-direto da mudança ausente)? Não é gap pontual — é sinal de que a intenção ainda não cristalizou. Cutucar em **prosa** (não enum): "essa frase descreve abordagem aberta, sem critério operacional — quer explorar comigo aqui antes de eu triar, ou tem objeto/critério mais firme?". Aceita resposta livre; operador conversa raw, refina, volta para `/triage` com intenção cristalizada (per [ADR-036](../../docs/decisions/ADR-036-brainstorm-intencionalmente-nao-codificado-em-skill.md)). Fronteira com **Bifurcação arquitetural** abaixo: bifurcação pressupõe intenção formada com 2 caminhos competindo (critério claro, múltiplos caminhos); aqui o critério ainda não existe.
 - **Escopo:** o que entra e o que fica de fora? Há caso menor que resolve 80%?
 - **Superfícies além do código:** runtime config (env, segredos, templates), infraestrutura (compose, deploy, CI), docs operacionais, automação do projeto (skills/rules/hooks). Se sim, listar em `## Arquivos a alterar`. Anti-padrão: feature "código-completa" mas "em-produção-quebrada".
 - **Invariantes:** alguma RN do `ubiquitous_language` é tocada?

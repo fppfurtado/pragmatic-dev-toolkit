@@ -61,12 +61,12 @@ Só roda quando o passo 1 resolveu modo **one-shot full** (`IDEA.md` ausente). M
      - `question`: `O argumento descreve direção do projeto inteiro ou direção de feature/iniciativa dentro do projeto?`
      - Opções:
        - `Direção do projeto` — *Continuar /draft-idea normalmente. IDEA.md descreverá o produto como um todo.*
-       - `Direção de feature → /triage` — *Abortar /draft-idea. Feature dentro de projeto maduro é alvo de /triage.*
+       - `Direção de feature` — *Abortar /draft-idea. Feature dentro de projeto maduro vai para `/triage` quando a intenção já está formada; intenção ainda vaga (sem objeto direto, sem critério operacional) vai antes para conversa informal com Claude (per [ADR-036](../../docs/decisions/ADR-036-brainstorm-intencionalmente-nao-codificado-em-skill.md)) até cristalizar.*
 
 4. **Tratamento de respostas:**
    - `Direção do projeto` → seguir para passo 2 (interview completo).
-   - `Direção de feature → /triage` → abortar skill com relatório: `Direção de feature em projeto maduro vai para /triage. Rode /triage <intenção> para o próximo passo.`
-   - `Other` (resposta livre via prosa) → tratar como `Direção do projeto` (não abortar o trabalho do operador quando a resposta livre não é interpretável como gatilho de `/triage` explícito). Anotar a resposta literal no contexto inicial do interview do passo 2.
+   - `Direção de feature` → abortar skill com relatório: `Direção de feature em projeto maduro: rode /triage <intenção> quando souber concretamente o que mudar; intenção ainda vaga (sem objeto direto, sem critério operacional) vai antes para conversa informal aqui até cristalizar (per ADR-036).`
+   - `Other` (resposta livre via prosa) → tratar como `Direção do projeto` (não abortar o trabalho do operador quando a resposta livre não é interpretável como gatilho de redirect explícito). Anotar a resposta literal no contexto inicial do interview do passo 2.
 
 ### 2. Modo one-shot — interview completo
 
