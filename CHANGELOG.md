@@ -2,6 +2,12 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.9.1] - 2026-05-20
+
+### Notes
+- ADR-036 (Proposed): "Brainstorm intencionalmente não-codificado em skill" — codifies decision NOT to add a brainstorm skill; raw-chat covers exploratory work, structured pipeline (`/draft-idea`, `/triage`, `/debug`, `/new-adr`) takes over when intent crystallizes. Inverse application of ADR-035: absence of the 4 criteria is strong signal NOT to add structure. Precedent of form: ADR-014. 10 alternatives analyzed; status-quo-refined chosen. 3 concrete reopening triggers documented. `docs/philosophy.md` gains section `## Brainstorm/exploração não-codificado`; `CLAUDE.md` "Editing conventions" gains cross-ref bullet.
+- `/draft-idea` step 1.5 + `/triage` step 2 refined per ADR-036: `/draft-idea` option `Direção de feature` no longer routes vague feature intent straight to `/triage`; new bullet `Intenção vaga demais para triar` added to `/triage` step 2 checklist (heuristic: abstract verb without operational criterion + missing direct object); cutucada in prose, not enum.
+
 ## [2.9.0] - 2026-05-17
 
 ### Added
