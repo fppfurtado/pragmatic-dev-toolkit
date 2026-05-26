@@ -83,7 +83,7 @@ ADR-035 prescreve "override por inação" mas só funciona se o agente reconhece
 **Depende de:** —
 **Próximo passo:** `/triage embedar Decisões absorvidas no body do plano para code-reviewer consumir`
 
-### 7. Stale-view de reviewer — `Read` explícito antes de análise — pendente
+### 7. Stale-view de reviewer — `Read` explícito antes de análise — concluído (PR #77 → main `27473af`)
 
 Resolve fragilidade observada no item 4 §3.4 (sessão de 2026-05-26): `code-reviewer` rodou contra estado pré-Edit (git diff mostrava só Bloco anterior); produziu finding moot ("entrada usa texto antigo") quando o Edit já tinha aplicado a linha nova. Eu dismissei como stale e segui.
 
