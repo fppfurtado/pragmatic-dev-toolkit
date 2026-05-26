@@ -88,6 +88,8 @@ Bloqueios (plano sujo, push esquecido, baseline vermelho, worktree órfã) ficam
 
 **Linguagem ubíqua repassada ao reviewer.** Se o `## Contexto` do plano traz `**Termos ubíquos tocados:** <Termo> (<categoria>), ...`, esse subset entra como contexto da invocação do reviewer no bloco — `/run-plan` não relê `ubiquitous_language` em runtime; o plano é o ponto único de transferência entre alinhamento e execução. Plano sem a linha = mudança não toca domínio = nada a carregar.
 
+**Decisões absorvidas repassadas ao reviewer ([ADR-038](../../docs/decisions/ADR-038-mirror-decisoes-absorvidas-runtime.md)).** Se o body do plano contém seção `## Decisões absorvidas` (mirror do bloco do commit message, escrito por `/triage` step 5), o conteúdo da seção entra como contexto adicional da invocação do reviewer no bloco — uniform protocol: passa a **todos** os reviewers invocados (code/doc/qa/security), não só ao `code-reviewer`. Plano sem a seção = nada a passar (skip silente).
+
 **Instrumentação de progresso (ADR-010).** Loop por bloco e sub-passos do gate final são instrumentados via `Task` por unidade (bloco do §2; sub-passos do §3 cujas condições de execução disparam). Lifecycle padrão `pending` → `in_progress` → `completed`. Plano de bloco único E gate com ≤1 sub-passo efetivo → skip silente.
 
 Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento lógico):
