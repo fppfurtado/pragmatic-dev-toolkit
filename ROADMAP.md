@@ -106,7 +106,7 @@ Resolve fragilidade latente — não observada nesta sessão (todas as execuçõ
 **Depende de:** —
 **Próximo passo:** `/triage captura automática §3.5 via TaskCreate com marker`
 
-### 9. `/new-adr` clarifica spec "Não inventar" vs "preencher com inputs do operador" — pendente
+### 9. `/new-adr` clarifica spec "Não inventar" vs "preencher com inputs do operador" — concluído (PR #79 → main `6a93d63`)
 
 Resolve zona cinza observada no item 3 (criação de ADR-037): `## O que NÃO fazer` diz "Não inventar conteúdo de Contexto/Decisão — quem decide é o operador". Mas operador tinha decidido substância via ROADMAP item 3 (preventivo, plugin-internal, code-as-truth). Eu julguei e preenchi; design-reviewer auditou. Funcionou nesta invocação mas regra tem zona ambígua que depende de julgamento do agente.
 
