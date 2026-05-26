@@ -25,7 +25,7 @@ Maior dor confirmada das 3 análises. Hoje `/triage` decide artefato singular; f
 **Depende de:** —
 **Próximo passo:** `/triage cutucada de decomposição multi-plano em step 2`
 
-### 2. `/note` como `informational` role em `/triage` step 1 e `/next` step 1 — pendente
+### 2. `/note` como `informational` role em `/triage` step 1 e `/next` step 1 — concluído (PR #74 → main `c4348b0`)
 
 Fecha o loop write/read do `/note`. Convergência tripla: vídeo (MCP-to-prod feedback), SK (bidirectional feedback prod→spec), uso manual já estabelecido (memória `feedback_parallel_sessions.md`).
 
