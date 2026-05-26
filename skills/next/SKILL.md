@@ -19,6 +19,8 @@ Ler o arquivo na íntegra. Extrair `## Próximos` — candidatos a analisar. Em 
 
 `## Próximos` vazio → informar e interromper.
 
+Se `.claude/local/NOTES.md` existir, ler na íntegra para contexto suplementar de ranking — notas recentes podem revelar mudança de prioridade ou trabalho adjacente aos candidatos. Reportar se uma nota influenciou o ranking, ou explicitamente que o store estava presente sem notas relacionadas aos candidatos. Informational (per [ADR-032](../../docs/decisions/ADR-032-skill-note-contexto-compartilhado.md) store non-role); nunca bloqueia.
+
 ### 2. Selecionar candidatos
 
 Pegar os **seis primeiros** itens de `## Próximos` em ordem de aparição (topo = mais antigo). Seis dá margem para descartar implementados e ainda chegar a três finais.
