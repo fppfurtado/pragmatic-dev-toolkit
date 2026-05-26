@@ -2,6 +2,27 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.10.0] - 2026-05-26
+
+### Added
+- New hook `block_settings_drift.py` — third PreToolUse block hook. Blocks edits to `.claude/settings.json` that introduce absolute paths (`/home/<user>/`, `/Users/<user>/`) — typical session-permission drift. `.claude/settings.local.json` (gitignored, personal) out of scope. Per ADR-040 (sucessor parcial lateral of ADR-015 per ADR-034 condition 5). Recognizes tensions with ADR-018/ADR-005 (`.claude/` Claude Code territory), ADR-016 (consumer signal first), ADR-015 § Alt (d) (content inspection on hot path). (#80)
+- New procedure `docs/procedures/reviewer-invocation-read.md` — canonical instruction "Read file before analysis" referenced by `/triage` step 5, `/run-plan` §2.3, and `/new-adr` step 5 reviewer invocations. Mitigates stale-view between Edit and Agent dispatch. (#77)
+- TaskCreate state-keeping marker convention `[capture:*]` in `/run-plan` §3.5 — captures from pre-loop warnings, in-loop triggers, and manual validation phase materialize via TaskList instead of mental list. Lifecycle 2-state `pending → completed` (skip `in_progress`). Per ADR-039 (sucessor parcial of ADR-010, category "Task tool as state-keeping" distinct from "progress display"). (#78)
+- `.claude/local/NOTES.md` content read in `/triage` step 1 and `/next` step 1 — consumed as supplementary context (prose, not role) per ADR-032 extension. (#74)
+- New `## Decisões absorvidas` section in plan body (template + `/triage` step 5) — design-reviewer findings absorbed pre-commit during `/triage` flow into runtime-readable plan body for downstream `code-reviewer`. Per ADR-038 (sucessor parcial of ADR-026; refines ADR-035 § Decisão with category "context-aware via messenger upstream"). (#76)
+- Cutucada de decomposição multi-plano in `/triage` step 2 — operator prompt when intent spans multiple distinct outputs that would benefit from separate plans. (#73)
+
+### Changed
+- README rewritten with "Product Engineer harness" framing contrasting with intent-as-truth doctrines (spec-kit reference). Anchored in ADR-037. (#75)
+- `/new-adr` `## O que NÃO fazer` clarified: "Não inventar" (forbidden, no basis) vs "preencher" (expected when operator inputs exist in ROADMAP/plan/conversation). Editorial refinement codifying empirical behavior observed in ADR-037/038/039 creation. Cross-ref to ADR-011. (#79)
+
+### Notes
+- ADR-037 (Proposed): "Código como fonte de verdade vs intent-as-truth" — plugin-internal doctrinal anchor contrasting with spec-kit's tese.
+- ADR-038 (Proposed): "Mirror decisões absorvidas runtime" — sucessor parcial of ADR-026.
+- ADR-039 (Proposed): "Task tool state-keeping fluxo longo" — sucessor parcial of ADR-010.
+- ADR-040 (Proposed): "Block settings drift paths absolutos via hook" — sucessor parcial lateral of ADR-015 per ADR-034 condition 5.
+- Plugin roadmap fully shipped: Onda 1 (5/5) + Onda 2 (4/4) = 9/9 items via PRs #73-80.
+
 ## [2.9.2] - 2026-05-20
 
 ### Notes
