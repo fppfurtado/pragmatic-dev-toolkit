@@ -4,8 +4,11 @@
   "description": "Claude Code plugin for the flat & pragmatic development workflow — workflow skills for alignment, execution and diagnosis; YAGNI/QA/security/doc/design reviewers; stack-aware test scaffolder (Python today); self-gated hooks; configurable path contract via CLAUDE.md.",
   "author": {
     "name": "Fernando Furtado",
-    "email": "fppfurtado@outlook.com"
+    "email": "fppfurtado@outlook.com",
+    "url": "https://github.com/fppfurtado"
   },
   "homepage": "https://github.com/fppfurtado/pragmatic-dev-toolkit",
+  "repository": "https://github.com/fppfurtado/pragmatic-dev-toolkit",
+  "license": "MIT",
   "keywords": ["workflow", "yagni", "adr", "decision-records", "planning", "code-review", "doc-review", "design-review", "debugging", "worktree", "self-gated-hooks"]
 }
