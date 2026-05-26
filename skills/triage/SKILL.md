@@ -168,6 +168,8 @@ Propor commit único agrupando os artefatos. Mensagem segue a convenção do pro
 
 **Forma do commit message com findings absorvidos.** Quando ≥1 finding foi absorvido pré-commit (ADR-026), commit message inclui seção `## design-reviewer findings absorvidos` (idioma da convenção de commits per [ADR-007](../../docs/decisions/ADR-007-idioma-artefatos-informativos.md)) com bullets curtos no formato `- <localização breve>: <correção aplicada> (caminho-único).`. Seção omitida quando não há findings absorvidos. Findings cutucados via `AskUserQuestion` não entram nesta seção — viram parte do trace narrativo normal (decisão do operador descrita em prosa).
 
+**Mirror no plan body (per [ADR-038](../../docs/decisions/ADR-038-mirror-decisoes-absorvidas-runtime.md)).** A mesma seção também é escrita no body do plano sob `## Decisões absorvidas` (após `## Notas operacionais` quando existe; último bloco antes do EOF caso contrário), com formato de bullets idêntico ao do commit message. Edit cirúrgico antes do commit (mesma sequência atômica). Consumida em runtime por `/run-plan` §2.3 que passa o conteúdo como contexto na invocação dos reviewers por bloco. Seção omitida no plan body quando não há findings absorvidos.
+
 Após confirmação:
 
 - **Caminho sem plano:** apenas `git commit -m "…"`. Push não exigido.
