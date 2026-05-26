@@ -57,6 +57,14 @@ Analise o diff fornecido **e apenas o diff**.
 - **Env vars com valor literal em arquivo compartilhado:** mesma filosofia que `.env.example` e `docker-compose.yml` — usar `${VAR:-}` (nunca literal) para qualquer valor sensível ou específico de ambiente. *Atenção a falso positivo*: `Bash(touch __TRACKED_VAR__/...)` é placeholder de **template sintetizado** (hook engine não substituiu); flagrar como template a regenerar, não como vazamento literal.
 - **`permissions.allow` aparecendo só em `settings.local.json`:** pode indicar (a) permissão útil ao time que deveria estar no compartilhado, ou (b) permissão arriscada o bastante para ficar isolada. Reviewer flagga para o autor ser explícito sobre qual dos dois.
 
+### Respeito a Decisões absorvidas (context-aware via messenger upstream)
+
+**Aplicabilidade:** acionar apenas quando o invocador passa `## Decisões absorvidas` como contexto adicional (mecanismo prescrito em [ADR-038](../docs/decisions/ADR-038-mirror-decisoes-absorvidas-runtime.md), repassado por `/run-plan` §2.3). Sem contexto passado → seção inteira inativa (caminho normal da rubrica YAGNI).
+
+Quando há contexto: tratar as estruturas listadas em `## Decisões absorvidas` como **out-of-scope da rubrica YAGNI** deste reviewer — `design-reviewer` aprovou pré-commit + operador absorveu via [ADR-026](../docs/decisions/ADR-026-criterio-mecanico-absorcao-findings-design-reviewer.md); flagar essas estruturas viola "override por inação" de [ADR-035](../docs/decisions/ADR-035-escopo-aplicacao-yagni-proprio-plugin.md), agora refinado por ADR-038 (categoria nova "context-aware via messenger upstream", distinta da rejeitada "free-read autônomo de ADRs" — reviewer reage a contexto **explicitamente passado pelo invocador**, não a contexto auto-lido).
+
+Reportar apenas violações em estruturas **fora** da lista absorvida.
+
 ## O que NÃO flagrar
 
 - Três linhas similares (preferir duplicação a abstração prematura).
