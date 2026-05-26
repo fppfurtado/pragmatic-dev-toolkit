@@ -4,7 +4,7 @@
 Esqueleto canônico de plano consumido por /triage e /run-plan (ADR-001).
 /triage lê este arquivo, copia para `<plans_dir>/<slug>.md`, adapta headers ao idioma do projeto consumidor, preenche placeholders.
 /run-plan faz matching semântico contra os headers — equivalentes em outro idioma (`## Files to change`, etc.) são aceitos contanto que a estrutura informacional bata.
-Seções opcionais (## Verificação manual, ## Notas operacionais) só aparecem quando há substância — não criar vazias.
+Seções opcionais (## Verificação manual, ## Notas operacionais, ## Decisões absorvidas) só aparecem quando há substância — não criar vazias.
 -->
 
 ## Contexto
@@ -53,3 +53,16 @@ BACKLOG.md NUNCA aparece aqui — transições são geridas pelo campo `**Linha 
 ## Notas operacionais
 
 <Particularidades de execução: ordem dos blocos quando importa, pontos de atenção para reviewers, follow-ups previstos para batches subsequentes.>
+
+## Decisões absorvidas
+
+<!--
+Mirror do bloco `## design-reviewer findings absorvidos` do commit message deste plano (per ADR-026 § Forma estendida por ADR-038).
+Bullet format idêntico:
+- <localização breve>: <correção aplicada> (caminho-único).
+
+Preenchido por /triage step 5 quando findings são absorvidos pré-commit; consumido por /run-plan §2.3 que passa a seção como contexto aos reviewers por bloco. code-reviewer (per agent def) trata estruturas listadas como out-of-scope da rubrica YAGNI.
+Seção omitida quando não há findings absorvidos (zero overhead no caso comum).
+-->
+
+- <localização>: <correção> (caminho-único).
