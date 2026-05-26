@@ -47,7 +47,7 @@ Fecha o loop write/read do `/note`. Convergência tripla: vídeo (MCP-to-prod fe
 **Depende de:** —
 **Próximo passo:** `/new-adr doutrina código-como-fonte-de-verdade vs intent-as-truth`
 
-### 4. README.md EN: framing "Product Engineer harness" — pendente
+### 4. README.md EN: framing "Product Engineer harness" — concluído (PR #75 → main `a5f0f3c`)
 
 Vídeo dá o framing; SK dá o contraste de posicionamento. README hoje vende componentes (skills/agents/hooks); deveria vender problema primeiro. Absorve item de polimento do backlog ("marketplace prep #7").
 
