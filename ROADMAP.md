@@ -13,7 +13,7 @@ Artefato **plugin-internal** — não é role, não propagado a projetos consumi
 
 Critérios de ordenação: (1) dor confirmada por uso real precede impacto teórico, (2) itens independentes antes de dependentes, (3) doutrina antes do canal que a vende.
 
-### 1. Cutucada de decomposição multi-plano em `/triage` step 2 — pendente
+### 1. Cutucada de decomposição multi-plano em `/triage` step 2 — concluído (PR #73 → main `28bbeba`)
 
 Maior dor confirmada das 3 análises. Hoje `/triage` decide artefato singular; feature grande vira plano único gigante OU múltiplos `/triage` manuais sem coordenação.
 
