@@ -2,6 +2,12 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.10.1] - 2026-05-26
+
+### Notes
+- add repository, license, author.url to plugin.json
+- remove ROADMAP.md (9/9 items shipped in v2.10.0)
+
 ## [2.10.0] - 2026-05-26
 
 ### Added
