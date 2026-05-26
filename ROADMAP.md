@@ -55,16 +55,9 @@ Vídeo dá o framing; SK dá o contraste de posicionamento. README hoje vende co
 **Depende de:** item 3 (ADR-037 para contraste crisp).
 **Próximo passo:** `/triage atualizar README com framing Product Engineer harness e contraste spec-first`
 
-### 5. Hook `block_settings_drift.py` — pendente
+### 5. Hook `block_settings_drift.py` — concluído (PR #80 → main `cdc6661`), ADR-040 criado
 
-Friction recorrente confirmada pelo `/insights` report: `.claude/settings.json` acumula entradas de permissão session-scoped ou paths absolutos, exigindo cleanup commits repetidos. Paralelo a `block_env.py` e `block_gitignored.py` já shippados.
-
-- **Auto-gating triplo:** (1) só toca `.claude/settings.json` ou `.claude/settings.local.json`; (2) só quando diff introduz padrões problemáticos (paths absolutos com `/home/`, `/Users/`; entradas de sessão); (3) `PreToolUse` `exit 2` quando match.
-- **Diferencial vs `block_gitignored.py`:** `settings.json` é tracked (committed); `settings.local.json` é gitignored. Hook foca no risco do tracked, que `block_gitignored.py` não cobre.
-- **Independente:** ordem livre vs itens 1-4; pode ser shipado em qualquer momento.
-
-**Depende de:** —
-**Próximo passo:** `/triage hook block_settings_drift para auto-bloquear paths absolutos e session perms em .claude/settings.json`
+Terceiro PreToolUse block hook do plugin via PR #80. ADR-040 sucessor parcial lateral de ADR-015 per ADR-034 Cond 5; reconhece e rebate tensões com ADR-018/ADR-005 (`.claude/` território Claude Code → defesa: gate defensivo ≠ modificação proativa), ADR-016 (consumer signal first → defesa: tracked sem `.gitignore` a respeitar, pattern universal), ADR-015 § Alt (d) (content inspection no hot path → defesa: escopo restrito + formato estável). Escopo restrito a paths absolutos `/home/<user>/` ou `/Users/<user>/` (operador escolheu sobre cobertura ampla via cutucada F1); regex bruta no content (operador escolheu sobre JSON parse via cutucada F3+F4). Session perms → Limitação + Gatilho de revisão (reabre se ≥2 cleanup commits por session-perm drift em 30 dias pós-release). Fecha Onda 1 5/5 e o plugin todo 9/9.
 
 ## Onda 2 — fragilidades observadas durante execução da Onda 1 (2026-05-26)
 
