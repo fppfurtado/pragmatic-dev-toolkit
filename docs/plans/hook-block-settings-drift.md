@@ -61,6 +61,10 @@ Mecanismo paralelo a `block_env.py` (ADR-015) e `block_gitignored.py` (ADR-016) 
 - Editar `.claude/settings.local.json` com mesma permissão → hook não dispara, edit prossegue normal.
 - Editar `.claude/settings.json` adicionando permissão "clean" (sem path absoluto, ex.: `"Bash(git status)"`) → hook não dispara, edit prossegue.
 
+## Pendências de validação
+
+- Cobertura ausente: `hooks/block_settings_drift.py` é código de produção sem test pattern correspondente. Repo plugin não tem test runner por [ADR-013](../decisions/ADR-013-ci-lint-minimo-no-build-runner.md); `## Verificação end-to-end` cobre via 6 invocações stdin do script (Test 1-6 + 2 extras T7-T8 executados durante Bloco 2). Captura registrada per ADR-039 (state-keeping via TaskCreate); operador pode descartar editorialmente em revisão futura.
+
 ## Notas operacionais
 
 - Plano 3 blocos, ordem editorial: doutrina primeiro (ADR-040) → mecanismo (script) → registry (hooks.json). Bloco 2 referencia ADR-040 do Bloco 1 em docstring; Bloco 3 referencia o script do Bloco 2 no command path.

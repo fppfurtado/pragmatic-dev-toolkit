@@ -1,5 +1,5 @@
 {
-  "description": "Block direct edits to .env files and gitignored paths; run pytest after Python edits in projects with a pyproject.toml ancestor.",
+  "description": "Block direct edits via block_env (.env files), block_gitignored (gitignored paths), and block_settings_drift (absolute-path drift in tracked .claude/settings.json); run pytest after Python edits in projects with a pyproject.toml ancestor.",
   "hooks": {
     "PreToolUse": [
       {
@@ -20,6 +20,17 @@
           {
             "type": "command",
             "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/block_gitignored.py",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "description": "Timeout 10s — block_settings_drift filters by path then content regex; silent for 99% of edits.",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/block_settings_drift.py",
             "timeout": 10
           }
         ]
