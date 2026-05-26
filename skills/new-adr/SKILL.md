@@ -43,7 +43,7 @@ Sem título → pedir antes de prosseguir.
 
 3. **Obter data** em `YYYY-MM-DD` (`currentDate` do contexto se disponível, senão `date +%Y-%m-%d`).
 
-4. **Criar arquivo** `<decisions_dir>/ADR-<NNN>-<slug>.md` com o template abaixo. Não preencher conteúdo — deixar placeholders explícitos para o operador.
+4. **Criar arquivo** `<decisions_dir>/ADR-<NNN>-<slug>.md` com o template abaixo. Preencher conteúdo derivado de inputs explícitos do operador (ROADMAP, plano upstream, conversa recente, entrevista) — sintetizar substância já decidida em estrutura canonical. Placeholders explícitos apenas quando nenhum input substantivo existe; nunca inventar substância sem base (ver `## O que NÃO fazer` para a fronteira completa).
 
 5. **Revisão pré-retorno.** Invocar `@design-reviewer` apontando para o ADR draft recém-criado. Sem cutucada de pré-execução — o reviewer dispara automaticamente conforme [ADR-011](../../docs/decisions/ADR-011-wiring-design-reviewer-automatico.md). Ao compor o prompt da invocação, seguir `${CLAUDE_PLUGIN_ROOT}/docs/procedures/reviewer-invocation-read.md` (instrução defensiva de `Read` do ADR draft antes da análise). Para cada finding, aplicar critério de [ADR-026](../../docs/decisions/ADR-026-criterio-mecanico-absorcao-findings-design-reviewer.md):
 
@@ -100,5 +100,5 @@ Idioma: espelhar ADRs existentes no projeto. Diretório vazio → default canoni
 
 ## O que NÃO fazer
 
-- Não inventar conteúdo de Contexto/Decisão — quem decide é o operador, a skill só estrutura.
+- Não inventar conteúdo de Contexto/Decisão **sem base em input explícito do operador**. Preencher com conteúdo derivado de inputs disponíveis (ROADMAP, plano upstream, conversa recente, entrevista). Placeholders apenas quando nenhum input substantivo existe — quem decide a substância é o operador, a skill sintetiza/estrutura. `design-reviewer` (per [ADR-011](../../docs/decisions/ADR-011-wiring-design-reviewer-automatico.md)) audita drift entre input e síntese.
 - Não alterar ADRs existentes.
