@@ -90,6 +90,8 @@ Bloqueios (plano sujo, push esquecido, baseline vermelho, worktree órfã) ficam
 
 **Decisões absorvidas repassadas ao reviewer ([ADR-038](../../docs/decisions/ADR-038-mirror-decisoes-absorvidas-runtime.md)).** Se o body do plano contém seção `## Decisões absorvidas` (mirror do bloco do commit message, escrito por `/triage` step 5), o conteúdo da seção entra como contexto adicional da invocação do reviewer no bloco — uniform protocol: passa a **todos** os reviewers invocados (code/doc/qa/security), não só ao `code-reviewer`. Plano sem a seção = nada a passar (skip silente).
 
+**Instrução de `Read` antes de análise no prompt do reviewer.** Ao compor o prompt do reviewer escolhido para o bloco, seguir `${CLAUDE_PLUGIN_ROOT}/docs/procedures/reviewer-invocation-read.md` — instrução defensiva que força refresh do arquivo alvo via `Read` antes da análise (resiliência contra stale-view por timing Edit → Agent).
+
 **Instrumentação de progresso (ADR-010).** Loop por bloco e sub-passos do gate final são instrumentados via `Task` por unidade (bloco do §2; sub-passos do §3 cujas condições de execução disparam). Lifecycle padrão `pending` → `in_progress` → `completed`. Plano de bloco único E gate com ≤1 sub-passo efetivo → skip silente.
 
 Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento lógico):
