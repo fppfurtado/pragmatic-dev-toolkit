@@ -45,7 +45,7 @@ Sem título → pedir antes de prosseguir.
 
 4. **Criar arquivo** `<decisions_dir>/ADR-<NNN>-<slug>.md` com o template abaixo. Não preencher conteúdo — deixar placeholders explícitos para o operador.
 
-5. **Revisão pré-retorno.** Invocar `@design-reviewer` apontando para o ADR draft recém-criado. Sem cutucada de pré-execução — o reviewer dispara automaticamente conforme [ADR-011](../../docs/decisions/ADR-011-wiring-design-reviewer-automatico.md). Para cada finding, aplicar critério de [ADR-026](../../docs/decisions/ADR-026-criterio-mecanico-absorcao-findings-design-reviewer.md):
+5. **Revisão pré-retorno.** Invocar `@design-reviewer` apontando para o ADR draft recém-criado. Sem cutucada de pré-execução — o reviewer dispara automaticamente conforme [ADR-011](../../docs/decisions/ADR-011-wiring-design-reviewer-automatico.md). Ao compor o prompt da invocação, seguir `${CLAUDE_PLUGIN_ROOT}/docs/procedures/reviewer-invocation-read.md` (instrução defensiva de `Read` do ADR draft antes da análise). Para cada finding, aplicar critério de [ADR-026](../../docs/decisions/ADR-026-criterio-mecanico-absorcao-findings-design-reviewer.md):
 
    - **Cutucar operador** via `AskUserQuestion` se finding satisfaz ≥1 das 3 condições: (i) ≥2 alternativas legítimas competindo (alternativa rebatida descritivamente pelo reviewer conta como 1 caminho; só conta como ≥2 quando o reviewer apresenta caminhos competindo sem rebater); (ii) contradiz decisão documentada em ADR/`philosophy.md`/`CLAUDE.md`; (iii) exige contexto fora do diff/plano/ADR. Cláusula default-conservadora: dúvida na classificação → cutucar.
    - **Absorver pré-commit** quando nenhuma condição dispara (caminho-único). Aplicar correção no ADR draft antes de devolver controle.
