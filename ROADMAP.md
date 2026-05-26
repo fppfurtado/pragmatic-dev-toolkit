@@ -95,7 +95,7 @@ Risco: se fosse finding legítimo mascarado por timing, eu teria absorvido um fa
 **Depende de:** —
 **Próximo passo:** `/triage Read explícito antes de análise nos prompts de invocação de reviewer`
 
-### 8. Captura automática `/run-plan §3.5` via TaskCreate (em vez de lista mental) — pendente
+### 8. Captura automática `/run-plan §3.5` via TaskCreate (em vez de lista mental) — concluído (PR #78 → main `7b68bd0`), ADR-039 criado
 
 Resolve fragilidade latente — não observada nesta sessão (todas as execuções fizeram skip silente em §3.5), mas estruturalmente presente. Spec atual diz "agente acumula gatilhos e materializa no gate final" sem mecanismo de tracking — depende de lista mental do agente. Em `/run-plan` longo (≥3 blocos com triggers reais), risco de esquecer parte da lista entre passo 2 e §3.5.
 
