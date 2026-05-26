@@ -70,7 +70,7 @@ Friction recorrente confirmada pelo `/insights` report: `.claude/settings.json` 
 
 Itens derivados de auto-análise durante implementação dos itens 1-4. Critério de ordenação adicional: risco de regressão silenciosa precede outras dimensões — fragilidade onde a falha passa despercebida ao operador é prioritária.
 
-### 6. Embed `## Decisões absorvidas` no body do plano (resolve conflito reviewer-vs-reviewer) — pendente
+### 6. Embed `## Decisões absorvidas` no body do plano (resolve conflito reviewer-vs-reviewer) — concluído (PR #76 → main `81707f0`), ADR-038 criado
 
 Resolve fragilidade observada no item 1 (sessão de 2026-05-26): code-reviewer mid-execução flaggou estrutura que design-reviewer pré-commit havia aprovado (3 boundaries enumeradas + cross-ref Escopo↔Tamanho). Sem perspicácia do agente (citar ADR-035 + AskUserQuestion), o default-absorber teria revertido silenciosamente a decisão aprovada pelo operador.
 
