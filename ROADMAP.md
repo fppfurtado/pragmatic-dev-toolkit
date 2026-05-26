@@ -36,7 +36,7 @@ Fecha o loop write/read do `/note`. Convergência tripla: vídeo (MCP-to-prod fe
 **Depende de:** —
 **Próximo passo:** `/triage wiring /note como informational role em /triage e /next`
 
-### 3. ADR-037 "código-como-fonte-de-verdade vs intent-as-truth" — pendente
+### 3. ADR-037 "código-como-fonte-de-verdade vs intent-as-truth" — concluído (commit `fe97ab6`)
 
 Âncora doutrinal explícita contrastando com tese central do spec-kit ("specifications don't serve code — code serves specifications"). Preventivo: sem ADR, contribuidor futuro propondo "vamos virar spec-first" obriga reconstruir doutrina do zero.
 
