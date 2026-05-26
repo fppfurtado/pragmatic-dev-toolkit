@@ -1,15 +1,13 @@
 # Roadmap
 
-Sequência de melhorias propostas durante 4 análises conversacionais (2026-05-25):
+Sequência de melhorias para o plugin organizadas em ondas. Cada onda derivada de uma fonte distinta de sinal; itens dentro da onda ordenados por dor confirmada > independência > doutrina antes de canal.
 
-1. Vídeo "Voltei do Vale do Silício: Esse é o Dev que QUEREM em 2026" — Waldemar Neto.
-2. Contraste com [github/spec-kit](https://github.com/github/spec-kit).
-3. Gap de decomposição multi-plano (≥3 ocasiões históricas confirmadas pelo operador).
-4. Relatório `/insights` (166 sessões analisadas): friction recorrente em `.claude/settings.json`.
+- **Onda 1** sintetiza 4 análises conversacionais de 2026-05-25: vídeo "Voltei do Vale do Silício 2026" (Waldemar Neto); contraste com [github/spec-kit](https://github.com/github/spec-kit); gap de decomposição multi-plano (≥3 ocasiões históricas confirmadas pelo operador); relatório `/insights` (166 sessões analisadas, friction em `.claude/settings.json`).
+- **Onda 2** sintetiza 4 fragilidades observadas em auto-análise durante execução da Onda 1 (2026-05-26): conflito reviewer-vs-reviewer; stale-view de reviewer; captura `§3.5` sem tracking; `/new-adr` skeleton vs filled ambíguo.
 
 Artefato **plugin-internal** — não é role, não propagado a projetos consumidores. Guia de ordenação para próximas sessões CC; cada item resolve via skill apontada em "Próximo passo".
 
-## Ordem proposta
+## Onda 1 — propostas conversacionais 2026-05-25
 
 Critérios de ordenação: (1) dor confirmada por uso real precede impacto teórico, (2) itens independentes antes de dependentes, (3) doutrina antes do canal que a vende.
 
@@ -68,6 +66,57 @@ Friction recorrente confirmada pelo `/insights` report: `.claude/settings.json` 
 **Depende de:** —
 **Próximo passo:** `/triage hook block_settings_drift para auto-bloquear paths absolutos e session perms em .claude/settings.json`
 
+## Onda 2 — fragilidades observadas durante execução da Onda 1 (2026-05-26)
+
+Itens derivados de auto-análise durante implementação dos itens 1-4. Critério de ordenação adicional: risco de regressão silenciosa precede outras dimensões — fragilidade onde a falha passa despercebida ao operador é prioritária.
+
+### 6. Embed `## Decisões absorvidas` no body do plano (resolve conflito reviewer-vs-reviewer) — pendente
+
+Resolve fragilidade observada no item 1 (sessão de 2026-05-26): code-reviewer mid-execução flaggou estrutura que design-reviewer pré-commit havia aprovado (3 boundaries enumeradas + cross-ref Escopo↔Tamanho). Sem perspicácia do agente (citar ADR-035 + AskUserQuestion), o default-absorber teria revertido silenciosamente a decisão aprovada pelo operador.
+
+ADR-035 prescreve "override por inação" mas só funciona se o agente reconhecer o conflito. Mecânica atual: findings absorvidos vivem no commit message do plano (ADR-026 § Forma); code-reviewer não lê commit messages, só o diff — gap de informação estrutural alto-impacto.
+
+- **Mecanismo (opção B confirmada pelo operador):** Refinar ADR-026 — `## design-reviewer findings absorvidos` ganha contrapartida estruturada no body do plano (nova seção opcional `## Decisões absorvidas` no `templates/plan.md`). `/run-plan` passa essa seção como contexto na invocação de cada reviewer por bloco (paralelo ao mecanismo de `**Termos ubíquos tocados:**` da ADR-021). `code-reviewer` agent def ganha 1 cláusula: "se invocador passa Decisões absorvidas, trate as estruturas listadas como out-of-scope da rubrica YAGNI per ADR-035 override-by-inaction explícito".
+- **Critério ADR-034:** todas as 4 condições aplicam (decisão central de ADR-026 intacta, sem nova categoria, sem restrição externa, caráter operacional) → **adendo a ADR-026**, não novo ADR. Edits em templates/plan.md + /run-plan §2.3 + code-reviewer agent def acompanham.
+- **Cobertura:** decisões EXPLICITAMENTE absorvidas pelo design-reviewer. Não cobre decisões implícitas de conversa (operador respondeu X em AskUserQuestion sem registro no plano) — essas continuam dependendo do agente.
+
+**Depende de:** —
+**Próximo passo:** `/triage embedar Decisões absorvidas no body do plano para code-reviewer consumir`
+
+### 7. Stale-view de reviewer — `Read` explícito antes de análise — pendente
+
+Resolve fragilidade observada no item 4 §3.4 (sessão de 2026-05-26): `code-reviewer` rodou contra estado pré-Edit (git diff mostrava só Bloco anterior); produziu finding moot ("entrada usa texto antigo") quando o Edit já tinha aplicado a linha nova. Eu dismissei como stale e segui.
+
+Risco: se fosse finding legítimo mascarado por timing, eu teria absorvido um falso "tudo OK". Cada invocação assume snapshot consistente — sequência Edit → invoke Agent pode disparar antes do harness sincronizar git stage.
+
+- **Mecanismo:** ajuste editorial nos prompts de invocação dos reviewers em `/run-plan §2.3`, `/triage step 5` e `/new-adr step 5`. Adicionar instrução: "antes de analisar, leia o arquivo alvo via `Read` (não confie em `git diff` — pode estar stale entre Edit recente e invocação)". Custo: 1 frase por skill (3 locais).
+- **Cobertura:** ~100% dos casos de stale-view por timing Edit→Agent. Não cobre stale conceitual (reviewer interpretou contexto errado) — esse é outro problema.
+
+**Depende de:** —
+**Próximo passo:** `/triage Read explícito antes de análise nos prompts de invocação de reviewer`
+
+### 8. Captura automática `/run-plan §3.5` via TaskCreate (em vez de lista mental) — pendente
+
+Resolve fragilidade latente — não observada nesta sessão (todas as execuções fizeram skip silente em §3.5), mas estruturalmente presente. Spec atual diz "agente acumula gatilhos e materializa no gate final" sem mecanismo de tracking — depende de lista mental do agente. Em `/run-plan` longo (≥3 blocos com triggers reais), risco de esquecer parte da lista entre passo 2 e §3.5.
+
+- **Mecanismo:** `/run-plan §3.5` ganha — cada captura emergente dispara `TaskCreate` com prefixo marker (ex.: `[capture:backlog] <linha>`, `[capture:validacao] <linha>`); §3.5 lê `TaskList` filtrada por marker para materialização. Paralelo a ADR-010 (que já usa Task para sub-passos do gate).
+- **Cobertura:** elimina dependência de memória do agente; lista vira state persistido (conversation-scoped) até materialização ou cleanup explícito.
+- **Preventivo:** fragilidade latente sem incidente observado ainda — incluída por classe ("agente mantém estado mentalmente em fluxo multi-passo") que tem precedente em ADR-010.
+
+**Depende de:** —
+**Próximo passo:** `/triage captura automática §3.5 via TaskCreate com marker`
+
+### 9. `/new-adr` clarifica spec "Não inventar" vs "preencher com inputs do operador" — pendente
+
+Resolve zona cinza observada no item 3 (criação de ADR-037): `## O que NÃO fazer` diz "Não inventar conteúdo de Contexto/Decisão — quem decide é o operador". Mas operador tinha decidido substância via ROADMAP item 3 (preventivo, plugin-internal, code-as-truth). Eu julguei e preenchi; design-reviewer auditou. Funcionou nesta invocação mas regra tem zona ambígua que depende de julgamento do agente.
+
+- **Mecanismo:** 1 frase adicional no spec da `/new-adr`: "Preencher com conteúdo derivado de inputs explícitos do operador (ROADMAP, plano upstream, conversa recente). Placeholders apenas quando nenhum input substantivo existir."
+- **Cobertura:** clarifica intenção sem novo mecanismo. `design-reviewer` continua auditor de drift entre input do operador e conteúdo gerado.
+- **Smallest impact** da Onda 2 — editorial puro; sem mecanismo novo, sem ADR.
+
+**Depende de:** —
+**Próximo passo:** `/triage clarificar spec /new-adr sobre preencher vs skeleton`
+
 ## Deferido — reabrir com gatilho concreto
 
 | Item | Gatilho de reabertura |
@@ -75,6 +124,7 @@ Friction recorrente confirmada pelo `/insights` report: `.claude/settings.json` 
 | Campos `**Sucessor:**` / `**Predecessor:**` opcionais em `## Contexto` do plano + coordenação inter-plano em `/run-plan` | Item 1 implementado + ≥2 features multi-plano onde dor persiste (operador relata "lembrei tarde demais que tinha planos coordenados") |
 | Rubrica "bloco agent-sized" em `design-reviewer` | Item 1 implementado + ≥1 plano grande passa a cutucada de `/triage` e chega ao design-reviewer maior do que deveria ser |
 | Seção opcional `## Premissas e incertezas` no plan template (inspirada em `[NEEDS CLARIFICATION]` do spec-kit) | Autor de plano reporta perda de assumptions implícitas em ≥2 invocações |
+| Tracking de Task IDs cross-update via subject matcher (em vez de ID numérico) | ≥3 sessões com off-by-one em TaskUpdate observado — overhead recoverable hoje, considerar se virar pain real |
 
 ## Rejeitado — não reabrir sem mudança doutrinal
 
@@ -88,3 +138,4 @@ Friction recorrente confirmada pelo `/insights` report: `.claude/settings.json` 
 | Skill `/retro` ou síntese periódica | YAGNI workflow solo; raw-chat cobre |
 | Categoria nova `docs/epics/<slug>.md` com role próprio | Cerimônia alta antitética ao flat & pragmatic |
 | Documentação de pattern manual multi-plano (sem mecanismo) | Frágil — humano esquece; preferido item 1 com mecanismo |
+| `code-reviewer` ganha free-read de ADRs (estilo `design-reviewer`) | Antitético a ADR-035 que preservou "YAGNI universal sem context-aware switch"; alternativa C ao item 6 |
