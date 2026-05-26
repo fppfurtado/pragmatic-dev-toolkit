@@ -2,6 +2,8 @@
 
 Claude Code plugin codifying the **flat & pragmatic** dev workflow: workflow skills for alignment, execution and diagnosis; YAGNI/QA/security/doc/design reviewers; self-gated hooks. Companion to [`scaffold-kit`](https://github.com/fppfurtado/scaffold-kit).
 
+**Product Engineer harness** — infrastructure for the engineer to crystallize intent (`/draft-idea`, `/triage`), execute with discipline (`/run-plan` + reviewer per block), and anchor decisions (ADRs, plans, NOTES). Code is the canonical source of truth; doctrine records intent rather than generating it — contrasting deliberately with spec-first/generative approaches like [github/spec-kit](https://github.com/github/spec-kit) (see [ADR-037](docs/decisions/ADR-037-codigo-como-fonte-de-verdade-vs-intent-as-truth.md)).
+
 ## What's inside
 
 | Component | Type | What it does |
