@@ -113,3 +113,24 @@ Descartada:
 - **Convenção de naming de `.worktreeinclude` mudar** (alias, formato novo) — re-confirmar que o probe continua válido.
 - **Plugin ganhar segundo path canonical que precise replicação** (além de `.claude/local/`) — re-avaliar se `/init-config` é o lugar certo para gerenciar ou se vale extrair para skill própria de setup de worktree.
 - **Operador reporta atrito com a exceção editorial** ("por que `/init-config` modifica `.worktreeinclude` mas não cria `CLAUDE.md` nem mexe em `.gitignore`?") — reavaliar consistência da postura editorial não-reparativa.
+
+## Addendum (2026-05-27)
+
+**Origem.** [ADR-032](ADR-032-skill-note-contexto-compartilhado.md) (2026-05-15) introduziu `.claude/local/NOTES.md` como store doutrinário fixo **non-role** — gravado pela skill `/note` em qualquer git repo, independente de role contract. Pressuposto original deste ADR de que `.claude/local/` só hospeda artefatos de role (`decisions/`, `BACKLOG.md`, `plans/`) deixou de valer: operador pode ter `NOTES.md` ativo **sem nenhuma role declarada como `local`**, e a invariante "`.claude/` em `.worktreeinclude`" passou a depender de skill fora do escopo do `/init-config`. Gap exposto em raw-chat 2026-05-27.
+
+**Extensão.** `/note` se torna **segundo dispatcher** para a mesma invariante. Mecânica idêntica à linha `.claude/` da tabela composta do step 4.5 do `/init-config` SKILL.md (probe regex `^\.claude(/|$)`, 3 ramos exaustivos: criar arquivo com header + `.claude/` / adicionar linha / skip silente), operação silente e determinística, idempotente cross-skill. Concreto em `skills/note/SKILL.md` passo 1 ("Garantir store").
+
+**Assimetria de trigger é deliberada.** `/init-config` step 4.5 dispara condicionalmente (≥1 role local declarada). `/note` passo 1 dispara **universalmente** (toda invocação) — porque o sinal de "preciso replicar `.claude/`" no `/note` é a própria invocação (existe NOTES.md a gravar). Não há perda de simetria: invariante é a mesma; `.claude/` cobre `.claude/local/<role>/` e `.claude/local/NOTES.md` simultaneamente.
+
+**`/init-config` permanece dono no caminho setup-driven.** Step 4.5 inalterado; safety net do `/run-plan` SKILL.md:36 preservado para casos edge (`.claude/` removido manualmente do `.worktreeinclude` entre invocações).
+
+**Gatilho de revisão acionado em duas ondas.** O gatilho original *"Plugin ganhar segundo path canonical que precise replicação (além de `.claude/local/`)"* foi acionado em duas ondas:
+
+1. [ADR-030](ADR-030-aceitar-claude-md-gitignored-via-worktreeinclude.md) (2026-05-14) adicionou `CLAUDE.md` como **path novo** ao `.worktreeinclude`, mesma skill dispatcher (`/init-config` step 4.5 tabela linha nova).
+2. Este adendo adiciona `/note` como **dispatcher novo** para o path `.claude/` pré-existente.
+
+Extração para skill própria de setup de worktree (`docs/procedures/worktree-replication-dispatch.md`) **avaliada e descartada** — dispatchers permanecem distribuídos por skill que tem o sinal de configuração na mão (init-config = role declaration; note = ad-hoc capture); idempotência cross-skill cobre conflito mecânico runtime; cross-ref textual no `/note` SKILL.md cobre drift editorial.
+
+**Gatilho de revisão novo:** **4º dispatcher emergir** (além de `/init-config` × 2 paths + `/note`) → extrair pattern probe-and-add para `docs/procedures/worktree-replication-dispatch.md`. Paralelo direto com [ADR-029](ADR-029-cutucada-descoberta-cobre-claude-md-ausente.md) § Gatilhos sobre cutucada-emitting skills.
+
+**Justificativa de adendo (vs novo ADR sucessor parcial).** [ADR-034](ADR-034-criterio-adendo-vs-novo-adr-refinamento-doutrinal.md) critério 5 (sucessor parcial) é defensável aqui, mas o **eixo de extensão é diferente** do precedente ADR-030. ADR-030 introduziu **novo path** (`CLAUDE.md`) coberto pelo **mesmo dispatcher** (`/init-config` step 4.5 tabela linha nova) → mecânica composta, novo ADR sucessor justificado. Este adendo introduz **novo dispatcher** (`/note` passo 1) para o **mesmo path** (`.claude/`) → mecânica replicada com decisão central do ADR-018 (probe regex + 3 ramos + idempotência) preservada intacta. ADR-034 critérios de adendo (4/4): decisão central intacta + sem nova categoria conceitual de artefato + sem restrição externa + caráter explicativo da extensão. Assimetria com ADR-030 é deliberada e amarrada ao critério ADR-034.

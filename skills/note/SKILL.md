@@ -20,9 +20,21 @@ String com conteúdo da nota. Sem argumento → pedir conteúdo em prosa livre (
 
 ### 1. Garantir store
 
-Criar diretório com `mkdir -p .claude/local/` se ausente. Probe gitignore: `git check-ignore -q .claude/local/.probe`. Sem cobertura → disparar gate `Gitignore` per ADR-005 § "Local mode" (mecânica já no CLAUDE.md → "Local mode"). Plus gate "Worktree replication" via [ADR-018](../../docs/decisions/ADR-018-replicacao-claude-em-modo-local-init-config.md) se aplicável (`.claude/` listado no `.worktreeinclude`).
-
 Não é um git repo (`git rev-parse` retorna não-zero) → recusar com mensagem `/note exige git repo (store mora em .claude/local/ relativo à raiz)`.
+
+Criar diretório com `mkdir -p .claude/local/` se ausente.
+
+**Ordem dos gates determinística** — gate `Gitignore` (per ADR-005) executa **primeiro**; gate `Worktree replication` (per [ADR-018](../../docs/decisions/ADR-018-replicacao-claude-em-modo-local-init-config.md) Addendum) executa **em seguida**. Cancel no gate `Gitignore` aborta antes do segundo gate — evita estado inconsistente onde `.worktreeinclude` referencia path que o operador acabou de recusar versionar.
+
+**Gate `Gitignore`** — probe `git check-ignore -q .claude/local/.probe`. Sem cobertura → disparar gate per ADR-005 § "Local mode" (mecânica já no CLAUDE.md → "Local mode"). Cancel → recusa silenciosa, exit clean. Confirmação → seguir.
+
+**Gate `Worktree replication`** — operação silente, sem `AskUserQuestion`. Probe `grep -qE "^\.claude(/|$)" .worktreeinclude`:
+
+- **`.worktreeinclude` ausente** → criar com header de comentário (`# Gitignored paths to replicate into worktrees created by /run-plan.`) + linha em branco + linha `.claude/`.
+- **Presente, probe retorna não-zero** (`.claude/` ausente) → adicionar linha `.claude/` ao fim.
+- **Presente, probe retorna zero** (`.claude/` já listado) → skip silente (idempotência).
+
+Mecânica idêntica ao step 4.5 do `/init-config` SKILL.md (linha `.claude/` da tabela composta) — `/note` é segundo dispatcher para a mesma invariante (per ADR-018 Addendum). Sincronizar mudanças manualmente se a mecânica evoluir num dos lados.
 
 ### 2. Append com timestamp
 
