@@ -2,6 +2,18 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.12.0] - 2026-05-27
+
+### Added
+- `/note` step 1 now applies the Worktree replication gate (probe-and-add `.claude/` to `.worktreeinclude`) idempotently on every invocation, independent of role local declaration — closes gap between ADR-018 (gate owned by `/init-config`, conditional on ≥1 role local) and ADR-032 (NOTES.md as non-role store under `.claude/local/`). Deterministic gate ordering: Gitignore first, Worktree replication second; cancel aborts. `/init-config` step 4.5 unchanged. Per ADR-018 Addendum. (#82)
+
+### Changed
+- `docs/install.md` mentions `/note` as second dispatcher of `.worktreeinclude` alongside `/init-config`.
+
+### Notes
+- ADR-018 Addendum (2026-05-27): recognizes `/note` as second dispatcher for the `.claude/` invariant; § Gatilhos closed across two waves (ADR-030 + this addendum); new trigger for 4th dispatcher → extract pattern to `docs/procedures/worktree-replication-dispatch.md`. Justified as addendum per ADR-034 (axis-of-extension asymmetry vs ADR-030: new dispatcher for same path ≠ new path for same dispatcher).
+- ADR-005 § Decisão (line 48) and § Benefícios (line 75), ADR-032 § Decisão (bullet 1) gain cross-refs to the addendum, paralleling existing patterns (ADR-005:87 → ADR-025; ADR-011 § Decisão / ADR-026).
+
 ## [2.11.0] - 2026-05-27
 
 ### Added
