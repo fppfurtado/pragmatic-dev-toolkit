@@ -2,6 +2,14 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.11.0] - 2026-05-27
+
+### Added
+- `**Modo:** runbook` opt-in field in plan `## Contexto` activates alternative `/run-plan` flow for system-surgery plans (operations outside git diff: `mv`, `systemctl`, edits in `~/`, dotfiles sync, multi-repo coordinated ops). Bypasses 4 dimensions of canonical: no worktree, no commit-per-block, per-block confirmation gate (parallel to §3.2 manual validation), interleaved validation. Materializes accumulated captures before stopping on `Falhou`. Single accepted value `runbook`; absence = canonical default total. `**Branch:** + **Modo:** runbook` combination hard-blocked. First empirical case: meta-system onda-1-fs-migration plan. Per ADR-041. (#81)
+
+### Notes
+- ADR-041 (Proposed): "Campo `**Modo:** runbook` opt-in em planos para `/run-plan` cobrir system-surgery" — lateral partial successor of ADR-002 per ADR-034 condition 5; codified at 1 evidence under ADR-035 criterion 2 (clear doctrinal boundary between canonical diff-git-in-repo and runbook environment-as-scope plan semantics).
+
 ## [2.10.1] - 2026-05-26
 
 ### Notes
