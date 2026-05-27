@@ -18,6 +18,7 @@ Campos especiais (incluir só quando aplicáveis):
 **ADRs candidatos:** ADR-NNN (motivo) — opcional; reviewer prioriza esses, scan cobre os demais (ADR-021).
 **Linha do backlog:** <texto exato> — incluir quando há linha no BACKLOG; mensageiro pra /run-plan operar transições.
 **Branch:** <nome-da-branch> — incluir quando a branch já existe (issue-first GitLab, retrabalho de PR, etc.); ausência = /run-plan cria <slug> a partir do HEAD (ADR-028).
+**Modo:** runbook — incluir em planos de system-surgery (operações fora de diff git: `mv`, `systemctl`, edits em `~/`, ops em múltiplos repos coordenados, etc.); **tipicamente hand-written, não derivado de /triage**; bypassa worktree + micro-commit + reviewer per bloco + validação centralizada do /run-plan (ADR-041). Ausência = fluxo default. Único valor aceito: `runbook`.
 -->
 
 ## Resumo da mudança
