@@ -2,6 +2,11 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.13.0] - 2026-05-28
+
+### Added
+- `/run-plan` emits canonical marker `[PRAGMATIC: plan-done]` on done.
+
 ## [2.12.0] - 2026-05-27
 
 ### Added
