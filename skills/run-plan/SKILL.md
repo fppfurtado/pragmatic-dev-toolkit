@@ -189,7 +189,7 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
    - As partes não-vazias entram em **um único** bloco extra (revisor `code` + micro-commit). Sem confirmação adicional sobre as capturas — operador foi informado a cada detecção.
    - Caso especial: papel `backlog` = "não temos" → lista de backlog vira relato final (sem registro persistido); lista de validação grava no plano sempre.
 
-6. **Declarar done.**
+6. **Declarar done.** No parágrafo final do done (após resumo dos blocos), imprimir literalmente o marker canonical `Plan done. [PRAGMATIC: plan-done]`. String é mecânica-universal igual a hooks — **não traduz por idioma do projeto consumidor**. Pattern para plugins terceiros que queiram reagir ao fim de `/run-plan` via Claude Code `Stop` event: grep marker em `transcript_path` (recebido via stdin payload do hook). Não há outro mecanismo nativo de detecção; este marker é opt-in contract publicado pelo toolkit.
 
 7. **Sugestão de publicação.** Remote configurado (`git remote get-url origin` retorna sucesso) → `AskUserQuestion` (header `Publicar`) com opções montadas conforme o modo:
    - **Modo `local`** (`plans_dir: local`) **com campo `**Branch:**` ausente**: `Renomear branch antes (Recommended)` / `Push` / `Push + abrir PR/MR` / `Nenhum`. `Renomear branch antes` emite `git branch -m <novo-nome>` como sugestão (`description` informa: "branch name é metadata pública — não aparece em mensagem de commit nem em PR --fill, mas o nome é visível ao push") e encerra; operador roda o `git branch -m` manual e re-invoca para escolher Push.
