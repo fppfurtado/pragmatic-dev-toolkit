@@ -42,7 +42,7 @@ Casos degenerados (recusa silenciosa): `--to` sem valor subsequente (sintaxe inv
 
 Criar diretório com `mkdir -p .claude/local/` se ausente.
 
-**Ordem dos gates determinística** — gate `Gitignore` (per ADR-005) executa **primeiro**; gate `Worktree replication` (per [ADR-018](../../docs/decisions/ADR-018-replicacao-claude-em-modo-local-init-config.md) Addendum) executa **em seguida**. Cancel no gate `Gitignore` aborta antes do segundo gate — evita estado inconsistente onde `.worktreeinclude` referencia path que o operador acabou de recusar versionar.
+**Ordem dos gates determinística (caminho local apenas)** — gate `Gitignore` (per ADR-005) executa **primeiro**; gate `Worktree replication` (per [ADR-018](../../docs/decisions/ADR-018-replicacao-claude-em-modo-local-init-config.md) Addendum) executa **em seguida**. Cancel no gate `Gitignore` aborta antes do segundo gate — evita estado inconsistente onde `.worktreeinclude` referencia path que o operador acabou de recusar versionar.
 
 **Gate `Gitignore`** — probe `git check-ignore -q .claude/local/.probe`. Sem cobertura → disparar gate per ADR-005 § "Local mode" (mecânica já no CLAUDE.md → "Local mode"). Cancel → recusa silenciosa, exit clean. Confirmação → seguir.
 
@@ -53,6 +53,17 @@ Criar diretório com `mkdir -p .claude/local/` se ausente.
 - **Presente, probe retorna zero** (`.claude/` já listado) → skip silente (idempotência).
 
 Mecânica idêntica ao step 4.5 do `/init-config` SKILL.md (linha `.claude/` da tabela composta) — `/note` é segundo dispatcher para a mesma invariante (per ADR-018 Addendum). Sincronizar mudanças manualmente se a mecânica evoluir num dos lados.
+
+**Caminho cross-write** (com `--to`, per [ADR-042](../../docs/decisions/ADR-042-note-flag-to-cross-project-write.md)): blast-radius compartilhado proíbe mutar `.gitignore`/`.worktreeinclude` do target a partir de sessão não-contextual — pré-condição substitui gates.
+
+**Pré-condição de target inicializado**: `.claude/local/` no target existe E `git -C <target-repo> check-ignore -q .claude/local/.probe` retorna 0. **Probe idêntico ao usado no caminho local** acima (mesma invariante de ADR-018 Addendum + ADR-005 mecânica — implementador **não deve inventar probe alternativo** tipo `.claude/local/NOTES.md.probe`).
+
+Falha (qualquer um dos checks) → recusar com mensagem: `target <path> não inicializado para modo local; abra sessão CC em <target> e rode /note <msg> uma vez para inicializar gates.`
+
+**Gates assimétricos em cross-write**:
+
+- **Gate `Gitignore`**: opera como **read-only probe** (já validado na pré-condição acima); **não escreve** em `.gitignore` do target em modo algum.
+- **Gate `Worktree replication`**: **não roda** em cross-write (nem probe, nem mutação) — replicação para worktrees do target é responsabilidade exclusiva da sessão local do target via `/note` ou `/run-plan` quando o operador trabalhar lá. Assimetria deliberada: gitignore é invariante de privacidade da gravação corrente; worktree-replication é invariante de execução futura no target.
 
 ### 2. Append com timestamp
 
@@ -81,3 +92,4 @@ Path do arquivo e bytes adicionados. Em cross-write, reportar **path absoluto** 
 - Não auto-buscar contexto em NOTES.md de outros projetos — leitura cross-project é fenômeno conversacional via Read nativo do Claude com path absoluto (operador valida candidato proposto pelo Claude se houver ambiguidade).
 - Não fazer commit — `.claude/local/NOTES.md` é gitignored por design; commit acidental quebra o contrato de privacidade.
 - Não inferir candidatos para `$PROJECTS_DIR` ausente em cross-write (não tentar `~/Projects/`, `$HOME/dev/`, glob heurístico de filesystem). Critério mecânico contrato-declarado-vs-heurística (ADR-042 § Contexto) exige recusa explícita orientando definir env var ou usar path absoluto — fallback silencioso fere a doutrina de ADR-032 § F4 alternativa b.
+- Não mutar `.gitignore` ou `.worktreeinclude` do target em cross-write — paralelo doutrinal com ADR-005 § Gate `Gitignore` e ADR-018 § Trade-offs (mutações cross-contextuais ferem blast-radius compartilhado). Pré-condição de target inicializado move setup para a sessão local do target onde o contexto existe para aprovar mudanças nesses arquivos.
