@@ -165,3 +165,14 @@ Materialização editorial deste ADR exige 3 arquivos:
 - `templates/plan.md` — placeholder + comentário explicativo análogo ao de `**Termos ubíquos tocados:**`.
 
 Plano de implementação produzido no fluxo `/triage` que originou este ADR; ver `docs/plans/curadoria-free-read-design-reviewer.md`.
+
+## Addendum (2026-05-29)
+
+Onda 4 (última) da reforma doutrinária produz sucessor parcial: [ADR-044](ADR-044-scan-medium-always-include-free-read-design-reviewer.md) — *Scan medium + always-include foundationals no free-read do design-reviewer*. Refina mecânica deste ADR em duas dimensões:
+
+1. **Scan target reduzido** de "cabeçalho até final de § Decisão" (~60 linhas/ADR) para **scan medium** (título + Status + Data + § Decisão até próximo `## ` OU 8 linhas, cap 12). Redução ~70% sobre o scan.
+2. **Categoria "always-include curado"** adicionada — 3 ADRs sempre lidos integralmente (ADR-009, ADR-034, ADR-043), paralelo a `philosophy.md`. Executa o trigger explicitamente antecipado em § Alternativa (e) deste ADR (*"complemento futuro, não alternativa concorrente"*) com pattern empírico confirmado nas Ondas 1-3 da reforma doutrinária.
+
+**Decisão central deste ADR preservada:** threshold N=15, anotação `**ADRs candidatos:**` opcional, `philosophy.md` sempre integral, pontos cegos cobertos por scan + anotação. Status `Aceito` mantido — ADR-044 estende sem revogar (per [ADR-034](ADR-034-criterio-adendo-vs-novo-adr-refinamento-doutrinal.md) cond 5; cond 1 não aplica porque § Alt (e) é o ancestral conceitual desta categoria).
+
+Pattern editorial paralelo a ADR-005/-017 Addenda da Onda 3 da reforma (cluster index addenda) + 2 Addenda históricos em ADR-001.
