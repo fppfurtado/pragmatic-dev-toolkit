@@ -160,3 +160,20 @@ Descartado:
 - **Mudança na convenção do marker** (alias, variantes, renomeação) — re-confirmar que probes em 4 skills foram atualizados; oportunidade de re-avaliar helper compartilhado.
 - **5ª skill com `roles.required` aparecer** — reabrir para considerar abstração: alternativa (g) ou herança mecânica deixam de ser YAGNI quando 5 sites compartilham a mesma lógica.
 - **Re-emissão da cutucada virar ruído frequente** por causa de context compression em sessões muito longas (gatilho prático: ≥3 reports de "vi a mesma cutucada várias vezes na mesma sessão") — considerar Task per ADR-010 (registro estruturado que sobreviva à compression em vez de leitura do contexto visível).
+
+## Addendum (2026-05-29)
+
+Onda 3 da reforma doutrinária ([ADR-043](ADR-043-hierarquia-doutrinal-fundamentais-raiz.md)) consolida este ADR + 1 sucessor parcial + 1 procedure file canonical como **cluster cutucadas** — entrada única de leitura para o thread doutrinal completo.
+
+**Cluster cutucadas** (2 ADRs + 1 procedure file coordenados):
+
+- **ADR-017 foundational** (este ADR): cutucada uniforme em skills com `roles.required` para descoberta de configuração ausente. Gating triplo (CLAUDE.md existe + marker ausente + dedup conversation-scoped); string canonical fixa redação idêntica nas skills; herança editorial (não mecânica).
+- [ADR-029](ADR-029-cutucada-descoberta-cobre-claude-md-ausente.md) — sucessor parcial: cutucada cobre `CLAUDE.md` **ausente** (gap documentado em § Limitações linha 81 deste ADR + Alternativa (f) descartada). Expande gating de 2 → 3 saídas; string-B nova adaptada ao caso ausente; dedup por string permite emissão de A após B na mesma sessão. Escopo expandido de 4 → 5 skills (`/draft-idea` introduzida por [ADR-027](ADR-027-skill-draft-idea-elicitacao-product-direction.md)).
+- `docs/procedures/cutucada-descoberta.md` — canonical de execução: mecânica (gating tri-state + 2 strings canonical literais + dedup conversation-scoped) extraída das 5 SKILLs consumidoras em 2026-05-16 (categoria `docs/procedures/` per [ADR-024](ADR-024-categoria-docs-procedures-procedimentos-compartilhados.md); commit `d6a20dd`, PR #71). CLAUDE.md § "Cutucada de descoberta" trimmed para scope + herança editorial + ref ao procedure. Refactor adicional 2026-05-20 (commit `a6a25a0`, tabela declarativa → algoritmo numerado prescritivo).
+
+**Grounding nos fundamentais** ([ADR-043](ADR-043-hierarquia-doutrinal-fundamentais-raiz.md) § Ockham operacionalizado em decisões internas do plugin, critérios 1+3 literais):
+
+- **Critério 1** (*"Incidente recorrente ou padrão observado em uso real (não hipótese). Operacionaliza Verdade — empírico vence especulação."*): atrito do PJe 2026-05-11 documentado em § Contexto deste ADR (~30 min de fricção antes de qualquer skill rodar) + projetos novos sem `CLAUDE.md` documentado em ADR-029 § Contexto (caso emergido em `/debug` 2026-05-14).
+- **Critério 3** (*"Contradição/refinamento de doutrina existente em ADR/`philosophy.md`/`CLAUDE.md`. Operacionaliza Verdade — corrigir drift entre doutrina vigente e descoberta posterior."*): inversão parcial de Alternativa (f) descartada em § Alternativas deste ADR ("Cutucada também quando `CLAUDE.md` está ausente"), reconhecida explicitamente em ADR-029 § Origem como sucessor parcial que estende o gating.
+
+**Status do sucessor:** ADR-029 permanece `Proposto` após esta onda (adendo de caráter explicativo per [ADR-034](ADR-034-criterio-adendo-vs-novo-adr-refinamento-doutrinal.md) § "Adendo em ADR existente quando todas abaixo aplicam": decisão central intacta, sem categoria nova, sem restrição externa nova, caráter explicativo); promoção `Proposto → Aceito` é categoria editorial distinta, fora do escopo desta onda.
