@@ -1,7 +1,7 @@
 # ADR-035: Escopo de aplicação de YAGNI ao próprio plugin
 
 **Data:** 2026-05-18
-**Status:** Proposto
+**Status:** Substituído por [ADR-043](ADR-043-hierarquia-doutrinal-fundamentais-raiz.md) (2026-05-29)
 
 ## Origem
 
@@ -24,9 +24,13 @@ Sem critério escrito, ad hoc continua: próxima decisão interna pode novamente
 
 ## Decisão
 
+> **Substituído por [ADR-043](ADR-043-hierarquia-doutrinal-fundamentais-raiz.md) (2026-05-29).** O objeto central desta decisão (codificar YAGNI como exceção interna do plugin) dissolveu sob inversão de hierarquia doutrinal: Ockham (raiz epistêmica per ADR-043) aplica-se integralmente tanto a código consumer quanto a doutrina interna do plugin, variando apenas a entidade ponderada. Os 4 critérios abaixo permanecem válidos como instanciação contextual de Ockham em § "Ockham operacionalizado em decisões internas do plugin" de ADR-043. Texto histórico preservado para referência.
+
 YAGNI no `pragmatic-dev-toolkit` é princípio **transmitido a projetos consumidores**, codificado em skills, reviewers, agents e `docs/philosophy.md`. **Não é filtro autoaplicado mecanicamente a decisões internas do plugin** (ADRs, roles, mecanismos de skill, formalização doutrinal em `CLAUDE.md`/`philosophy.md`).
 
 ### Filtro para decisões internas do plugin
+
+> **Absorvido em ADR-043 § "Ockham operacionalizado em decisões internas do plugin".** Os 4 critérios abaixo permanecem válidos, reframados como instanciação contextual de Ockham (raiz epistêmica em ADR-043) — não exceção ao YAGNI, mas operacionalização concreta de Ockham aplicada ao espaço-entidade de doutrina/mecanismo interno do plugin.
 
 Em decisões sobre o design interno do plugin, o filtro **não é** "precisamos disso agora?" e sim:
 

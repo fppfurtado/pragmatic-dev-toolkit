@@ -24,6 +24,8 @@ O toolkit assume que não multiplicar entidades além do necessário é virtude 
 
 **Mapping para a doutrina pragmática abaixo.** YAGNI/flat ↔ Ockham (operacionaliza parsimônia dimensional). "Sem defensividade desnecessária" ↔ Verdade (validar onde há risco real, não onde imaginamos). "Pragmática" — sem aspiracional schema-perfeição — ↔ Excelência (qualidade dentro do escopo, sem virar perfeccionismo). ADR-035 (linkado na seção seguinte) particiona aplicação do princípio Ockham entre regras transmitidas ao consumer (YAGNI ortodoxo) e decisões internas do plugin (filtro de coerência), refletindo essa raiz.
 
+**Codificação estrutural da hierarquia.** A relação entre raízes epistêmicas e regras pragmáticas operacionais — incluindo aplicação contextual de Ockham a decisões internas do plugin, anteriormente codificada como exceção interna ao YAGNI em [ADR-035](decisions/ADR-035-escopo-aplicacao-yagni-proprio-plugin.md) (Substituído), agora reframada como instanciação contextual em [ADR-043](decisions/ADR-043-hierarquia-doutrinal-fundamentais-raiz.md) — é codificada em ADR-043 como decisão estrutural. ADR-043 também absorve os 4 critérios de Ockham operacionalizado para decisões doutrinais internas (incidente, fronteira, contradição, ≥3 pattern).
+
 ## A filosofia em uma frase
 
 **Bounded contexts e linguagem ubíqua sim, cerimônia tática não.** Bounded contexts (DDD estratégico) e vocabulário compartilhado entre código e negócio são fundamentais. Já a cerimônia tática (camadas formais `application/`/`domain/`/`infrastructure/`, ports/adapters universais, mappers em cascata) cria muitos arquivos para pouco valor — adicionar abstração só quando há **dor real** (uma integração instável, uma substituição prevista). YAGNI por padrão.
