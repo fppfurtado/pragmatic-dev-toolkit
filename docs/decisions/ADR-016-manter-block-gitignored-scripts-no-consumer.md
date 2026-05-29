@@ -146,3 +146,11 @@ Descartado:
 - **Incidente concreto** em que o operador edita um script local via workaround manual e introduz bug por copy/paste truncado / contexto perdido. Sinal de que o atrito custou mais que tolerar.
 - **Mudança na doutrina de naming/auto-gating** (ADR meta revisitando `docs/philosophy.md` → "Convenção de naming" para permitir hooks config-aware). Sem cenário concreto hoje; reabriria a alternativa (a) como caminho legítimo.
 - **Convenção de ecossistema mudar** — stack mainstream emerge emitindo build artifact diretamente na raiz (invalidaria o pressuposto de (c) e mudaria também a leitura desta decisão).
+
+## Addendum (2026-05-29)
+
+Onda 2 da reforma doutrinária ([ADR-043](ADR-043-hierarquia-doutrinal-fundamentais-raiz.md)) reframa esta decisão sob a hierarquia invertida: 3 princípios fundamentais (Verdade, Excelência sem over-engineering, Navalha de Ockham) como raiz epistêmica; YAGNI/flat/sem-defensividade ornamental como consequência operacional derivada.
+
+**Fundamentais que endossam esta decisão:** **Ockham** (não inflar mecanismo do plugin para acomodar pattern do consumer — preserva hook simples, sem flags/config/parser; cada uma das 7 alternativas avaliadas, (a)-(f) + (e′), adicionaria entidade ao hook sem dor recorrente que justifique o custo) + **Excelência** (qualidade dentro do escopo: hook faz uma coisa bem — bloquear edits em paths cobertos pelo `.gitignore` do consumer — sem expandir responsabilidade para acomodar workflow editorial do consumer).
+
+O framing "refatorar mais tarde no consumer é mais barato do que abstrair cedo no plugin" citado em § Razões (a partir de `docs/philosophy.md` → "A filosofia em uma frase", linguagem pré-inversão) é Ockham operacionalizado via **critério 1** de [ADR-043](ADR-043-hierarquia-doutrinal-fundamentais-raiz.md) § "Ockham operacionalizado em decisões internas do plugin" (incidente recorrente ou padrão observado em uso real — smoke-test PJe TJPA registrou empíricamente o falso-positivo do hook em scripts operacionais, achado #12 da fase 1 citado em § Origem; gatilho empírico, não hipótese). Decisão central — manter `block_gitignored` como está — permanece intacta sob a nova hierarquia.
