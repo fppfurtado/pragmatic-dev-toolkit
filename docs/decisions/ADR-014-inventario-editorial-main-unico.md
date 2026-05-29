@@ -75,3 +75,11 @@ Razões:
 - **Métricas de discoverability mostrarem queda atribuível a ruído editorial** — instalações caírem após PRs grandes em `docs/plans/` que aparecem no GitHub UI; correlação clara. Reabrir para considerar (c) ou (f).
 - **`docs/plans/` ultrapassar 100 arquivos sem rotação** — gestão editorial fica difícil; reabrir para considerar arquivamento (mover para tag/release archive) ou refatoração estrutural. Critério: contagem mecânica.
 - **Necessidade de schema/checks que dependem de `dev` branch separado** — surgir cenário onde toolkit precisa de branch principal de trabalho explícita. Sem cenário concreto hoje; reabrir só com gatilho específico.
+
+## Addendum (2026-05-29)
+
+Onda 2 da reforma doutrinária ([ADR-043](ADR-043-hierarquia-doutrinal-fundamentais-raiz.md)) reframa esta decisão sob a hierarquia invertida: 3 princípios fundamentais (Verdade, Excelência sem over-engineering, Navalha de Ockham) como raiz epistêmica; YAGNI/flat/sem-defensividade ornamental como consequência operacional derivada.
+
+**Fundamentais que endossam esta decisão:** **Ockham** (não multiplicar entidades — não criar 2 repos, branch `dev` separado, nem pipeline orphan sem dor empiricamente reportada; cada uma das 4 alternativas avaliadas adicionaria entidade ao toolkit sem custo compensatório de manutenção) + **Verdade** (a alegação "atrito real do tamanho não foi reportado por nenhum consumer" em § Razões é verificação empírica condicionando a decisão original, não só critério de reabertura listado em § Gatilhos de revisão).
+
+O framing "descartada por YAGNI" no título e em § Decisão era proxy operacional do princípio Ockham — Ockham operacionalizado nesta decisão via **critério 1** de [ADR-043](ADR-043-hierarquia-doutrinal-fundamentais-raiz.md) § "Ockham operacionalizado em decisões internas do plugin" (incidente recorrente ou padrão observado em uso real, não hipótese). Decisão central — manter `main` único — permanece intacta sob a nova hierarquia.
