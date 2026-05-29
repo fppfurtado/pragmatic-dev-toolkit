@@ -2,6 +2,28 @@
 
 `pragmatic-dev-toolkit` codifica um workflow específico. Esta página descreve a filosofia que ele assume e o **path contract** que as skills esperam encontrar no projeto consumidor.
 
+## Princípios fundamentais
+
+Três princípios epistêmicos orientaram o design deste toolkit; as regras pragmáticas que vêm a seguir — YAGNI por padrão, flat sobre cerimônia, ausência de defensividade ornamental — materializam essas raízes.
+
+> *Esta seção descreve o que o toolkit assume; não é prescrição ao leitor.*
+
+### Busca pela verdade
+
+O toolkit assume que verificar antes de assumir e medir antes de generalizar produz software mais confiável que hand-waving. O que existe, existe — falsificável vence raciocínio circular. Este princípio orientou o design quando reviewers exigem `Read` defensivo do arquivo-alvo antes da análise, quando `/run-plan` materializa baseline automático antes do loop de blocos, e quando `/debug` exige reprodução do sintoma antes de hipotetizar a causa-raiz.
+
+### Excelência sem over-engineering
+
+O toolkit assume que qualidade serve o problema concreto, não vice-versa. YAGNI define o que **não** precisa ser feito; excelência define **como bem** fazer o que precisa. Este princípio orientou o design quando reviewers separam YAGNI (não construir abstração prematura) de cuidado (escrever o código que existe com clareza e correção), e quando a doutrina rejeita defensividade ornamental sem renunciar à validação onde há risco real.
+
+### Navalha de Ockham
+
+O toolkit assume que não multiplicar entidades além do necessário é virtude operacional. Ockham é a versão dimensional do YAGNI: não só "não implementar o que não usa", mas "não modelar o que não distingue". Este princípio orientou o design quando o toolkit prefere papéis sobre arquiteturas formais, quando reviewers flagram interfaces especulativas e abstrações sem dor real, e quando a doutrina prefere refatorar mais tarde à abstração antecipada.
+
+**Triangulação.** Verdade descobre o que é; excelência engaja seriamente com o descoberto; Ockham previne que o engajamento invente o que não estava ali. Verdade sem excelência fica passiva; excelência sem Ockham vira over-engineering; Ockham sem verdade vira reducionismo cego. As três condições atuam juntas — qualquer uma isolada deteriora.
+
+**Mapping para a doutrina pragmática abaixo.** YAGNI/flat ↔ Ockham (operacionaliza parsimônia dimensional). "Sem defensividade desnecessária" ↔ Verdade (validar onde há risco real, não onde imaginamos). "Pragmática" — sem aspiracional schema-perfeição — ↔ Excelência (qualidade dentro do escopo, sem virar perfeccionismo). ADR-035 (linkado na seção seguinte) particiona aplicação do princípio Ockham entre regras transmitidas ao consumer (YAGNI ortodoxo) e decisões internas do plugin (filtro de coerência), refletindo essa raiz.
+
 ## A filosofia em uma frase
 
 **Bounded contexts e linguagem ubíqua sim, cerimônia tática não.** Bounded contexts (DDD estratégico) e vocabulário compartilhado entre código e negócio são fundamentais. Já a cerimônia tática (camadas formais `application/`/`domain/`/`infrastructure/`, ports/adapters universais, mappers em cascata) cria muitos arquivos para pouco valor — adicionar abstração só quando há **dor real** (uma integração instável, uma substituição prevista). YAGNI por padrão.
