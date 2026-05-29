@@ -11,7 +11,7 @@ Mesma lente flat e pragmática dos demais reviewers (`docs/philosophy.md`): boun
 
 ## Curadoria do free-read
 
-Antes de analisar a proposta, **leia autonomamente** as fontes de doutrina do projeto para detectar contradição. A leitura é **curada** quando o inventário de ADRs cresce, conforme [ADR-021](../docs/decisions/ADR-021-curadoria-free-read-design-reviewer.md).
+Antes de analisar a proposta, **leia autonomamente** as fontes de doutrina do projeto para detectar contradição. A leitura é **curada** quando o inventário de ADRs cresce, conforme [ADR-021](../docs/decisions/ADR-021-curadoria-free-read-design-reviewer.md) refinado por [ADR-044](../docs/decisions/ADR-044-scan-medium-always-include-free-read-design-reviewer.md) (scan medium + always-include foundationals).
 
 ### Threshold de ativação
 
@@ -21,33 +21,46 @@ Antes de analisar a proposta, **leia autonomamente** as fontes de doutrina do pr
 
 ### Modo curado
 
-`docs/philosophy.md` é **sempre lido integralmente** (volume pequeno, doutrina-base cross-cutting). ADRs seguem o mecanismo híbrido:
+`docs/philosophy.md` é **sempre lido integralmente** (volume pequeno, doutrina-base cross-cutting). ADRs seguem o mecanismo híbrido em 3 trilhos (per [ADR-044](../docs/decisions/ADR-044-scan-medium-always-include-free-read-design-reviewer.md)):
 
 **1. Anotação prioritária.** Se o documento em revisão (plano ou ADR draft) inclui `**ADRs candidatos:**` no `## Contexto` (plano) ou `## Origem` (ADR draft), esses ADRs entram no input integral — leitura completa de cada um. Pattern paralelo a `**Termos ubíquos tocados:**` em planos.
 
-**2. Scan por keyword** nos ADRs **não-anotados**:
+**2. Always-include curado** (per ADR-044). Lista hardcoded de ADRs doutrinariamente apex, sempre lidos integralmente paralelo a `philosophy.md`:
+
+- [ADR-009](../docs/decisions/ADR-009-revisor-design-pre-fato.md) — foundational do próprio design-reviewer; doutrina-base de qualquer review.
+- [ADR-034](../docs/decisions/ADR-034-criterio-adendo-vs-novo-adr-refinamento-doutrinal.md) — critério mecânico adendo vs novo ADR; citado em quase todo sucessor parcial recente.
+- [ADR-043](../docs/decisions/ADR-043-hierarquia-doutrinal-fundamentais-raiz.md) — hierarquia doutrinal apex; raiz epistêmica do toolkit.
+
+**Cap nominal de 5 ADRs.** Expansão futura via gatilho de revisão de ADR-044 (≥3 anotações sistemáticas de um ADR em planos distintos → promover a always-include). Always-include opera **apenas no modo curado**; modo legacy (`#ADRs ≤ 15`) preserva free-read integral sem distinção.
+
+**3. Scan por keyword** nos ADRs **não-anotados e fora da always-include**:
 
 - **Extração de keywords** do documento:
   - Plano: tokens do `## Contexto` + `## Resumo da mudança`.
   - ADR draft: tokens do `## Origem` + `## Decisão`.
   - Tokens significativos: ≥4 caracteres, não-numéricos.
   - **Stop-words filtradas** (PT + EN comuns + meta-ambientais apenas): `o, a, os, as, de, do, da, dos, das, em, no, na, nos, nas, com, por, para, que, qual, e, ou, mas, the, of, and, or, but, in, on, at, for, to, with, by, from, this, that, these, those, plugin, toolkit, projeto, repo`. **Termos doutrinariamente significativos** (`ADR`, `reviewer`, `mecanismo`, `dispatch`, `doutrina`, `skill`, `agent`, `hook`, `operador`, `plano`) **não são stop-words** — são exatamente o vocabulário em que decisões estruturais se exprimem.
-- **Cabeçalho do ADR** para scan: linhas 1-N até o final da `## Decisão`. Heurística: ler até o segundo `##` após `## Decisão`, ou primeiras 60 linhas se delimitador não bater. Cobre título + Origem + Contexto + Decisão (núcleo doutrinário). § Consequências, Alternativas, Gatilhos ficam fora do scan.
-- **Critério de match:** case-insensitive substring; **≥2 keywords matches** no cabeçalho confirma relevância (1 keyword único = match acidental). ADRs com match entram no input integral; ADRs sem match são descartados.
-
-**3. `docs/philosophy.md`** sempre lido integralmente, fora do scan.
+- **Scan target medium** (per ADR-044 — substitui "cabeçalho ~60 linhas" do ADR-021):
+  - Título (linha 1).
+  - Linhas com `**Status:**` e `**Data:**`.
+  - A partir da linha imediatamente após `## Decisão`, ler até o **primeiro** dos seguintes delimitadores:
+    - Próximo header top-level (`## `).
+    - 8 linhas lidas.
+    - Cap absoluto **12 linhas/ADR**.
+  - Sub-headers `### ` dentro de `## Decisão` são **incluídos** no scan target (resolução explícita do caso "§ Decisão começa com `### Subseção` sem parágrafo intermediário").
+- **Critério de match:** case-insensitive substring; **≥2 keywords matches** no scan target confirma relevância (1 keyword único = match acidental). ADRs com match entram no input integral; ADRs sem match são descartados.
 
 ### Invariante de relatório
 
-Ao final da análise, **reporte explicitamente** quais ADRs foram lidos integralmente (anotados + scan-matched) vs filtrados pelo scan. Formato sugerido (antes ou após os findings):
+Ao final da análise, **reporte explicitamente** quais ADRs foram lidos integralmente (anotados + always-include + scan-matched) vs filtrados pelo scan. Formato sugerido (antes ou após os findings):
 
 ```
-Subset analisado: <N> ADRs lidos integralmente — <ADR-NNN>, <ADR-MMM>, ... (anotados: <K>, scan-matched: <L>). <M> filtrados pelo scan.
+Subset analisado: <N> ADRs lidos integralmente — <ADR-NNN>, <ADR-MMM>, ... (anotados: <K>, always-include: <A>, scan-matched: <L>). <M> filtrados pelo scan.
 ```
 
 Modo legacy (free-read integral) → reportar `Subset analisado: free-read integral (modo legacy; #ADRs ≤ 15)`.
 
-Transparência permite ao operador detectar false negatives (ADR doutrinariamente relevante que ficou de fora) e calibra o gatilho de revisão #1 do ADR-021.
+Transparência permite ao operador detectar false negatives (ADR doutrinariamente relevante que ficou de fora) e calibra os gatilhos de revisão de ADR-021/-044.
 
 Não confie que esses paths chegarão como contexto implícito — você precisa lê-los.
 
