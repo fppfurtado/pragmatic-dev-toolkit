@@ -128,3 +128,21 @@ Commits da branch `roles-local-mode` que estenderam o plugin para suportar esta 
 - [`3983774`](https://github.com/fppfurtado/pragmatic-dev-toolkit/commit/3983774) feat(release): refuse local mode for version_files and changelog
 - [`e3cc513`](https://github.com/fppfurtado/pragmatic-dev-toolkit/commit/e3cc513) docs(install): document `local` value in path contract schema
 - [`4e659a4`](https://github.com/fppfurtado/pragmatic-dev-toolkit/commit/4e659a4) chore(backlog): move roles-local-mode line to Concluídos
+
+## Addendum (2026-05-29)
+
+Onda 3 da reforma doutrinária ([ADR-043](ADR-043-hierarquia-doutrinal-fundamentais-raiz.md)) consolida este ADR + 3 sucessores parciais como **cluster modo local** — entrada única de leitura para o thread doutrinal completo.
+
+**Cluster modo local** (4 ADRs coordenados):
+
+- **ADR-005 foundational** (este ADR): modo local-gitignored para roles do path contract — sintaxe `paths.<role>: local`, mecânica de inicialização (`mkdir` + probe gitignore + gate `Gitignore`), regra de não-referenciar, paths concretos sob `.claude/local/`.
+- [ADR-018](ADR-018-replicacao-claude-em-modo-local-init-config.md) — sucessor parcial: replicação proativa de `.claude/` em `.worktreeinclude` pelo `/init-config` step 4.5 quando ≥1 role declarada como `local`. Garante que worktrees do `/run-plan` enxerguem `.claude/local/<role>/`. Estendido pelo próprio Addendum (2026-05-27) reconhecendo `/note` como 2º dispatcher (mesma invariante, dispatcher distinto).
+- [ADR-025](ADR-025-recusar-cross-mode-backlog-local-init-config.md) — sucessor parcial: recusa mecânica do cross-mode `backlog: local + plans_dir: canonical` no `/init-config` step 3. Combinação semanticamente incoerente (texto privado vaza para plano público via `**Linha do backlog:**`) é detectada antes de gravar o bloco; recusa assimétrica (a combinação inversa `backlog: canonical + plans_dir: local` permanece válida).
+- [ADR-030](ADR-030-aceitar-claude-md-gitignored-via-worktreeinclude.md) — sucessor parcial: `/init-config` aceita `CLAUDE.md` gitignored e garante replicação via `.worktreeinclude` step 4.5 cláusula OR. Reverte parcialmente extrapolação informal de ADR-016 em step 3 (que recusava); preserva ADR-016 íntegro no escopo literal de hooks/scripts.
+
+**Grounding nos fundamentais** ([ADR-043](ADR-043-hierarquia-doutrinal-fundamentais-raiz.md) § Ockham operacionalizado em decisões internas do plugin, critérios 1+2 literais):
+
+- **Critério 1** (*"Incidente recorrente ou padrão observado em uso real (não hipótese). Operacionaliza Verdade — empírico vence especulação."*): sinais empíricos do smoke-test PJe 2026-05-11 motivaram ADR-018 (replicação `.claude/`) e ADR-030 (`CLAUDE.md` gitignored). Princípio "simplicidade vence flexibilidade" declarado literalmente em § Limitações deste ADR é a operacionalização concreta sob hierarquia invertida (não YAGNI veto).
+- **Critério 2** (*"Fronteira doutrinal borrada — categoria nova com fronteira nítida supera churn de refactor. Operacionaliza Ockham — modelar essa fronteira distingue conceitos que se confundiriam sem ela."*): partição canonical/local em ADR-005 estabeleceu a fronteira; ADR-025 refinou critério distinguindo direção de leak (texto privado → artefato público é incoerente; leitor privado consumindo registro público é normal).
+
+**Status dos sucessores:** ADR-025 e ADR-030 permanecem `Proposto` após esta onda (adendo de caráter explicativo per [ADR-034](ADR-034-criterio-adendo-vs-novo-adr-refinamento-doutrinal.md) § "Adendo em ADR existente quando todas abaixo aplicam": decisão central intacta, sem categoria nova, sem restrição externa nova, caráter explicativo); ADR-018 já é `Aceito`. Promoção `Proposto → Aceito` dos sucessores é categoria editorial distinta, fora do escopo desta onda.
