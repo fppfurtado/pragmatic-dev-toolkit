@@ -2,6 +2,26 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [2.14.0] - 2026-05-29
+
+### Added
+- New skill flag `/note --to <project-or-path>` for cross-project write — `$PROJECTS_DIR` discovery with absolute-path fallback; target must be initialized (refusal otherwise). Per ADR-042. (#83)
+- New ADR-044 "Scan medium + always-include foundationals" refines free-read curadoria of `design-reviewer` (partial successor of ADR-021): scan target reduced from ~60 lines/ADR to ~10 lines/ADR (title + Status + Date + § Decisão first paragraph, cap 12); curated always-include list (ADR-009/-034/-043) always read integrally paralleling `philosophy.md`. Cap nominal 5 ADRs. Threshold N=15, `**ADRs candidatos:**` annotation, and `philosophy.md` always-integral preserved. (#87)
+
+### Changed
+- Doctrinal hierarchy inverted: 3 fundamental principles (Verdade, Excelência sem over-engineering, Navalha de Ockham) codified as epistemic root of the toolkit in `docs/philosophy.md` § "Princípios fundamentais"; YAGNI / flat / no-ornamental-defensiveness now operational consequences derived from the fundamentals — not parallel principles. Per ADR-043. (#84 + commit 076354f)
+- ADR-035 (YAGNI internal scope) **Substituído** by ADR-043: 4 criteria absorbed under § "Ockham operacionalizado em decisões internas do plugin" as contextual instantiation of Ockham applied to plugin-internal entity-space — not as exception to consumer YAGNI. (commit 076354f)
+- `agents/design-reviewer.md` § "Curadoria do free-read" rewritten implementing ADR-044 protocol: 3-track mechanism (anotação prioritária + always-include curado + scan medium); report format extended with `always-include: <K>` count. (#87)
+- 4 historical ADRs (014, 016, 032, 036) gain `## Addendum (2026-05-29)` cross-ref grounding decisions in fundamentais via ADR-043 § Ockham operacionalizado criterion 1 (empirical incident); YAGNI-as-veto vocabulary modernized to Ockham/Verdade/Excelência operacionalizados. Body intact. (#85)
+- ADR-005 (modo local) and ADR-017 (cutucadas) gain cluster index `## Addendum (2026-05-29)` consolidating partial-successor cross-refs (ADR-005 → ADR-018/-025/-030; ADR-017 → ADR-029 + `docs/procedures/cutucada-descoberta.md`) with grounding in ADR-043 § Ockham operacionalizado critérios 1+2 / 1+3 respectively. Bodies intact. (#86)
+- ADR-021 gains `## Addendum (2026-05-29)` cross-ref to ADR-044 (sucessor parcial). Status `Aceito` preserved — ADR-044 extends mechanism without revoking. (#87)
+- `CLAUDE.md` § "Editing conventions": ADR-035 bullet replaced with "Hierarquia doutrinal" referencing ADR-043; new "Curadoria do free-read do design-reviewer" bullet referencing ADR-044.
+
+### Notes
+- 4-onda doctrinal reform via dogfood end-to-end (`/triage` → `/new-adr` or `/run-plan` → design-reviewer auto-fire → cutucadas absorbed/resolved → unified commit). PRs #84-#87 + commit 076354f.
+- ADR-042 / ADR-043 / ADR-044 (all Proposed). ADR-035 Substituído. ADR-021 / ADR-005 / ADR-017 status Aceito preserved (partial-successor pattern: extends without revoking per ADR-034 condition 5).
+- Recursive moment empirical baseline: design-reviewer invoked during `/new-adr` Onda 4 applied current ADR-021 mechanism (~36k tokens free-read); post-merge expected ~15k (~58% reduction estimated per plan). Validação empírica fica como spec pós-fato.
+
 ## [2.13.0] - 2026-05-28
 
 ### Added
