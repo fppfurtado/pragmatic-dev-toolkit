@@ -80,3 +80,11 @@ Descartada. Determinístico mas atrito alto — operador escreveria `/storage/3.
 ### Claude infere candidatos via path discovery (F4 alternativa b)
 
 Descartada. Não há infra de discovery cross-project; qualquer heurística (`~/Projects/*/`, `find /storage/.../`) é específica do ambiente do operador, frágil. Plus inverte o controle (skill adivinha antes do operador confirmar) e Read pode operar em arquivo errado. Fenômeno conversacional (escolhido) reusa raciocínio do Claude sem novo código de discovery.
+
+## Addendum (2026-05-29)
+
+Onda 2 da reforma doutrinária ([ADR-043](ADR-043-hierarquia-doutrinal-fundamentais-raiz.md)) reframa esta decisão sob a hierarquia invertida: 3 princípios fundamentais (Verdade, Excelência sem over-engineering, Navalha de Ockham) como raiz epistêmica; YAGNI/flat/sem-defensividade ornamental como consequência operacional derivada.
+
+**Fundamentais que endossam esta decisão:** **Ockham operacionalizado em decisões internas do plugin** (não multiplicar features especulativas da skill — captura é a entidade necessária; leitura, busca, e sincronização seriam entidades adicionais sem dor real demonstrada; `Hook auto-captura descartado` e `Cross-project em ~/.claude/notes/` em § Alternativas seguem a mesma lógica) + **Verdade** (§ Limitações declara "Reabertura legítima se atrito real surgir" — gatilho empírico explícito, não pré-cog; pain real do caso `pje-issue-1920` em § Investigação é o incidente concreto que motivou a skill).
+
+O framing "YAGNI deliberado sobre leitura, busca e sincronização" em § Limitações é Ockham operacionalizado via **critério 1** de [ADR-043](ADR-043-hierarquia-doutrinal-fundamentais-raiz.md) § "Ockham operacionalizado em decisões internas do plugin" (incidente recorrente ou padrão observado em uso real — caso `pje-issue-1920` cross-project ancorando a decisão; gatilho empírico, não hipótese). Decisão central — skill pura de gravação com captura operador-driven — permanece intacta sob a nova hierarquia.

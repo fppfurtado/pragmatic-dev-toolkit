@@ -114,3 +114,18 @@ Este ADR é reavaliado quando ≥1 das seguintes evidências empíricas surge:
 - **Contradição de doutrina:** mudança na filosofia do plugin (e.g., decisão de adotar hard-gate estilo superpowers) que torne brainstorm-como-skill coerente com a doutrina nova.
 
 Em qualquer gatilho, alternativa (a) acima — skill `/brainstorm` thin — é o ponto de retomada padrão.
+
+## Addendum (2026-05-29)
+
+Onda 2 da reforma doutrinária ([ADR-043](ADR-043-hierarquia-doutrinal-fundamentais-raiz.md)) reframa esta decisão sob a hierarquia invertida: 3 princípios fundamentais (Verdade, Excelência sem over-engineering, Navalha de Ockham) como raiz epistêmica; YAGNI/flat/sem-defensividade ornamental como consequência operacional derivada.
+
+**Fundamentais que endossam esta decisão:** **Ockham operacionalizado em decisões internas do plugin** — não codificar wide quando narrow + raw-chat já entrega; estrutura interna nova (skill `/brainstorm`) não paga seu custo de manutenção pela clareza/coerência adicionada. § Razões "Evidência empírica do gap é fraca" é operacionalização concreta do **critério 1** de [ADR-043](ADR-043-hierarquia-doutrinal-fundamentais-raiz.md) § "Ockham operacionalizado em decisões internas do plugin" — aplicação **invertida** do critério (incidente recorrente **ausente** em uso real → sinal forte para NÃO criar skill, espelhando a leitura editorial natural do critério).
+
+**Cross-refs body-level a ADR-035.** § Origem cita "**Decisão base:** ADR-035" — esse cross-ref permanece válido factualmente (ADR-036 foi decidido em 2026-05-19; ADR-043 foi shippado em 2026-05-29). ADR-035 está marcado `Substituído por ADR-043` em seu header; o critério "paga seu custo de manutenção pela clareza/coerência?" referenciado no body deste ADR (§ Razões) agora vive em [ADR-043](ADR-043-hierarquia-doutrinal-fundamentais-raiz.md) § "Ockham operacionalizado em decisões internas do plugin".
+
+**Preservação de numeração dos critérios.** Os critérios 1 e 4 referenciados em § Origem ("**Decisão base:** ADR-035 — critério 'isso paga seu custo de manutenção pela clareza/coerência?' aplicado aqui na direção oposta") e nos bullets de § Gatilhos de revisão (`per ADR-035 critério 1` e `per ADR-035 critério 4`) **preservam numeração idêntica** em ADR-043 § Ockham operacionalizado em decisões internas do plugin:
+
+- **Critério 1** = incidente recorrente ou padrão observado em uso real (não hipótese). Operacionaliza Verdade.
+- **Critério 4** = codificação de pattern emergente ≥3 vezes ad hoc em decisões anteriores do plugin (auditável retroativamente). Operacionaliza Verdade + Ockham.
+
+Leitor que segue thread de gatilhos não precisa adivinhar equivalência — a numeração foi preservada por ADR-043 ao absorver os 4 critérios de ADR-035 como instanciação contextual de Ockham. Decisão central — brainstorm intencionalmente não-codificado como skill — permanece intacta sob a nova hierarquia.
