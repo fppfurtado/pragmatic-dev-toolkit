@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-05-30** — content absorbed into [ADR-046](../ADR-046-cutucada-uniforme-descoberta-gaps-configuracao.md); see that ADR for current authority. Body below preserved verbatim for historical record.
+
 # ADR-029: Cutucada de descoberta cobre `CLAUDE.md` ausente
 
 **Data:** 2026-05-14
