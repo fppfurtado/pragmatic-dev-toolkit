@@ -10,7 +10,7 @@ Wizard interativo para configurar o bloco `<!-- pragmatic-toolkit:config -->` no
 
 **Cobertura v1:** 4 roles com dor concreta — `decisions_dir`, `backlog`, `plans_dir` (aceitam local mode per [ADR-005](../../docs/decisions/ADR-005-modo-local-gitignored-roles.md)) e `test_command` (top-level no schema). Informational roles (`product_direction`, `ubiquitous_language`, `design_notes`) e `version_files`/`changelog` ficam fora — operador edita manualmente quando precisar.
 
-Frontmatter sem `roles:` por design ([ADR-003](../../docs/decisions/ADR-003-frontmatter-roles.md) § Schema) — `/init-config` define o bloco que o Resolution protocol lê em vez de consumi-lo; cutucada de descoberta ([ADR-017](../../docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md)) não se aplica dentro desta skill.
+Frontmatter sem `roles:` por design ([ADR-003](../../docs/decisions/ADR-003-frontmatter-roles.md) § Schema) — `/init-config` define o bloco que o Resolution protocol lê em vez de consumi-lo; cutucada de descoberta ([ADR-046](../../docs/decisions/ADR-046-cutucada-uniforme-descoberta-gaps-configuracao.md)) não se aplica dentro desta skill.
 
 ## Argumentos
 
@@ -144,5 +144,5 @@ A tabela de §3 é v1. Stacks adicionais (Gradle, Cargo, Cargo workspace, Bun, e
 - **Não pressionar doutrinariamente quando `CLAUDE.md` está gitignored.** [ADR-030](../../docs/decisions/ADR-030-aceitar-claude-md-gitignored-via-worktreeinclude.md) estabelece aceitação como ato deliberado da skill (operador sinaliza via `.gitignore`, plugin opera dentro); reintroduzir mensagem "reconsidere o gitignore" no step 3 ou step 5 revoga a decisão.
 - **Não reescrever bloco config malformado / duplicado / órfão.** Parar com diagnóstico; operador resolve manualmente. Postura editorial, não reparativa.
 - **Não invocar outras skills do toolkit em cascata.** `/init-config` é setup, não orquestrador. Operador chama as skills seguintes manualmente após config gravado.
-- **Não emitir cutucada de descoberta (ADR-017):** `/init-config` define o bloco em vez de consumir.
+- **Não emitir cutucada de descoberta (ADR-046):** `/init-config` define o bloco em vez de consumir.
 - **Não acomodar cross-mode `backlog: local + plans_dir: canonical` via warning, re-prompt ou cobertura defensiva** ([ADR-025](../../docs/decisions/ADR-025-recusar-cross-mode-backlog-local-init-config.md)) — recusa hard é o ponto; "amaciar" a recusa em futura edição re-introduz leak de texto privado para plano público.

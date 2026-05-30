@@ -10,7 +10,7 @@ Append uma nota timestampada em `.claude/local/NOTES.md` — store doutrinário 
 
 Esta skill executa o append e devolve controle ao operador. **Não faz commit** — `.claude/local/` é gitignored por design.
 
-Skill opera **independente** de `CLAUDE.md` / role contract — usável em qualquer git repo. Cutucada de descoberta ([ADR-017](../../docs/decisions/ADR-017-cutucada-uniforme-descoberta-config-ausente.md) / [ADR-029](../../docs/decisions/ADR-029-cutucada-descoberta-cobre-claude-md-ausente.md)) **não aplica** (skill não consome papel).
+Skill opera **independente** de `CLAUDE.md` / role contract — usável em qualquer git repo. Cutucada de descoberta ([ADR-046](../../docs/decisions/ADR-046-cutucada-uniforme-descoberta-gaps-configuracao.md)) **não aplica** (skill não consome papel).
 
 ## Argumentos
 

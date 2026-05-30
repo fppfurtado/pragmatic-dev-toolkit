@@ -120,7 +120,7 @@ Idioma: espelhar o do projeto consumidor (default canonical PT-BR per `docs/phil
 Ordem fixa do relatório final, três linhas potenciais:
 
 1. **Path do arquivo gravado** — confirmação literal do path.
-2. **Sugestão de próximo passo** — `próximo passo: /triage <intenção concreta>` (paralelo à cutucada do `/init-config` em ADR-017). Operador pode ignorar; a sugestão materializa o pipeline `/draft-idea` → `/triage`.
+2. **Sugestão de próximo passo** — `próximo passo: /triage <intenção concreta>` (paralelo à cutucada do `/init-config` em ADR-046). Operador pode ignorar; a sugestão materializa o pipeline `/draft-idea` → `/triage`.
 3. **Cutucada de descoberta** — **última linha** do relatório. Executar a cutucada conforme `${CLAUDE_PLUGIN_ROOT}/docs/procedures/cutucada-descoberta.md`.
 
 ## O que NÃO fazer
