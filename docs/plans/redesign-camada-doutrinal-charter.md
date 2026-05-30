@@ -166,3 +166,33 @@ Alternativa (operador pode escolher manual): collapse manual num único commit p
 - § Mitigações (ADR-045): bullet "Anti-regression checklist só pode crescer" adicionado — remoção exige justificativa explícita no commit (caminho-único).
 - § Auto-aplicação cond 1 (ADR-045): "aplica parcial" → "aplica" com esclarecimento que precedente operacional pontual de Onda 3 reforça cond 4 mas não constitui ancestral codificado direto no sentido de cond 1 (interpretação divergente da sugestão do reviewer — rationale: ADR-034 cond 1 fala em ancestral direto que conota ADR codificado; cond 4 captura novidade reforçada pelo precedente) (caminho-único).
 - Charter linha 87 (este arquivo): forward-reference "ADR-001 consolidado" trocada por "ADR consolidado equivalente de componentes/hooks" preservando flexibilidade da estrutura-alvo descobrível durante migração (caminho-único).
+
+## Atualização pós-execução
+
+**Ondas A+B+C shipped (2026-05-30).** Acompanhamento progressivo das ondas materializadas:
+
+| Onda | Status | Commit/PR | Substância |
+|---|---|---|---|
+| **A** — Foundational | ✓ | `715f455` + PR #88 (`91d3f70`) | Charter + ADR-045 + CLAUDE.md bullet |
+| **B** — `philosophy.md` condensado | ✓ | `a09a16c` + PR #89 (`f758c8d`) | 5 ops § Princípios fundamentais; bifurcação (γ) plugin/consumer dissolvida |
+| **C** — Migração cluster cutucadas | ✓ | `2b147ca` + PR #90 (`dbac4d6`) | ADR-046 absorve ADR-017+ADR-029; archive/ + README inicial; pattern validado |
+| **D-X** | Pendente | — | Próximo candidato: cluster modo local (005+018+025+030) |
+
+**Calibração emergente da estrutura-alvo** (per ADR-046 § Trade-offs):
+
+- **Sketch original era subestimativa** — cutucadas saiu como cluster próprio standalone (vs sub-cluster de "ADR-004-skill-alinhamento-triage" absorvendo 8 ADRs no sketch).
+- **Target realista 13-15 consolidados** em vez de 11 — refinamento editorial per ADR-045 fronteira *"ajuste editorial do charter vs revisão de ADR-045"* (operador escolheu opção a — aceitar 13-15 como target realista após cutucada). Spírito da consolidação (45 → ~13-15, redução de ~65-70%) preservado.
+- **Cada onda contribui para refinamento incremental do sketch** — charter é artefato vivo. Pattern para ondas D-X: descoberta empírica de cluster shape é editorial (não estrutural); revisão de ADR-045 só se cluster sequence falhar materialmente.
+
+**Pattern de migração validado empíricamente na Onda C** (template para D-X):
+
+- ✓ Archive + redirect header canonical (blockquote `> **ARCHIVED <data>**` + cross-ref + H1 original preservado).
+- ✓ Archive index incremental (`archive/README.md` criado nesta onda; ondas D-X estendem como invariante do plano).
+- ✓ Cross-refs em docs vivos atualizados (CLAUDE.md + procedure + SKILLs específicas).
+- ✓ Link rot em ADRs imutáveis aceito como categoria histórica (per ADR-046 § Trade-offs).
+- ✓ Procedure preservation per ADR-024 (substância semântica em ADR; texto verbatim em procedure).
+- ✓ Cond 5 primária isolada em auto-aplicação (cond 4 NÃO aplica — ADR-045 ancestral codificado; instância vs categoria nova).
+
+**Saldo inventário pós-Onda C:** 46 ADRs criados (001-046) - 2 arquivados (017, 029) = **44 vigentes**. Drop líquido de 2 por onda de migração é compatível com target 13-15 em 8-10 ondas adicionais.
+
+**Anti-regression checklist** § Discoverability — itens preservados em ADR-046: gating tri-state ✓ (§ Decisão); 2 strings canonical literais ✓ (no procedure per fronteira ADR-024); dedup conversation-scoped ✓ (§ Decisão); herança editorial ✓ (§ Herança editorial). Nenhuma carga doutrinal perdida.
