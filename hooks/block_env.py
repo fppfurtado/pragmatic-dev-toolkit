@@ -6,7 +6,7 @@ when the filename (after stripping a `TEMPLATE_SUFFIXES` suffix) ends in
 `.env` or starts with `.env.`, with one exception: any name ending in
 `.env.example` passes. This covers both the dotfile convention (`.env`,
 `.env.production`) and the per-instance convention common in Java/PHP/Rails
-legacy (`1g.env`, `production.env`), per ADR-015.
+legacy (`1g.env`, `production.env`), per ADR-050 § Decisão (c).
 """
 import json
 import sys

@@ -97,7 +97,7 @@ Proposta inverte ou contradiz decisão registrada sem reconhecer o trade-off. Ex
 
 - Plano introduz camada formal sob módulo de negócio sem citar a posição "flat e pragmática" de `philosophy.md`.
 - Plano grava state em arquivo onde ADR-049 § Decisão (a) disse "git/forge é a fonte da verdade".
-- Plano cria componente stack-specific quando ADR-008 separou skills (genéricas) de hooks (suffixadas).
+- Plano cria componente stack-specific quando ADR-050 § Decisão (a) separou skills (genéricas) de hooks (suffixados).
 
 Reportar referenciando o ADR ou seção da philosophy. Se o plano reconhece a contradição e justifica, reportar como informativo (não-bloqueante) — autor já sabe.
 

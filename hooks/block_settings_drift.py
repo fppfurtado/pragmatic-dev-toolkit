@@ -6,7 +6,7 @@ edits to `.claude/settings.json` whose new content introduces absolute
 paths matching `/home/<user>/` or `/Users/<user>/` — typical pattern of
 session-permission entries that pollute the tracked settings file. The
 gitignored `.claude/settings.local.json` is out of scope (personal paths
-are expected there). Per ADR-040.
+are expected there). Per ADR-050 § Decisão (f).
 """
 import json
 import re
