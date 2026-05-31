@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-05-31** — content absorbed into [ADR-048](../ADR-048-free-read-design-reviewer-consolidado.md); see that ADR for current authority. Body below preserved verbatim for historical record.
+
 # ADR-021: Curadoria do free-read do design-reviewer (anotação + scan)
 
 **Data:** 2026-05-12

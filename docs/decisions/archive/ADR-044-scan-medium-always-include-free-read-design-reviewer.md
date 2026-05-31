@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-05-31** — content absorbed into [ADR-048](../ADR-048-free-read-design-reviewer-consolidado.md); see that ADR for current authority. Body below preserved verbatim for historical record.
+
 # ADR-044: Scan medium + always-include foundationals no free-read do design-reviewer
 
 **Data:** 2026-05-29

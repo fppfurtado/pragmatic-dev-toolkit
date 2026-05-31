@@ -14,3 +14,5 @@ Tabela atualizada incrementalmente por cada onda C-X conforme migração avança
 | ADR-018 — Replicação `.claude/` em modo local: responsabilidade proativa do `/init-config` | [ADR-047](../ADR-047-modo-local-paths-replicacao-cross-mode.md) | D |
 | ADR-025 — Recusar cross-mode `backlog: local + plans_dir: canonical` no `/init-config` | [ADR-047](../ADR-047-modo-local-paths-replicacao-cross-mode.md) | D |
 | ADR-030 — `/init-config` aceita `CLAUDE.md` gitignored com replicação via `.worktreeinclude` | [ADR-047](../ADR-047-modo-local-paths-replicacao-cross-mode.md) | D |
+| ADR-021 — Curadoria do free-read do design-reviewer (anotação + scan) | [ADR-048](../ADR-048-free-read-design-reviewer-consolidado.md) | E |
+| ADR-044 — Scan medium + always-include foundationals no free-read do design-reviewer | [ADR-048](../ADR-048-free-read-design-reviewer-consolidado.md) | E |
