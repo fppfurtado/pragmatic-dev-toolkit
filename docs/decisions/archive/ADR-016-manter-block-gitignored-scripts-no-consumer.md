@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-05-31** — content absorbed into [ADR-050](../ADR-050-componentes-plugin-consolidado.md); see that ADR for current authority. Body below preserved verbatim for historical record.
+
 # ADR-016: Manter `block_gitignored` como está; falso-positivo em scripts operacionais é problema do consumer
 
 **Data:** 2026-05-10

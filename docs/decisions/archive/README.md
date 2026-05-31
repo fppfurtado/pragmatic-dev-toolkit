@@ -20,3 +20,9 @@ Tabela atualizada incrementalmente por cada onda C-X conforme migração avança
 | ADR-028 — Campo Branch opcional no plano para fluxo issue-first | [ADR-049](../ADR-049-execucao-run-plan-consolidado.md) | F |
 | ADR-039 — Task tool como state-keeping em fluxo longo | [ADR-049](../ADR-049-execucao-run-plan-consolidado.md) | F |
 | ADR-041 — Campo `**Modo:** runbook` opt-in em planos para `/run-plan` cobrir system-surgery | [ADR-049](../ADR-049-execucao-run-plan-consolidado.md) | F |
+| ADR-008 — Skills geradoras stack-agnósticas via dispatch interno | [ADR-050](../ADR-050-componentes-plugin-consolidado.md) | G |
+| ADR-013 — CI lint mínimo como complemento à doutrina no-build/runner | [ADR-050](../ADR-050-componentes-plugin-consolidado.md) | G |
+| ADR-015 — Bloquear env-files por sufixo `.env`, não apenas dotfile | [ADR-050](../ADR-050-componentes-plugin-consolidado.md) | G |
+| ADR-016 — Manter `block_gitignored` como está; falso-positivo em scripts operacionais é problema do consumer | [ADR-050](../ADR-050-componentes-plugin-consolidado.md) | G |
+| ADR-023 — Critério mecânico para declaração explícita de `disable-model-invocation` em skills | [ADR-050](../ADR-050-componentes-plugin-consolidado.md) | G |
+| ADR-040 — Bloquear paths absolutos em `.claude/settings.json` via PreToolUse hook | [ADR-050](../ADR-050-componentes-plugin-consolidado.md) | G |
