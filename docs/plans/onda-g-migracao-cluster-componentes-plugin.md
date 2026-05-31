@@ -220,4 +220,4 @@ Update do charter é commit separado post-merge (paralelo às atualizações de 
 
 ## Pendências de validação
 
-(A ser preenchida pelo `/run-plan` se ficarem itens pendentes pós-execução. Reaproveita formato Onda F per template canonical.)
+- **Cobertura ausente** (warning pré-loop conservador): `hooks/block_env.py` + `hooks/block_settings_drift.py` listados em `## Arquivos a alterar` (Bloco 3) sem test pattern correspondente. Edit foi **APENAS docstring** (linha 9 dos 2 hooks: `per ADR-015`/`Per ADR-040` → `per ADR-050 § Decisão (c)`/`§ Decisão (f)`); comportamento dos hooks intacto, validado pré-commit via Verificação 8 do plano (`python3 -c "import ast; ast.parse(...)"` em `block_env.py` + `block_gitignored.py` + `block_settings_drift.py` — `all 3 OK`). Plugin sem suite (`test_command: null` per CLAUDE.md "Pragmatic Toolkit"). Captura é defensiva — material improvável. Reabrir se incidente concreto pós-merge observado em comportamento dos hooks.
