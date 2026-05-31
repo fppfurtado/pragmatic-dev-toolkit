@@ -20,6 +20,6 @@ Instrução de `Read` força refresh defensivo do reviewer sobre o estado atual 
 
 **Caller-side apenas** — instrução vive no prompt composto pela skill consumidora, não no agent definition. Razão doutrinária: `agents/code-reviewer.md:10` prescreve literalmente *"Analise o diff fornecido **e apenas o diff**"*; adicionar "Read target" agent-side conflitaria com esse escopo (agent expandiria análise além do diff). Caller-side preserva a doutrina diff-only dos reviewers shipados (`code-reviewer`, `qa-reviewer`, `security-reviewer`, `doc-reviewer`) enquanto força refresh defensivo via prompt.
 
-`design-reviewer` é exceção — já tem free-read autônomo per [ADR-021](../decisions/ADR-021-curadoria-free-read-design-reviewer.md) — não precisa da instrução mas recebe sem prejuízo (uniformidade no prompt da skill consumidora).
+`design-reviewer` é exceção — já tem free-read autônomo per [ADR-048](../decisions/ADR-048-free-read-design-reviewer-consolidado.md) — não precisa da instrução mas recebe sem prejuízo (uniformidade no prompt da skill consumidora).
 
 **Manual `@reviewer`** (operador invocando direto sem skill mediator) **não é coberto** — incidência baixa porque operador tipicamente invoca após Edit completo. Estender para agent-side (e potencial refinamento de ADR-035) se incidência emergir em invocações manuais.
