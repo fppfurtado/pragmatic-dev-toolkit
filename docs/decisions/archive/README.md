@@ -10,3 +10,7 @@ Tabela atualizada incrementalmente por cada onda C-X conforme migração avança
 |---|---|---|
 | ADR-017 — Cutucada uniforme em skills para descoberta de configuração ausente | [ADR-046](../ADR-046-cutucada-uniforme-descoberta-gaps-configuracao.md) | C |
 | ADR-029 — Cutucada de descoberta cobre `CLAUDE.md` ausente | [ADR-046](../ADR-046-cutucada-uniforme-descoberta-gaps-configuracao.md) | C |
+| ADR-005 — Modo local-gitignored para roles do path contract | [ADR-047](../ADR-047-modo-local-paths-replicacao-cross-mode.md) | D |
+| ADR-018 — Replicação `.claude/` em modo local: responsabilidade proativa do `/init-config` | [ADR-047](../ADR-047-modo-local-paths-replicacao-cross-mode.md) | D |
+| ADR-025 — Recusar cross-mode `backlog: local + plans_dir: canonical` no `/init-config` | [ADR-047](../ADR-047-modo-local-paths-replicacao-cross-mode.md) | D |
+| ADR-030 — `/init-config` aceita `CLAUDE.md` gitignored com replicação via `.worktreeinclude` | [ADR-047](../ADR-047-modo-local-paths-replicacao-cross-mode.md) | D |
