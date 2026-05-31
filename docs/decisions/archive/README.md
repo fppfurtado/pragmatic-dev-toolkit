@@ -26,3 +26,6 @@ Tabela atualizada incrementalmente por cada onda C-X conforme migração avança
 | ADR-016 — Manter `block_gitignored` como está; falso-positivo em scripts operacionais é problema do consumer | [ADR-050](../ADR-050-componentes-plugin-consolidado.md) | G |
 | ADR-023 — Critério mecânico para declaração explícita de `disable-model-invocation` em skills | [ADR-050](../ADR-050-componentes-plugin-consolidado.md) | G |
 | ADR-040 — Bloquear paths absolutos em `.claude/settings.json` via PreToolUse hook | [ADR-050](../ADR-050-componentes-plugin-consolidado.md) | G |
+| ADR-007 — Idioma de artefatos informativos segue convenção de commits | [ADR-051](../ADR-051-convencoes-editoriais-consolidado.md) | H |
+| ADR-012 — Idioma de artefatos de discoverability/landing | [ADR-051](../ADR-051-convencoes-editoriais-consolidado.md) | H |
+| ADR-024 — Categoria docs/procedures/ para procedimentos operacionais compartilhados | [ADR-051](../ADR-051-convencoes-editoriais-consolidado.md) | H |
