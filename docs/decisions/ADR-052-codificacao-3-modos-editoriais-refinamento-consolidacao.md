@@ -1,7 +1,7 @@
 # ADR-052: Codificação dos 3 modos editoriais de refinamento da consolidação
 
 **Data:** 2026-05-31
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 

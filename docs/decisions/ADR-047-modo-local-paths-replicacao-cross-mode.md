@@ -1,7 +1,7 @@
 # ADR-047: Modo local consolidado (paths gitignored + replicação `.claude/`/`CLAUDE.md` + recusa cross-mode)
 
 **Data:** 2026-05-30
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 

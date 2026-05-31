@@ -1,7 +1,7 @@
 # ADR-049: Execução/run-plan consolidado (state em git/forge + campo Branch + Task tool state-keeping + campo Modo runbook)
 
 **Data:** 2026-05-31
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 
