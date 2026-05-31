@@ -8,7 +8,7 @@ disable-model-invocation: false
 
 Wizard interativo para configurar o bloco `<!-- pragmatic-toolkit:config -->` no `CLAUDE.md` do projeto consumidor. Alternativa proativa à memorização one-shot per role do Resolution protocol (passo 4).
 
-**Cobertura v1:** 4 roles com dor concreta — `decisions_dir`, `backlog`, `plans_dir` (aceitam local mode per [ADR-005](../../docs/decisions/ADR-005-modo-local-gitignored-roles.md)) e `test_command` (top-level no schema). Informational roles (`product_direction`, `ubiquitous_language`, `design_notes`) e `version_files`/`changelog` ficam fora — operador edita manualmente quando precisar.
+**Cobertura v1:** 4 roles com dor concreta — `decisions_dir`, `backlog`, `plans_dir` (aceitam local mode per [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md)) e `test_command` (top-level no schema). Informational roles (`product_direction`, `ubiquitous_language`, `design_notes`) e `version_files`/`changelog` ficam fora — operador edita manualmente quando precisar.
 
 Frontmatter sem `roles:` por design ([ADR-003](../../docs/decisions/ADR-003-frontmatter-roles.md) § Schema) — `/init-config` define o bloco que o Resolution protocol lê em vez de consumi-lo; cutucada de descoberta ([ADR-046](../../docs/decisions/ADR-046-cutucada-uniforme-descoberta-gaps-configuracao.md)) não se aplica dentro desta skill.
 
@@ -24,7 +24,7 @@ Sem argumentos. Skill puramente interativa — perguntas via `AskUserQuestion` p
 
 2. **Em repo git?** `git rev-parse --is-inside-work-tree`. Falha (não-git) → pular probe de gitignore (passo 3), prosseguir.
 
-3. **`CLAUDE.md` gitignored?** `git check-ignore -q CLAUDE.md`. Retorno zero (gitignored) → **registrar flag interna** `claude_md_gitignored = true` para o step 4.5; prosseguir normalmente (per [ADR-030](../../docs/decisions/ADR-030-aceitar-claude-md-gitignored-via-worktreeinclude.md): plugin honra o sinal do consumer via `.gitignore` e garante replicação via `.worktreeinclude` em vez de recusar). Retorno não-zero → flag fica falsa; comportamento canonical (tracked).
+3. **`CLAUDE.md` gitignored?** `git check-ignore -q CLAUDE.md`. Retorno zero (gitignored) → **registrar flag interna** `claude_md_gitignored = true` para o step 4.5; prosseguir normalmente (per [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md): plugin honra o sinal do consumer via `.gitignore` e garante replicação via `.worktreeinclude` em vez de recusar). Retorno não-zero → flag fica falsa; comportamento canonical (tracked).
 
 ### 2. Detectar bloco config existente
 
@@ -62,9 +62,9 @@ Pergunta via `AskUserQuestion` (header `TestCmd`):
 - Probe deu match → opções `<valor proposto>` (Recommended) / `Não declarar (null) — /run-plan cai em "## Verificação end-to-end" manual` / Other (operador customiza).
 - Probe sem match → opções `Não declarar (null)` (Recommended) / Other.
 
-**Recusa de cross-mode (ADR-025).** Após coletar as 4 respostas, **antes** de prosseguir para step 4, verificar se a combinação resultante é `paths.backlog: local` AND `paths.plans_dir: canonical` (canonical = operador escolheu `Canonical` OR `paths.plans_dir` ficaria omitido como default). Combinação detectada → parar com mensagem literal:
+**Recusa de cross-mode (ADR-047).** Após coletar as 4 respostas, **antes** de prosseguir para step 4, verificar se a combinação resultante é `paths.backlog: local` AND `paths.plans_dir: canonical` (canonical = operador escolheu `Canonical` OR `paths.plans_dir` ficaria omitido como default). Combinação detectada → parar com mensagem literal:
 
-> Combinação `backlog: local + plans_dir: canonical` recusada ([ADR-025](../../docs/decisions/ADR-025-recusar-cross-mode-backlog-local-init-config.md)). `**Linha do backlog:**` viraria mensageiro de texto privado para plano público — semanticamente incoerente. Re-execute `/init-config` escolhendo uma das combinações suportadas: `ambos canonical` (default — registro coletivo), `ambos local` (uso individual), `backlog canonical + plans_dir local` (registro coletivo + planos privados).
+> Combinação `backlog: local + plans_dir: canonical` recusada ([ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md)). `**Linha do backlog:**` viraria mensageiro de texto privado para plano público — semanticamente incoerente. Re-execute `/init-config` escolhendo uma das combinações suportadas: `ambos canonical` (default — registro coletivo), `ambos local` (uso individual), `backlog canonical + plans_dir local` (registro coletivo + planos privados).
 
 Postura editorial não-reparativa — sem re-prompt automático via `AskUserQuestion`, operador re-executa com escolhas corrigidas. Bloco YAML **não é gravado** quando a combinação inválida é detectada.
 
@@ -96,19 +96,19 @@ Reportar path final ao operador:
 
 **Critério de disparo:** ≥1 role configurada como `local` no passo 3 OR `claude_md_gitignored = true` (sinalizado pelo step 3), **independente do caminho de entrada do passo 2** (bloco ausente → gravar novo; bloco presente + `Editar` → gravar atualizado). Nenhuma condição ativa → skip silente.
 
-Mecânica determinística (sem `AskUserQuestion` — operação tem resultado óbvio, sem trade-off cross-team a confirmar per [ADR-018](../../docs/decisions/ADR-018-replicacao-claude-em-modo-local-init-config.md)):
+Mecânica determinística (sem `AskUserQuestion` — operação tem resultado óbvio, sem trade-off cross-team a confirmar per [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md)):
 
 **Lista composta de paths a garantir** (cada adição é independente e idempotente; cada condição testada isoladamente; presença prévia da linha — de run anterior — é skip silente; step 4.5 nunca remove linhas):
 
 | Path | Condição de disparo | Probe (presença) | ADR de origem |
 |---|---|---|---|
-| `.claude/` | ≥1 role local | `grep -qE "^\.claude(/|$)" .worktreeinclude` | [ADR-018](../../docs/decisions/ADR-018-replicacao-claude-em-modo-local-init-config.md) |
-| `CLAUDE.md` | `claude_md_gitignored = true` | `grep -qE "^CLAUDE\.md$" .worktreeinclude` | [ADR-030](../../docs/decisions/ADR-030-aceitar-claude-md-gitignored-via-worktreeinclude.md) |
+| `.claude/` | ≥1 role local | `grep -qE "^\.claude(/|$)" .worktreeinclude` | [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md) |
+| `CLAUDE.md` | `claude_md_gitignored = true` | `grep -qE "^CLAUDE\.md$" .worktreeinclude` | [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md) |
 
 Procedimento por path com condição ativa:
 
 1. **`.worktreeinclude` ausente** (primeira condição ativa do run) → criar com header de comentário (`# Gitignored paths to replicate into worktrees created by /run-plan.`) + linha em branco + linha do path.
-2. **`.worktreeinclude` presente, probe retorna não-zero** (path ausente) → adicionar linha do path ao fim. Falso-negativo benigno aceito por simetria editorial — regex simples + linha redundante = sem dano funcional (replicação de path já replicado por entrada anterior é no-op real; per ADR-018 § Limitações).
+2. **`.worktreeinclude` presente, probe retorna não-zero** (path ausente) → adicionar linha do path ao fim. Falso-negativo benigno aceito por simetria editorial — regex simples + linha redundante = sem dano funcional (replicação de path já replicado por entrada anterior é no-op real; per ADR-047 § Limitações).
 3. **`.worktreeinclude` presente, probe retorna zero** (path já listado) → skip silente (idempotência).
 
 Após processar todos os paths com condição ativa, reportar no relatório final:
@@ -125,13 +125,13 @@ Skill emite avisos informativos no relatório final — **não modifica** `.giti
 
 **`CLAUDE.md` gitignored detectado** (`claude_md_gitignored = true`):
 
-> `CLAUDE.md gitignored detectado — replicação garantida via .worktreeinclude por ADR-030.`
+> `CLAUDE.md gitignored detectado — replicação garantida via .worktreeinclude por ADR-047.`
 
 Substitui semanticamente a mensagem doutrinária revogada do step 3; cobre a transição da recusa anterior tornando a aceitação um ato deliberado visível.
 
 **Modo local declarado em ≥1 role:**
 
-> `Roles em modo local: <lista>. O gate "Gitignore" per ADR-005 dispara na primeira escrita subsequente sob .claude/local/<role>/ — quando você rodar /new-adr, /run-plan ou outra skill que grave lá. Naquele momento, operador confirma adicionar .claude/local/ ao .gitignore.`
+> `Roles em modo local: <lista>. O gate "Gitignore" per ADR-047 dispara na primeira escrita subsequente sob .claude/local/<role>/ — quando você rodar /new-adr, /run-plan ou outra skill que grave lá. Naquele momento, operador confirma adicionar .claude/local/ ao .gitignore.`
 
 ## Probe stack-aware — adicionando stacks novas
 
@@ -140,9 +140,9 @@ A tabela de §3 é v1. Stacks adicionais (Gradle, Cargo, Cargo workspace, Bun, e
 ## O que NÃO fazer
 
 - **Não criar `CLAUDE.md` se ausente.** Propósito mais amplo que o bloco config (instrução geral ao Claude Code). Passo 1 para com mensagem orientando o operador.
-- **Não modificar `.gitignore` automaticamente.** Política git do consumer; gate específico do ADR-005 cobre quando necessário (primeira escrita sob `.claude/local/<role>/`).
-- **Não pressionar doutrinariamente quando `CLAUDE.md` está gitignored.** [ADR-030](../../docs/decisions/ADR-030-aceitar-claude-md-gitignored-via-worktreeinclude.md) estabelece aceitação como ato deliberado da skill (operador sinaliza via `.gitignore`, plugin opera dentro); reintroduzir mensagem "reconsidere o gitignore" no step 3 ou step 5 revoga a decisão.
+- **Não modificar `.gitignore` automaticamente.** Política git do consumer; gate específico do ADR-047 cobre quando necessário (primeira escrita sob `.claude/local/<role>/`).
+- **Não pressionar doutrinariamente quando `CLAUDE.md` está gitignored.** [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md) estabelece aceitação como ato deliberado da skill (operador sinaliza via `.gitignore`, plugin opera dentro); reintroduzir mensagem "reconsidere o gitignore" no step 3 ou step 5 revoga a decisão.
 - **Não reescrever bloco config malformado / duplicado / órfão.** Parar com diagnóstico; operador resolve manualmente. Postura editorial, não reparativa.
 - **Não invocar outras skills do toolkit em cascata.** `/init-config` é setup, não orquestrador. Operador chama as skills seguintes manualmente após config gravado.
 - **Não emitir cutucada de descoberta (ADR-046):** `/init-config` define o bloco em vez de consumir.
-- **Não acomodar cross-mode `backlog: local + plans_dir: canonical` via warning, re-prompt ou cobertura defensiva** ([ADR-025](../../docs/decisions/ADR-025-recusar-cross-mode-backlog-local-init-config.md)) — recusa hard é o ponto; "amaciar" a recusa em futura edição re-introduz leak de texto privado para plano público.
+- **Não acomodar cross-mode `backlog: local + plans_dir: canonical` via warning, re-prompt ou cobertura defensiva** ([ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md)) — recusa hard é o ponto; "amaciar" a recusa em futura edição re-introduz leak de texto privado para plano público.

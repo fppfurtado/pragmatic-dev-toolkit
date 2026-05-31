@@ -40,7 +40,7 @@ Skills consume **roles**, not literal paths. Each role has a canonical default; 
 | `changelog` | `CHANGELOG.md` | Release history. `/release` prepends a new block at each bump. |
 | `test_command` | `make test` (with `Makefile`) | Automatic gate at execution steps. |
 | (plugin-internal) | `.worktreeinclude` | Optional gitignored paths to replicate in fresh worktrees. Consumed by `/run-plan`. |
-| (plugin-internal) | `.claude/local/NOTES.md` | Cross-session context store written by `/note` (append-only, local-gitignored per [ADR-005](docs/decisions/ADR-005-modo-local-gitignored-roles.md) extended in [ADR-032](docs/decisions/ADR-032-skill-note-contexto-compartilhado.md); non-role). Cross-project write via `/note --to <projeto-ou-path>` per [ADR-042](docs/decisions/ADR-042-note-flag-to-cross-project-write.md) — discovery via `$PROJECTS_DIR` with absolute-path fallback; target must be initialized for local mode (refusal otherwise). |
+| (plugin-internal) | `.claude/local/NOTES.md` | Cross-session context store written by `/note` (append-only, local-gitignored per [ADR-047](docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md) extended in [ADR-032](docs/decisions/ADR-032-skill-note-contexto-compartilhado.md); non-role). Cross-project write via `/note --to <projeto-ou-path>` per [ADR-042](docs/decisions/ADR-042-note-flag-to-cross-project-write.md) — discovery via `$PROJECTS_DIR` with absolute-path fallback; target must be initialized for local mode (refusal otherwise). |
 | (agents shipped by the plugin) | `qa-reviewer`, `security-reviewer`, `doc-reviewer`, `design-reviewer` | `qa-reviewer`, `security-reviewer`, `doc-reviewer` are invoked by `/run-plan` per `{reviewer: qa\|security\|doc}` annotation on the plan block. `design-reviewer` operates on documents pre-fact (plan/ADR draft); invoked automatically by `/triage` (plan-producing path) and `/new-adr` (standalone or delegated) per [ADR-011](docs/decisions/ADR-011-wiring-design-reviewer-automatico.md), or manually via `@design-reviewer`. Consumer projects can shadow any of them with project-level `.claude/agents/<name>.md` (project-level wins on collision). |
 
 ### Resolution protocol
@@ -66,7 +66,7 @@ Each skill declares its roles in `roles.required` and `roles.informational` in t
 
 ### Local mode (`paths.<role>: local`)
 
-Activated at step 2 of the resolution protocol when CLAUDE.md declares the role as `local` (instead of a path or null) — bypasses the absent-role tracks above. Defined by [ADR-005](docs/decisions/ADR-005-modo-local-gitignored-roles.md). Applies to `decisions_dir`, `backlog`, `plans_dir` (`version_files` and `changelog` reject local mode — `/release` stops with a clear message).
+Activated at step 2 of the resolution protocol when CLAUDE.md declares the role as `local` (instead of a path or null) — bypasses the absent-role tracks above. Defined by [ADR-047](docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md). Applies to `decisions_dir`, `backlog`, `plans_dir` (`version_files` and `changelog` reject local mode — `/release` stops with a clear message).
 
 On first resolution per invocation:
 
@@ -154,7 +154,7 @@ test_command: null  # repo has no test suite; /run-plan falls back to plan's `##
 
 - Missing key → canonical default.
 - `null` (or explicit `false`) → "não usamos esse papel". Skill treats as absent without asking again.
-- `local` (string literal) → local-gitignored mode. Skill creates/reads under `.claude/local/<role>/`, artifact is not committed, commit/PR/branch metadata do not reference it (see "Local mode" section above; full rationale in [ADR-005](docs/decisions/ADR-005-modo-local-gitignored-roles.md)). Applies to `decisions_dir`, `backlog`, `plans_dir`; `version_files`/`changelog` reject this value.
+- `local` (string literal) → local-gitignored mode. Skill creates/reads under `.claude/local/<role>/`, artifact is not committed, commit/PR/branch metadata do not reference it (see "Local mode" section above; full rationale in [ADR-047](docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md)). Applies to `decisions_dir`, `backlog`, `plans_dir`; `version_files`/`changelog` reject this value.
 - Unknown keys are ignored (forward-compat for releases that add new roles).
 - Keys live under `paths.<role>` (top-level `test_command` as exception); reference list in "Roles and canonical defaults" above.
 - The HTML marker `<!-- pragmatic-toolkit:config -->` is what the skill looks for — without it, the YAML block is not interpreted even if under the `## Pragmatic Toolkit` heading.

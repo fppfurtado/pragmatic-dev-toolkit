@@ -39,9 +39,9 @@ Ler **só o que o pedido tocar**, nesta ordem:
 
 Não ler código aqui — é alinhamento de intenção, não design técnico.
 
-**Pre-condição cross-mode ([ADR-025](../../docs/decisions/ADR-025-recusar-cross-mode-backlog-local-init-config.md)).** Após resolver `backlog` e `plans_dir`, se a combinação for `backlog` em modo `local` AND `plans_dir` em modo canonical, parar com mensagem:
+**Pre-condição cross-mode ([ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md)).** Após resolver `backlog` e `plans_dir`, se a combinação for `backlog` em modo `local` AND `plans_dir` em modo canonical, parar com mensagem:
 
-> Combinação `backlog: local + plans_dir: canonical` recusada (ADR-025). `**Linha do backlog:**` viraria mensageiro de texto privado para plano público — semanticamente incoerente. Rode `/init-config` para corrigir o bloco config antes de continuar com `/triage`. Combinações suportadas: `ambos canonical`, `ambos local`, `backlog canonical + plans_dir local`.
+> Combinação `backlog: local + plans_dir: canonical` recusada (ADR-047). `**Linha do backlog:**` viraria mensageiro de texto privado para plano público — semanticamente incoerente. Rode `/init-config` para corrigir o bloco config antes de continuar com `/triage`. Combinações suportadas: `ambos canonical`, `ambos local`, `backlog canonical + plans_dir local`.
 
 Demais combinações seguem normalmente.
 
@@ -98,7 +98,7 @@ Idioma de saída: per `CLAUDE.md` → 'Reviewer/skill report idioma'.
   - `backlog` canonical + `plans_dir` local: linha presente no plano local (não vaza para git).
   - Ambos canonical: caso default.
 
-  Combinação `backlog: local + plans_dir: canonical` recusada upstream por [ADR-025](../../docs/decisions/ADR-025-recusar-cross-mode-backlog-local-init-config.md) (`/init-config` step 3 + `/triage` step 1) — não ocorre.
+  Combinação `backlog: local + plans_dir: canonical` recusada upstream por [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md) (`/init-config` step 3 + `/triage` step 1) — não ocorre.
 
 **Plano (papel: `plans_dir`):** ler `${CLAUDE_PLUGIN_ROOT}/templates/plan.md` como esqueleto canônico, copiar para `<plans_dir>/<slug>.md`, adaptar headers ao idioma do projeto consumidor (per `docs/philosophy.md` → "Convenção de idioma"), preencher placeholders com o conteúdo decidido nos passos 2-3. Em modo `local` (`paths.plans_dir: local`), copia para `.claude/local/plans/<slug>.md`; resto idêntico.
 
@@ -174,7 +174,7 @@ Após confirmação:
 
 - **Caminho sem plano:** apenas `git commit -m "…"`. Push não exigido.
 - **Caminho com plano:** confirmação cobre **commit + push como unidade atômica**. Verificar `git rev-parse --abbrev-ref HEAD` — se não for branch principal (default `main`), parar e reportar. Se for, **um único** `Bash` com `git commit -m "…" && git push origin <branch-atual>` — sem flags. Push falho → reportar erro literal e parar; commit local permanece, `/run-plan` recusará até o operador resolver. Push imediato materializa o plano como state visível ao restante do sistema — `/run-plan` parte de origin (não local), próximos `/triage` veem o plano em `<plans_dir>` para detectar trabalho em curso, e operador em outra máquina reconcilia. Sem o push, plano existe só localmente e o sistema não tem como reconciliar.
-- **Caminho com plano em modo `local`** (regra de não-referenciar, ADR-005, aplicada por-papel): se `plans_dir: local`, omitir slug do plano na mensagem de commit; se `backlog: local`, omitir texto da linha do backlog. Papéis em modo canonical seguem referenciados normalmente. Artefatos em modo local não entram no commit (gitignored).
+- **Caminho com plano em modo `local`** (regra de não-referenciar, ADR-047, aplicada por-papel): se `plans_dir: local`, omitir slug do plano na mensagem de commit; se `backlog: local`, omitir texto da linha do backlog. Papéis em modo canonical seguem referenciados normalmente. Artefatos em modo local não entram no commit (gitignored).
 
 Se não há alterações para commitar (ADR-only que já commitou via `/new-adr`, ou nada alterado), pular.
 

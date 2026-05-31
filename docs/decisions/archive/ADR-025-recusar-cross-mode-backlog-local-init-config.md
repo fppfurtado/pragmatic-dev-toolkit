@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-05-30** — content absorbed into [ADR-047](../ADR-047-modo-local-paths-replicacao-cross-mode.md); see that ADR for current authority. Body below preserved verbatim for historical record.
+
 # ADR-025: Recusar cross-mode `backlog: local + plans_dir: canonical` no `/init-config`
 
 **Data:** 2026-05-12

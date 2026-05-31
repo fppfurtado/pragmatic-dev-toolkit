@@ -1,12 +1,12 @@
 ---
 name: note
-description: Append uma nota com timestamp em .claude/local/NOTES.md (store local-gitignored estendendo ADR-005, modo append-only)
+description: Append uma nota com timestamp em .claude/local/NOTES.md (store local-gitignored estendendo ADR-047, modo append-only)
 disable-model-invocation: false
 ---
 
 # note
 
-Append uma nota timestampada em `.claude/local/NOTES.md` — store doutrinário non-role para captura de contexto compartilhado entre sessões CC paralelas, intra-projeto e cross-project (este último via referência conversacional, sem auto-discovery). Per [ADR-032](../../docs/decisions/ADR-032-skill-note-contexto-compartilhado.md) — extensão de [ADR-005](../../docs/decisions/ADR-005-modo-local-gitignored-roles.md) para nova categoria *store doutrinário fixo non-role*.
+Append uma nota timestampada em `.claude/local/NOTES.md` — store doutrinário non-role para captura de contexto compartilhado entre sessões CC paralelas, intra-projeto e cross-project (este último via referência conversacional, sem auto-discovery). Per [ADR-032](../../docs/decisions/ADR-032-skill-note-contexto-compartilhado.md) — extensão de [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md) para nova categoria *store doutrinário fixo non-role*.
 
 Esta skill executa o append e devolve controle ao operador. **Não faz commit** — `.claude/local/` é gitignored por design.
 
@@ -42,9 +42,9 @@ Casos degenerados (recusa silenciosa): `--to` sem valor subsequente (sintaxe inv
 
 Criar diretório com `mkdir -p .claude/local/` se ausente.
 
-**Ordem dos gates determinística (caminho local apenas)** — gate `Gitignore` (per ADR-005) executa **primeiro**; gate `Worktree replication` (per [ADR-018](../../docs/decisions/ADR-018-replicacao-claude-em-modo-local-init-config.md) Addendum) executa **em seguida**. Cancel no gate `Gitignore` aborta antes do segundo gate — evita estado inconsistente onde `.worktreeinclude` referencia path que o operador acabou de recusar versionar.
+**Ordem dos gates determinística (caminho local apenas)** — gate `Gitignore` (per ADR-047 § Decisão (a)) executa **primeiro**; gate `Worktree replication` (per [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md) § Decisão (b) `/note` 2º dispatcher) executa **em seguida**. Cancel no gate `Gitignore` aborta antes do segundo gate — evita estado inconsistente onde `.worktreeinclude` referencia path que o operador acabou de recusar versionar.
 
-**Gate `Gitignore`** — probe `git check-ignore -q .claude/local/.probe`. Sem cobertura → disparar gate per ADR-005 § "Local mode" (mecânica já no CLAUDE.md → "Local mode"). Cancel → recusa silenciosa, exit clean. Confirmação → seguir.
+**Gate `Gitignore`** — probe `git check-ignore -q .claude/local/.probe`. Sem cobertura → disparar gate per ADR-047 § "Local mode" (mecânica já no CLAUDE.md → "Local mode"). Cancel → recusa silenciosa, exit clean. Confirmação → seguir.
 
 **Gate `Worktree replication`** — operação silente, sem `AskUserQuestion`. Probe `grep -qE "^\.claude(/|$)" .worktreeinclude`:
 
@@ -52,11 +52,11 @@ Criar diretório com `mkdir -p .claude/local/` se ausente.
 - **Presente, probe retorna não-zero** (`.claude/` ausente) → adicionar linha `.claude/` ao fim.
 - **Presente, probe retorna zero** (`.claude/` já listado) → skip silente (idempotência).
 
-Mecânica idêntica ao step 4.5 do `/init-config` SKILL.md (linha `.claude/` da tabela composta) — `/note` é segundo dispatcher para a mesma invariante (per ADR-018 Addendum). Sincronizar mudanças manualmente se a mecânica evoluir num dos lados.
+Mecânica idêntica ao step 4.5 do `/init-config` SKILL.md (linha `.claude/` da tabela composta) — `/note` é segundo dispatcher para a mesma invariante (per ADR-047 § Decisão (b)). Sincronizar mudanças manualmente se a mecânica evoluir num dos lados.
 
 **Caminho cross-write** (com `--to`, per [ADR-042](../../docs/decisions/ADR-042-note-flag-to-cross-project-write.md)): blast-radius compartilhado proíbe mutar `.gitignore`/`.worktreeinclude` do target a partir de sessão não-contextual — pré-condição substitui gates.
 
-**Pré-condição de target inicializado**: `.claude/local/` no target existe E `git -C <target-repo> check-ignore -q .claude/local/.probe` retorna 0. **Probe idêntico ao usado no caminho local** acima (mesma invariante de ADR-018 Addendum + ADR-005 mecânica — implementador **não deve inventar probe alternativo** tipo `.claude/local/NOTES.md.probe`).
+**Pré-condição de target inicializado**: `.claude/local/` no target existe E `git -C <target-repo> check-ignore -q .claude/local/.probe` retorna 0. **Probe idêntico ao usado no caminho local** acima (mesma invariante de ADR-047 § Decisão (b) + § Decisão (a) mecânica — implementador **não deve inventar probe alternativo** tipo `.claude/local/NOTES.md.probe`).
 
 Falha (qualquer um dos checks) → recusar com mensagem: `target <path> não inicializado para modo local; abra sessão CC em <target> e rode /note <msg> uma vez para inicializar gates.`
 
@@ -92,4 +92,4 @@ Path do arquivo e bytes adicionados. Em cross-write, reportar **path absoluto** 
 - Não auto-buscar contexto em NOTES.md de outros projetos — leitura cross-project é fenômeno conversacional via Read nativo do Claude com path absoluto (operador valida candidato proposto pelo Claude se houver ambiguidade).
 - Não fazer commit — `.claude/local/NOTES.md` é gitignored por design; commit acidental quebra o contrato de privacidade.
 - Não inferir candidatos para `$PROJECTS_DIR` ausente em cross-write (não tentar `~/Projects/`, `$HOME/dev/`, glob heurístico de filesystem). Critério mecânico contrato-declarado-vs-heurística (ADR-042 § Contexto) exige recusa explícita orientando definir env var ou usar path absoluto — fallback silencioso fere a doutrina de ADR-032 § F4 alternativa b.
-- Não mutar `.gitignore` ou `.worktreeinclude` do target em cross-write — paralelo doutrinal com ADR-005 § Gate `Gitignore` e ADR-018 § Trade-offs (mutações cross-contextuais ferem blast-radius compartilhado). Pré-condição de target inicializado move setup para a sessão local do target onde o contexto existe para aprovar mudanças nesses arquivos.
+- Não mutar `.gitignore` ou `.worktreeinclude` do target em cross-write — paralelo doutrinal com ADR-047 § Decisão (a) gate `Gitignore` e § Trade-offs (mutações cross-contextuais ferem blast-radius compartilhado). Pré-condição de target inicializado move setup para a sessão local do target onde o contexto existe para aprovar mudanças nesses arquivos.
