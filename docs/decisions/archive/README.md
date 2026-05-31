@@ -16,3 +16,7 @@ Tabela atualizada incrementalmente por cada onda C-X conforme migração avança
 | ADR-030 — `/init-config` aceita `CLAUDE.md` gitignored com replicação via `.worktreeinclude` | [ADR-047](../ADR-047-modo-local-paths-replicacao-cross-mode.md) | D |
 | ADR-021 — Curadoria do free-read do design-reviewer (anotação + scan) | [ADR-048](../ADR-048-free-read-design-reviewer-consolidado.md) | E |
 | ADR-044 — Scan medium + always-include foundationals no free-read do design-reviewer | [ADR-048](../ADR-048-free-read-design-reviewer-consolidado.md) | E |
+| ADR-004 — State-tracking em git/forge, não em markdown | [ADR-049](../ADR-049-execucao-run-plan-consolidado.md) | F |
+| ADR-028 — Campo Branch opcional no plano para fluxo issue-first | [ADR-049](../ADR-049-execucao-run-plan-consolidado.md) | F |
+| ADR-039 — Task tool como state-keeping em fluxo longo | [ADR-049](../ADR-049-execucao-run-plan-consolidado.md) | F |
+| ADR-041 — Campo `**Modo:** runbook` opt-in em planos para `/run-plan` cobrir system-surgery | [ADR-049](../ADR-049-execucao-run-plan-consolidado.md) | F |

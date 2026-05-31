@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-05-31** — content absorbed into [ADR-049](../ADR-049-execucao-run-plan-consolidado.md); see that ADR for current authority. Body below preserved verbatim for historical record.
+
 # ADR-028: Campo Branch opcional no plano para fluxo issue-first
 
 **Data:** 2026-05-14
