@@ -58,7 +58,7 @@ BACKLOG.md NUNCA aparece aqui — transições são geridas pelo campo `**Linha 
 ## Decisões absorvidas
 
 <!--
-Mirror do bloco `## design-reviewer findings absorvidos` do commit message deste plano (per ADR-026 § Forma estendida por ADR-038).
+Mirror do bloco `## design-reviewer findings absorvidos` do commit message deste plano (per ADR-053 § Decisão (c) + (d)).
 Bullet format idêntico:
 - <localização breve>: <correção aplicada> (caminho-único).
 
