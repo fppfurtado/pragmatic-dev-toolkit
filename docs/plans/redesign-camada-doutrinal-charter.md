@@ -169,7 +169,7 @@ Alternativa (operador pode escolher manual): collapse manual num único commit p
 
 ## Atualização pós-execução
 
-**Ondas A+B+C+D+E shipped (2026-05-30 → 2026-05-31).** Acompanhamento progressivo das ondas materializadas:
+**Ondas A+B+C+D+E+F shipped (2026-05-30 → 2026-05-31).** Acompanhamento progressivo das ondas materializadas:
 
 | Onda | Status | Commit/PR | Substância |
 |---|---|---|---|
@@ -178,7 +178,8 @@ Alternativa (operador pode escolher manual): collapse manual num único commit p
 | **C** — Migração cluster cutucadas | ✓ | `2b147ca` + PR #90 (`dbac4d6`) | ADR-046 absorve ADR-017+ADR-029; archive/ + README inicial; pattern validado |
 | **D** — Migração cluster modo local | ✓ | `1500c17` + PR #91 (`cd0b533`) | ADR-047 absorve ADR-005+018+025+030; **primeiro cluster sem procedure file** (testa transferibilidade); ~58 ocorrências em 9 docs vivos; 5 findings absorvidos no /new-adr + 1 caminho-único no Bloco 3 |
 | **E** — Migração cluster reviewers/curadoria | ✓ | `bf55199` + PR #92 (`2858005`) | ADR-048 absorve ADR-021+ADR-044; **calibração descendente** (2 ADRs vs 4 da Onda D); pattern auto-consistente da always-include preservado (ADR-048 não se inclui); ~11 ocorrências em 6 docs vivos; 3 findings absorvidos caminho-único no /new-adr |
-| **F-X** | Pendente | — | Candidatos naturais: execução/run-plan (ADR-004+028+037+039+041), convenções editoriais (ADR-007+012+024+034), alinhamento/triage (ADR-009+011+026+027+038+042) |
+| **F** — Migração cluster execução/run-plan | ✓ | `154a4f0` + PR #93 (`f55e2a4`) | ADR-049 absorve ADR-004+028+039+041; **primeira onda com refinamento editorial documentado** (ADR-037 excluído + ADR-010 preservado fora do cluster); ~19 ocorrências em 5 docs vivos com hot spot 9 em skills/run-plan/SKILL.md; 0 findings absorvíveis pré-commit (nano-flag inline); pendência registrada: Bloco 1 commitado sem doc-reviewer (violação doutrina explícita) |
+| **G-X** | Pendente | — | Candidatos naturais: convenções editoriais (ADR-007+012+024+034), componentes plugin (ADR-008+013+015+016+023+040), alinhamento/triage (ADR-009+011+026+027+038+042), discoverability/branding (ADR-037 + ?), brainstorm (ADR-036 standalone), apex meta-cluster (ADR-035+043+045+046+047+048+049 — opcional) |
 
 **Calibração emergente da estrutura-alvo** (per ADR-046 § Trade-offs):
 
@@ -196,10 +197,25 @@ Alternativa (operador pode escolher manual): collapse manual num único commit p
 - ✓ Cond 5 primária isolada em auto-aplicação — F4 lesson Onda C reaplicada literal (cond 4 NÃO aplica; cond 1 NÃO aplica).
 - ✓ Cond 2 refinada na Onda D (F4 do design-reviewer absorvido): "absorção consolidatória" (preserva substância integralmente) vs "revogação" (inverte doutrina central; ex.: ADR-043 → ADR-035). Pattern editorial para ondas E-X.
 
-**Saldo inventário pós-Onda E:** 48 ADRs criados (001-048) - 8 arquivados (017, 029, 005, 018, 025, 030, 021, 044) = **40 vigentes**. Drop líquido de 1 nesta onda (vs 3 em Onda D; calibração descendente). Trajetória esperada para target 13-15 em 6-8 ondas adicionais.
+**Saldo inventário pós-Onda F:** 49 ADRs criados (001-049) - 12 arquivados (017, 029, 005, 018, 025, 030, 021, 044, 004, 028, 039, 041) = **37 vigentes**. Drop líquido de 3 nesta onda (paralelo a Onda D; cluster maior). Trajetória esperada para target 13-15 em 5-7 ondas adicionais.
 
-**Anti-regression checklist** — itens preservados em ADR-046 (Onda C), ADR-047 (Onda D) e ADR-048 (Onda E):
+### Refinamento editorial documentado (primeira instância — Onda F)
+
+Esta é a primeira onda onde a composição do cluster é refinada vs sketch literal. Ondas C+D+E seguiram sketch literal. Onda F estabelece **pattern editorial para ondas G-X**:
+
+- **(a) Exclusão de ADRs semanticamente desalinhados** do sketch original — ADR-037 (README framing) excluído do cluster execução/run-plan por pertencer semanticamente a discoverability/branding. Sketch agrupou por proximidade numérica, não coesão semântica. Refinamento corrige sem revisão estrutural de ADR-045 § Decisão parte 1.
+- **(b) Preservação de ADRs ancestrais fora do cluster** quando categoria conceitual distinta justifica standalone — ADR-010 (progress display Task tool) NÃO absorvido apesar de ser decisão base de ADR-039. Categoria distinta com potencial consumers futuros além de `/run-plan`. Charter sketch tinha contradição interna (ADR-039 listado em 2 clusters: execução E instrumentação progresso); resolução favorece preservar categoria distinta de ADR-010.
+
+Ambos refinamentos vivem em § Refinamento editorial do ADR consolidado + esta sub-seção do charter (sem revisão estrutural de ADR-045 § Decisão parte 1; categoria editorial per fronteira "ajuste editorial vs revisão"). Ondas G-X podem aplicar refinamento similar se composição do sketch não alinhar com coesão semântica.
+
+### Anti-regression checklist — itens preservados em ADR-046 (Onda C), ADR-047 (Onda D), ADR-048 (Onda E), ADR-049 (Onda F)
+
 - § Discoverability: gating tri-state ✓, 2 strings canonical ✓, dedup ✓, herança editorial ✓ (ADR-046).
 - § Path contract: 3 paths suportados ✓, sintaxe ✓, regra de não-referenciar ✓, mecânica mkdir+probe+gate ✓, replicação `.claude/` ✓, `/note` 2º dispatcher com assimetria de trigger codificada ✓ (substância ADR-018 Addendum absorvida via F2 do design-reviewer), recusas cross-mode + critério "direção do leak" ✓, aceitar CLAUDE.md gitignored + cláusula OR ✓, rejeições version_files/changelog ✓ (ADR-047).
 - § Reviewers: free-read curado modo híbrido ✓, threshold N=15 + modo legacy ✓, anotação `**ADRs candidatos:**` ✓, scan medium prescritivo ✓, always-include hardcoded ADR-009/-034/-043 ✓, cap nominal 5 + critério promoção ≥3 anotações ✓, reporte invariante ✓, rebatimento de não-incluídos com critério "escopo de aplicação" ✓, pontos cegos cobertos vs não-cobertos ✓, pattern auto-consistente (ADR-048 não se inclui na lista) ✓ (ADR-048).
+- § Skills e fluxo: state-tracking em git/forge ✓, BACKLOG editorial sem `## Em andamento` ✓, `## Concluídos` append-only via `/run-plan §3.4` ✓, -5 mecanismos defensivos obsoletos ✓, campo `**Branch:**` opcional + probe `git symbolic-ref` + cutucada header Branch + 4 discriminações stderr ✓, Task tool 2 modos (progress display ADR-010 + state-keeping ADR-049 § Decisão (c)) com lifecycle 2-estados + marker convention `[capture:*]` ✓, `/run-plan §3.5` captura unificada cross-superfícies (pré-loop + passo 2 loop + passo 3.2 validação) ✓, campo `**Modo:** runbook` + único valor aceito + bypass 4 dimensões + incompatibilidade dura `**Branch:** + **Modo:** runbook` + materialização Falhou ✓, pattern paralelo de 5 campos opcionais (`**Branch:**` + `**Modo:**` + `**Linha do backlog:**` + `**Termos ubíquos tocados:**` + `**ADRs candidatos:**`) com critério de promoção registrado ✓, tensões resolvidas com ADR-002 + ADR-010 (preservados vigentes) ✓ (ADR-049).
 - Nenhuma carga doutrinal perdida em qualquer onda; gap `block_gitignored.py` (NOTES 2026-05-30T05:26:59Z) preservado como Limitação em ADR-047 (endereçamento pendente; reservado espaço de extensão).
+
+### Pendência operacional registrada (Onda F)
+
+**Bloco 1 commitado sem invocação do doc-reviewer** — violação direta de doutrina explícita em `skills/run-plan/SKILL.md` § "## O que NÃO fazer" linha "Não pular revisor, mesmo em bloco trivial". Mitigação pós-fato: Read manual + critérios 2-3 do plano confirmaram format archive + redirect blockquote + extension archive index corretos; doc-reviewer do Bloco 2 confirmou pattern auto-consistente (sub-headers `§ Decisão (a/b/c/d)` existem em ADR-049). Gap material improvável. Lição operacional para ondas G-X: aderir estrito ao reviewer-per-bloco mesmo quando pattern editorial é convergente — convergência empírica não admite exceção à doutrina.
