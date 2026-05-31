@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-05-31** — content absorbed into [ADR-051](../ADR-051-convencoes-editoriais-consolidado.md); see that ADR for current authority. Body below preserved verbatim for historical record.
+
 # ADR-012: Idioma de artefatos de discoverability/landing
 
 **Data:** 2026-05-10

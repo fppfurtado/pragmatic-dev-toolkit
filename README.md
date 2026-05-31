@@ -29,7 +29,7 @@ Claude Code plugin codifying the **flat & pragmatic** dev workflow: workflow ski
 | `block_settings_drift` | Hook | `PreToolUse` blocking edits to `.claude/settings.json` that introduce absolute paths (`/home/<user>/`, `/Users/<user>/`) — typical session-permission drift in tracked settings. `.claude/settings.local.json` (gitignored) is out of scope. |
 | `run_pytest_python` | Hook | `PostToolUse`, auto-gated (`.py` + ancestor `pyproject.toml`), runs pytest after edits and prints output only on failure. |
 | `templates/plan.md` | Template | Canonical plan skeleton (consumed by `/triage` and `/run-plan`). Reference for hand-writing plans. |
-| `docs/procedures/cleanup-pos-merge.md` | Procedure | Shared executable procedure consumed via `Read` by `/triage` (step 0) and `/release` (before preconditions). Detects merged worktrees and cuts cleanup via `gh`/`glab` auto-detect. Per ADR-024. |
+| `docs/procedures/cleanup-pos-merge.md` | Procedure | Shared executable procedure consumed via `Read` by `/triage` (step 0) and `/release` (before preconditions). Detects merged worktrees and cuts cleanup via `gh`/`glab` auto-detect. Per [ADR-051](docs/decisions/ADR-051-convencoes-editoriais-consolidado.md) § Decisão (c). |
 
 ## Installation
 
