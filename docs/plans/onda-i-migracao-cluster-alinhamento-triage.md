@@ -211,11 +211,13 @@ ADR-004-skill-alinhamento-triage.md   # /triage decision tree + design-reviewer
 
 ## Notas operacionais
 
-**DEPENDÊNCIA CRÍTICA — Onda Promoção PRÉ-Onda I (F10 cutucado, escolha (b) do operador):** Esta Onda I aplica modo (c) ADR-052 sobre ADR-009 com base em hardcode em ADR-048 § Decisão (always-include `[ADR-009, ADR-034, ADR-043]`). ADR-052 § Decisão (c) literal exige "grep ID em § Decisão de ADRs **Aceito** vigentes". TODOS os 7 consolidados (ADR-046+047+048+049+050+051+052) estão Proposto-shipped — effective em produção, referenciados por CLAUDE.md/skills/agents como autoridade, mas formalmente Proposto. Critério literal não estritamente satisfeito.
+**ATUALIZAÇÃO 2026-05-31 (pós-Onda Promoção merge) — F10 RESOLVIDO:** Onda Promoção mergeada via PR #97 (`c614d6c`); todos os 7 consolidados (ADR-046+047+048+049+050+051+052) agora estão Status: Aceito formal. Critério mecânico de ADR-052 § Decisão (c) literal ("grep ID em § Decisão de ADRs **Aceito** vigentes") **estritamente satisfeito** sobre ADR-009 via ADR-048 Aceito (10 ocorrências de ADR-009 em § Decisão de ADR-048 incluindo always-include curated list `[ADR-009, ADR-034, ADR-043]`). Branch rebased em main pós-promoção (commit `b35d0f7`); pronto para push + PR + /run-plan.
 
-**Onda Promoção dedicada (não-Onda-I, plano separado) precede Onda I:** operador escolheu via F10 cutucada Opção (b) "Promover consolidados a Aceito em batch". Onda Promoção toca os 7 ADRs vigentes (Proposto → Aceito), com critério de promoção uniforme (shipped + effective + referenciado como autoridade + sem `Substituído` marker + tempo mínimo desde Proposto). Após Onda Promoção merging, esta Onda I retoma com critério mecânico de ADR-052 § Decisão (c) **estritamente satisfeito**.
-
-**Trabalho de Onda I preservado como draft em branch dedicado** (`onda-i-draft-pending-promotion`) sem push até Onda Promoção concluir. Re-validação pós-merge: F4/F6/F9 já decididas; F10 resolve automaticamente (ADR-048 vira Aceito); plano + ADR-053 prontos para promoção a main.
+**Origem histórica da dependência** (preservada como registro):
+- F10 cutucado durante /triage Onda I revelou que ADR-052 § (c) literal exigia "Aceito" mas todos os 7 consolidados estavam Proposto-shipped (effective em produção mas formalmente Proposto).
+- Operador escolheu Opção (b) "Promover consolidados a Aceito em batch" via onda dedicada PRÉ-Onda I.
+- Trabalho de Onda I preservado como draft em branch dedicado (`onda-i-draft-pending-promotion` commit `9540a8f`) sem push durante execução da Onda Promoção.
+- Pós-merge: rebase clean automático; F4/F6/F9 cutucadas (já decididas durante /triage) permanecem aplicadas; F10 resolveu automaticamente quando ADR-048 virou Aceito.
 
 **Ordem dos blocos:** Bloco 1 (archive) executado antes dos demais — outros blocos referenciam ADR-053 que substitui os 4 arquivos arquivados. Blocos 2-3 podem rodar em qualquer ordem (independentes entre si após archive); Bloco 2 (skills/agents) tem hot spot mecânico (skills/triage 3 ocorrências; skills/new-adr 2 ocorrências) — concentração maior justifica revisão antes do Bloco 3 (foundation + templates).
 
