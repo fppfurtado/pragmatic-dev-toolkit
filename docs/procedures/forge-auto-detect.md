@@ -1,6 +1,6 @@
 # Forge auto-detect
 
-Procedimento compartilhado para detectar o forge a partir do remote `origin`. Skills consumidoras leem este arquivo via Read e executam o algoritmo abaixo. Categoria `docs/procedures/` estabelecida em [ADR-024](../decisions/ADR-024-categoria-docs-procedures-procedimentos-compartilhados.md). Caso de uso de origem do consumer `/archive-plans` critério 6 — verificar PR aberto referenciando slug do plano — documentado em [ADR-022](../decisions/ADR-022-politica-archival-docs-plans.md) § Decisão; procedure carrega o algoritmo executável derivado daquela decisão.
+Procedimento compartilhado para detectar o forge a partir do remote `origin`. Skills consumidoras leem este arquivo via Read e executam o algoritmo abaixo. Categoria `docs/procedures/` estabelecida em [ADR-051](../decisions/ADR-051-convencoes-editoriais-consolidado.md) § Decisão (c). Caso de uso de origem do consumer `/archive-plans` critério 6 — verificar PR aberto referenciando slug do plano — documentado em [ADR-022](../decisions/ADR-022-politica-archival-docs-plans.md) § Decisão; procedure carrega o algoritmo executável derivado daquela decisão.
 
 Consumidores típicos: operações em PR/MR (listar/criar/checar status), em release (criar release), em archival (verificar PR aberto referenciando slug).
 
