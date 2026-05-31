@@ -169,7 +169,7 @@ Alternativa (operador pode escolher manual): collapse manual num único commit p
 
 ## Atualização pós-execução
 
-**Ondas A+B+C+D shipped (2026-05-30).** Acompanhamento progressivo das ondas materializadas:
+**Ondas A+B+C+D+E shipped (2026-05-30 → 2026-05-31).** Acompanhamento progressivo das ondas materializadas:
 
 | Onda | Status | Commit/PR | Substância |
 |---|---|---|---|
@@ -177,7 +177,8 @@ Alternativa (operador pode escolher manual): collapse manual num único commit p
 | **B** — `philosophy.md` condensado | ✓ | `a09a16c` + PR #89 (`f758c8d`) | 5 ops § Princípios fundamentais; bifurcação (γ) plugin/consumer dissolvida |
 | **C** — Migração cluster cutucadas | ✓ | `2b147ca` + PR #90 (`dbac4d6`) | ADR-046 absorve ADR-017+ADR-029; archive/ + README inicial; pattern validado |
 | **D** — Migração cluster modo local | ✓ | `1500c17` + PR #91 (`cd0b533`) | ADR-047 absorve ADR-005+018+025+030; **primeiro cluster sem procedure file** (testa transferibilidade); ~58 ocorrências em 9 docs vivos; 5 findings absorvidos no /new-adr + 1 caminho-único no Bloco 3 |
-| **E-X** | Pendente | — | Candidatos naturais: reviewers/curadoria (ADR-021+044) ou convenções editoriais (ADR-007+012+024+034) |
+| **E** — Migração cluster reviewers/curadoria | ✓ | `bf55199` + PR #92 (`2858005`) | ADR-048 absorve ADR-021+ADR-044; **calibração descendente** (2 ADRs vs 4 da Onda D); pattern auto-consistente da always-include preservado (ADR-048 não se inclui); ~11 ocorrências em 6 docs vivos; 3 findings absorvidos caminho-único no /new-adr |
+| **F-X** | Pendente | — | Candidatos naturais: execução/run-plan (ADR-004+028+037+039+041), convenções editoriais (ADR-007+012+024+034), alinhamento/triage (ADR-009+011+026+027+038+042) |
 
 **Calibração emergente da estrutura-alvo** (per ADR-046 § Trade-offs):
 
@@ -195,9 +196,10 @@ Alternativa (operador pode escolher manual): collapse manual num único commit p
 - ✓ Cond 5 primária isolada em auto-aplicação — F4 lesson Onda C reaplicada literal (cond 4 NÃO aplica; cond 1 NÃO aplica).
 - ✓ Cond 2 refinada na Onda D (F4 do design-reviewer absorvido): "absorção consolidatória" (preserva substância integralmente) vs "revogação" (inverte doutrina central; ex.: ADR-043 → ADR-035). Pattern editorial para ondas E-X.
 
-**Saldo inventário pós-Onda D:** 47 ADRs criados (001-047) - 6 arquivados (017, 029, 005, 018, 025, 030) = **41 vigentes**. Drop líquido de 3 nesta onda (vs 2 em Onda C; cluster maior). Trajetória esperada para target 13-15 em 7-9 ondas adicionais.
+**Saldo inventário pós-Onda E:** 48 ADRs criados (001-048) - 8 arquivados (017, 029, 005, 018, 025, 030, 021, 044) = **40 vigentes**. Drop líquido de 1 nesta onda (vs 3 em Onda D; calibração descendente). Trajetória esperada para target 13-15 em 6-8 ondas adicionais.
 
-**Anti-regression checklist** — itens preservados em ADR-046 (Onda C) e ADR-047 (Onda D):
+**Anti-regression checklist** — itens preservados em ADR-046 (Onda C), ADR-047 (Onda D) e ADR-048 (Onda E):
 - § Discoverability: gating tri-state ✓, 2 strings canonical ✓, dedup ✓, herança editorial ✓ (ADR-046).
 - § Path contract: 3 paths suportados ✓, sintaxe ✓, regra de não-referenciar ✓, mecânica mkdir+probe+gate ✓, replicação `.claude/` ✓, `/note` 2º dispatcher com assimetria de trigger codificada ✓ (substância ADR-018 Addendum absorvida via F2 do design-reviewer), recusas cross-mode + critério "direção do leak" ✓, aceitar CLAUDE.md gitignored + cláusula OR ✓, rejeições version_files/changelog ✓ (ADR-047).
+- § Reviewers: free-read curado modo híbrido ✓, threshold N=15 + modo legacy ✓, anotação `**ADRs candidatos:**` ✓, scan medium prescritivo ✓, always-include hardcoded ADR-009/-034/-043 ✓, cap nominal 5 + critério promoção ≥3 anotações ✓, reporte invariante ✓, rebatimento de não-incluídos com critério "escopo de aplicação" ✓, pontos cegos cobertos vs não-cobertos ✓, pattern auto-consistente (ADR-048 não se inclui na lista) ✓ (ADR-048).
 - Nenhuma carga doutrinal perdida em qualquer onda; gap `block_gitignored.py` (NOTES 2026-05-30T05:26:59Z) preservado como Limitação em ADR-047 (endereçamento pendente; reservado espaço de extensão).
