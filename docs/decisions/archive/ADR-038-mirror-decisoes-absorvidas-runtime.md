@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-05-31** — content absorbed into [ADR-053](../ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md); see that ADR for current authority. Body below preserved verbatim for historical record.
+
 # ADR-038: Mirror de Decisões absorvidas no plan body + consumo runtime por reviewers
 
 **Data:** 2026-05-26

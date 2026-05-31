@@ -29,3 +29,7 @@ Tabela atualizada incrementalmente por cada onda C-X conforme migração avança
 | ADR-007 — Idioma de artefatos informativos segue convenção de commits | [ADR-051](../ADR-051-convencoes-editoriais-consolidado.md) | H |
 | ADR-012 — Idioma de artefatos de discoverability/landing | [ADR-051](../ADR-051-convencoes-editoriais-consolidado.md) | H |
 | ADR-024 — Categoria docs/procedures/ para procedimentos operacionais compartilhados | [ADR-051](../ADR-051-convencoes-editoriais-consolidado.md) | H |
+| ADR-011 — Wiring automático do design-reviewer no /triage e /new-adr | [ADR-053](../ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md) | I |
+| ADR-026 — Critério mecânico de absorção de findings do design-reviewer pré-commit | [ADR-053](../ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md) | I |
+| ADR-027 — Skill /draft-idea para elicitação estruturada de product_direction | [ADR-053](../ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md) | I |
+| ADR-038 — Mirror de Decisões absorvidas no plan body + consumo runtime por reviewers | [ADR-053](../ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md) | I |
