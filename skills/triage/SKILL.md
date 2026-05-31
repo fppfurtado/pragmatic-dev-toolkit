@@ -32,7 +32,7 @@ Ler **só o que o pedido tocar**, nesta ordem:
 
 1. `product_direction` — alinhamento à direção de produto.
 2. `ubiquitous_language` — bounded contexts, agregados/entidades, RNxx tocadas.
-3. `backlog` — verificar item equivalente em **Próximos** ou **Concluídos**. Se existir, parar e reportar. (Sob ADR-004, "em andamento" é state em git/forge; se a intenção corresponde a branch/worktree já em curso, `/run-plan` precondição 4 bloqueia ao tentar criar worktree com slug colidente.)
+3. `backlog` — verificar item equivalente em **Próximos** ou **Concluídos**. Se existir, parar e reportar. (Sob ADR-049 § Decisão (a), "em andamento" é state em git/forge; se a intenção corresponde a branch/worktree já em curso, `/run-plan` precondição 4 bloqueia ao tentar criar worktree com slug colidente.)
 4. `design_notes` — só se a feature toca uma das integrações listadas.
 5. `decisions_dir` — listar ADRs relacionados; ler na íntegra apenas os que o pedido contradiz/estende.
 6. `.claude/local/NOTES.md` — se existir, ler na íntegra como contexto suplementar (store non-role per [ADR-032](../../docs/decisions/ADR-032-skill-note-contexto-compartilhado.md); informational, nunca bloqueia). Notas recentes mencionando trabalho em curso ou observações operacionais podem informar decisão de artefato e gap clarification. Reportar no relato do step 1 se uma nota influenciou a leitura do pedido, ou explicitamente que o store estava presente sem material adjacente. Ausente → skip silente.
@@ -89,7 +89,7 @@ Idioma de saída: per `CLAUDE.md` → 'Reviewer/skill report idioma'.
 **BACKLOG (papel: `backlog`):**
 
 - **Papel resolvido normalmente:** uma linha para a feature em curso (frase de intenção, sem detalhamento).
-  - Caminho com plano → não grava no BACKLOG (state vivo é a worktree/PR aberto, ADR-004); a linha em `**Linha do backlog:**` no `## Contexto` do plano alimenta `/run-plan` para registrar conclusão em `## Concluídos` no done.
+  - Caminho com plano → não grava no BACKLOG (state vivo é a worktree/PR aberto, ADR-049 § Decisão (a)); a linha em `**Linha do backlog:**` no `## Contexto` do plano alimenta `/run-plan` para registrar conclusão em `## Concluídos` no done.
   - Caminho sem plano (linha pura, ADR-only, atualização de domínio) → grava em `## Próximos`.
   - Itens fora-de-escopo capturados no passo 2 → linhas separadas em `## Próximos`, mesmo quando o artefato principal é plano/ADR.
 - **Papel "não temos":** disparar enum (`AskUserQuestion`, header `Backlog`). `Criar em BACKLOG.md` cria com cabeçalho mínimo (`# Backlog\n\n## Próximos\n\n## Concluídos\n`) e prossegue; `Não usamos esse papel` registra `paths.backlog: null` e prossegue **sem gravar** (itens reportados no passo 5).
@@ -107,9 +107,9 @@ No `## Contexto`:
 - Se o passo 1 identificou termos do `ubiquitous_language` tocados, incluir `**Termos ubíquos tocados:** <Termo> (<categoria>), ...` — categorias: `bounded context`, `agregado`, `entidade`, `RN`, `conceito ubíquo`. Pedidos que não tocam o domínio → omitir.
 - Se o passo 1 (listar ADRs relacionados em `decisions_dir`) identificou ADRs concretos tocados/contradictados pela mudança, incluir `**ADRs candidatos:** ADR-NNN (motivo curto), ADR-MMM (motivo curto)` — mensageiro para o `design-reviewer` priorizar leitura integral desses ADRs (paralelo a `**Termos ubíquos tocados:**`; mecanismo em [ADR-048](../../docs/decisions/ADR-048-free-read-design-reviewer-consolidado.md)). Campo opcional: operador que não identifica ADR específico omite, e o reviewer faz scan dos demais.
 - Se a feature foi gravada como linha no backlog, incluir `**Linha do backlog:** <texto exato>` — mensageiro de matching para `/run-plan` operar transições de estado.
-- Se a branch corrente é a desejada para execução (caminho issue-first GitLab, retrabalho de PR), incluir `**Branch:** <nome-da-branch>` — mensageiro para `/run-plan` fazer checkout dela em vez de criar `<slug>` (ADR-028). Probe e cutucada descritos abaixo.
+- Se a branch corrente é a desejada para execução (caminho issue-first GitLab, retrabalho de PR), incluir `**Branch:** <nome-da-branch>` — mensageiro para `/run-plan` fazer checkout dela em vez de criar `<slug>` (ADR-049 § Decisão (b)). Probe e cutucada descritos abaixo.
 
-**Probe e cutucada do `**Branch:**`.** Executar `git branch --show-current`. Resolver branch principal via `git symbolic-ref refs/remotes/origin/HEAD` (parse final do path: `origin/main` → `main`); falha → fallback `main`. Branch atual == principal → omitir o campo (silêncio, fluxo default preservado). Branch atual ≠ principal → perguntar via `AskUserQuestion` (header `Branch`, opções literais `Sim, usar essa branch (Recommended)` / `Não, /run-plan cria <slug>`; `description` de cada opção conforme [ADR-028](../../docs/decisions/ADR-028-campo-branch-opcional-plano-fluxo-issue-first.md) § Mecânica). Resposta `Sim` → preencher `**Branch:** <branch-atual>` no `## Contexto`. Resposta `Não` → omitir o campo.
+**Probe e cutucada do `**Branch:**`.** Executar `git branch --show-current`. Resolver branch principal via `git symbolic-ref refs/remotes/origin/HEAD` (parse final do path: `origin/main` → `main`); falha → fallback `main`. Branch atual == principal → omitir o campo (silêncio, fluxo default preservado). Branch atual ≠ principal → perguntar via `AskUserQuestion` (header `Branch`, opções literais `Sim, usar essa branch (Recommended)` / `Não, /run-plan cria <slug>`; `description` de cada opção conforme [ADR-049](../../docs/decisions/ADR-049-execucao-run-plan-consolidado.md) § Decisão (b) § Mecânica). Resposta `Sim` → preencher `**Branch:** <branch-atual>` no `## Contexto`. Resposta `Não` → omitir o campo.
 
 `BACKLOG.md` **não aparece** em `## Arquivos a alterar` — transições são geridas pelo campo acima e pelo mecanismo do `/run-plan`.
 

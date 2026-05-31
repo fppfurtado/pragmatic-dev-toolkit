@@ -96,7 +96,7 @@ Sugerir: elevar a ADR (via `/new-adr`) e referenciar a partir do plano.
 Proposta inverte ou contradiz decisão registrada sem reconhecer o trade-off. Exemplos:
 
 - Plano introduz camada formal sob módulo de negócio sem citar a posição "flat e pragmática" de `philosophy.md`.
-- Plano grava state em arquivo onde ADR-004 disse "git/forge é a fonte da verdade".
+- Plano grava state em arquivo onde ADR-049 § Decisão (a) disse "git/forge é a fonte da verdade".
 - Plano cria componente stack-specific quando ADR-008 separou skills (genéricas) de hooks (suffixadas).
 
 Reportar referenciando o ADR ou seção da philosophy. Se o plano reconhece a contradição e justifica, reportar como informativo (não-bloqueante) — autor já sabe.

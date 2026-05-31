@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-05-31** — content absorbed into [ADR-049](../ADR-049-execucao-run-plan-consolidado.md); see that ADR for current authority. Body below preserved verbatim for historical record.
+
 # ADR-004: State-tracking em git/forge, não em markdown
 
 **Data:** 2026-05-06
