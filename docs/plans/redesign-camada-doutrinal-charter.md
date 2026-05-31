@@ -169,14 +169,15 @@ Alternativa (operador pode escolher manual): collapse manual num único commit p
 
 ## Atualização pós-execução
 
-**Ondas A+B+C shipped (2026-05-30).** Acompanhamento progressivo das ondas materializadas:
+**Ondas A+B+C+D shipped (2026-05-30).** Acompanhamento progressivo das ondas materializadas:
 
 | Onda | Status | Commit/PR | Substância |
 |---|---|---|---|
 | **A** — Foundational | ✓ | `715f455` + PR #88 (`91d3f70`) | Charter + ADR-045 + CLAUDE.md bullet |
 | **B** — `philosophy.md` condensado | ✓ | `a09a16c` + PR #89 (`f758c8d`) | 5 ops § Princípios fundamentais; bifurcação (γ) plugin/consumer dissolvida |
 | **C** — Migração cluster cutucadas | ✓ | `2b147ca` + PR #90 (`dbac4d6`) | ADR-046 absorve ADR-017+ADR-029; archive/ + README inicial; pattern validado |
-| **D-X** | Pendente | — | Próximo candidato: cluster modo local (005+018+025+030) |
+| **D** — Migração cluster modo local | ✓ | `1500c17` + PR #91 (`cd0b533`) | ADR-047 absorve ADR-005+018+025+030; **primeiro cluster sem procedure file** (testa transferibilidade); ~58 ocorrências em 9 docs vivos; 5 findings absorvidos no /new-adr + 1 caminho-único no Bloco 3 |
+| **E-X** | Pendente | — | Candidatos naturais: reviewers/curadoria (ADR-021+044) ou convenções editoriais (ADR-007+012+024+034) |
 
 **Calibração emergente da estrutura-alvo** (per ADR-046 § Trade-offs):
 
@@ -184,15 +185,19 @@ Alternativa (operador pode escolher manual): collapse manual num único commit p
 - **Target realista 13-15 consolidados** em vez de 11 — refinamento editorial per ADR-045 fronteira *"ajuste editorial do charter vs revisão de ADR-045"* (operador escolheu opção a — aceitar 13-15 como target realista após cutucada). Spírito da consolidação (45 → ~13-15, redução de ~65-70%) preservado.
 - **Cada onda contribui para refinamento incremental do sketch** — charter é artefato vivo. Pattern para ondas D-X: descoberta empírica de cluster shape é editorial (não estrutural); revisão de ADR-045 só se cluster sequence falhar materialmente.
 
-**Pattern de migração validado empíricamente na Onda C** (template para D-X):
+**Pattern de migração validado empíricamente na Onda C** (template para D-X) — reaplicado e estendido na Onda D:
 
-- ✓ Archive + redirect header canonical (blockquote `> **ARCHIVED <data>**` + cross-ref + H1 original preservado).
-- ✓ Archive index incremental (`archive/README.md` criado nesta onda; ondas D-X estendem como invariante do plano).
-- ✓ Cross-refs em docs vivos atualizados (CLAUDE.md + procedure + SKILLs específicas).
-- ✓ Link rot em ADRs imutáveis aceito como categoria histórica (per ADR-046 § Trade-offs).
-- ✓ Procedure preservation per ADR-024 (substância semântica em ADR; texto verbatim em procedure).
-- ✓ Cond 5 primária isolada em auto-aplicação (cond 4 NÃO aplica — ADR-045 ancestral codificado; instância vs categoria nova).
+- ✓ Archive + redirect header canonical (blockquote `> **ARCHIVED <data>**` + cross-ref + H1 original preservado) — reaplicado em 4 ADRs.
+- ✓ Archive index incremental — estendido com 4 linhas D (paralelo às 2 da Onda C).
+- ✓ Cross-refs em docs vivos atualizados — escala ~5× maior (~58 ocorrências em 9 docs vs ~12 em 5 na Onda C).
+- ✓ Link rot em ADRs imutáveis aceito como categoria histórica.
+- ✓ Procedure preservation per ADR-024 — **NÃO aplica em Onda D** (cluster sem procedure pré-existente); F9 fronteira só ativa quando procedure pré-existe.
+- ✓ Cond 5 primária isolada em auto-aplicação — F4 lesson Onda C reaplicada literal (cond 4 NÃO aplica; cond 1 NÃO aplica).
+- ✓ Cond 2 refinada na Onda D (F4 do design-reviewer absorvido): "absorção consolidatória" (preserva substância integralmente) vs "revogação" (inverte doutrina central; ex.: ADR-043 → ADR-035). Pattern editorial para ondas E-X.
 
-**Saldo inventário pós-Onda C:** 46 ADRs criados (001-046) - 2 arquivados (017, 029) = **44 vigentes**. Drop líquido de 2 por onda de migração é compatível com target 13-15 em 8-10 ondas adicionais.
+**Saldo inventário pós-Onda D:** 47 ADRs criados (001-047) - 6 arquivados (017, 029, 005, 018, 025, 030) = **41 vigentes**. Drop líquido de 3 nesta onda (vs 2 em Onda C; cluster maior). Trajetória esperada para target 13-15 em 7-9 ondas adicionais.
 
-**Anti-regression checklist** § Discoverability — itens preservados em ADR-046: gating tri-state ✓ (§ Decisão); 2 strings canonical literais ✓ (no procedure per fronteira ADR-024); dedup conversation-scoped ✓ (§ Decisão); herança editorial ✓ (§ Herança editorial). Nenhuma carga doutrinal perdida.
+**Anti-regression checklist** — itens preservados em ADR-046 (Onda C) e ADR-047 (Onda D):
+- § Discoverability: gating tri-state ✓, 2 strings canonical ✓, dedup ✓, herança editorial ✓ (ADR-046).
+- § Path contract: 3 paths suportados ✓, sintaxe ✓, regra de não-referenciar ✓, mecânica mkdir+probe+gate ✓, replicação `.claude/` ✓, `/note` 2º dispatcher com assimetria de trigger codificada ✓ (substância ADR-018 Addendum absorvida via F2 do design-reviewer), recusas cross-mode + critério "direção do leak" ✓, aceitar CLAUDE.md gitignored + cláusula OR ✓, rejeições version_files/changelog ✓ (ADR-047).
+- Nenhuma carga doutrinal perdida em qualquer onda; gap `block_gitignored.py` (NOTES 2026-05-30T05:26:59Z) preservado como Limitação em ADR-047 (endereçamento pendente; reservado espaço de extensão).
