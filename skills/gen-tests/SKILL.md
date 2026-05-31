@@ -8,7 +8,7 @@ roles:
 
 # gen-tests
 
-Workflow de scaffolding de testes stack-agnóstico. Detecta a stack do projeto consumidor por marker e despacha para o sub-bloco com convenções idiomáticas daquela stack. Idioms vivem nos sub-blocos do próprio SKILL.md (per [ADR-008](../../docs/decisions/ADR-008-skills-geradoras-stack-agnosticas.md) — geradores stack-agnósticos via dispatch interno).
+Workflow de scaffolding de testes stack-agnóstico. Detecta a stack do projeto consumidor por marker e despacha para o sub-bloco com convenções idiomáticas daquela stack. Idioms vivem nos sub-blocos do próprio SKILL.md (per [ADR-050](../../docs/decisions/ADR-050-componentes-plugin-consolidado.md) § Decisão (a) — geradores stack-agnósticos via dispatch interno).
 
 Princípio: **não exigir TDD estrito; exigir confiança no que vai pra produção**. Cobertura serve à confiança, não a métricas.
 

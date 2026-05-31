@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-05-31** — content absorbed into [ADR-050](../ADR-050-componentes-plugin-consolidado.md); see that ADR for current authority. Body below preserved verbatim for historical record.
+
 # ADR-015: Bloquear env-files por sufixo `.env`, não apenas dotfile
 
 **Data:** 2026-05-10
