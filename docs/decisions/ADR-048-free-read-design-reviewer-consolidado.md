@@ -1,7 +1,7 @@
 # ADR-048: Free-read do design-reviewer consolidado (anotação + scan medium + always-include foundationals)
 
 **Data:** 2026-05-31
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 

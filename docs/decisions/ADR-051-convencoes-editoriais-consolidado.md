@@ -1,7 +1,7 @@
 # ADR-051: Convenções editoriais consolidado
 
 **Data:** 2026-05-31
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 

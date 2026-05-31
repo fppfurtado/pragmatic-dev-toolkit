@@ -1,7 +1,7 @@
 # ADR-050: Componentes plugin consolidado
 
 **Data:** 2026-05-31
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 

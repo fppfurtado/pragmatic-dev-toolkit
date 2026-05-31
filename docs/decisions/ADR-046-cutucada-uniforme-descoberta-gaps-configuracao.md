@@ -1,7 +1,7 @@
 # ADR-046: Cutucada uniforme em skills para descoberta de gaps de configuração
 
 **Data:** 2026-05-30
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 
