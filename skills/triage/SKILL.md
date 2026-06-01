@@ -35,7 +35,7 @@ Ler **só o que o pedido tocar**, nesta ordem:
 3. `backlog` — verificar item equivalente em **Próximos** ou **Concluídos**. Se existir, parar e reportar. (Sob ADR-049 § Decisão (a), "em andamento" é state em git/forge; se a intenção corresponde a branch/worktree já em curso, `/run-plan` precondição 4 bloqueia ao tentar criar worktree com slug colidente.)
 4. `design_notes` — só se a feature toca uma das integrações listadas.
 5. `decisions_dir` — listar ADRs relacionados; ler na íntegra apenas os que o pedido contradiz/estende.
-6. `.claude/local/NOTES.md` — se existir, ler na íntegra como contexto suplementar (store non-role per [ADR-032](../../docs/decisions/ADR-032-skill-note-contexto-compartilhado.md); informational, nunca bloqueia). Notas recentes mencionando trabalho em curso ou observações operacionais podem informar decisão de artefato e gap clarification. Reportar no relato do step 1 se uma nota influenciou a leitura do pedido, ou explicitamente que o store estava presente sem material adjacente. Ausente → skip silente.
+6. `.claude/local/NOTES.md` — se existir, ler na íntegra como contexto suplementar (store non-role per [ADR-054](../../docs/decisions/ADR-054-bridge-cross-project-note-consolidado.md) § Decisão (a); informational, nunca bloqueia). Notas recentes mencionando trabalho em curso ou observações operacionais podem informar decisão de artefato e gap clarification. Reportar no relato do step 1 se uma nota influenciou a leitura do pedido, ou explicitamente que o store estava presente sem material adjacente. Ausente → skip silente.
 
 Não ler código aqui — é alinhamento de intenção, não design técnico.
 

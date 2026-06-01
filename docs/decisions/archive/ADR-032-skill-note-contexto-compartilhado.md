@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-06-01** — content absorbed into [ADR-054](../ADR-054-bridge-cross-project-note-consolidado.md); see that ADR for current authority. Body below preserved verbatim for historical record.
+
 # ADR-032: Skill /note e store de contexto compartilhado em .claude/local/NOTES.md
 
 **Data:** 2026-05-15

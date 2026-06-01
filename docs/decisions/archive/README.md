@@ -33,3 +33,5 @@ Tabela atualizada incrementalmente por cada onda C-X conforme migração avança
 | ADR-026 — Critério mecânico de absorção de findings do design-reviewer pré-commit | [ADR-053](../ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md) | I |
 | ADR-027 — Skill /draft-idea para elicitação estruturada de product_direction | [ADR-053](../ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md) | I |
 | ADR-038 — Mirror de Decisões absorvidas no plan body + consumo runtime por reviewers | [ADR-053](../ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md) | I |
+| ADR-032 — Skill /note e store de contexto compartilhado em .claude/local/NOTES.md | [ADR-054](../ADR-054-bridge-cross-project-note-consolidado.md) | J |
+| ADR-042 — Flag --to em /note para cross-project write com discovery via $PROJECTS_DIR | [ADR-054](../ADR-054-bridge-cross-project-note-consolidado.md) | J |
