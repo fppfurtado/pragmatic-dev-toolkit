@@ -1,7 +1,7 @@
 # Plano — <Título curto>
 
 <!--
-Esqueleto canônico de plano consumido por /triage e /run-plan (ADR-001).
+Esqueleto canônico de plano consumido por /triage e /run-plan (ADR-055, originalmente ADR-001).
 /triage lê este arquivo, copia para `<plans_dir>/<slug>.md`, adapta headers ao idioma do projeto consumidor, preenche placeholders.
 /run-plan faz matching semântico contra os headers — equivalentes em outro idioma (`## Files to change`, etc.) são aceitos contanto que a estrutura informacional bata.
 Seções opcionais (## Verificação manual, ## Notas operacionais, ## Decisões absorvidas) só aparecem quando há substância — não criar vazias.

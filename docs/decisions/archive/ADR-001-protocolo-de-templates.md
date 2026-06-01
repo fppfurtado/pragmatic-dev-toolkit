@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-06-01** — content absorbed into [ADR-055](../ADR-055-protocolo-templates-centralizados-consolidado.md) § Decisão (a) + Addenda preserved as § Origem histórica; see that ADR for current authority. Body below preserved verbatim for historical record.
+
 # ADR-001: Protocolo de templates centralizados no plugin
 
 **Data:** 2026-05-06

@@ -16,7 +16,7 @@ Custos do estado atual:
 - **Duplicação**: 8 skills × ~5-10 linhas = ~40-80 linhas repetindo o mesmo protocolo (probe → CLAUDE.md → ask).
 - **Drift potencial**: skill nova pode esquecer de declarar um papel; skill existente pode listar role na prosa mas não tratar corretamente o "não temos".
 - **Verificabilidade**: sem schema formal, validação é leitura humana de cada SKILL.md.
-- **Manutenção**: quando regra geral muda (ex.: ADR-001 introduziu sub-fluxo de criação canonical), todas as skills precisam ser editadas em prosa.
+- **Manutenção**: quando regra geral muda (ex.: ADR-055 (originalmente ADR-001 archived na Onda M) introduziu sub-fluxo de criação canonical), todas as skills precisam ser editadas em prosa.
 
 Frontmatter da skill já carrega contrato (`name`, `description`, `disable-model-invocation`). Adicionar `roles:` é extensão natural.
 

@@ -5,16 +5,16 @@
 
 ## Origem
 
-- **Investigação:** Auditoria 2026-05-15 (E_arch) flagou ambiguidade quando refinamento doutrinal pode (a) ficar como adendo em ADR existente ou (b) criar novo ADR. Cadeias temáticas do toolkit mostram padrões mistos: design-reviewer cobre 4 ADRs (ADR-009, ADR-011, ADR-021, ADR-026), modo local cobre 4 ADRs (ADR-005, ADR-018, ADR-025, ADR-030), cutucada cobre 2 ADRs (ADR-017, ADR-029). Refinamentos foram absorvidos via 2 caminhos sem critério escrito: novos ADRs sucessores parciais (ADR-024/-029/-030/-033) ou adendos em ADRs Aceitos (ADR-001 ganhou Addendum 2026-05-12 → ADR-024 e Addendum 2026-05-16 → ADR-033; ADR-005 ganhou parágrafo cross-ref em § Limitações para ADR-025; ADR-011 ganhou parágrafo cross-ref em § Decisão para ADR-026).
+- **Investigação:** Auditoria 2026-05-15 (E_arch) flagou ambiguidade quando refinamento doutrinal pode (a) ficar como adendo em ADR existente ou (b) criar novo ADR. Cadeias temáticas do toolkit mostram padrões mistos: design-reviewer cobre 4 ADRs (ADR-009, ADR-011, ADR-021, ADR-026), modo local cobre 4 ADRs (ADR-005, ADR-018, ADR-025, ADR-030), cutucada cobre 2 ADRs (ADR-017, ADR-029). Refinamentos foram absorvidos via 2 caminhos sem critério escrito: novos ADRs sucessores parciais (ADR-024/-029/-030/-033) ou adendos em ADRs Aceitos (ADR-055 (originalmente ADR-001 archived na Onda M) recebeu Addenda 2026-05-12 → ADR-024 e 2026-05-16 → ADR-033 (ambos pré-consolidação Onda M); ADR-005 ganhou parágrafo cross-ref em § Limitações para ADR-025; ADR-011 ganhou parágrafo cross-ref em § Decisão para ADR-026).
 - **Decisão base:** Memory editorial "Limiar de ADR para mudanças em doutrina" — refinar/inverter critério documentado em `philosophy.md`/`CLAUDE.md` (mesmo parcial) → default ADR. ADR-034 codifica esse limiar de forma mecânica.
-- **Caso de uso recente:** D_arch (Onda 5 gêmeo, [ADR-033](ADR-033-templates-admite-single-consumer-declarativo.md), commit `ea602bf`, 2026-05-16) escolheu "novo ADR sucessor" sobre "adendo em ADR-001 Aceito" via cutucada do `/triage` — primeiro exemplo concreto da regra que E_arch codifica retroativamente.
+- **Caso de uso recente:** D_arch (Onda 5 gêmeo, [ADR-055](ADR-055-protocolo-templates-centralizados-consolidado.md) (originalmente ADR-033 archived na Onda M, commit `ea602bf`, 2026-05-16) escolheu "novo ADR sucessor" sobre "adendo em ADR-001 Aceito" via cutucada do `/triage` — primeiro exemplo concreto da regra que E_arch codifica retroativamente. (ambos ADR-001 + ADR-033 archived na Onda M consolidados em ADR-055)
 
 ## Contexto
 
 O toolkit acumulou 34 ADRs (incluindo este) por meio de duas formas distintas para refinar doutrina:
 
-1. **ADRs novos** (incluindo sucessores parciais explícitos como ADR-024 → sucessor parcial de ADR-001; ADR-029 → sucessor parcial de ADR-017; ADR-030 → sucessor parcial de ADR-005; ADR-033 → sucessor parcial de ADR-001).
-2. **Adendos** em ADRs Aceitos (ADR-001 ganhou dois Addenda; ADR-005 ganhou parágrafo cross-ref em § Limitações para ADR-025; ADR-011 ganhou parágrafo cross-ref em § Decisão para ADR-026).
+1. **ADRs novos** (incluindo sucessores parciais explícitos como ADR-024 → sucessor parcial de ADR-055 (originalmente ADR-001 archived na Onda M); ADR-029 → sucessor parcial de ADR-017; ADR-030 → sucessor parcial de ADR-005; ADR-033 → sucessor parcial de ADR-001 (ambos archived na Onda M consolidados em ADR-055)).
+2. **Adendos** em ADRs Aceitos (ADR-055 (originalmente ADR-001 archived na Onda M) ganhou dois Addenda pré-consolidação Onda M; ADR-005 ganhou parágrafo cross-ref em § Limitações para ADR-025; ADR-011 ganhou parágrafo cross-ref em § Decisão para ADR-026).
 
 Sem critério escrito, autor de mudança doutrinal decide ad hoc — produz inconsistência (mesmo tipo de refinamento às vezes vira ADR, às vezes adendo). `design-reviewer` audita caso por caso sem benchmark mecânico.
 
@@ -28,7 +28,7 @@ Critério mecânico para escolher entre adendo em ADR existente vs novo ADR:
 2. **Substitui ADR ancestral identificável** — operação que requer marcar ADR específico como `Substituído` ou cuja regra central inverte a de ancestral identificável.
 3. **Codifica restrição externa** de longa duração (regulatória, contratual, integração estável).
 4. **Introduz categoria nova** (novo eixo conceitual paralelo ao existente — ex.: ADR-024 criou categoria `docs/procedures/` paralela a `templates/`).
-5. **Sucessor parcial** — estende, refina ou condiciona ADR Aceito sem revogar. Modalidade explícita do toolkit; exemplos canonical: ADR-024, ADR-029, ADR-030, ADR-033.
+5. **Sucessor parcial** — estende, refina ou condiciona ADR Aceito sem revogar. Modalidade explícita do toolkit; exemplos canonical: ADR-024, ADR-029, ADR-030, ADR-033 (archived na Onda M consolidado em ADR-055).
 
 ### Adendo em ADR existente quando **todas** abaixo aplicam
 
