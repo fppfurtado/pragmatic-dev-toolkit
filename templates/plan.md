@@ -45,6 +45,18 @@ BACKLOG.md NUNCA aparece aqui — transições são geridas pelo campo `**Linha 
 
 <Critérios objetivos para considerar a mudança válida. Cite comandos concretos quando aplicáveis (grep, ls, exec do test_command). Para projetos sem suite, transformar em inspeção textual passo-a-passo.>
 
+<!--
+Diretrizes canonical para critérios end-to-end (per Onda K' editorial — 5 evidências empíricas absorvidas: Onda Promoção crit 6 + Onda J crit 6.4 + Onda K crit 1 pré-absorção + Onda K crit 6 pré-absorção + Onda K crit 1 pós-absorção). Aplicação forward apenas — planos mergeados anteriormente com counts literais não são tocados retroativamente.
+
+1. **Greps de Status field**: prefixar com `^\*\*Status:\*\*` para discriminar Status canonical vs narrativa histórica em § Origem histórica (lição Onda Promoção crit 6 — `grep "Substituído"` sem prefixo casa referências históricas).
+
+2. **Verificações de inalterabilidade de inventário**: preferir `git status --porcelain -- <paths>` git-based vs `wc -l` count lexical hardcoded — counts mudam entre ondas e estado pré-loop pode alterar assumption; git status detecta mutação independente de saldo (lição Onda K crit 6 — `git status clean` substituiu count == 27 esperado).
+
+3. **Formulações de termos canonical**: citar termos exatamente como aparecem no texto-alvo (preservar espaços, hífens, capitalização). Verificar via Read do texto antes de hardcodar grep (lição Onda J crit 6.4 — texto real do ADR-054 usa "*contrato declarado*" sem hífen vs grep com hífen decorativo).
+
+4. **Counts esperados**: citar valor como variável (`<saldo>`) ou amarrar condição inversa (`git status --porcelain -- <paths>` retorna 0 linhas; ausência de matches em grep) em vez de número literal hardcoded — saldos mudam entre ondas e estado pré-loop pode alterar assumption (lição Onda K crit 1 pré-absorção esperava raw 33 + filtrado 27; estado pós-cleanup órfãos FS pré-loop produziu raw 27 + filtrado 26).
+-->
+
 <!-- Seções abaixo são opcionais — incluir só se houver substância. -->
 
 ## Verificação manual
