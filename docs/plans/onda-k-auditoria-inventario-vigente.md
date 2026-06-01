@@ -94,6 +94,10 @@ Doc-reviewer revisa formato paralelo a updates anteriores de Onda na linha 5 (us
 
 **Captura §3.5 reservada.** Se auditoria revelar gap ou inconsistência editorial (ex.: ADR vigente que devia estar archived, archive index incompleto, drift entre saldo declarado e count mecânico), capturar via TaskCreate `[capture:auditoria]` materializada em §3.5 do `/run-plan` — pendência para onda corretiva futura, não bloqueante desta onda.
 
+## Pendências de validação
+
+- **Critério 1 do plano (specification bug — 5ª evidência empírica pattern lexical):** após absorção pré-commit do design-reviewer no /triage, critério 1 esperava raw==33 + filtrado==27. Estado pós-cleanup de órfãos FS (commit `d5e6102` precedente): raw==27 + filtrado==26. Substância da auditoria cumprida (saldo correto 26 vigentes substantivos + 1 Substituído = 27 entradas refletido em charter linha 152+188 + BACKLOG linha 5 segmento Onda K). Critério mecânico literal não bate porque assumption do raw count (33) não previu cleanup de órfãos pré-loop. **Escopo Onda K' editorial canonical templates** — adicionar diretriz canonical: *"critérios end-to-end baseados em count mecânico (`wc -l`, etc.) devem citar valor esperado como variável (`<saldo>`) ou amarrar a condição inversa (`git status clean`) em vez de número literal hardcoded — números mudam de uma onda para a próxima."* Não bloqueante para Onda K — substância cumprida.
+
 ## Decisões absorvidas
 
 - § Verificação end-to-end critério 1: bug lexical do `wc -l` literal (retorna 33, não 27) corrigido com filtragem `grep -L "^\*\*Status:\*\* Substituído"` (caminho-único).
