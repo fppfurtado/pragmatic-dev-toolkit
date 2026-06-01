@@ -101,6 +101,17 @@ Proposta inverte ou contradiz decisão registrada sem reconhecer o trade-off. Ex
 
 Reportar referenciando o ADR ou seção da philosophy. Se o plano reconhece a contradição e justifica, reportar como informativo (não-bloqueante) — autor já sabe.
 
+### Candidato a ADR draft que falha no filtro de admissão
+
+Per [ADR-045](../docs/decisions/ADR-045-redesign-camada-doutrinal-consolidacao-politica-admissao.md) § Decisão parte 2 (filtro mecânico de 3 saídas — admission policy):
+
+- **Substância revela entendimento estabilizado** que deveria ir pra `CLAUDE.md` ou `philosophy.md` (refinamento de mecanismo, esclarecimento doutrinal, regra editorial estabilizada).
+- **Substância revela evolução de processo** que deveria ir pra git log (refactor sem decisão estrutural, iteração editorial).
+
+Finding pré-commit do ADR draft criado (reviewer roda em `/new-adr` step 5 após operador ter escolhido `ADR` no step 3.5). Operador absorve **abandonando o ADR draft** (delete + redirect substância para destino correto per critério de desempate de ADR-045 § Decisão parte 2) **ou refinando o draft** para cumprir o filtro (acrescentar cenário concreto de reversão / categoria nova / restrição externa).
+
+Critério de desempate na zona cinzenta vive em ADR-045 § Decisão parte 2; default conservador (dúvida) → operador escolheu `ADR` no step 3.5, reviewer flagra pós-criação se drift evidente.
+
 ## O que NÃO flagrar
 
 - **Estilo de prosa do plano** (gramática, voz, ordem dos blocos) — irrelevante.
