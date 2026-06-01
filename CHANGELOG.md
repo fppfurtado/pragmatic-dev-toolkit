@@ -2,6 +2,28 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.0.0] - 2026-06-01
+
+### Changed
+- **Doctrinal layer redesign complete (editorial breaking change)**: 45 fragmented ADRs → 11 thematic consolidated ADRs (ADR-045..055) under inverted hierarchy + admission policy enforced at runtime. Final inventory: 26 vigentes (25 substantive + ADR-035 Substituído preserved in-place). Mechanism (skills/agents/hooks) runtime intact from consumer perspective. 16+ waves, 2026-05-30 → 2026-06-01. (PRs #88-#106)
+- ADR-045 apex meta-doctrinal: cross-cluster editorial consolidation + going-forward admission policy filter (3 outcomes: ADR / CLAUDE.md or philosophy.md / git log). (#88)
+- 9 cluster migrations: ADR-046 (cutucadas, absorbs 017+029, #90) · ADR-047 (modo local, absorbs 005+018+025+030, #91) · ADR-048 (reviewers/curadoria, absorbs 021+044, #92) · ADR-049 (execução/run-plan, absorbs 004+028+039+041, #93) · ADR-050 (componentes plugin, absorbs 008+013+015+016+023+040, #94) · ADR-051 (convenções editoriais, absorbs 007+012+024, #95) · ADR-053 (alinhamento/triage, absorbs 011+026+027+038, #99) · ADR-054 (bridge cross-project /note, absorbs 032+042, #100) · ADR-055 (foundational templates, absorbs 001+033, #105).
+- ADR-052 (3 editorial modes a/b/c) codifies meta-pattern of migration waves with verifiable mechanical criteria. Preventive codification with 3 empirical instances (Waves F+G+H). (#96)
+- `philosophy.md` § Princípios fundamentais condensed (Onda B); ≥3 pattern emergente promoted from internal-plugin criterion to general rule for when YAGNI ends. (#89)
+- 21 historical ADRs archived under `docs/decisions/archive/` with canonical blockquote redirect headers; archive index in `archive/README.md` maps each absorbed ADR to its consolidated successor.
+- Onda Promoção I+II: 17 ADRs promoted Proposto → Aceito with explicit 4 cumulative criteria (shipped + effective + referenced as authority + no Substituído marker). (#97, #103)
+- `templates/plan.md` § Verificação end-to-end: canonical guidelines (4 directives: prefix `^\*\*Status:\*\*`, prefer `git status --porcelain` over lexical counts, fidelity to target text via Read, counts as variable/inverse condition). Forward-only. (#102)
+
+### Added
+- **Admission policy enforcement runtime** in 2 surfaces (Onda Final A) per ADR-045 § Decisão parte 2: `/new-adr` step 3.5 pre-creation `AskUserQuestion` filter prompt (ADR Recommended / CLAUDE.md or philosophy.md / git log; carries primary heuristics + tie-breaking criteria) + `agents/design-reviewer.md` § "O que flagrar" new criterion for post-creation drift audit. (#106)
+
+### Notes
+- **Editorial-only breaking change.** 21+ historical ADRs archived (substance preserved body-verbatim in consolidated successors). External cross-refs to specific pre-redesign ADR IDs need migration via archive redirect canonical. Mechanism runtime preserved.
+- 4 new editorial patterns emergent post-redesign (registered in local memory with concrete triggers): sub-3c "standalone by categorical uniqueness" 2/3; decimal-retroactive intercalated step convention 1/3; selective preservation of pedagogical examples 1/3; editorial blockquote § specific variation 1/3. Premature codification per ADR-035 #4 (≥3 emergent pattern not met).
+- Total findings absorbed during redesign: ~80+ caminho-único + ~12 cutucadas decided by operator across 16+ waves. Health signal (≥10 findings per wave in 2 consecutive waves) never triggered.
+- 23+ consecutive instances reviewer-per-block invariant preserved.
+- Charter `docs/plans/redesign-camada-doutrinal-charter.md` documents full journey + anti-regression checklist + sub-3c emergent pattern counter.
+
 ## [2.14.0] - 2026-05-29
 
 ### Added
