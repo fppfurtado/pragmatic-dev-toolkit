@@ -1,7 +1,7 @@
 # ADR-037: Código-como-fonte-de-verdade vs intent-as-truth (contraste spec-driven)
 
 **Data:** 2026-05-25
-**Status:** Proposto
+**Status:** Aceito (2026-06-01)
 
 ## Origem
 

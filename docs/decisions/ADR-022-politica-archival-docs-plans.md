@@ -1,7 +1,7 @@
 # ADR-022: Política de archival para docs/plans/
 
 **Data:** 2026-05-12
-**Status:** Proposto
+**Status:** Aceito (2026-06-01)
 
 ## Origem
 

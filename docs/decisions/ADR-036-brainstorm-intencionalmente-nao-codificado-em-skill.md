@@ -1,7 +1,7 @@
 # ADR-036: Brainstorm intencionalmente não-codificado em skill
 
 **Data:** 2026-05-19
-**Status:** Proposto
+**Status:** Aceito (2026-06-01)
 
 ## Origem
 

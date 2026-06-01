@@ -1,7 +1,7 @@
 # ADR-045: Redesign da camada doutrinal — consolidação sob hierarquia invertida e política de admissão going forward
 
 **Data:** 2026-05-30
-**Status:** Proposto
+**Status:** Aceito (2026-06-01)
 
 ## Origem
 

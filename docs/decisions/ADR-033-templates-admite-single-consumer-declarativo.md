@@ -1,7 +1,7 @@
 # ADR-033: templates/ admite single-consumer quando artefato é declarativo (esqueleto preenchível)
 
 **Data:** 2026-05-16
-**Status:** Proposto
+**Status:** Aceito (2026-06-01)
 
 ## Origem
 
