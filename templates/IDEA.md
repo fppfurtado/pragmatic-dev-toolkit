@@ -1,7 +1,7 @@
 # IDEA
 
 <!--
-Esqueleto canônico de IDEA.md (papel product_direction) consumido por /draft-idea (ADR-027).
+Esqueleto canônico de IDEA.md (papel product_direction) consumido por /draft-idea (ADR-053 § Decisão (a)).
 /draft-idea lê este arquivo, copia para `<product_direction>`, adapta headers ao idioma do projeto consumidor, preenche com respostas do interview.
 Seções fixas; ordem importa para o fluxo de elicitação. Comentários HTML descrevem o que cada seção captura.
 -->

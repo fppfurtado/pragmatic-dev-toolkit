@@ -128,6 +128,6 @@ Ordem fixa do relatório final, três linhas potenciais:
 - Não gravar feature/iniciativa local em `<product_direction>` — esse papel carrega direção do projeto inteiro. Para feature, usar `/triage`.
 - Não inventar conteúdo — operador é a fonte; skill **estrutura** o interview, não preenche por conta própria. Resposta vazia/genérica → cutucar uma vez, depois aceitar e seguir (não pressionar).
 - Não fazer interview exaustivo — ≤2 perguntas por seção, depois prosseguir. Quem chega com ideia vaga não sabe todas as respostas; forçar resposta detalhada vira teatro.
-- Não detectar inconsistências cross-seção (ex.: critério de sucesso que não bate com persona declarada) — limitação registrada em [ADR-027](../../docs/decisions/ADR-027-skill-draft-idea-elicitacao-product-direction.md) § Consequências. Operador é responsável pela coerência global.
+- Não detectar inconsistências cross-seção (ex.: critério de sucesso que não bate com persona declarada) — limitação registrada em [ADR-053](../../docs/decisions/ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md) § Decisão (a) Limitações. Operador é responsável pela coerência global.
 - Não invocar `/triage` automaticamente — só **sugere** no relatório. Operador é quem dispara o próximo passo.
 - Não codificar perguntas em comentários HTML do `templates/IDEA.md` — template carrega só guias-de-conteúdo descritivos; perguntas vivem no passo 2 desta prosa.

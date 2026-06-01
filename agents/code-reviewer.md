@@ -59,9 +59,9 @@ Analise o diff fornecido **e apenas o diff**.
 
 ### Respeito a Decisões absorvidas (context-aware via messenger upstream)
 
-**Aplicabilidade:** acionar apenas quando o invocador passa `## Decisões absorvidas` como contexto adicional (mecanismo prescrito em [ADR-038](../docs/decisions/ADR-038-mirror-decisoes-absorvidas-runtime.md), repassado por `/run-plan` §2.3). Sem contexto passado → seção inteira inativa (caminho normal da rubrica YAGNI).
+**Aplicabilidade:** acionar apenas quando o invocador passa `## Decisões absorvidas` como contexto adicional (mecanismo prescrito em [ADR-053](../docs/decisions/ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md) § Decisão (d), repassado por `/run-plan` §2.3). Sem contexto passado → seção inteira inativa (caminho normal da rubrica YAGNI).
 
-Quando há contexto: tratar as estruturas listadas em `## Decisões absorvidas` como **out-of-scope da rubrica YAGNI** deste reviewer — `design-reviewer` aprovou pré-commit + operador absorveu via [ADR-026](../docs/decisions/ADR-026-criterio-mecanico-absorcao-findings-design-reviewer.md); flagar essas estruturas viola "override por inação" de [ADR-035](../docs/decisions/ADR-035-escopo-aplicacao-yagni-proprio-plugin.md), agora refinado por ADR-038 (categoria nova "context-aware via messenger upstream", distinta da rejeitada "free-read autônomo de ADRs" — reviewer reage a contexto **explicitamente passado pelo invocador**, não a contexto auto-lido).
+Quando há contexto: tratar as estruturas listadas em `## Decisões absorvidas` como **out-of-scope da rubrica YAGNI** deste reviewer — `design-reviewer` aprovou pré-commit + operador absorveu via [ADR-053](../docs/decisions/ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md) § Decisão (c); flagar essas estruturas viola "override por inação" de [ADR-043](../docs/decisions/ADR-043-hierarquia-doutrinal-fundamentais-raiz.md) § Ockham operacionalizado em decisões internas do plugin (ex-ADR-035 Substituído por ADR-043 em 2026-05-29), agora refinado por ADR-053 § Decisão (d) (categoria nova "context-aware via messenger upstream", distinta da rejeitada "free-read autônomo de ADRs" — reviewer reage a contexto **explicitamente passado pelo invocador**, não a contexto auto-lido).
 
 Reportar apenas violações em estruturas **fora** da lista absorvida.
 
