@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-06-01** — content absorbed into [ADR-054](../ADR-054-bridge-cross-project-note-consolidado.md); see that ADR for current authority. Body below preserved verbatim for historical record.
+
 # ADR-042: Flag `--to` em /note para cross-project write com discovery via `$PROJECTS_DIR`
 
 **Data:** 2026-05-28
