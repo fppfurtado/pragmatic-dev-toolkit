@@ -42,7 +42,11 @@ Details and direct-path alternative in [`docs/install.md`](docs/install.md).
 
 ## Philosophy
 
-**Bounded contexts and ubiquitous language yes, tactical ceremony no.** Bounded contexts (strategic DDD) and shared vocabulary between code and business are foundational. Tactical ceremony (formal `application/`/`domain/`/`infrastructure/` layers, universal ports/adapters, cascading mappers) creates many files for little value — add abstraction only when there's **real pain** (an unstable integration, a substitution you can already see coming). YAGNI by default.
+**Three fundamental principles as the epistemic root** ([ADR-043](docs/decisions/ADR-043-hierarquia-doutrinal-fundamentais-raiz.md)): **Truth** (verify before asserting; falsifiable beats hand-wavy), **Excellence without over-engineering** (quality serves the concrete problem, not vice versa), and **Occam's Razor** (don't multiply entities — dimensional YAGNI). YAGNI, flat structure, no ornamental defensiveness are operational consequences derived from these — not parallel principles. Triangulation: the three conditions act together; isolated, each deteriorates.
+
+**Bounded contexts and ubiquitous language yes, tactical ceremony no.** Bounded contexts (strategic DDD) and shared vocabulary between code and business are foundational. Tactical ceremony (formal `application/`/`domain/`/`infrastructure/` layers, universal ports/adapters, cascading mappers) creates many files for little value — add abstraction only when there's **real pain** (an unstable integration, a substitution you can already see coming, **≥3 ad hoc applications** of the same pattern auditable retroactively). YAGNI by default.
+
+**Going-forward admission policy** ([ADR-045](docs/decisions/ADR-045-redesign-camada-doutrinal-consolidacao-politica-admissao.md) § Decisão parte 2): new structural decisions route through a 3-outcome filter — `ADR` for reversible decisions worth context / `CLAUDE.md` or `philosophy.md` for stabilized understanding / git log for process evolution. Prevents doctrinal re-accumulation by codifying where each kind of refinement belongs. Enforced at runtime in `/new-adr` step 3.5 + `design-reviewer` § O que flagrar (v3.0.0).
 
 For the full doctrine and path contract, see [`docs/philosophy.md`](docs/philosophy.md) (Portuguese).
 
