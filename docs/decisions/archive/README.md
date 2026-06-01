@@ -35,3 +35,5 @@ Tabela atualizada incrementalmente por cada onda C-X conforme migração avança
 | ADR-038 — Mirror de Decisões absorvidas no plan body + consumo runtime por reviewers | [ADR-053](../ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md) | I |
 | ADR-032 — Skill /note e store de contexto compartilhado em .claude/local/NOTES.md | [ADR-054](../ADR-054-bridge-cross-project-note-consolidado.md) | J |
 | ADR-042 — Flag --to em /note para cross-project write com discovery via $PROJECTS_DIR | [ADR-054](../ADR-054-bridge-cross-project-note-consolidado.md) | J |
+| ADR-001 — Protocolo de templates centralizados no plugin | [ADR-055](../ADR-055-protocolo-templates-centralizados-consolidado.md) | M |
+| ADR-033 — templates/ admite single-consumer quando artefato é declarativo (esqueleto preenchível) | [ADR-055](../ADR-055-protocolo-templates-centralizados-consolidado.md) | M |

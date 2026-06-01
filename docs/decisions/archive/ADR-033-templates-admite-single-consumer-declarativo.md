@@ -1,3 +1,5 @@
+> **ARCHIVED 2026-06-01** — content absorbed into [ADR-055](../ADR-055-protocolo-templates-centralizados-consolidado.md) § Decisão (b) + § Testes mecânicos preserved literal; see that ADR for current authority. Body below preserved verbatim for historical record.
+
 # ADR-033: templates/ admite single-consumer quando artefato é declarativo (esqueleto preenchível)
 
 **Data:** 2026-05-16
