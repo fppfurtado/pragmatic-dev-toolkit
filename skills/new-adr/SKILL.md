@@ -43,6 +43,20 @@ Sem título → pedir antes de prosseguir.
 
 3. **Obter data** em `YYYY-MM-DD` (`currentDate` do contexto se disponível, senão `date +%Y-%m-%d`).
 
+3.5. **Filtro de admissão** (per [ADR-045](../../docs/decisions/ADR-045-redesign-camada-doutrinal-consolidacao-politica-admissao.md) § Decisão parte 2). Antes de criar o arquivo ADR, surfar o filtro mecânico de 3 saídas como prompt informativo. Critérios de desempate na zona cinzenta vivem em ADR-045 § Decisão parte 2; default conservador (dúvida) → operador escolhe `ADR` (Recommended); design-reviewer no step 5 audita drift pós-criação.
+
+   `AskUserQuestion` header `Filtro`, 3 opções:
+
+   - **`ADR — decisão estrutural reversível (Recommended)`** — `description`: "Cenário concreto de reversão nomeável (incidente empírico, sinal de uso divergente, mudança de plataforma, restrição externa); categoria conceitual nova; codifica restrição externa (regulatória, contratual, integração estável); pattern emergente ≥3 aplicações ad hoc."
+   - **`CLAUDE.md ou philosophy.md — entendimento estabilizado`** — `description`: "Refinamento de mecanismo, esclarecimento doutrinal, regra editorial estabilizada. `philosophy.md` = princípio epistêmico / convenção cross-cutting; `CLAUDE.md` = mecânica do plugin (lifecycle, naming, gate concreto, schema YAML, AskUserQuestion convention)."
+   - **`git log — evolução de processo`** — `description`: "Altera apenas implementação/estilo sem afetar runtime de outros componentes. Refactor sem decisão estrutural, iteração editorial."
+
+   **Pós-decisão:**
+
+   - Saída `ADR` → seguir para step 4 (criar arquivo). Fluxo default preservado.
+   - Saída `CLAUDE.md ou philosophy.md` → parar criação do arquivo ADR; reportar: "Substância não passou no filtro de admissão de ADR — direcionar para `CLAUDE.md` ou `philosophy.md` per critério de desempate da saída escolhida. Sem ADR criado. Operador edita o documento alvo + commit como `docs:`/`chore:` conforme convenção."
+   - Saída `git log` → parar criação do arquivo ADR; reportar: "Substância não passou no filtro — evolução de processo registrada apenas em commit message. Operador faz o commit relevante sem documento. **Nota orientacional:** chegar a `/new-adr` standalone com saída `git log` tipicamente sinaliza erro de framing upstream (substância pré-cristalizada como título mas era iteração editorial). Operador faz commit relevante com a substância no message; futuras invocações de `/new-adr` que detectem este padrão recorrente são candidato a refinamento do critério de entrada upstream (`/triage` step 3)."
+
 4. **Criar arquivo** `<decisions_dir>/ADR-<NNN>-<slug>.md` com o template abaixo. Preencher conteúdo derivado de inputs explícitos do operador (ROADMAP, plano upstream, conversa recente, entrevista) — sintetizar substância já decidida em estrutura canonical. Placeholders explícitos apenas quando nenhum input substantivo existe; nunca inventar substância sem base (ver `## O que NÃO fazer` para a fronteira completa).
 
 5. **Revisão pré-retorno.** Invocar `@design-reviewer` apontando para o ADR draft recém-criado. Sem cutucada de pré-execução — o reviewer dispara automaticamente conforme [ADR-053](../../docs/decisions/ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md) § Decisão (b). Ao compor o prompt da invocação, seguir `${CLAUDE_PLUGIN_ROOT}/docs/procedures/reviewer-invocation-read.md` (instrução defensiva de `Read` do ADR draft antes da análise). Para cada finding, aplicar critério de [ADR-053](../../docs/decisions/ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md) § Decisão (c):
