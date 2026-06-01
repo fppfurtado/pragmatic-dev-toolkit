@@ -6,7 +6,7 @@ disable-model-invocation: false
 
 # note
 
-Append uma nota timestampada em `.claude/local/NOTES.md` — store doutrinário non-role para captura de contexto compartilhado entre sessões CC paralelas, intra-projeto e cross-project (este último via referência conversacional, sem auto-discovery). Per [ADR-032](../../docs/decisions/ADR-032-skill-note-contexto-compartilhado.md) — extensão de [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md) para nova categoria *store doutrinário fixo non-role*.
+Append uma nota timestampada em `.claude/local/NOTES.md` — store doutrinário non-role para captura de contexto compartilhado entre sessões CC paralelas, intra-projeto e cross-project (este último via referência conversacional, sem auto-discovery). Per [ADR-054](../../docs/decisions/ADR-054-bridge-cross-project-note-consolidado.md) § Decisão (a) — extensão de [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md) para nova categoria *store doutrinário fixo non-role*.
 
 Esta skill executa o append e devolve controle ao operador. **Não faz commit** — `.claude/local/` é gitignored por design.
 
@@ -14,7 +14,7 @@ Skill opera **independente** de `CLAUDE.md` / role contract — usável em qualq
 
 ## Argumentos
 
-Skill aceita 2 modos (per [ADR-042](../../docs/decisions/ADR-042-note-flag-to-cross-project-write.md)):
+Skill aceita 2 modos (per [ADR-054](../../docs/decisions/ADR-054-bridge-cross-project-note-consolidado.md) § Decisão (b)):
 
 - **Sem `--to`** (default, intra-projeto): argumento inteiro = conteúdo da nota. Append em `<repo-corrente>/.claude/local/NOTES.md`.
 - **Com `--to <projeto-ou-path>`** (opt-in cross-write): primeiro token literal `--to` seguido do valor; restante após o valor = conteúdo. Append em `<target>/.claude/local/NOTES.md`. Resolução do target em § 1.
@@ -27,7 +27,7 @@ Casos degenerados (recusa silenciosa): `--to` sem valor subsequente (sintaxe inv
 
 ### 1. Garantir store
 
-**Resolução do target** (per [ADR-042](../../docs/decisions/ADR-042-note-flag-to-cross-project-write.md)):
+**Resolução do target** (per [ADR-054](../../docs/decisions/ADR-054-bridge-cross-project-note-consolidado.md) § Decisão (b)):
 
 - **Sem `--to`** → target = repo corrente. Caminho local; seguir para "Caminho local" abaixo.
 - **Com `--to <valor>`** → target = outro projeto (cross-write):
@@ -54,7 +54,7 @@ Criar diretório com `mkdir -p .claude/local/` se ausente.
 
 Mecânica idêntica ao step 4.5 do `/init-config` SKILL.md (linha `.claude/` da tabela composta) — `/note` é segundo dispatcher para a mesma invariante (per ADR-047 § Decisão (b)). Sincronizar mudanças manualmente se a mecânica evoluir num dos lados.
 
-**Caminho cross-write** (com `--to`, per [ADR-042](../../docs/decisions/ADR-042-note-flag-to-cross-project-write.md)): blast-radius compartilhado proíbe mutar `.gitignore`/`.worktreeinclude` do target a partir de sessão não-contextual — pré-condição substitui gates.
+**Caminho cross-write** (com `--to`, per [ADR-054](../../docs/decisions/ADR-054-bridge-cross-project-note-consolidado.md) § Decisão (b)): blast-radius compartilhado proíbe mutar `.gitignore`/`.worktreeinclude` do target a partir de sessão não-contextual — pré-condição substitui gates.
 
 **Pré-condição de target inicializado**: `.claude/local/` no target existe E `git -C <target-repo> check-ignore -q .claude/local/.probe` retorna 0. **Probe idêntico ao usado no caminho local** acima (mesma invariante de ADR-047 § Decisão (b) + § Decisão (a) mecânica — implementador **não deve inventar probe alternativo** tipo `.claude/local/NOTES.md.probe`).
 
@@ -91,5 +91,5 @@ Path do arquivo e bytes adicionados. Em cross-write, reportar **path absoluto** 
 - Não tocar memory nativa CC — `/note` é canal independente; complementa, não substitui. Memory cobre per-project insights conversacionais auto-gravados; `/note` cobre cross-project registro intencional do operador.
 - Não auto-buscar contexto em NOTES.md de outros projetos — leitura cross-project é fenômeno conversacional via Read nativo do Claude com path absoluto (operador valida candidato proposto pelo Claude se houver ambiguidade).
 - Não fazer commit — `.claude/local/NOTES.md` é gitignored por design; commit acidental quebra o contrato de privacidade.
-- Não inferir candidatos para `$PROJECTS_DIR` ausente em cross-write (não tentar `~/Projects/`, `$HOME/dev/`, glob heurístico de filesystem). Critério mecânico contrato-declarado-vs-heurística (ADR-042 § Contexto) exige recusa explícita orientando definir env var ou usar path absoluto — fallback silencioso fere a doutrina de ADR-032 § F4 alternativa b.
+- Não inferir candidatos para `$PROJECTS_DIR` ausente em cross-write (não tentar `~/Projects/`, `$HOME/dev/`, glob heurístico de filesystem). Critério mecânico contrato-declarado-vs-heurística ([ADR-054](../../docs/decisions/ADR-054-bridge-cross-project-note-consolidado.md) § Decisão (b)) exige recusa explícita orientando definir env var ou usar path absoluto — fallback silencioso fere a doutrina de ADR-054 § Decisão (a) (F4 alternativa b absorvida da ADR-032 § Alternativas).
 - Não mutar `.gitignore` ou `.worktreeinclude` do target em cross-write — paralelo doutrinal com ADR-047 § Decisão (a) gate `Gitignore` e § Trade-offs (mutações cross-contextuais ferem blast-radius compartilhado). Pré-condição de target inicializado move setup para a sessão local do target onde o contexto existe para aprovar mudanças nesses arquivos.
