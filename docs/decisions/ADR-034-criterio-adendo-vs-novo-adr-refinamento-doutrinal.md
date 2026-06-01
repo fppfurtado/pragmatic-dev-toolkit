@@ -1,7 +1,7 @@
 # ADR-034: Critério editorial — adendo em ADR existente vs novo ADR para refinamento doutrinal
 
 **Data:** 2026-05-17
-**Status:** Proposto
+**Status:** Aceito (2026-06-01)
 
 ## Origem
 

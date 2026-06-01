@@ -1,7 +1,7 @@
 # ADR-053: Alinhamento /triage e ecosistema do design-reviewer (consolidado)
 
 **Data:** 2026-05-31
-**Status:** Proposto
+**Status:** Aceito (2026-06-01)
 
 ## Origem
 

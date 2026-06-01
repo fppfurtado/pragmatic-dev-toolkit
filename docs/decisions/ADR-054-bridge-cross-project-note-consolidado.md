@@ -1,7 +1,7 @@
 # ADR-054: Bridge cross-project — skill `/note` + `.claude/local/NOTES.md` store (consolidado)
 
 **Data:** 2026-05-31
-**Status:** Proposto
+**Status:** Aceito (2026-06-01)
 
 ## Origem
 

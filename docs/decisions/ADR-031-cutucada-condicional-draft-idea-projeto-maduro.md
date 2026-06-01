@@ -1,7 +1,7 @@
 # ADR-031: Cutucada condicional em /draft-idea para projeto maduro
 
 **Data:** 2026-05-15
-**Status:** Proposto
+**Status:** Aceito (2026-06-01)
 
 ## Origem
 

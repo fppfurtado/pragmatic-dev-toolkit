@@ -1,7 +1,7 @@
 # ADR-043: Hierarquia doutrinal — fundamentais como raiz, pragmáticos como consequência operacional
 
 **Data:** 2026-05-29
-**Status:** Proposto
+**Status:** Aceito (2026-06-01)
 
 ## Origem
 
