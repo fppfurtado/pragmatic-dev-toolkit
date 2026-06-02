@@ -1,6 +1,6 @@
 # Reviewer invocation — `Read` antes de análise
 
-Procedimento compartilhado consumido em runtime pelas skills que invocam reviewers via `Agent` tool: `/run-plan` §2.3 (loop por bloco), `/triage` step 5 (revisão pré-commit), `/new-adr` step 5 (revisão pré-retorno). Skills referenciam este arquivo na composição do prompt do reviewer. Categoria `docs/procedures/` estabelecida em [ADR-051](../decisions/ADR-051-convencoes-editoriais-consolidado.md) § Decisão (c).
+Procedimento compartilhado consumido em runtime pelas skills que invocam reviewers via `Agent` tool: `/run-plan` §2 (loop por bloco), `/triage` step 5 (revisão pré-commit), `/new-adr` step 5 (revisão pré-retorno). Skills referenciam este arquivo na composição do prompt do reviewer. Categoria `docs/procedures/` estabelecida em [ADR-051](../decisions/ADR-051-convencoes-editoriais-consolidado.md) § Decisão (c).
 
 ## Regra
 
