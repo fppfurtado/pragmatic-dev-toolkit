@@ -2,6 +2,22 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.1.0] - 2026-06-02
+
+### Added
+- `/init-config` wizard expands to 5 roles: adds `ubiquitous_language` (informational; canonical default `docs/domain.md`; no local mode per ADR-047). Doctrine v1 "informational ficam fora" replaced with incremental framing — wizard coverage expands as concrete pain emerges. `product_direction`/`design_notes`/`version_files`/`changelog` still manual until trigger surfaces. (#109)
+
+### Changed
+- Admission policy filter output vocabulary generalized for consumer projects in 2 runtime surfaces: `/new-adr` step 3.5 `AskUserQuestion` filter prompt + `design-reviewer` § "O que flagrar" criterion. Old "`CLAUDE.md` or `philosophy.md`" replaced with "canonical doctrine (`CLAUDE.md` for mechanism, `philosophy.md` or project equivalent for epistemic)" preserving the mechanism/epistemic bifurcation formalized in ADR-045 § Decisão parte 2 while neutralizing plugin-internal vocabulary. Pedagogical examples in `design-reviewer.md` § "Contradição..." also generalized via "ex.: deste plugin" parentheticals preserving concreteness. README aligned. (#107)
+- README "What's inside" table completed: `templates/IDEA.md` and 3 missing procedures (`cutucada-descoberta.md`, `forge-auto-detect.md`, `reviewer-invocation-read.md`) added alongside `templates/plan.md` and `cleanup-pos-merge.md` already listed. Full coverage: 26 components (11 skills + 5 agents + 4 hooks + 2 templates + 4 procedures). (#108)
+
+### Fixed
+- `docs/procedures/reviewer-invocation-read.md` line 3 cited `/run-plan §2.3` (non-existent identifier — SKILL.md has only § 1/2/3 without sub-numbering); corrected to `§2 (loop por bloco)` aligning with actual headers. Analogous fix landed for `README.md:36` via PR #108 §3.3 sanity check; commit `13b9be3` closes the same drift in the procedure file source.
+
+### Notes
+- PRs #107-#109 represent first consumer-validation cycle post-v3.0.0 admission policy enforcement (PR #106). User-facing surface refined post-shipping: vocabulary (PR #107), discovery coverage (PR #108), wizard coverage (PR #109).
+- Doc-reviewer invariant preserved: 0 findings on block paths across 6 reviewer invocations (3 plans × 2 blocks each — Bloco 1 + Bloco extra §3.3).
+
 ## [3.0.0] - 2026-06-01
 
 ### Changed
