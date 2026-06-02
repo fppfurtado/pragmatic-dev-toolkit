@@ -8,7 +8,7 @@ disable-model-invocation: false
 
 Wizard interativo para configurar o bloco `<!-- pragmatic-toolkit:config -->` no `CLAUDE.md` do projeto consumidor. Alternativa proativa à memorização one-shot per role do Resolution protocol (passo 4).
 
-**Cobertura v1:** 4 roles com dor concreta — `decisions_dir`, `backlog`, `plans_dir` (aceitam local mode per [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md)) e `test_command` (top-level no schema). Informational roles (`product_direction`, `ubiquitous_language`, `design_notes`) e `version_files`/`changelog` ficam fora — operador edita manualmente quando precisar.
+**Cobertura:** 5 roles — `decisions_dir`, `backlog`, `plans_dir` (aceitam local mode per [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md)), `test_command` (top-level no schema) e `ubiquitous_language` (informational; sem local mode). Outros informational roles (`product_direction`, `design_notes`) e `version_files`/`changelog` ficam fora — operador edita manualmente quando precisar; adicionar incrementalmente ao wizard conforme dor concreta emergir.
 
 Frontmatter sem `roles:` por design ([ADR-003](../../docs/decisions/ADR-003-frontmatter-roles.md) § Schema) — `/init-config` define o bloco que o Resolution protocol lê em vez de consumi-lo; cutucada de descoberta ([ADR-046](../../docs/decisions/ADR-046-cutucada-uniforme-descoberta-gaps-configuracao.md)) não se aplica dentro desta skill.
 
@@ -44,6 +44,7 @@ Quatro perguntas via `AskUserQuestion`. Agrupar numa única chamada quando viáv
 | `decisions_dir` | `Decisions` | `Canonical` (`grava em docs/decisions/ — default canonical do toolkit`) (Recommended) / `Local` (`grava em .claude/local/decisions/ — gitignored, não compartilhado`) / `Não usamos` (`grava paths.decisions_dir: null — skill subsequente trata como absent sem perguntar`) |
 | `backlog` | `Backlog` | análogo (paths `BACKLOG.md` / `.claude/local/BACKLOG.md` / null) |
 | `plans_dir` | `Plans` | análogo (paths `docs/plans/` / `.claude/local/plans/` / null) |
+| `ubiquitous_language` | `Domain` | `Canonical` (`grava em docs/domain.md — default canonical do toolkit`) / `Não usamos` (`grava paths.ubiquitous_language: null — skill subsequente trata como absent sem perguntar`) |
 | `test_command` | `TestCmd` | opções dependem do probe — ver abaixo |
 
 **Probe stack-aware para `test_command`** antes de perguntar — testa markers do consumer e propõe valor inicial:
