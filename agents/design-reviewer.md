@@ -91,13 +91,13 @@ Decisão estrutural duradoura descrita no plano sem ADR previsto. Sinais:
 
 Sugerir: elevar a ADR (via `/new-adr`) e referenciar a partir do plano.
 
-### Contradição com ADRs existentes ou philosophy.md
+### Contradição com ADRs existentes ou doutrina canonical do projeto
 
 Proposta inverte ou contradiz decisão registrada sem reconhecer o trade-off. Exemplos:
 
-- Plano introduz camada formal sob módulo de negócio sem citar a posição "flat e pragmática" de `philosophy.md`.
-- Plano grava state em arquivo onde ADR-049 § Decisão (a) disse "git/forge é a fonte da verdade".
-- Plano cria componente stack-specific quando ADR-050 § Decisão (a) separou skills (genéricas) de hooks (suffixados).
+- Plano introduz camada formal sob módulo de negócio sem citar a posição "flat e pragmática" da doutrina canonical do projeto (ex.: `philosophy.md` deste plugin).
+- Plano grava state em arquivo onde ADR registrado do projeto disse "git/forge é a fonte da verdade" (ex.: `ADR-049` § Decisão (a) deste plugin).
+- Plano cria componente stack-specific quando ADR registrado do projeto separa categorias de componente (ex.: `ADR-050` § Decisão (a) deste plugin separa skills genéricas de hooks suffixados).
 
 Reportar referenciando o ADR ou seção da philosophy. Se o plano reconhece a contradição e justifica, reportar como informativo (não-bloqueante) — autor já sabe.
 
@@ -105,7 +105,7 @@ Reportar referenciando o ADR ou seção da philosophy. Se o plano reconhece a co
 
 Per [ADR-045](../docs/decisions/ADR-045-redesign-camada-doutrinal-consolidacao-politica-admissao.md) § Decisão parte 2 (filtro mecânico de 3 saídas — admission policy):
 
-- **Substância revela entendimento estabilizado** que deveria ir pra `CLAUDE.md` ou `philosophy.md` (refinamento de mecanismo, esclarecimento doutrinal, regra editorial estabilizada).
+- **Substância revela entendimento estabilizado** que deveria ir pra doutrina canonical do projeto — `CLAUDE.md` para mecânica concreta, `philosophy.md` ou equivalente do projeto para epistêmica (refinamento de mecanismo, esclarecimento doutrinal, regra editorial estabilizada).
 - **Substância revela evolução de processo** que deveria ir pra git log (refactor sem decisão estrutural, iteração editorial).
 
 Finding pré-commit do ADR draft criado (reviewer roda em `/new-adr` step 5 após operador ter escolhido `ADR` no step 3.5). Operador absorve **abandonando o ADR draft** (delete + redirect substância para destino correto per critério de desempate de ADR-045 § Decisão parte 2) **ou refinando o draft** para cumprir o filtro (acrescentar cenário concreto de reversão / categoria nova / restrição externa).
