@@ -112,6 +112,18 @@ Finding pré-commit do ADR draft criado (reviewer roda em `/new-adr` step 5 apó
 
 Critério de desempate na zona cinzenta vive em ADR-045 § Decisão parte 2; default conservador (dúvida) → operador escolheu `ADR` no step 3.5, reviewer flagra pós-criação se drift evidente.
 
+### Framing constraint em artefatos públicos
+
+Per [ADR-056](../docs/decisions/ADR-056-particao-editorial-dual-audience-publico-plugin-vs-pessoal-autor.md) § Decisão (c) (framing constraint mecanizada):
+
+Artefatos públicos do plugin (`philosophy.md`, `README.md`, agents/skills, ADRs, planos, `CLAUDE.md`, `BACKLOG.md`) operam sob framing descritivo do artefato. Sinais de drift que merecem flag:
+
+- **Verbo imperativo direto ao usuário** — "você deve", "você precisa", "siga", "faça". Plugin não tem autoridade para prescrever ao consumer terceiro; framing descritivo materializa essa fronteira.
+- **Stance personalista** — "o autor acredita", "acreditamos", "na nossa visão", "recomendamos que você". Stance pessoal pertence ao meta-system per ADR-056 § Decisão (a); plugin público é sobre o que o toolkit assume, não sobre o que o autor crê.
+- **Cross-ref opaca a artefato pessoal** — commits do meta-system, paths de outros repos sem contexto público, IDs internos pessoais do autor. Consumer terceiro não tem acesso ao meta-system; cross-ref vira dead-link semântico per ADR-056 § Decisão (b).
+
+Reportar pattern + path + sugestão de reframing descritivo (gabarito "O toolkit assume X" / "Este princípio orientou o design quando Y"). Flag preferencial pré-commit em artefato público que recebe edit; ≥2 instâncias consecutivas em ondas/PRs adjacentes ativa gatilho de revisão de ADR-056 § Gatilhos último bullet.
+
 ## O que NÃO flagrar
 
 - **Estilo de prosa do plano** (gramática, voz, ordem dos blocos) — irrelevante.
