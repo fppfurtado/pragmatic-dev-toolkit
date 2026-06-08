@@ -2,7 +2,7 @@
 
 Procedimento compartilhado executado em runtime por `/triage` (passo 0) e `/release` (antes das pré-condições). Skills consumidoras leem este arquivo via Read e executam o algoritmo abaixo. Categoria `docs/procedures/` estabelecida em [ADR-051](../decisions/ADR-051-convencoes-editoriais-consolidado.md) § Decisão (c).
 
-Antes de carregar contexto, varrer worktrees mergeadas em `.worktrees/` e oferecer cleanup. Skip silente quando nada a limpar; nunca incomoda no caminho-comum.
+Antes de carregar contexto, executar 2 algoritmos de cleanup pós-merge complementares: (1) varrer worktrees mergeadas em `.worktrees/` e oferecer cleanup (seções "Detecção de candidatos" → "Após todos os candidatos" abaixo); (2) detectar ADRs órfãos no `decisions_dir` resolvido — drive-sync (rclone bisync ou equivalente) em máquina secundária pode ressuscitar arquivos arquivados pós-merge (seção "Detecção de ADRs órfãos no decisions_dir" no fim). Skip silente quando nada a limpar em qualquer dos dois; nunca incomoda no caminho-comum.
 
 ## Detecção de candidatos
 
@@ -41,3 +41,26 @@ Ordem importa para isolamento — `worktree remove` antes de `branch -d` (worktr
 ## Após todos os candidatos
 
 `git fetch origin --prune` para limpar refs remotos órfãos.
+
+## Detecção de ADRs órfãos no decisions_dir
+
+Pós-merge de uma onda que arquiva ADRs via `git mv` para `<decisions_dir>/archive/`, drive-sync (rclone bisync ou equivalente) em máquina secundária pode re-introduzir a versão pré-archive no path canonical como untracked. Próxima invocação que dependa do `decisions_dir` (`/run-plan` setup, `/new-adr` numbering, auditoria de inventário) pode bloquear ou produzir saldo inconsistente. Algoritmo de detecção complementa o cleanup de worktrees acima — investigação primária da causa-raiz (filters/excludes de drive-sync) vive fora do toolkit.
+
+1. **Resolver papel `decisions_dir`** via Resolution protocol (canonical `docs/decisions/`, modo `local` `.claude/local/decisions/`, ou custom declarado em `paths.decisions_dir`).
+
+2. **Detectar órfãos:** `git status --porcelain` e filtrar por pattern `^\?\? <decisions_dir-resolvido>/ADR-` (ADRs untracked no path resolvido). Em modo `local` (`paths.decisions_dir: local`), `.claude/local/decisions/` é gitignored — `git status --porcelain` não emite entries para paths gitignored, então grep retorna vazio sempre; skip silente automático sem branch especial.
+
+3. **Sem matches → skip silente.** Retorna controle à skill consumidora.
+
+4. **Com matches → aviso informativo listando filenames concretos** (não apenas count). Operador vê os paths reais e reconhece se algum é ADR válido recém-criado via `/new-adr` em sessão prévia (mitigação edge case `/new-adr` cross-turn — paralelo ao pattern cutucada-com-referrer concreto do `/run-plan` §3.3). Formato do aviso: `"<N> ADR(s) órfão(s) detectado(s) — drive-sync ressuscitou pós-archive? Filenames: <path1>, <path2>, ..."`.
+
+5. **Cutucada batched** via `AskUserQuestion`:
+   - `header`: `ADR órfão`
+   - `question`: `"<N> ADR(s) órfão(s) detectado(s) — como resolver?"`
+   - Opções (sem `(Recommended)` — default estatisticamente instável com 1 incidente fundador apenas; mitiga risco operador-por-reflexo):
+     - `Remover todos os <N>` — executa `rm <path>` em cada órfão.
+     - `Cutucar individualmente` — loop com cutucada por órfão (`Remover` / `Manter`).
+     - `Manter todos (investigar)` — preserva todos; operador investiga depois.
+   - `Other` (automático) cobre subset ad-hoc ou direção de investigação livre.
+
+6. **Aplicar seleção** e retornar controle à skill consumidora.
