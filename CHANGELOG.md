@@ -2,6 +2,22 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.2.0] - 2026-06-08
+
+### Added
+- **ADR-056 dual-audience editorial partition**: codifies the boundary between toolkit public doctrine (`philosophy.md`, `README.md`, agents/skills, ADRs — descriptive of the artifact) and author personal doctrine in a separate repo (personalist stance). Two-level placement criterion: mechanical (runtime/form → plugin; engineering stance → personal repo) + explicit cross-cutting rule (epistemic/axiological → both with distinct framings). Cross-repo asymmetry: personal→public OK; public→personal banned (third-party consumer lacks access). Mechanized framing constraint (no imperative verbs, no personalist stance, no opaque cross-ref). First concrete application of admission policy enforcement runtime (ADR-045 § Decisão parte 2) post-v3.0.0.
+- `design-reviewer` enforcement criterion **Framing constraint em artefatos públicos** added to § O que flagrar — 3 drift signals (imperative verbs, personalist stance, opaque cross-ref) auditable per ADR-056 § Decisão (c). Codified concurrently with ADR-056 (commit `642bdac`) to avoid "ADR sem enforcement = decoração" per ADR-045 linha 90 precedent.
+- **Convenção de evidência antes de claim** section added to `docs/philosophy.md` (between Convenção de pergunta ao operador and Linguagem ubíqua na implementação). Formalizes the doctrinal convention that claims of success (reviewer asserting no drift, skill declaring done, agent reporting OK) rest on empirical evidence — command output inspected, file read after recent Edit, diff verified against real state. Refinement of § Busca pela verdade applied to the output axis. First post-shipping audit confirmed ADR-056 framing constraint passes clean.
+- **Detection of orphan ADRs** in `decisions_dir` added to `docs/procedures/cleanup-pos-merge.md` as new H2 section. Algorithm (6 steps): resolve papel decisions_dir → detect via `git status --porcelain | grep -E '^\?\? <dir>/ADR-'` → skip silente if no matches → otherwise emit informative warning listing concrete filenames + batched cutucada with 3 options (Remover todos / Cutucar individualmente / Manter todos) without Recommended. Mitigates post-merge drive-sync (rclone bisync) resurrection of archived ADRs. Consumed automatically by `/triage` step 0 and `/release` preconditions. (PR #110)
+
+### Fixed
+- `CLAUDE.md` "AskUserQuestion mechanics" example "Recommended dinâmico" updated to reflect the bidimensional criterion of `/run-plan` §3.7 (mode `plans_dir` × presence of the `**Branch:**` field in the plan). Pre-ADR-028 text cited only `plans_dir` mode; criterion became two-dimensional after ADR-049 absorbed ADR-028. Drift flagged by code-reviewer in plan `campo-branch-opcional-plano-issue-first` Bloco 3.
+- Plan `run-plan-3-3-skip-empirico` Cenário 1 of `## Verificação manual` empirical anchor removed (cited "/triage step 0" with restrictive filters that diverged from the implemented rule's literal identifiers). Generic fixture description preserved; coverage of the 4 distinct paths in `/run-plan` §3.3 preserved.
+
+### Notes
+- First post-shipping application of ADR-056 enforcement criterion in 2 artefatos públicos (ADR-056 itself + new Convenção de evidência section) — both passed clean on the 3 drift signals.
+- PR #110 dogfood full cycle: `/next` → `/triage` (caminho-com-plano, design-reviewer absorbed F3 + cutucadas F1/F2 Recommended) → `/run-plan` (doc-reviewer 2× 0 findings + code-reviewer 0 findings substanciais) → merge → post-merge `/triage` step 0 detects no orphans (algorithm validated for happy path).
+
 ## [3.1.0] - 2026-06-02
 
 ### Added
