@@ -98,6 +98,12 @@ Skills perguntam em dois modos complementares — **enum** (escolha discreta) e 
 
 Mecânica concreta de `AskUserQuestion` (limites de header, contagem de opções, `multiSelect`, exemplos de uso) em `CLAUDE.md` → "AskUserQuestion mechanics".
 
+## Convenção de evidência antes de claim
+
+O toolkit assume que claim de sucesso — reviewer afirmando ausência de drift, skill declarando done, agent reportando OK — descansa em evidência empírica: comando rodado e output inspecionado, arquivo lido após Edit recente, diff verificado contra o estado real. Inspection-only produz claims circulares que perdem credibilidade silenciosamente — o reviewer "passou" sem rodar o gate; a skill "completou" sem confirmar o estado pós-condição.
+
+Este princípio orientou o design quando `/run-plan` exige confirmação explícita do operador para validação manual em vez de inferência pelo agente. Refinamento de § Busca pela verdade aplicado ao eixo de output: Verdade no input ("verificar antes de assumir") e Verdade no output ("não afirmar sem evidência") são duas faces do mesmo princípio epistêmico — as aplicações listadas em § Busca pela verdade (baseline automático, `Read` defensivo, reprodução do sintoma) também materializam o lado output.
+
 ## Linguagem ubíqua na implementação
 
 Bounded contexts e linguagem ubíqua só são pilares se chegarem ao código. Vocabulário registrado no domínio mas ausente nos identificadores produzidos vira ornamento de alinhamento. Pipeline operacional vive em skills/agents; aqui só o princípio.
