@@ -86,7 +86,7 @@ Gatilho de revisão concreto: latência reportada ≥3 vezes pelo operador OU >5
 
 | Skill | Operação | Comportamento em modo forge |
 |---|---|---|
-| `/next` passo 1 | Ler `## Próximos` | `gh/glab issue list --state open --no-assignee` (top 10 por `createdAt` ascendente); itens formatados `#<número>: <título>`. |
+| `/next` passo 1 | Ler `## Próximos` | `gh issue list --state open --search "no:assignee"` / `glab issue list --opened --not-assignee` (top 10 por `createdAt` ascendente); itens formatados `#<número>: <título>`. |
 | `/next` passo 3 | Mover impl. forte → Concluídos | Cutucada por issue antes de `gh/glab issue close N --reason completed --comment "<justificativa>"`. |
 | `/next` passo 6 | Commit movimentações | **Skip** — mutações já foram aplicadas remotamente via fechar issue; sem commit local. Paralelo a modo `local` onde commit é skipado por arquivo gitignored. |
 | `/triage` step 4 | Criar entrada de backlog (caminho sem plano OU itens fora-de-escopo) | Cutucada antes de `gh/glab issue create -t "<linha>" -b "<contexto>"`. URL/number retornado registrado para uso downstream. |
