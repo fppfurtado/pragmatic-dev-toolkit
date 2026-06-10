@@ -1,7 +1,7 @@
 # ADR-058: Role backlog aceita forge como fonte (sucessor parcial de ADR-049 § Decisão (a))
 
 **Data:** 2026-06-10
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 
@@ -52,7 +52,7 @@ Em mensagens internas (commits, planos, NOTES, etc.), identificador segue forma 
 Comandos canonical (compostos pelo caller após detection):
 
 - `gh` → `gh issue list --state open --search "no:assignee" --json number,title,createdAt --jq '.[]'`; `gh issue close N --reason completed --comment "<justificativa>"`; `gh issue create -t "<linha>" -b "<contexto>" --json number,url`.
-- `glab` → `glab issue list --opened --not-assignee --output json | jq ...`; `glab issue close N`; `glab issue create -t "<linha>" -d "<contexto>"`.
+- `glab` → `glab issue list --opened --not-assignee --output json | jq ...`; **close + comentário**: `glab issue note N --message "<glosa>"` então `glab issue close N` (dois comandos sequenciais; `glab issue close` não aceita `--comment` — CLI assimétrica vs `gh`); `glab issue create -t "<linha>" -d "<contexto>"`.
 
 **Policy do caller para role `backlog: forge`** — implementada em cada uma das 4 skills consumidoras (`/next`, `/triage`, `/run-plan`, `/curate-backlog`):
 
@@ -74,7 +74,7 @@ Toda mutação remota é precedida de `AskUserQuestion`:
 
 **Pattern competidor documentado e rebatido:** `/archive-plans` (ADR-022) e `/curate-backlog` (ADR-057) usam gate único batched (`Aplicar tudo` / `Aplicar parcial` / `Cancelar`) sobre múltiplas mutações da mesma invocação. Pattern recusado aqui porque essas skills operam sobre arquivo-local com 3 chances de reverter (descartar edit antes de commit, descartar commit antes de push, descartar push antes de merge); mutações em forge são imediatamente visíveis a todos sem chance de reverter. Gate único "aplicar 5 issues remotas batched" agruparia decisões irreversíveis num clique. Gatilho de revisão registrado se power-user reportar fricção cumulativa.
 
-Aplica a 4 superfícies: `/triage` step 4 (criar issue), `/next` passo 3 (fechar issue de feature implementada via evidência forte), `/run-plan §3.4` (fechar issue da feature em done), `/curate-backlog` H1 (fechar issue com gatilho temporal vencido).
+Aplica a 4 superfícies primárias: `/triage` step 4 (criar issue), `/next` passo 3 (fechar issue de feature implementada via evidência forte), `/run-plan §3.4` (fechar issue da feature em done), `/curate-backlog` H1 (fechar issue com gatilho temporal vencido). **Sub-caso editorial:** Consolidação do `/triage` step 4 (releitura para detectar duplicatas/obsolescência pós-edit) — edits descritos pelo operador via `Other` que impliquem mutação remota (fechar/editar issue já existente) seguem a mesma policy de cutucada por mutação. Não é superfície primária porque a mutação não é a operação canonical do step 4 (que é criar); mas a categoria editorial é idêntica (blast radius remoto) e a policy é a mesma.
 
 #### (f) Sem cache na v1 (alternativa A)
 
@@ -86,8 +86,8 @@ Gatilho de revisão concreto: latência reportada ≥3 vezes pelo operador OU >5
 
 | Skill | Operação | Comportamento em modo forge |
 |---|---|---|
-| `/next` passo 1 | Ler `## Próximos` | `gh/glab issue list --state open --no-assignee` (top 10 por `createdAt` ascendente); itens formatados `#<número>: <título>`. |
-| `/next` passo 3 | Mover impl. forte → Concluídos | Cutucada por issue antes de `gh/glab issue close N --reason completed --comment "<justificativa>"`. |
+| `/next` passo 1 | Ler `## Próximos` | `gh issue list --state open --search "no:assignee"` / `glab issue list --opened --not-assignee` (top 10 por `createdAt` ascendente); itens formatados `#<número>: <título>`. |
+| `/next` passo 3 | Mover impl. forte → Concluídos | Cutucada por issue. Em `gh`, `gh issue close N --reason completed --comment "<justificativa>"`; em `glab`, `glab issue note N --message "<justificativa>"` então `glab issue close N` (CLI assimétrica). |
 | `/next` passo 6 | Commit movimentações | **Skip** — mutações já foram aplicadas remotamente via fechar issue; sem commit local. Paralelo a modo `local` onde commit é skipado por arquivo gitignored. |
 | `/triage` step 4 | Criar entrada de backlog (caminho sem plano OU itens fora-de-escopo) | Cutucada antes de `gh/glab issue create -t "<linha>" -b "<contexto>"`. URL/number retornado registrado para uso downstream. |
 | `/triage` step 4 | `**Linha do backlog:**` no plano (caminho com plano) | Após criar issue, campo `**Linha do backlog:**` no `## Contexto` do plano carrega `#<número>: <título>` (não texto livre). `/run-plan §3.4` usa esse identificador para fechar issue no done. |
@@ -99,6 +99,8 @@ Gatilho de revisão concreto: latência reportada ≥3 vezes pelo operador OU >5
 | `/curate-backlog` worktree-probe | Salvaguarda concorrência ADR-049 | Mantém — `/run-plan §3.4` em outra worktree continua sendo o risco; salvaguarda ortogonal ao modo do backlog. |
 
 **Preservação estrutural de ADR-049 § Decisão (a) em modo forge.** A regra dura de ADR-049 § Decisão (a) (`/run-plan §3.4` apenas adiciona em `## Concluídos`, sem mover de outra seção) é **estruturalmente preservada** em modo forge — operação "fechar issue" opera sobre state-tracker remoto idempotente (`gh/glab issue close N` em issue já fechada é noop ou erro explícito, não merge artifact). A razão original de ADR-049 (concorrência multi-PR sobre o mesmo arquivo markdown gerando merge artifact em `## Concluídos`) **não se materializa** quando o state vive no forge — não há arquivo concorrente para mesclar. Salvaguarda worktree-probe de ADR-057 também não aplica aqui pelo mesmo motivo (sua razão é concorrência local entre `/curate-backlog` e `/run-plan §3.4` sobre BACKLOG.md). Em modo forge, race condition possível é "operador propõe candidato já tomado por outro dev entre fetch e mutação" — categoria conceitual distinta de merge artifact; gatilho de revisão registrado se incidência empírica relatar.
+
+**Recortes de leitura distintos por categoria editorial em modo forge.** O recorte canonical de leitura (issues abertas + sem assignee) aplica nas 4 superfícies primárias acima — **captura editorial** (`/triage` step 4 criar issue, `/next` passo 1 listar candidatos, `/curate-backlog` passo 1 varredura). **Consolidação** do `/triage` step 4 (releitura pós-edit para detectar duplicatas/obsolescência) usa **recorte expandido** `gh/glab issue list --state open` (sem filtro de assignee) — categoria editorial distinta: captura quer "candidatos livres a triar", consolidação quer "tudo aberto" para detectar duplicação com trabalho já assignado em curso. Diferença semântica real, não inconsistência arbitrária. Mesma divisão pode aplicar a futuras superfícies de **detecção cross-state** sem precisar de novo ADR — categoria editorial codificada aqui.
 
 #### (h) Valor editorial via comentários em issues fechadas
 

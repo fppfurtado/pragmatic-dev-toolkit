@@ -26,19 +26,22 @@ Sem argumentos. Skill é low-frequency operator-initiated; toda invocação é p
 
 ### 1. Coletar contexto
 
-Ler na íntegra:
+**Em modo arquivo** (canonical ou `local`): ler na íntegra `BACKLOG.md` (papel `backlog`; em modo `local`, `.claude/local/BACKLOG.md`).
 
-- `BACKLOG.md` (papel `backlog`; em modo `local`, `.claude/local/BACKLOG.md`).
-- `.claude/local/NOTES.md` se existir.
+**Em modo `forge`** (`paths.backlog: forge`, per [ADR-058](../../docs/decisions/ADR-058-role-backlog-aceitar-forge.md)): seguir `${CLAUDE_PLUGIN_ROOT}/docs/procedures/forge-auto-detect.md`. Output `gh` → `gh issue list --state open --search "no:assignee" --json number,title,body,createdAt --jq '.[]'`; output `glab` → `glab issue list --opened --not-assignee --output json | jq -r '.[] | {number: .iid, title, body: .description, createdAt: .created_at}'`. Output `no-detection` ou `unsupported-host` → **parar com erro explícito** orientando setup (`gh auth login` / `glab auth login` / `dnf install jq`) ou declarar `paths.backlog: null` ou path canonical (policy do caller per ADR-058 § (d)). Lista de issues retornada substitui o conteúdo de `## Próximos` no fluxo subsequente; cada item carrega identificador `#<número>: <título>` + body (consumido por H2/H3).
+
+Ler também `.claude/local/NOTES.md` se existir (ortogonal ao modo do backlog).
 
 NOTES.md ausente → H4 vira no-op silente (sem fonte de sinais).
 
 ### 2. Salvaguarda de concorrência (worktree-probe)
 
-`git worktree list --porcelain` → classificar:
+**Em modo arquivo** (canonical ou `local`): `git worktree list --porcelain` → classificar:
 
 - **Só worktree main** (`main-só`): mutações cross-seção em `BACKLOG.md` autorizadas. ADR-049 § Decisão (a) preservado (sem concorrência multi-PR).
 - **≥1 worktree adicional ativa** (`worktree-adicional`): mutações cross-seção **deferidas** via NOTES.md signal queue (formato no passo 6).
+
+**Em modo `forge`**: salvaguarda **não aplica** — state vive em forge remoto idempotente, sem arquivo local concorrente para merge artifact (per ADR-058 § (g)). Classificação sempre vira `main-só` em modo forge (mutações remotas aplicáveis diretamente).
 
 Estado classificado vira metadata do preview (passo 4) e do gate (passo 5).
 
@@ -48,33 +51,35 @@ Acumular findings com (categoria, linha-do-BACKLOG, ação proposta). Sem findin
 
 #### 3.1. Gatilhos temporais vencidos (predicado mecânico)
 
-Para cada linha em `## Próximos`, casar regex de marca temporal:
+**Em modo arquivo:** para cada linha em `## Próximos`, casar regex de marca temporal:
 
 - `até YYYY-MM-DD` ou `deadline YYYY-MM-DD` — extrair data literal.
 - `T+Nd` (N inteiro) — calcular data: data do commit de adição (via pickaxe `git log -S "<linha>" --diff-filter=A --reverse | head -1`) + N dias.
 
 Comparar contra `date +%Y-%m-%d`. Data passou → finding `Gatilho temporal vencido`, ação `revisar prioridade ou mover para ## Concluídos`.
 
-Sem marca temporal → linha não gera finding desta heurística.
+**Em modo `forge`:** para cada issue, casar regex de marca temporal em title+body (mesmas marcas `até YYYY-MM-DD` / `deadline YYYY-MM-DD` / `T+Nd`). Data de referência para `T+Nd` = `createdAt` da issue (já disponível no item; sem pickaxe). Data passou → finding `Gatilho temporal vencido` no `#<número>: <título>`, ação `revisar prioridade ou fechar issue`.
+
+Sem marca temporal → linha/issue não gera finding desta heurística.
 
 #### 3.2. Redação stale (heurística semântica)
 
-Para cada linha em `## Próximos`, julgamento do agente runtime via Read + cross-ref `git log -S "<termo>"` quando aplicável. Sinais alvo:
+Para cada linha em `## Próximos` (modo arquivo) ou para cada title+body de issue (modo `forge`), julgamento do agente runtime via Read + cross-ref `git log -S "<termo>"` quando aplicável. Sinais alvo:
 
 - Paths/skills/agents que não existem mais em main (probe via `test -e <path>` ou `grep -F "<nome>" skills/ agents/`).
 - ADRs marcados `Substituído` em § Status (cross-ref via `grep -E "^\*\*Status:\*\* Substituído" docs/decisions/ADR-NNN-*.md`).
 - Números desatualizados (saldos, contagens, percentuais) — comparar com estado git corrente quando linha cita métrica.
 
-Finding `Redação stale`, ação `refinar texto OR remover linha`. **Limitação reconhecida no ADR-057:** julgamento semântico do agente; spec leve por design (regex mecânica produziria falsos positivos massivos).
+Finding `Redação stale`, ação `refinar texto OR remover linha/issue`. **Limitação reconhecida no ADR-057:** julgamento semântico do agente; spec leve por design (regex mecânica produziria falsos positivos massivos). **Adicional em modo `forge`:** issues raramente carregam refs estruturais (paths/ADRs) — heurística é menos potente que markdown agrupado (limitação documentada em ADR-058 § Limitações).
 
 #### 3.3. Mergeable items (heurística semântica com anti-spam)
 
-1. Tokenizar cada linha de `## Próximos` em substantivos (heurística por capitalização + ignore stop-words PT-BR).
-2. Calcular frequência de cada termo no BACKLOG inteiro.
+1. Tokenizar cada linha de `## Próximos` (modo arquivo) ou cada title+body de issue (modo `forge`) em substantivos (heurística por capitalização + ignore stop-words PT-BR).
+2. Calcular frequência de cada termo no escopo inteiro (BACKLOG.md ou lista de issues).
 3. **Anti-spam:** identificar top-20 termos mais frequentes (ex.: "plugin", "skill", "ADR", "BACKLOG", "toolkit"). Excluí-los do cálculo de overlap.
-4. Para cada par de linhas, contar termos compartilhados pós-anti-spam. ≥3 → finding `Mergeable`, ação `consolidar em linha única`.
+4. Para cada par de linhas/issues, contar termos compartilhados pós-anti-spam. ≥3 → finding `Mergeable`, ação `consolidar em linha única OR fechar issue duplicada`.
 
-Apresentar pares no preview com termos compartilhados destacados; operador decide redação do merge se aceitar.
+Apresentar pares no preview com termos compartilhados destacados; operador decide redação do merge se aceitar. **Em modo `forge`:** similaridade por title funciona bem; por body é mais frágil (issues frequentemente têm body livre/conversacional). Limitação documentada em ADR-058 § Limitações.
 
 #### 3.4. NOTES.md sinais editoriais (informacional refinado)
 
@@ -113,6 +118,8 @@ Sem `Recommended` — operador decide após ver preview; ambos `Aplicar tudo` e 
 
 **Caminho `main-só` (mutações diretas):**
 
+**Em modo arquivo:**
+
 1. Para cada finding aceito, mutar `BACKLOG.md`:
    - H1 (move): remover linha de `## Próximos`, adicionar topo de `## Concluídos`.
    - H2 (refinar): edit cirúrgico in-place; H2 (remover): deletar linha.
@@ -128,6 +135,16 @@ Sem `Recommended` — operador decide após ver preview; ambos `Aplicar tudo` e 
    ```
 
 3. **Não pusha** — operador decide quando publicar (paralelo a `/archive-plans`).
+
+**Em modo `forge`:**
+
+1. Para cada finding aceito, mutação remota com **cutucada `AskUserQuestion` por issue** (header `Forge`, opções `Aplicar no forge` (Recommended) / `Cancelar (não aplicar)`) per ADR-058 § (e). `description` da opção `Aplicar no forge` carrega o(s) comando(s) concreto(s). Uma cutucada por issue:
+   - H1 (gatilho vencido): em `gh`, `gh issue close <número> --reason completed --comment "<glosa>"` (close + comentário num único comando); em `glab`, dois comandos sequenciais — `glab issue note <número> --message "<glosa>"` então `glab issue close <número>` (CLI assimétrica: `glab issue close` não aceita `--comment`). Glosa cita marca temporal vencida.
+   - H2 (refinar): `gh issue edit <número> --title "<novo>" --body "<novo>"` ou `glab issue update <número> --title "<novo>" --description "<novo>"`. Operador edita texto antes de confirmar; cutucada carrega proposta.
+   - H2 (remover): fechar issue com semântica de "não vai ser feita". Em `gh`, `gh issue close <número> --reason "not planned" --comment "<glosa>"` (state_reason distinto de H1 completed). Em `glab`, issues fechadas não têm subclassificação (sem state_reason) — `glab issue note <número> --message "<glosa>"` então `glab issue close <número>`, glosa documenta motivo.
+   - H3 (merge): fechar uma das issues do par com glosa "consolidado em #<número-mantida>" (gh: `--reason completed --comment "..."`; glab: `note + close` sequencial); opcionalmente editar a issue mantida via H2 mecânica para refletir merge.
+2. Sem commit local (mutações já remotas). Skill apenas relata as N+M+K mutações aplicadas + N rejeições (cancelamentos da cutucada).
+3. **Não pusha** — N/A em modo forge (sem commits locais).
 
 **Caminho `worktree-adicional` (mutações deferidas):**
 
