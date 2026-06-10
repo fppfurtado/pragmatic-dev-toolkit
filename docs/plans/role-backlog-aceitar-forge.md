@@ -43,7 +43,7 @@ Implementa ADR-058. **Entra:**
 
 - `docs/procedures/forge-auto-detect.md`: adicionar seção "Operações de issue (extensão neutra paralela ao PR/MR listing existente)" com 3 operações:
   - `issue list`: `gh issue list --state open --search "no:assignee" --json number,title,createdAt --jq '.[]'` / `glab issue list --opened --not-assignee --output json | jq -r '.[] | {number: .iid, title, createdAt: .created_at}'`.
-  - `issue close`: `gh issue close N --reason completed --comment "<glosa>"` / `glab issue close N --comment "<glosa>"`.
+  - `issue close`: `gh issue close N --reason completed --comment "<glosa>"` (gh: close + comentário num único comando) / `glab issue note N --message "<glosa>"` então `glab issue close N` (glab: dois comandos sequenciais — CLI assimétrica vs gh, verificado em glab 1.89.0).
   - `issue create`: `gh issue create -t "<title>" -b "<body>"` / `glab issue create -t "<title>" -d "<body>"`.
   - **Output discrimination idêntica** ao PR/MR listing (`gh`/`glab`/`no-detection`/`unsupported-host`) — procedure **permanece neutro**; policy local no caller per ADR-058 § (d). Pattern editorial dos 4 consumers existentes (cleanup-pos-merge, /archive-plans, /release, /next §4.5) preservado.
   - Nota explicativa breve no procedure que callers podem aplicar policies distintas (heurística opcional pode degradar silente; role-declared dependency exige erro explícito) — cross-ref a ADR-058 § (d) para a regra do role backlog: forge.
@@ -77,7 +77,7 @@ Implementa ADR-058. **Entra:**
 ### Bloco 6 — `/curate-backlog` adapter forge {reviewer: code}
 
 - `skills/curate-backlog/SKILL.md`:
-  - Passo 1 (Ler backlog): branch para modo forge — `gh/glab issue list --state open --no-assignee` em vez de Read de BACKLOG.md.
+  - Passo 1 (Ler backlog): branch para modo forge — `gh issue list --state open --search "no:assignee"` / `glab issue list --opened --not-assignee` em vez de Read de BACKLOG.md.
   - Heurística H1 (gatilhos temporais): adaptar predicado mecânico para usar `createdAt` da issue como data de adição + match de marcas `até YYYY-MM-DD` / `deadline YYYY-MM-DD` / `T+Nd` em title+body.
   - Heurística H2 (redação stale): mantida; escopo title+body de issue (limitação reconhecida em ADR-058 § Limitações — menos potente em forge).
   - Heurística H3 (mergeable items): mantida; anti-spam top-20 termos aplicado idêntico sobre title+body.
@@ -193,12 +193,18 @@ Cenários para o operador exercitar — toca surface não-determinística (issue
 5. Linha do backlog → cutucada → `glab issue create` (modo forge — público).
 6. Commit do `/triage` não referencia ADR ID nem slug do plano (regra de não-referenciar de ADR-047), mas pode referenciar `#<número>` da issue (forge é público — ADR-058 § (i)).
 
+## Pendências de validação
+
+Capturadas pelo `/run-plan §3.5` durante execução do plano. Validação real exige `paths.backlog: forge` declarado em consumer real — plugin (este repo) não tem o modo. Validação textual + revisão por blocos aceitos no done (operador escolheu `Validei` no §3.2 com cenários diferidos como pendências).
+
+- Cenários 1-9 do `## Verificação manual` deste plano — executar em ambiente TJPA real (`paths.backlog: forge` em repo GitLab) + repo GitHub pessoal (variação de host) + ambiente sem `gh`/`glab` instalado (cenário 6 erro explícito) + repo Bitbucket/sem remote (cenário 6 sub-cenário `unsupported-host`). Capturar findings empíricos por cenário; alimenta gatilhos de revisão de ADR-058 (latência reportada, race conditions, falsos positivos do "sem PR/MR aberto" simplificado v1, cutucada por mutação irritando power-user).
+
 ## Notas operacionais
 
 - **Ordem dos blocos:** Bloco 1 (CLAUDE.md schema) e Bloco 2 (forge-auto-detect.md) primeiro porque outros blocos dependem do schema definido e das operações disponíveis. Blocos 3-6 (skills) em paralelo possível, mas cada um carrega risco de regressão no modo arquivo — single-reviewer code por bloco. Bloco 7 (BACKLOG.md) por último — depende da decisão tomada em si para refletir corretamente.
 - **Salvaguarda durante implementação:** evitar mutações remotas acidentais durante dogfood do plano. Preferir repo de teste pessoal ou repo TJPA sandbox; **não dogfoodar `/curate-backlog` modo forge no próprio plugin** (pragmatic-dev-toolkit não tem `paths.backlog: forge`; mantém modo arquivo).
 - **Cutucada por mutação:** durante review do código por bloco, garantir que NENHUMA mutação remota dispare sem `AskUserQuestion` precedente. Critério mecânico para o reviewer: `grep` no diff por chamadas a `gh/glab issue (close|create|edit)` e verificar que cada uma é precedida de cutucada.
-- **CLI dependencies:** assumir `gh` 2.40+ e `glab` 1.40+ por features de JSON output (`--json`) e flags (`--no-assignee` em gh / `--not-assignee` em glab). Documentar como pré-requisito em forge-auto-detect.md.
+- **CLI dependencies:** assumir `gh` 2.40+ e `glab` 1.40+ por features de JSON output (`--json`). `gh` filtra "sem assignee" via qualifier de busca `--search "no:assignee"` (não tem flag dedicada — verificado empiricamente em gh 2.91.0); `glab` tem flag dedicada `--not-assignee`. Documentar como pré-requisito em forge-auto-detect.md.
 - **Status do ADR-058:** muda de Proposto → Aceito ao fim deste plano (no done de `/run-plan §3.6`). Edit cirúrgico em ADR-058 linha 3 como parte do gate final.
 - **Predecessor BACKLOG linha 100:** decisão "mover vs editar texto" deve considerar que a substância original era sobre push/PR creation em /release e /run-plan; ADR-058 cobre **role backlog** mas não tocou push/PR creation explicitamente (forge-auto-detect.md já cobre essa parte via PR/MR list para cleanup). Ver se substância ainda tem componente residual antes de mover totalmente.
 - **NÃO criar `.claude/local/cache/`** — alternativa A (sem cache) é decisão v1 do ADR-058. Tentação de "vou adicionar cache rapidinho enquanto estou aqui" é regressão à alternativa (c) descartada.
