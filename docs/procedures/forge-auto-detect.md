@@ -35,8 +35,8 @@ Comandos canonical compostos pelo caller após detection:
   - `gh` → `gh issue list --state open --search "no:assignee" --json number,title,createdAt --jq '.[]'`
   - `glab` → `glab issue list --opened --not-assignee --output json | jq -r '.[] | {number: .iid, title, createdAt: .created_at}'`
 - **`issue close`** (mutação remota — sempre precedida de cutucada `AskUserQuestion` no caller per ADR-058 § (e)):
-  - `gh` → `gh issue close N --reason completed --comment "<glosa>"`
-  - `glab` → `glab issue close N --comment "<glosa>"`
+  - `gh` → `gh issue close N --reason completed --comment "<glosa>"` (close + comentário num único comando)
+  - `glab` → `glab issue note N --message "<glosa>"` então `glab issue close N` (dois comandos sequenciais — `glab issue close` não aceita `--comment`; verificado em glab 1.89.0)
 - **`issue create`** (mutação remota — sempre precedida de cutucada `AskUserQuestion` no caller):
   - `gh` → `gh issue create -t "<title>" -b "<body>" --json number,url`
   - `glab` → `glab issue create -t "<title>" -d "<body>"`

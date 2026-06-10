@@ -52,7 +52,7 @@ Em mensagens internas (commits, planos, NOTES, etc.), identificador segue forma 
 Comandos canonical (compostos pelo caller após detection):
 
 - `gh` → `gh issue list --state open --search "no:assignee" --json number,title,createdAt --jq '.[]'`; `gh issue close N --reason completed --comment "<justificativa>"`; `gh issue create -t "<linha>" -b "<contexto>" --json number,url`.
-- `glab` → `glab issue list --opened --not-assignee --output json | jq ...`; `glab issue close N`; `glab issue create -t "<linha>" -d "<contexto>"`.
+- `glab` → `glab issue list --opened --not-assignee --output json | jq ...`; **close + comentário**: `glab issue note N --message "<glosa>"` então `glab issue close N` (dois comandos sequenciais; `glab issue close` não aceita `--comment` — CLI assimétrica vs `gh`); `glab issue create -t "<linha>" -d "<contexto>"`.
 
 **Policy do caller para role `backlog: forge`** — implementada em cada uma das 4 skills consumidoras (`/next`, `/triage`, `/run-plan`, `/curate-backlog`):
 
@@ -87,7 +87,7 @@ Gatilho de revisão concreto: latência reportada ≥3 vezes pelo operador OU >5
 | Skill | Operação | Comportamento em modo forge |
 |---|---|---|
 | `/next` passo 1 | Ler `## Próximos` | `gh issue list --state open --search "no:assignee"` / `glab issue list --opened --not-assignee` (top 10 por `createdAt` ascendente); itens formatados `#<número>: <título>`. |
-| `/next` passo 3 | Mover impl. forte → Concluídos | Cutucada por issue antes de `gh/glab issue close N --reason completed --comment "<justificativa>"`. |
+| `/next` passo 3 | Mover impl. forte → Concluídos | Cutucada por issue. Em `gh`, `gh issue close N --reason completed --comment "<justificativa>"`; em `glab`, `glab issue note N --message "<justificativa>"` então `glab issue close N` (CLI assimétrica). |
 | `/next` passo 6 | Commit movimentações | **Skip** — mutações já foram aplicadas remotamente via fechar issue; sem commit local. Paralelo a modo `local` onde commit é skipado por arquivo gitignored. |
 | `/triage` step 4 | Criar entrada de backlog (caminho sem plano OU itens fora-de-escopo) | Cutucada antes de `gh/glab issue create -t "<linha>" -b "<contexto>"`. URL/number retornado registrado para uso downstream. |
 | `/triage` step 4 | `**Linha do backlog:**` no plano (caminho com plano) | Após criar issue, campo `**Linha do backlog:**` no `## Contexto` do plano carrega `#<número>: <título>` (não texto livre). `/run-plan §3.4` usa esse identificador para fechar issue no done. |

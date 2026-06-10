@@ -43,7 +43,7 @@ Implementa ADR-058. **Entra:**
 
 - `docs/procedures/forge-auto-detect.md`: adicionar seção "Operações de issue (extensão neutra paralela ao PR/MR listing existente)" com 3 operações:
   - `issue list`: `gh issue list --state open --search "no:assignee" --json number,title,createdAt --jq '.[]'` / `glab issue list --opened --not-assignee --output json | jq -r '.[] | {number: .iid, title, createdAt: .created_at}'`.
-  - `issue close`: `gh issue close N --reason completed --comment "<glosa>"` / `glab issue close N --comment "<glosa>"`.
+  - `issue close`: `gh issue close N --reason completed --comment "<glosa>"` (gh: close + comentário num único comando) / `glab issue note N --message "<glosa>"` então `glab issue close N` (glab: dois comandos sequenciais — CLI assimétrica vs gh, verificado em glab 1.89.0).
   - `issue create`: `gh issue create -t "<title>" -b "<body>"` / `glab issue create -t "<title>" -d "<body>"`.
   - **Output discrimination idêntica** ao PR/MR listing (`gh`/`glab`/`no-detection`/`unsupported-host`) — procedure **permanece neutro**; policy local no caller per ADR-058 § (d). Pattern editorial dos 4 consumers existentes (cleanup-pos-merge, /archive-plans, /release, /next §4.5) preservado.
   - Nota explicativa breve no procedure que callers podem aplicar policies distintas (heurística opcional pode degradar silente; role-declared dependency exige erro explícito) — cross-ref a ADR-058 § (d) para a regra do role backlog: forge.
