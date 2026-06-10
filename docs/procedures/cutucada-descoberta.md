@@ -1,6 +1,6 @@
 # Cutucada de descoberta
 
-Procedimento compartilhado executado em runtime pelas 5 skills que reativamente consomem o Resolution protocol step 3 — `/triage`, `/run-plan`, `/new-adr`, `/next`, `/draft-idea` — antes de devolver controle. Skills consumidoras leem este arquivo via Read e executam o algoritmo abaixo. Categoria `docs/procedures/` estabelecida em [ADR-051](../decisions/ADR-051-convencoes-editoriais-consolidado.md) § Decisão (c). Decisão canonical: [ADR-046](../decisions/ADR-046-cutucada-uniforme-descoberta-gaps-configuracao.md) — gating tri-state com 2 strings canonical (string-A: marker ausente; string-B: `CLAUDE.md` ausente; silêncio: presente com marker). Designação por enumeração editorial — escopo detalhado em `CLAUDE.md` → "Cutucada de descoberta".
+Procedimento compartilhado executado em runtime pelas 6 skills que reativamente consomem o Resolution protocol step 3 — `/triage`, `/run-plan`, `/new-adr`, `/next`, `/draft-idea`, `/curate-backlog` — antes de devolver controle. Skills consumidoras leem este arquivo via Read e executam o algoritmo abaixo. Categoria `docs/procedures/` estabelecida em [ADR-051](../decisions/ADR-051-convencoes-editoriais-consolidado.md) § Decisão (c). Decisão canonical: [ADR-046](../decisions/ADR-046-cutucada-uniforme-descoberta-gaps-configuracao.md) — gating tri-state com 2 strings canonical (string-A: marker ausente; string-B: `CLAUDE.md` ausente; silêncio: presente com marker). Designação por enumeração editorial — escopo detalhado em `CLAUDE.md` → "Cutucada de descoberta".
 
 A cutucada surfa proativamente o caminho `/init-config` em projetos onde o bloco `<!-- pragmatic-toolkit:config -->` está fora de uso (CLAUDE.md ausente ou presente sem o marker).
 
@@ -52,4 +52,4 @@ Inserir a string-X como **última linha do relatório final** da skill, após qu
 
 ## Escopo de aplicação
 
-Skills com `roles.informational` apenas (sem `roles.required`) **não** emitem a cutucada — escopo restrito às 5 listadas no topo deste arquivo (escopo + regra de herança editorial em `CLAUDE.md` → `## Cutucada de descoberta`).
+Skills com `roles.informational` apenas (sem `roles.required`) **não** emitem a cutucada — escopo restrito às 6 listadas no topo deste arquivo (escopo + regra de herança editorial em `CLAUDE.md` → `## Cutucada de descoberta`).
