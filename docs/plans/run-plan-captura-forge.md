@@ -152,6 +152,14 @@ Cenários para o operador exercitar — toca surface não-determinística (muta�
 3. 4ª criação falha (rate limit do GitLab, network drop, etc.).
 4. Skill para; reporta erro literal + status: "3 bullets aplicados (refs em #<N1>, #<N2>, #<N3>); 2 bullets permanecem pendentes". Operador re-invoca `/run-plan` ou aplica manualmente.
 
+## Pendências de validação
+
+Capturadas pelo `/run-plan §3.5` no done. Operador validou 5 cenários leitura-apenas em ambiente TJPA real durante §3.2; os 3 cenários de escrita exigem `gh/glab issue create` real e ficam diferidos.
+
+- **Cenário 1 — Golden path (1 captura → 1 issue criada).** Exige `glab issue create` real. Validação dogfood: em repo TJPA com `paths.backlog: forge`, criar plano que dispare 1 captura backlog; cutucada batched; escolher `Aplicar todas`; verificar issue criada no GitLab + bullet substituído por `- #<N>: <linha>` no plano + body com template 3 linhas (plano de origem, origem do signal, linha literal). Issue de teste descartável (title prefixado `[pragmatic-dev-toolkit dogfood] DELETE ME`); fechar manualmente após validação.
+- **Cenário 2 — Selecionar quais (subset via Other).** Exige criação parcial de issues. Plano que dispare 4 capturas; cutucada batched; escolher `Selecionar quais`; operador descreve subset via Other ("aplicar bullets 1 e 3"). Verificar: 2 issues criadas; bullets 1 e 3 viram refs; bullets 2 e 4 permanecem como pendentes intactos. Issues de teste descartáveis.
+- **Cenário 8 — Falha mid-loop em `Aplicar todas` (rate limit, network drop).** Exige tentativa de criação real seguida de falha. Simular: plano com 5 capturas; durante `Aplicar todas`, induzir falha após 3ª criação (ex.: desconectar rede após 3 issues criadas). Verificar: skill para; reporta "3 bullets aplicados (refs #<N1>, #<N2>, #<N3>); 2 bullets permanecem pendentes"; bullets aplicados viram refs no plano. Cenário de borde — pode pular se difícil de reproduzir empiricamente.
+
 ## Notas operacionais
 
 - **ADR-002 preservado por design.** Cutucada batched bate no done (gate único editorial paralelo a §3.4 que também cutuca uma vez no done), **não na fase pré-loop** nem na materialização individual de Task. ADR-002 § Decisão "skill nunca interrompe por cutucada na fase pré-loop" intacto. Tensão potencial (cutucar pós-fact sobre warnings classificados silenciosamente pré-loop) resolvida pela forma da cutucada (batched-com-seleção no done), não pela rebatida textual — pattern editorial menos frágil.
