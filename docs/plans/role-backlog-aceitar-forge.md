@@ -193,6 +193,12 @@ Cenários para o operador exercitar — toca surface não-determinística (issue
 5. Linha do backlog → cutucada → `glab issue create` (modo forge — público).
 6. Commit do `/triage` não referencia ADR ID nem slug do plano (regra de não-referenciar de ADR-047), mas pode referenciar `#<número>` da issue (forge é público — ADR-058 § (i)).
 
+## Pendências de validação
+
+Capturadas pelo `/run-plan §3.5` durante execução do plano. Validação real exige `paths.backlog: forge` declarado em consumer real — plugin (este repo) não tem o modo. Validação textual + revisão por blocos aceitos no done (operador escolheu `Validei` no §3.2 com cenários diferidos como pendências).
+
+- Cenários 1-9 do `## Verificação manual` deste plano — executar em ambiente TJPA real (`paths.backlog: forge` em repo GitLab) + repo GitHub pessoal (variação de host) + ambiente sem `gh`/`glab` instalado (cenário 6 erro explícito) + repo Bitbucket/sem remote (cenário 6 sub-cenário `unsupported-host`). Capturar findings empíricos por cenário; alimenta gatilhos de revisão de ADR-058 (latência reportada, race conditions, falsos positivos do "sem PR/MR aberto" simplificado v1, cutucada por mutação irritando power-user).
+
 ## Notas operacionais
 
 - **Ordem dos blocos:** Bloco 1 (CLAUDE.md schema) e Bloco 2 (forge-auto-detect.md) primeiro porque outros blocos dependem do schema definido e das operações disponíveis. Blocos 3-6 (skills) em paralelo possível, mas cada um carrega risco de regressão no modo arquivo — single-reviewer code por bloco. Bloco 7 (BACKLOG.md) por último — depende da decisão tomada em si para refletir corretamente.
