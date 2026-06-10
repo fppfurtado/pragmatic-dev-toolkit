@@ -15,22 +15,24 @@ Skill de orientação de sessão: lê o backlog, limpa itens já implementados e
 
 ### 1. Ler o backlog
 
-Ler o arquivo na íntegra. Extrair `## Próximos` — candidatos a analisar. Em modo `local` (`paths.backlog: local`), arquivo é `.claude/local/BACKLOG.md` (resolvido pelo Resolution protocol do CLAUDE.md); skill segue agnóstica ao path.
+**Em modo arquivo** (canonical ou `local`): ler o arquivo na íntegra. Extrair `## Próximos` — candidatos a analisar. Em modo `local` (`paths.backlog: local`), arquivo é `.claude/local/BACKLOG.md` (resolvido pelo Resolution protocol do CLAUDE.md); skill segue agnóstica ao path.
 
-`## Próximos` vazio → informar e interromper.
+**Em modo `forge`** (`paths.backlog: forge`, per [ADR-058](../../docs/decisions/ADR-058-role-backlog-aceitar-forge.md)): seguir `${CLAUDE_PLUGIN_ROOT}/docs/procedures/forge-auto-detect.md`. Output `gh` → `gh issue list --state open --search "no:assignee" --json number,title,createdAt --jq '.[]'`; output `glab` → `glab issue list --opened --not-assignee --output json | jq -r '.[] | {number: .iid, title, createdAt: .created_at}'`. Output `no-detection` ou `unsupported-host` → **parar com erro explícito** orientando setup (`gh auth login` / `glab auth login` / `dnf install jq`) ou declarar `paths.backlog: null` ou path canonical — role declarado depende inteiramente do CLI per ADR-058 § (d) policy do caller. Lista retornada substitui `## Próximos` no fluxo subsequente; itens formatados como `#<número>: <título>`.
+
+`## Próximos` (modo arquivo) ou lista de issues (modo forge) vazia → informar e interromper.
 
 Se `.claude/local/NOTES.md` existir, ler na íntegra para contexto suplementar de ranking — notas recentes podem revelar mudança de prioridade ou trabalho adjacente aos candidatos. Reportar se uma nota influenciou o ranking, ou explicitamente que o store estava presente sem notas relacionadas aos candidatos. Informational (per [ADR-054](../../docs/decisions/ADR-054-bridge-cross-project-note-consolidado.md) § Decisão (a) store non-role); nunca bloqueia.
 
 ### 2. Selecionar candidatos
 
-Pegar os **dez primeiros** itens de `## Próximos` em ordem de aparição (topo = mais antigo). Dez dá margem para descartar implementados e ainda chegar a três finais.
+Pegar os **dez primeiros** itens de `## Próximos` em ordem de aparição (topo = mais antigo). Dez dá margem para descartar implementados e ainda chegar a três finais. Em modo `forge`, ordem natural é `createdAt` ascendente (lista já vem ordenada do passo 1).
 
 ### 3. Verificar implementação no código
 
 Para cada candidato, buscar evidência no repo (funções, endpoints, modelos, comandos, fluxos correspondentes). Classificar:
 
-- **Evidência forte** — código claro e diretamente mapeável (ex.: item "exportar movimentos em CSV" → handler de export CSV presente e funcional). Preparar movimentação da linha para `## Concluídos` (escrever no arquivo) e reportar com justificativa de 1 linha. Commit fica para o passo 6.
-- **Evidência fraca** — código parcial, feature similar com escopo diferente, ou inferência incerta. Reportar o que foi encontrado; **não mover** — operador decide.
+- **Evidência forte** — código claro e diretamente mapeável (ex.: item "exportar movimentos em CSV" → handler de export CSV presente e funcional). **Em modo arquivo:** preparar movimentação da linha para `## Concluídos` (escrever no arquivo) e reportar com justificativa de 1 linha; commit fica para o passo 6. **Em modo `forge`** (per ADR-058 § (e)): para cada issue com evidência forte, disparar cutucada `AskUserQuestion` (header `Forge`, opções `Aplicar no forge` (Recommended) / `Cancelar (não aplicar)`) com `description` da opção `Aplicar` carregando o comando concreto (ex.: `"gh issue close #123 --reason completed --comment '<justificativa>'"`). Uma cutucada por issue. Confirmação → executar `gh/glab issue close N --reason completed --comment "<justificativa>"`; cancelamento → noop, segue como candidato normal. Commit do passo 6 é skip em modo forge (mutação já remota).
+- **Evidência fraca** — código parcial, feature similar com escopo diferente, ou inferência incerta. Reportar o que foi encontrado; **não mover** — operador decide. Em modo forge, sem cutucada de fechamento (mesma razão — operador decide manualmente).
 - **Sem evidência** — segue como candidato normal.
 
 ### 4. Avaliar e classificar os restantes
@@ -44,7 +46,7 @@ Combinar os dois critérios para ranking. Empate → ordem de aparição (mais a
 
 ### 4.5. Varrer pendências de validação em planos
 
-Independente do ranking do top 3 (rationale diferente: fechamento de plano específico, não estratégia × amplitude). Resultado é exibido em bloco separado no passo 5; não compete no enum.
+Independente do ranking do top 3 (rationale diferente: fechamento de plano específico, não estratégia × amplitude). Resultado é exibido em bloco separado no passo 5; não compete no enum. **Inalterado em modo `forge`** — passo opera sobre `pr list`/`mr list` para detectar worktree/PR ativo (ortogonal ao role backlog); segue policy local pré-existente (`no-detection` skipa silente — é heurística informativa opcional, não role-declared dependency).
 
 1. **Listar planos:** papel `plans_dir` resolvido (default `docs/plans/`); modo local lê de `.claude/local/plans/`. Sem planos → skip silente desta seção.
 2. **Filtrar planos em curso:**
@@ -69,7 +71,7 @@ Em seguida, enum (`AskUserQuestion`, header `Próximo`) com as 3 opções nomead
 
 ### 6. Commit das movimentações automáticas
 
-Disparar **apenas** se o passo 3 moveu pelo menos uma linha para `## Concluídos`. Sem movimentações → skip silente.
+Disparar **apenas** se o passo 3 moveu pelo menos uma linha para `## Concluídos`. Sem movimentações → skip silente. **Skip silente também em modo `forge`** (`paths.backlog: forge`): mutações já foram aplicadas remotamente via `gh/glab issue close` cutucadas no passo 3; sem commit local. Paralelo ao skip em modo `local` (arquivo gitignored).
 
 Mostrar ao operador a lista das linhas movidas e perguntar via enum (`AskUserQuestion`, header `Movimentações`, opções `Confirmar e commitar` / `Reverter movimentações`):
 
