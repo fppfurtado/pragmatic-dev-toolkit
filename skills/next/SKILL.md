@@ -23,7 +23,7 @@ Se `.claude/local/NOTES.md` existir, ler na íntegra para contexto suplementar d
 
 ### 2. Selecionar candidatos
 
-Pegar os **seis primeiros** itens de `## Próximos` em ordem de aparição (topo = mais antigo). Seis dá margem para descartar implementados e ainda chegar a três finais.
+Pegar os **dez primeiros** itens de `## Próximos` em ordem de aparição (topo = mais antigo). Dez dá margem para descartar implementados e ainda chegar a três finais.
 
 ### 3. Verificar implementação no código
 
