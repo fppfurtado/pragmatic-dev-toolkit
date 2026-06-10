@@ -1,7 +1,7 @@
 # ADR-058: Role backlog aceita forge como fonte (sucessor parcial de ADR-049 § Decisão (a))
 
 **Data:** 2026-06-10
-**Status:** Proposto
+**Status:** Aceito
 
 ## Origem
 
