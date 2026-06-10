@@ -12,7 +12,7 @@ The companion repo is [`scaffold-kit`](https://github.com/fppfurtado/scaffold-ki
 
 Three component types, each with its own discovery mechanism:
 
-- **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/draft-idea`, `/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests`, `/release`, `/next`, `/init-config`, `/archive-plans`). Skills only act when invoked by the user.
+- **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/draft-idea`, `/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests`, `/release`, `/next`, `/init-config`, `/archive-plans`, `/curate-backlog`). Skills only act when invoked by the user.
 - **Agents** — `agents/<name>.md` with frontmatter. Five reviewers shipped: `code-reviewer`, `qa-reviewer`, `security-reviewer`, `doc-reviewer`, `design-reviewer`. Dispatch rules in "The role contract" table below.
 - **Hooks** — `hooks/hooks.json` declares lifecycle bindings; the bound scripts (`hooks/*.py`) run on every matching tool call in any project that has the plugin installed. Therefore hooks **must auto-gate**. `PostToolUse` exits 0; `PreToolUse` uses exit 2 to block (see `block_env.py`).
 
@@ -139,7 +139,7 @@ Cutucada proativa emitida ao final do reporte pelas 6 skills que reativamente co
 
 Mechanics (tri-state gating, dedup conversation-scoped por string, 2 strings canonical literais) live in `docs/procedures/cutucada-descoberta.md` — skills read this procedure at runtime. **Estado do gatilho ADR-046 linha 219 (helper compartilhado):** 6ª skill emissora (`/curate-backlog`) materializa o limiar de 12 sites (6 × 2 strings). Decisão registrada em ADR-057 § Cutucada e gatilho ADR-046: reapply editorial inheritance manual; defer helper compartilhado até **7ª skill emissora** (14 sites, ultrapassa o limiar de 12 onde ADR-046 prescreve avaliar). Reabrir avaliação então.
 
-**Editorial inheritance.** New SKILL que traversa Resolution protocol step 3 (qualquer role como `required` ou consumido mid-flow no caminho-com-plano-style) adota a convenção manualmente — author adds the line-ref to the procedure at the end of the final reporting step, following the 5 existing skills as template. Checklist for human reviewer or `code-reviewer` on PRs introducing such SKILLs. The complementary `/init-config` skill is the proactive setup path.
+**Editorial inheritance.** New SKILL que traversa Resolution protocol step 3 (qualquer role como `required` ou consumido mid-flow no caminho-com-plano-style) adota a convenção manualmente — author adds the line-ref to the procedure at the end of the final reporting step, following the existing emitting skills as template. Checklist for human reviewer or `code-reviewer` on PRs introducing such SKILLs. The complementary `/init-config` skill is the proactive setup path.
 
 ## Pragmatic Toolkit
 
