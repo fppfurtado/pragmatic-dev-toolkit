@@ -2,6 +2,18 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.3.0] - 2026-06-10
+
+### Added
+- `/curate-backlog` — new skill for periodic editorial maintenance of `BACKLOG.md`. 4 detective heuristics (H1 temporal triggers — mechanical predicate; H2 stale wording + H3 mergeable items with anti-spam — semantic heuristics by runtime agent; H4 NOTES.md signals — informational refined, no direct action at gate). Worktree-probe safeguard mechanically preserves ADR-049 § Decisão (a) — main-only → direct mutations; ≥1 additional worktree → defer via NOTES.md as signal queue. Sister skill to `/archive-plans`. (PR #111)
+- **ADR-057** codifies `/curate-backlog` with explicit override of the N=3 codification criterion (ADR-043 § Ockham operacionalizado #4) plus concrete revision trigger (6 months post-shipping / ≤2 invocations OR ≥50% useless findings). H4 (inline trivial execution) considered and removed in 1st iteration — YAGNI with concrete reopen trigger. ADR ships as `Proposto`; promotion to `Aceito` deferred per § Pendências de validação until successful smoke real + 1 useful invocation post-shipping.
+
+### Changed
+- `/next` scans top 10 items of `## Próximos` instead of top 6 — more headroom to discard already-implemented items and still reach top 3 final candidates.
+
+### Notes
+- 6th cutucada-emitting skill (`/curate-backlog`) materializes the ADR-046 line 219 threshold (12 sites). Decision: reapply editorial inheritance manually; defer shared helper until 7th emitting skill (14 sites, ultrapassa o limiar de 12 onde ADR-046 prescreve avaliar).
+
 ## [3.2.0] - 2026-06-08
 
 ### Added
