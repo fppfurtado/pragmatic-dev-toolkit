@@ -35,7 +35,7 @@ Skills consume **roles**, not literal paths. Each role has a canonical default; 
 | `design_notes` | `docs/design.md` | Quirks of external integrations not covered by official docs. |
 | `decisions_dir` | `docs/decisions/` | Directory of immutable structural decisions. Numbering and slug owned by `/new-adr`. |
 | `plans_dir` | `docs/plans/<slug>.md` | Multi-phase plans for changes that require upfront alignment. |
-| `backlog` | `BACKLOG.md` | Short exploratory list — `## Próximos` (curatorial) and `## Concluídos` (editorial registry, append-only). State of in-flight work lives in git/forge per ADR-049 § Decisão (a). |
+| `backlog` | `BACKLOG.md` | Short exploratory list — `## Próximos` (curatorial) and `## Concluídos` (editorial registry, append-only). State of in-flight work lives in git/forge per ADR-049 § Decisão (a). Accepts `paths.backlog: forge` mode (per [ADR-058](docs/decisions/ADR-058-role-backlog-aceitar-forge.md)) where the role is sourced from open issues without assignee in the current repo (auto-detect via `gh`/`glab`); item identifier becomes `#<número>: <título>`. |
 | `version_files` | _(no default — opt-in)_ | Paths whose version string is updated on each release. Empty or absent = role disabled. Consumed by `/release`. |
 | `changelog` | `CHANGELOG.md` | Release history. `/release` prepends a new block at each bump. |
 | `test_command` | `make test` (with `Makefile`) | Automatic gate at execution steps. |
@@ -77,6 +77,8 @@ On first resolution per invocation:
 Skills that generate commit messages, PR descriptions, or branch metadata (`/triage`, `/run-plan`) **do not reference any identifier of the artifact** in local mode (ADR ID, plan slug, backlog line text) in external messages. In canonical mode (default), current reference behavior is preserved.
 
 Concrete paths: `.claude/local/decisions/`, `.claude/local/BACKLOG.md`, `.claude/local/plans/<slug>.md`.
+
+**Coexistência com modo `forge`** ([ADR-058](docs/decisions/ADR-058-role-backlog-aceitar-forge.md)): `paths.backlog: forge` é eixo paralelo a `local` na família `paths.<role>: <modo>` (4 variantes: canonical/local/null/forge). Combinação `paths.backlog: forge` + `paths.decisions_dir: local` é caso válido (time + dev pessoal ortogonais). A recusa cross-mode de ADR-047 § Decisão (c) (`backlog: local + plans_dir: canonical`) **não aplica** em modo forge — identificador é público por construção (issue existe no remote), não há leak privado→público a evitar; combinação `paths.backlog: forge + paths.plans_dir: canonical` é válida.
 
 ## Editing conventions
 
@@ -157,6 +159,7 @@ test_command: null  # repo has no test suite; /run-plan falls back to plan's `##
 - Missing key → canonical default.
 - `null` (or explicit `false`) → "não usamos esse papel". Skill treats as absent without asking again.
 - `local` (string literal) → local-gitignored mode. Skill creates/reads under `.claude/local/<role>/`, artifact is not committed, commit/PR/branch metadata do not reference it (see "Local mode" section above; full rationale in [ADR-047](docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md)). Applies to `decisions_dir`, `backlog`, `plans_dir`; `version_files`/`changelog` reject this value.
+- `forge` (string literal) → role sourced from open issues without assignee in the current repo via `gh`/`glab` (per [ADR-058](docs/decisions/ADR-058-role-backlog-aceitar-forge.md)); remote mutations (close/create issue) gated by `AskUserQuestion` cutucada because blast radius is immediate and visible. Canonical item identifier in internal messages: `#<número>: <título>`. Applies to `backlog` only in v1; other roles reject this value. Coexists with `local` orthogonally per-role.
 - Unknown keys are ignored (forward-compat for releases that add new roles).
 - Keys live under `paths.<role>` (top-level `test_command` as exception); reference list in "Roles and canonical defaults" above.
 - The HTML marker `<!-- pragmatic-toolkit:config -->` is what the skill looks for — without it, the YAML block is not interpreted even if under the `## Pragmatic Toolkit` heading.
