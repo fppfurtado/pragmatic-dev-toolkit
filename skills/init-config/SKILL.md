@@ -8,7 +8,7 @@ disable-model-invocation: false
 
 Wizard interativo para configurar o bloco `<!-- pragmatic-toolkit:config -->` no `CLAUDE.md` do projeto consumidor. Alternativa proativa à memorização one-shot per role do Resolution protocol (passo 4).
 
-**Cobertura:** 5 roles — `decisions_dir`, `backlog`, `plans_dir` (aceitam local mode per [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md)), `test_command` (top-level no schema) e `ubiquitous_language` (informational; sem local mode). Outros informational roles (`product_direction`, `design_notes`) e `version_files`/`changelog` ficam fora — operador edita manualmente quando precisar; adicionar incrementalmente ao wizard conforme dor concreta emergir.
+**Cobertura:** 5 roles — `decisions_dir`, `backlog`, `plans_dir` (aceitam local mode per [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md); `backlog` adicionalmente aceita forge mode per [ADR-058](../../docs/decisions/ADR-058-role-backlog-aceitar-forge.md)), `test_command` (top-level no schema) e `ubiquitous_language` (informational; sem local mode). Outros informational roles (`product_direction`, `design_notes`) e `version_files`/`changelog` ficam fora — operador edita manualmente quando precisar; adicionar incrementalmente ao wizard conforme dor concreta emergir.
 
 Frontmatter sem `roles:` por design ([ADR-003](../../docs/decisions/ADR-003-frontmatter-roles.md) § Schema) — `/init-config` define o bloco que o Resolution protocol lê em vez de consumi-lo; cutucada de descoberta ([ADR-046](../../docs/decisions/ADR-046-cutucada-uniforme-descoberta-gaps-configuracao.md)) não se aplica dentro desta skill.
 
@@ -37,15 +37,30 @@ Sem argumentos. Skill puramente interativa — perguntas via `AskUserQuestion` p
 
 ### 3. Perguntar per role
 
+#### 3.0. Pré-probe do forge (para role `backlog`)
+
+Executado antes da tabela de perguntas. Resolve disponibilidade do forge no consumer corrente; usado para condicionar a opção `Forge` da pergunta do role `backlog`.
+
+- **Clause defensiva não-git:** se step 1 sinalizou não-git (precondição `git rev-parse --is-inside-work-tree` falhou), pular pré-probe e tratar `forge_disponivel = false` (paralelo a `unsupported-host`). `forge-auto-detect.md` § Algoritmo bullet 1 (`git remote get-url origin`) lança erro shell em não-git, não retorna output controlado — clause cobre o gap.
+- Caso git válido: seguir `${CLAUDE_PLUGIN_ROOT}/docs/procedures/forge-auto-detect.md` uma vez.
+- Registrar `forge_disponivel = true` se output é `gh` ou `glab`; `false` se `no-detection` ou `unsupported-host`.
+- Probe é silente (sem reportar ao operador agora — eventual nota emitida no §5 quando operador escolheu `Forge`).
+
+**Convenção de Recommended em modo Editar:** Recommended estático (`Canonical (Recommended)`) preservado mesmo quando bloco existente declara modo diferente (passo 2 / `Editar`). Operador re-seleciona ativamente o valor atual. Sem dinâmica de Recommended dependente de estado anterior — aderente a `CLAUDE.md` → "AskUserQuestion mechanics" (`(Recommended)` só quando default é estatisticamente estável; estado anterior ≠ default estatístico).
+
+#### 3.1. Perguntas per role
+
 Quatro perguntas via `AskUserQuestion`. Agrupar numa única chamada quando viável (limite 4 questions per chamada, regra de unificação em `CLAUDE.md` → "AskUserQuestion mechanics"). Para os 3 roles que aceitam local mode, **labels** ficam curtos (`Canonical` / `Local` / `Não usamos`) e o **path resolvido** vai em `description` (carrega o trade-off concreto per convenção `AskUserQuestion mechanics`):
 
 | Role | Header | Opções (label / description) |
 |---|---|---|
 | `decisions_dir` | `Decisions` | `Canonical` (`grava em docs/decisions/ — default canonical do toolkit`) (Recommended) / `Local` (`grava em .claude/local/decisions/ — gitignored, não compartilhado`) / `Não usamos` (`grava paths.decisions_dir: null — skill subsequente trata como absent sem perguntar`) |
-| `backlog` | `Backlog` | análogo (paths `BACKLOG.md` / `.claude/local/BACKLOG.md` / null) |
-| `plans_dir` | `Plans` | análogo (paths `docs/plans/` / `.claude/local/plans/` / null) |
+| `backlog` | `Backlog` | `Canonical` (Recommended) / `Local` / `Forge` (apenas se `forge_disponivel = true`, per §3.0) / `Não usamos`. Paths e trade-offs em `description`: `Canonical` (`grava em BACKLOG.md — default canonical do toolkit`), `Local` (`grava em .claude/local/BACKLOG.md — gitignored, não compartilhado`), `Forge` (`backlog vem do forge — issues abertas sem assignee via gh/glab; mutações remotas (criar/fechar issue) precedidas de cutucada AskUserQuestion. Aplica-se a backlog v1 (decisions_dir/plans_dir rejeitam). Identificador interno: '#<número>: <título>' per ADR-058`), `Não usamos` (`grava paths.backlog: null — skill subsequente trata como absent sem perguntar`) |
+| `plans_dir` | `Plans` | análogo a `decisions_dir` (paths `docs/plans/` / `.claude/local/plans/` / null) |
 | `ubiquitous_language` | `Domain` | `Canonical` (`grava em docs/domain.md — default canonical do toolkit`) / `Não usamos` (`grava paths.ubiquitous_language: null — skill subsequente trata como absent sem perguntar`) |
 | `test_command` | `TestCmd` | opções dependem do probe — ver abaixo |
+
+`forge_disponivel = false` → opção `Forge` **omitida** da pergunta (não exibida disabled — wizard enxuto per `## O que NÃO fazer`). Sem cutucada explicativa.
 
 **Probe stack-aware para `test_command`** antes de perguntar — testa markers do consumer e propõe valor inicial:
 
@@ -69,6 +84,8 @@ Pergunta via `AskUserQuestion` (header `TestCmd`):
 
 Postura editorial não-reparativa — sem re-prompt automático via `AskUserQuestion`, operador re-executa com escolhas corrigidas. Bloco YAML **não é gravado** quando a combinação inválida é detectada.
 
+A recusa acima opera sobre modo `local` (mensageiro `**Linha do backlog:**` carrega texto privado). Em modo `forge`, o identificador `#<número>: <título>` é público por construção; combinações com `paths.backlog: forge` ficam fora desta recusa ([ADR-058](../../docs/decisions/ADR-058-role-backlog-aceitar-forge.md) § (i)). Categoria semântica distinta vs exceção à regra original.
+
 ### 4. Compor e gravar bloco YAML no CLAUDE.md
 
 Estratégia de composição (compactar — chave omitida significa canonical default per schema):
@@ -76,6 +93,7 @@ Estratégia de composição (compactar — chave omitida significa canonical def
 - Operador escolheu **canonical** → omitir chave do YAML (canonical é o default; explicitar polui).
 - Operador escolheu **local** → incluir `paths.<role>: local`.
 - Operador escolheu **null** → incluir `paths.<role>: null` (skill subsequente trata como absent sem perguntar de novo).
+- Operador escolheu **forge** (apenas role `backlog`) → incluir `paths.backlog: forge`. Skill subsequente que consome o role executa probe do CLI na primeira invocação per [ADR-058](../../docs/decisions/ADR-058-role-backlog-aceitar-forge.md) § (d) policy do caller; failure → erro explícito orientando setup.
 - `test_command` é top-level, não sob `paths`. Mesmo critério: canonical default = `make test`; valor customizado vira `test_command: "<valor>"`; null vira `test_command: null`.
 
 Marker HTML fixo (string literal exata): `<!-- pragmatic-toolkit:config -->`.
@@ -95,7 +113,7 @@ Reportar path final ao operador:
 
 ### 4.5. Garantir paths replicados em `.worktreeinclude` (invariantes de setup)
 
-**Critério de disparo:** ≥1 role configurada como `local` no passo 3 OR `claude_md_gitignored = true` (sinalizado pelo step 3), **independente do caminho de entrada do passo 2** (bloco ausente → gravar novo; bloco presente + `Editar` → gravar atualizado). Nenhuma condição ativa → skip silente.
+**Critério de disparo:** ≥1 role configurada como `local` no passo 3 OR `claude_md_gitignored = true` (sinalizado pelo step 3), **independente do caminho de entrada do passo 2** (bloco ausente → gravar novo; bloco presente + `Editar` → gravar atualizado). Nenhuma condição ativa → skip silente. (Modo `forge` não dispara replicação — paralelo a canonical, sem store local sob `.claude/`. Per [ADR-058](../../docs/decisions/ADR-058-role-backlog-aceitar-forge.md) § (a).)
 
 Mecânica determinística (sem `AskUserQuestion` — operação tem resultado óbvio, sem trade-off cross-team a confirmar per [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md)):
 
@@ -134,6 +152,10 @@ Substitui semanticamente a mensagem doutrinária revogada do step 3; cobre a tra
 
 > `Roles em modo local: <lista>. O gate "Gitignore" per ADR-047 dispara na primeira escrita subsequente sob .claude/local/<role>/ — quando você rodar /new-adr, /run-plan ou outra skill que grave lá. Naquele momento, operador confirma adicionar .claude/local/ ao .gitignore.`
 
+**Modo `forge` declarado em `backlog`:**
+
+> `Modo forge declarado em backlog. Primeira invocação de skill consumidora (/next passo 1, /triage step 4, /run-plan §3.4, /curate-backlog) executa probe via forge-auto-detect.md no momento e pode falhar com erro explícito se setup mudar (CLI desinstalada, repo movido para host não suportado, etc.). Cutucada AskUserQuestion precede cada mutação remota (criar/fechar issue) por blast radius imediato.`
+
 ## Probe stack-aware — adicionando stacks novas
 
 A tabela de §3 é v1. Stacks adicionais (Gradle, Cargo, Cargo workspace, Bun, etc.) entram conforme aparecerem em consumers reais — não pré-implementar. Para adicionar nova linha: marker (arquivo presente no consumer) + valor proposto canônico daquela stack.
@@ -147,3 +169,4 @@ A tabela de §3 é v1. Stacks adicionais (Gradle, Cargo, Cargo workspace, Bun, e
 - **Não invocar outras skills do toolkit em cascata.** `/init-config` é setup, não orquestrador. Operador chama as skills seguintes manualmente após config gravado.
 - **Não emitir cutucada de descoberta (ADR-046):** `/init-config` define o bloco em vez de consumir.
 - **Não acomodar cross-mode `backlog: local + plans_dir: canonical` via warning, re-prompt ou cobertura defensiva** ([ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md)) — recusa hard é o ponto; "amaciar" a recusa em futura edição re-introduz leak de texto privado para plano público.
+- **Não oferecer opção `Forge` quando pré-probe retorna `no-detection`/`unsupported-host`** ([ADR-058](../../docs/decisions/ADR-058-role-backlog-aceitar-forge.md)) — operador veria opção que falha por construção. Opção omitida é silente, sem cutucada explicativa (mantém wizard enxuto; alternativa "disabled com diagnóstico inline" rebatida no plano original — `## O que NÃO fazer` registra a doutrina).
