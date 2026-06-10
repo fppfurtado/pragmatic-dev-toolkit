@@ -2,6 +2,20 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.4.0] - 2026-06-10
+
+### Added
+- ADR-058 codifies `paths.backlog: forge` as fourth variant of the `paths.<role>: <modo>` family (parallel to canonical/local/null) — open issues without assignee in the current repo become the backlog source. 4 consuming skills (`/next` passos 1+3+6, `/triage` step 4, `/run-plan §3.4`, `/curate-backlog` H1/H2/H3) gain forge-mode branches. `forge-auto-detect.md` extended with 3 issue operations (list/close/create) — procedure remains neutral; policy of explicit error on `no-detection`/`unsupported-host` lives in the caller (F1 cutucada decided during /triage). Canonical item identifier `#<número>: <título>` (parallel to literal line text in file mode). v1: no cache (alternative A — always fetch fresh; concrete revision trigger to promote to selective revalidation), no custom labels, per repo only. `AskUserQuestion` cutucada required before each remote mutation (immediate blast radius). (PR #112)
+
+### Changed
+- `CLAUDE.md` role contract table line `backlog` updated to declare forge mode acceptance; Schema and semantics gains `forge` bullet; Local mode section gains forge coexistence note.
+- `README.md` What's inside entry for `forge-auto-detect.md` updated to reflect 3 new issue operations + 4 consuming skills + policy split (heuristic consumers may degrade silently; role-declared dependency stops with explicit error).
+- `BACKLOG.md` line 100 ("desacoplar de GitHub-específico") refined to restrict scope to residual on `/release` (auto-detect + forge mode covered by ADR-058 partial coverage).
+
+### Notes
+- `glab issue close` does not accept `--comment` (verified empirically in glab 1.89.0); canonical syntax is `glab issue note N --message + glab issue close N` (two sequential commands). Documented in `forge-auto-detect.md` and ADR-058.
+- Validation deferred per § Pendências de validação in `docs/plans/role-backlog-aceitar-forge.md` — plugin (this repo) doesn't declare `paths.backlog: forge`; 9 manual scenarios await dogfood in real TJPA + personal GitHub.
+
 ## [3.3.0] - 2026-06-10
 
 ### Added
