@@ -2,6 +2,19 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.5.0] - 2026-06-10
+
+### Added
+- `/init-config` wizard extended for `paths.backlog: forge` (4th variant of role backlog per ADR-058). §3.0 pre-probe via `forge-auto-detect.md` (with non-git defensive clause); §3 table line `backlog` gains 4th option `Forge` conditional on `forge_disponivel = true`; §4 composition strategy writes `paths.backlog: forge`; §4.5 OR criterion preserved with inline anti-drift note (forge mode doesn't trigger `.claude/` replication); §5 informs first invocation runs probe + mutation cutucada. Cross-mode refusal of ADR-047 preserved — autonomous sentence naming forge mode as distinct semantic category (not rule exception) per ADR-058 § (i). (PR #113)
+- `/run-plan §3.5` `[capture:backlog]` for `paths.backlog: forge` — **2nd instance** of ADR-058 § (e) sub-caso editorial with **batched-com-seleção** form (contrast with 1st instance granular of `/triage step 4` consolidation). §3.5 splits by marker + backlog mode: `[capture:validacao]` unchanged in both modes; `[capture:backlog]` file mode preserves `## Próximos` of BACKLOG; `[capture:backlog]` forge mode → bullet in `## Capturas backlog em modo forge` of current plan (no individual cutucada — parallel to `[capture:validacao]`). Batched-com-seleção cutucada (`Aplicar todas` Recommended / `Selecionar quais` Other / `Manter como pendentes`) fires after materialization and before done. `Aplicar todas`: forge-auto-detect + `gh/glab issue create` with auto-generated context (3 lines) + replace bullets with refs `- #<N>: <linha>`. Operator decision F1+F2+F3 unified during `/triage` resolves ADR-002 tension (cutucada at done, not pre-loop nor individual materialization) + N-clicks fatigue + Task pending ambiguity in single editorial pattern. (PR #114)
+
+### Changed
+- `README.md` line 20 (`/init-config` entry) updated to include `forge` in role backlog options.
+- ADR-058 § (e) extended with 2nd instance of sub-caso editorial (batched-com-seleção form); § (g) table extended with `/run-plan §3.5` forge mode line.
+
+### Notes
+- Both PRs (#113, #114) executed via `/triage` caminho-com-plano + `/run-plan` workflow (per ADR-049 § Decisão (b)). Validation: manual scenarios for both PRs largely deferred to dogfood; PR #114 had 5 read-only scenarios validated in real TJPA environment by operator during §3.2.
+
 ## [3.4.0] - 2026-06-10
 
 ### Added
