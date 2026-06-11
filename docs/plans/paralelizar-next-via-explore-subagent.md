@@ -71,3 +71,11 @@ Cenário 6 — verdict `forte` em modo `forge`: subagent retorna `forte`. Espera
 - Plano § Arquivos a alterar: Bloco 2 (criação do ADR) removido — ADR-059 já materializado pré-`/run-plan` via delegação `/triage` → `/new-adr`; nota explicativa em § Notas operacionais + atualização de § Verificação end-to-end critérios 3-5 (caminho-único).
 - Plano § Verificação manual cenário 4: degradado para "verificação diferida — primeira falha real serve de teste; Claude Code não expõe API para indução controlada" (caminho-único).
 - Plano § Resumo da mudança: rebut de `general-purpose` adicionado ao bullet Subagent type + ADR-059 incluído em `**ADRs candidatos:**` (caminho-único).
+
+## Pendências de validação
+
+- Cenário 1 (caminho serial preservado, `N < 5`): invocar `/next 3` em consumer com ≥3 itens em `## Próximos` pós-merge+reload; verificar via output que **não há** spawn de subagent.
+- Cenário 2 (caminho paralelo ativado, `N = 10`): invocar `/next` (default 10) em consumer com ≥10 itens em `## Próximos` pós-merge+reload; verificar 10 subagents `Explore` spawned em paralelo via UI da sessão (1 mensagem do assistente com N tool calls `Agent`).
+- Cenário 3 (paralelo em modo `forge`, `N = 20+`): em consumer com `paths.backlog: forge` e ≥20 issues abertas sem assignee, invocar `/next 20`; verificar 20 subagents spawned + cutucadas de fechamento remoto preservadas (ADR-058 § (e)).
+- Cenário 5 (verdict `forte` em modo arquivo): exercitar via candidato com evidência forte real no codebase do consumer; verificar movimentação para `## Concluídos` + commit no passo 6 do `/next`.
+- Cenário 6 (verdict `forte` em modo `forge`): exercitar via issue com evidência forte real; verificar cutucada `AskUserQuestion` (header `Forge`) + `gh/glab issue close` em confirmação.
