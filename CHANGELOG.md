@@ -2,6 +2,17 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.6.0] - 2026-06-11
+
+### Added
+- `/next [N]` — positional CLI arg parameterizes the number of items read from `## Próximos` (file mode) or issue list (forge mode) in step 2. Default `10` preserves prior behavior; operator overrides per-invocation. Applies to both modes; filter lives in step 2.
+- `/next` step 3 evidence verification parallelized via `Agent(Explore)` per candidate when `N ≥ 5` (caminho paralelo); `N < 5` preserves serial grep/glob from main thread. Subagent contract: structured input (candidate line + classification instructions) and output (`verdict` + `path:line` + 1-line justification). Subagent failure assumed `sem evidência` + warning, doesn't block other candidates. (PR #115)
+
+### Notes
+- ADR-059 (subagent em loop interno de skill — per-item probe + threshold): partial successor of ADR-009 introducing shape axis (`scan único` vs `per-item probe`) refining the volume-vs-overhead criterion. Threshold `N ≥ 5` anchored as half of `/next` default (10) — safety margin against cold-start dominance in small backlogs. Materialized empirically by real consumers (`tjpa/pje-2.1` with 100+ forge issues, meta-system with comparable volume).
+- Plan `paralelizar-next-via-explore-subagent` with 5 deferred validation scenarios for post-merge+reload smoke (cenários 1, 2, 3, 5, 6; cenário 4 self-deferred — no Claude Code API for controlled failure induction).
+- BACKLOG: 2 items marked concluded (`parametrizar N em /next`, `paralelizar verificação 'já implementado?' em /next`).
+
 ## [3.5.0] - 2026-06-10
 
 ### Added
