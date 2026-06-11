@@ -33,7 +33,33 @@ Pegar os **`N` primeiros** itens de `## Próximos` em ordem de aparição (topo 
 
 ### 3. Verificar implementação no código
 
-Para cada candidato, buscar evidência no repo (funções, endpoints, modelos, comandos, fluxos correspondentes). Classificar:
+Para cada candidato, buscar evidência no repo (funções, endpoints, modelos, comandos, fluxos correspondentes). Classificar em **evidência forte** / **evidência fraca** / **sem evidência** (semântica detalhada abaixo).
+
+**Caminho de verificação por `N`** (per [ADR-059](../../docs/decisions/ADR-059-subagent-em-loop-interno-de-skill-per-item-probe-threshold.md)):
+
+- **`N < 5` (caminho serial):** main thread varre o codebase via grep/glob direto para cada candidato, em ordem. Cold-start de subagent perde para varredura local quando o volume é pequeno.
+- **`N ≥ 5` (caminho paralelo):** spawn de **1 subagent `Explore` por candidato** em **único turno** (batch de tool calls paralelas). Cada subagent retorna o verdict do seu candidato. Main thread aguarda todos os retornos antes de classificar. Latência total ≈ max(individual) em vez de soma; cold-start replicado mas amortizado pelo paralelismo.
+
+**Contrato do subagent (caminho paralelo).** Prompt curto e self-contained — subagent é frio, não tem contexto da conversa principal.
+
+- **Input por subagent:**
+  - Descrição do plugin/projeto em 1 linha (ex.: "Plugin Claude Code 'pragmatic-dev-toolkit' que ship skills/agents/hooks como markdown + scripts Python curtos.").
+  - Linha literal do candidato (texto integral do bullet).
+  - Instruções de classificação (3 saídas mutuamente exclusivas):
+    - **`forte`** — código diretamente mapeável (handler, função, comando, fluxo concretamente presente e funcional). Exige `path:line` da evidência principal.
+    - **`fraca`** — código parcial, feature similar com escopo diferente, inferência incerta. Descrever o que foi encontrado.
+    - **`sem`** — busca direcionada não retornou evidência substantiva.
+- **Output por subagent** (texto curto estruturado):
+
+  ```
+  verdict: <forte|fraca|sem>
+  path: <path:line ou vazio>
+  justificativa: <1 linha>
+  ```
+
+- **Falha do subagent** (timeout, erro, output malformado): main thread assume `verdict: sem` para esse candidato + warning reportado; **não bloqueia** outros candidatos.
+
+**Classificação (mesma semântica em ambos os caminhos):**
 
 - **Evidência forte** — código claro e diretamente mapeável (ex.: item "exportar movimentos em CSV" → handler de export CSV presente e funcional). **Em modo arquivo:** preparar movimentação da linha para `## Concluídos` (escrever no arquivo) e reportar com justificativa de 1 linha; commit fica para o passo 6. **Em modo `forge`** (per ADR-058 § (e)): para cada issue com evidência forte, disparar cutucada `AskUserQuestion` (header `Forge`, opções `Aplicar no forge` (Recommended) / `Cancelar (não aplicar)`) com `description` da opção `Aplicar` carregando o(s) comando(s) concreto(s). Uma cutucada por issue. Confirmação → em `gh`, `gh issue close #<número> --reason completed --comment "<justificativa>"` (close + comentário num único comando); em `glab`, dois comandos sequenciais — `glab issue note <número> --message "<justificativa>"` então `glab issue close <número>` (CLI assimétrica: `glab issue close` não aceita `--comment`). Cancelamento → noop, segue como candidato normal. Commit do passo 6 é skip em modo forge (mutação já remota).
 - **Evidência fraca** — código parcial, feature similar com escopo diferente, ou inferência incerta. Reportar o que foi encontrado; **não mover** — operador decide. Em modo forge, sem cutucada de fechamento (mesma razão — operador decide manualmente).
@@ -91,3 +117,4 @@ Com a intenção confirmada (item escolhido ou texto livre), executar o fluxo de
 
 - Não apresentar mais de 3 sugestões no top.
 - Não iniciar `/triage` sem escolha explícita do operador.
+- Não paralelizar quando `N < 5` — cold-start de subagent perde para grep direto do main thread (per [ADR-059](../../docs/decisions/ADR-059-subagent-em-loop-interno-de-skill-per-item-probe-threshold.md)).
