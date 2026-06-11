@@ -11,6 +11,10 @@ roles:
 
 Skill de orientação de sessão: lê o backlog, limpa itens já implementados e indica os três candidatos de maior impacto — alimentando o fluxo de `/triage` a seguir.
 
+## Argumentos
+
+Inteiro positivo opcional `N` — número de itens lidos do topo de `## Próximos` (modo arquivo) ou da lista de issues (modo forge) no passo 2. Default `10`. Input inválido (não-inteiro, ≤ 0) → reportar e usar default.
+
 ## Passos
 
 ### 1. Ler o backlog
@@ -25,7 +29,7 @@ Se `.claude/local/NOTES.md` existir, ler na íntegra para contexto suplementar d
 
 ### 2. Selecionar candidatos
 
-Pegar os **dez primeiros** itens de `## Próximos` em ordem de aparição (topo = mais antigo). Dez dá margem para descartar implementados e ainda chegar a três finais. Em modo `forge`, ordem natural é `createdAt` ascendente (lista já vem ordenada do passo 1).
+Pegar os **`N` primeiros** itens de `## Próximos` em ordem de aparição (topo = mais antigo). Default `N = 10` (override por invocação via argumento posicional — ver `## Argumentos`) dá margem para descartar implementados e ainda chegar a três finais. Em modo `forge`, ordem natural é `createdAt` ascendente (lista já vem ordenada do passo 1); filtro `N` aplicado post-hoc sobre a lista do passo 1.
 
 ### 3. Verificar implementação no código
 
