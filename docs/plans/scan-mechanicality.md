@@ -69,6 +69,11 @@ Stack-agnosticism validada quando ambos cenários produzem julgamento coerente c
 - **Sem dependência de role:** skill não traversa Resolution protocol step 3 → não emite cutucada de descoberta → não incrementa contador de sites (ADR-046 linha 219 helper threshold permanece em 12 sites pós-`/curate-backlog`). Editorial inheritance da convenção de cutucada não aplica.
 - **Downstream facetas:** Faceta 3 (refactor `/mechanical-skills-scan` no meta-system) e Faceta 4 (análise mecanicidade `prompt.py` no h3-finance-agent) consomem a interface de path único cristalizada aqui — cada uma vira `/triage` independente nos respectivos repos pós-merge desta Faceta 2.
 
+## Pendências de validação
+
+- Cenários 1 e 2 do `## Verificação manual` (smoke real cross-stack contra SKILL.md meta + `prompt.py` do h3-finance-agent) exigem skill instalada no cache do plugin — exerciseáveis na 1ª invocação subsequente de `/scan-mechanicality` pós-merge + `/plugin update` + `/reload-plugins`. Inspeção textual inline validou estrutura mecânica (SKILL.md bem-formada, README atualizado); gate prescritive ADR-017 § Mitigações dependente de smoke comportamental real.
+- Critério 2 de `## Verificação end-to-end` (spec bug): `grep -cE '^(name|description|roles|disable-model-invocation):' skills/scan-mechanicality/SKILL.md` retorna **4**, não 5 como esperado — `roles.required: []` e `roles.informational: []` são nested (indentados sob `roles:`) e não casam com `^(...):`. SKILL.md está corretamente formada (frontmatter padrão); critério foi mal-especificado. Refinar para ancorar count real (4) ou usar pattern nested explícito (`^\s+(required|informational):` paralelo a `^(name|description|...):`).
+
 ## Decisões absorvidas
 
 - Bloco 1 `## Passos` passo 1: positivizar diretiva de stack-agnosticism (tratar conteúdo como blob textual agnóstico ao envólucro sintático; avaliar substância de prompts embedded, não código de envólucro) — gate ADR-017 § Mitigações merece pareamento defensivo no caminho positivo além do `## O que NÃO fazer` (caminho-único).
