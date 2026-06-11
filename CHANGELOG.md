@@ -2,6 +2,15 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.6.1] - 2026-06-11
+
+### Added
+- `/scan-mechanicality <path>` — new diagnostic skill applying Cond 1 of meta-system ADR-011 ("is markdown substance >50% mechanizable?") over arbitrary prompt markdown (SKILL.md, system prompt, agent.md, prompt.py, etc.). Path-only positional interface; structured markdown output in PT-BR (POSITIVO/AMBÍGUO/NEGATIVO + candidate substance + reasons). Stack-agnostic — evaluates prompt substance embedded in code wrappers (Python, JS, etc.), not syntactic envelope. Materializes Faceta 2 of meta-system ADR-017 decomposition; unblocks Faceta 3 (meta-system) and Faceta 4 (h3-finance-agent). Gate prescritive ADR-017 § Mitigações validated empirically: cross-stack classification against `skills/triage/SKILL.md` (AMBÍGUO) and `h3-finance-agent/src/agente/prompt.py` (NEGATIVO) anchored in substance, not syntax. (PR #116)
+
+### Notes
+- BACKLOG: 1 item marked concluded (`Faceta 2 da decomposição /mechanical-skills-scan`).
+- Plan `scan-mechanicality` shipped with both validation pendências closed (smoke real cross-stack covered manually post-merge; frontmatter grep spec bug fixed via Option 1 simplified — count anchored to real value 4, parenthetical glosa dropped).
+
 ## [3.6.0] - 2026-06-11
 
 ### Added
