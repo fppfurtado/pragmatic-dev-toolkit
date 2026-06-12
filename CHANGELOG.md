@@ -2,6 +2,23 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.7.0] - 2026-06-12
+
+### Added
+- ADR-060 — `## Status` field complementar to git/forge for tracking plan state machine (`Pendente`/`Abortado` explicit; `Em execução`/`Concluído` derived from git/forge per ADR-049 § Decisão (a)). Sucessor parcial of ADR-022 (cond 5 ADR-034) with inline cross-ref in ADR-022 § Decisão critério 3.
+- `/next` step 4.6 "Varrer planos em aberto" — lists non-in-curso plans by derived state (Pendente via field, Abortado via field, Em execução via worktree+PR, Concluído via archive/+ADR-022 cadeia); informational block in step 5 report, does not compete in top-3 enum. (PR #117)
+- `/triage` step 4 (caminho-com-plano) inserts `## Status\n\nPendente` block in new plan body immediately after `# Plano — <Título>` per ADR-060 § Localização do campo. (PR #118)
+- `/run-plan` §3.4 done removes `## Status` block via bloco extra unificado — same commit edits BACKLOG (mark Concluídos) + plan body (remove field), single micro-commit, revisor `code` covers both edits. Forge mode preserved: backlog mutation remote, plan body remains local edit. (PR #118)
+
+### Fixed
+- `/next` 4.6 `## Status` field detection: `grep -A1 "^## Status$" | tail -1` returned blank line (canonical format is H2 + blank + value); replaced with `awk '/^## Status$/{flag=1; next} flag && NF{print; exit}'` skip-blank pattern. Mirror fix in ADR-060 § Localização do campo. (Smoke real exposed the bug post-merge.)
+
+### Notes
+- `/archive-plans` archived 57 historical plans to `docs/plans/archive/2026-Q2/` (first batch archival in this repo). Plans satisfying all 6 cumulative criteria of ADR-022.
+- Editorial wave retroactive: `session-audit-skill.md` received `## Status: Pendente` (first empirically documented case of órfão pré-execução); `next-varrer-planos-em-aberto.md` had stale `Status: Pendente` cleaned post-merge PR #117 as dogfood of /run-plan §3.4 wiring.
+- `CLAUDE.md` § Editing conventions adds ADR-060 entry.
+- 2 BACKLOG entries registered then marked concluded (heurística de completude + /next varrer planos em aberto).
+
 ## [3.6.1] - 2026-06-11
 
 ### Added
