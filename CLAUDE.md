@@ -12,7 +12,7 @@ The companion repo is [`scaffold-kit`](https://github.com/fppfurtado/scaffold-ki
 
 Three component types, each with its own discovery mechanism:
 
-- **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/draft-idea`, `/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests`, `/release`, `/next`, `/init-config`, `/archive-plans`, `/curate-backlog`). Skills only act when invoked by the user.
+- **Skills** — `skills/<name>/SKILL.md` with `name:` and `description:` frontmatter. Slash commands (`/draft-idea`, `/triage`, `/new-adr`, `/run-plan`, `/debug`, `/gen-tests`, `/release`, `/next`, `/init-config`, `/archive-plans`, `/curate-backlog`, `/session-audit`). Skills only act when invoked by the user.
 - **Agents** — `agents/<name>.md` with frontmatter. Five reviewers shipped: `code-reviewer`, `qa-reviewer`, `security-reviewer`, `doc-reviewer`, `design-reviewer`. Dispatch rules in "The role contract" table below.
 - **Hooks** — `hooks/hooks.json` declares lifecycle bindings; the bound scripts (`hooks/*.py`) run on every matching tool call in any project that has the plugin installed. Therefore hooks **must auto-gate**. `PostToolUse` exits 0; `PreToolUse` uses exit 2 to block (see `block_env.py`).
 
