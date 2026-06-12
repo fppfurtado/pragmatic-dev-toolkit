@@ -1,9 +1,5 @@
 # Plano — Wiring de ADR-060 (`## Status` field) em `/triage` + `/run-plan`
 
-## Status
-
-Pendente
-
 ## Contexto
 
 **ADRs candidatos:** ADR-060 (decisão central — § Wiring nas skills prescreve `/triage` step 4 cria `Pendente` + `/run-plan §3.4` remove no done), ADR-049 (fronteira § Decisão (a) state-em-git preservada — wiring respeita); ADR-022 (cadeia editorial preservada — mutação em plano body não toca BACKLOG cadeia).
@@ -78,6 +74,10 @@ Sem mudança no template, sem mudança em outros passos. Idioma PT-BR preservado
 - **Ordering de execução:** Bloco 1 (`/triage`) edita o producer; Bloco 2 (`/run-plan`) edita o consumer do field; Bloco 3 cleanup histórico. Ordem não-crítica para o resultado final; testabilidade do Cenário 3 depende dos 3 blocos shippados antes do smoke real.
 
 - **Wiring posterior:** este plano fecha o último wiring de ADR-060 vis-à-vis o producer + consumer mecânico. Editorial follow-up restante: CLAUDE.md cross-ref pra ADR-060 em § Editing conventions (separado deste plano per Ockham — esses cross-refs são listáveis manualmente quando o operador editar CLAUDE.md por outras razões).
+
+## Pendências de validação
+
+- Smoke comportamental real dos Cenários 1+2+3 pós-`/reload-plugins` em consumer: (a) invocar `/triage` em consumer pra verificar criação do field; (b) `/run-plan` em plano com field pra verificar removal; (c) ciclo completo `/triage` → `/run-plan` → `/next`. Validação textual passou via gate `/run-plan §3.2` desta sessão; comportamental fica pendente até reload + invocações reais. Cenário 2 foi exercitado empiricamente como dogfood circular no §3.4 desta execução (este próprio plano teve `## Status` removido).
 
 ## Decisões absorvidas
 
