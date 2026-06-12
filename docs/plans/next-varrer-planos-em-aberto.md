@@ -75,6 +75,10 @@ Sem mudança em frontmatter (papel `plans_dir` segue `informational`). Idioma PT
 
 - **Plano committed e push como unidade atômica** per `/triage` § 5 — caminho-com-plano em main.
 
+## Pendências de validação
+
+- Smoke real dos 7 cenários do `## Verificação manual` pós-`/reload-plugins` em consumer com fixture (`session-audit-skill` com `## Status: Pendente` já materializado em `c75c040` é candidato natural ao Cenário 1). Cobertura textual passou pelo gate `/run-plan §3.2` desta sessão; comportamental fica pendente até reload + invocação real.
+
 ## Decisões absorvidas
 
 - `## Verificação end-to-end` critério 4: substituído `count de \`### \` aumenta exatamente 1` por `git diff --stat` additions-only + inspeção visual — diretriz canonical de `templates/plan.md` §2 (counts como variável ou condição inversa) — caminho-único.
