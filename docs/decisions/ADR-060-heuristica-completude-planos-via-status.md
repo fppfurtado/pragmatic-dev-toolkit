@@ -1,7 +1,7 @@
 # ADR-060: Heurística de completude de planos via campo `## Status` complementar a git/forge
 
 **Data:** 2026-06-12
-**Status:** Proposto
+**Status:** Aceito (2026-06-12)
 
 ## Origem
 
