@@ -91,7 +91,7 @@ Independente do ranking do top 3 (rationale diferente: fechamento de plano espec
 Paralelo ao passo 4.5 (rationale análogo — orientação sessional sobre planos em estado `Pendente`/`Abortado`, não compete no enum). Resultado é exibido em bloco separado **Planos em aberto** no passo 5. Consome heurística de completude codificada em [ADR-060](../../docs/decisions/ADR-060-heuristica-completude-planos-via-status.md) — campo `## Status` no body do plano complementar a git/forge per ADR-060 § Modelo de signal. `Em execução` e `Concluído` derivados de git/forge não geram entrada aqui (sem ação pendente do operador).
 
 1. **Listar planos não-em-curso:** reusar a saída do passo 4.5 (papel `plans_dir` resolvido + filtro em curso via worktree-active + PR/MR aberto). Sem planos → skip silente desta seção.
-2. **Classificar por estado per ADR-060 § Modelo de signal:** para cada plano não-em-curso, ler valor após o header `## Status` no body — `grep -A1 "^## Status$" <plans_dir>/<slug>.md | tail -1`. Classificar:
+2. **Classificar por estado per ADR-060 § Modelo de signal:** para cada plano não-em-curso, ler valor após o header `## Status` no body — `awk '/^## Status$/{flag=1; next} flag && NF{print; exit}' <plans_dir>/<slug>.md` (skip da blank line canonical entre header e valor). Classificar:
    - **`Pendente`** — valor == `Pendente`.
    - **`Abortado`** — valor == `Abortado`.
    - **Outros** (field ausente, valor não-canonical, ou estado derivado `Em execução`/`Concluído` via git/forge) → skip silente (sem ação pendente do operador).

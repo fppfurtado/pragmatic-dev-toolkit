@@ -69,7 +69,7 @@ Field é **complementar**, não substitutivo. Precedência de leitura em consumi
 `## Status` é H2 logo após `# Plano — <Título>` (antes de `## Contexto`). Razões:
 
 - Visibilidade ao abrir o plano (above-the-fold).
-- Matching simples: `grep -A1 "^## Status$" docs/plans/<slug>.md` retorna o estado corrente em 1 grep.
+- Matching simples: `awk '/^## Status$/{flag=1; next} flag && NF{print; exit}' docs/plans/<slug>.md` retorna o estado corrente em 1 comando (skip da blank line canonical entre header e valor).
 - H2 é convenção universal markdown — não exige frontmatter (que precisaria parser).
 
 Forma canonical:
