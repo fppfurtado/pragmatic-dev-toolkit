@@ -28,7 +28,7 @@ Capturar `--scope <area>` opcional. Sem flag = `default` (cobre os 4 destinos).
 
 ### 1.5. Detecção de modo `forge` no role `backlog`
 
-Resolver `paths.backlog` via Resolution Protocol. Se `forge`, marcar findings de tipo `captura_backlog` como **defer pra `/triage`** com nota informativa apontando ADR-058 § Decisão (e) (policy de cutucada granular por mutação remota). Skill **não** propõe `gh issue create` / `glab issue create` direto — `/triage` step 4 modo forge já tem a mecânica codificada; duplicar quebraria a fronteira editorial.
+Resolver `paths.backlog` via Resolution Protocol. Se `forge`, marcar findings de tipo `captura_backlog` como **defer pra `/triage`** com nota informativa apontando ADR-058 § Decisão (policy de cutucada granular por mutação remota). Skill **não** propõe `gh issue create` / `glab issue create` direto — `/triage` step 4 modo forge já tem a mecânica codificada; duplicar quebraria a fronteira editorial.
 
 Modo arquivo (canonical ou `local`) ou `paths.backlog: null` → seguir fluxo normal de captura para BACKLOG.
 
@@ -99,7 +99,7 @@ Em seguida, **uma única cutucada batched** via `AskUserQuestion` (header `Captu
 
 Para cada finding aceito pela cutucada do passo 5, executar a `ação_sugerida_prosa_curta` aplicando edit no artefato resolvido:
 
-- **`captura_backlog` em modo arquivo:** `Edit` em `## Próximos` do papel `backlog` adicionando bullet com `substancia_breve`.
+- **`captura_backlog` em modo arquivo:** `Edit` em `## Próximos` do papel `backlog` adicionando bullet com `substancia_breve`. **Salvaguarda worktree-probe** (herdada de [ADR-057](../../docs/decisions/ADR-057-curate-backlog-manutencao-editorial-periodica.md) § Decisão § Salvaguarda de concorrência, per ADR-061 § Trade-offs): antes de aplicar, probe `git worktree list --porcelain`. Main-só (sem worktree adicional) → mutação direta. ≥1 worktree adicional → defer via append em `.claude/local/NOTES.md` como signal queue (mesma mecânica do ADR-057), sem mutação direta em `BACKLOG.md`; operador re-aplica via `/curate-backlog` ou manual.
 - **`captura_backlog` em modo `forge`:** **defer pra `/triage` subsequente** (per passo 1.5). Reportar no done explicitamente sem mutação remota.
 - **`captura_notes`:** `Edit` (append) em `.claude/local/NOTES.md` com timestamp (paralelo a `/note`).
 - **`cristalizacao_adr`:** sugestão textual de invocar `/new-adr <título>` no encerramento — skill **não** chama `/new-adr` aninhado (operador decide; ADR-009 design-reviewer entra no fluxo via /new-adr standalone).
