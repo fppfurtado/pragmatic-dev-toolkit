@@ -88,14 +88,14 @@ Independente do ranking do top 3 (rationale diferente: fechamento de plano espec
 
 ### 4.6. Varrer planos em aberto
 
-Paralelo ao passo 4.5 (rationale análogo — orientação sessional sobre planos em estado `Pendente`/`Abortado`, não compete no enum). Resultado é exibido em bloco separado **Planos em aberto** no passo 5. Consome heurística de completude codificada em [ADR-060](../../docs/decisions/ADR-060-heuristica-completude-planos-via-status.md) — campo `## Status` no body do plano complementar a git/forge per ADR-060 § Modelo de signal. `Em execução` e `Concluído` derivados de git/forge não geram entrada aqui (sem ação pendente do operador).
+Paralelo ao passo 4.5 (orientação sessional sobre planos em estado `Pendente`/`Abortado`). Planos `Pendente` competem no enum top-3 com BACKLOG sob regra de composição cap-2 (passo 5); planos `Abortado` permanecem visíveis somente no bloco informativo **Planos em aberto** no passo 5. Ortogonal ao bloco de pendências de validação (§4.5). Consome heurística de completude codificada em [ADR-060](../../docs/decisions/ADR-060-heuristica-completude-planos-via-status.md) — campo `## Status` no body do plano complementar a git/forge per ADR-060 § Modelo de signal. `Em execução` e `Concluído` derivados de git/forge não geram entrada aqui (sem ação pendente do operador).
 
 1. **Listar planos não-em-curso:** reusar a saída do passo 4.5 (papel `plans_dir` resolvido + filtro em curso via worktree-active + PR/MR aberto). Sem planos → skip silente desta seção.
 2. **Classificar por estado per ADR-060 § Modelo de signal:** para cada plano não-em-curso, ler valor após o header `## Status` no body — `awk '/^## Status$/{flag=1; next} flag && NF{print; exit}' <plans_dir>/<slug>.md` (skip da blank line canonical entre header e valor). Classificar:
    - **`Pendente`** — valor == `Pendente`.
    - **`Abortado`** — valor == `Abortado`.
    - **Outros** (field ausente, valor não-canonical, ou estado derivado `Em execução`/`Concluído` via git/forge) → skip silente (sem ação pendente do operador).
-3. **Acumular** pares `(slug, estado)` para Pendente e Abortado. Lista vazia → omitir o bloco no passo 5.
+3. **Acumular** tuplas `(slug, estado, mtime)` para Pendente e Abortado, ordenadas por `(estado: Pendente > Abortado, mtime: desc, slug: asc)`. `mtime` lido via `stat -c '%Y' <plans_dir>/<slug>.md` (proxy para "trigger mais quente"; rebase/sync podem resetar — limitação aceitável). Lista vazia → omitir o bloco informativo no passo 5; top-3 segue só do BACKLOG.
 
 ### 5. Apresentar resultado e colher escolha
 
@@ -103,9 +103,9 @@ Reportar em formato curto:
 
 - **Movidos para `## Concluídos`** (evidência forte): listar com justificativa.
 - **Evidência fraca:** listar com o que foi encontrado.
-- **Top 3 candidatos** em ordem decrescente de impacto, com raciocínio de alinhamento + amplitude.
+- **Top 3 candidatos**: composição em ordem decrescente de impacto = primeiros `min(N_Pendente, 2)` planos `Pendente` (ordenação do §4.6) + restante do BACKLOG (ranking do passo 4). N_Pendente=0 → 3 BACKLOG (status quo). N_Pendente=1 → 1 plano + 2 BACKLOG. N_Pendente≥2 → 2 planos + 1 BACKLOG. BACKLOG mantém ≥1 slot sempre. Mostrar o raciocínio por item — operador deve poder discordar sem aceitar caixa-preta. Enum exibe `<slug>` literal como label da opção `/run-plan <slug>` quando vem de plano `Pendente` (`description` da opção carrega `Plano em aberto: Pendente`); texto da linha quando vem do BACKLOG.
 - **Pendências de validação em planos** (lista do passo 4.5, quando não-vazia): bloco separado listando `<slug>: <texto da linha>` por entrada. Lista vazia → omitir o bloco. Pendências **não competem** no enum a seguir — top 3 continua sendo do BACKLOG; operador escolhe via `Other` se quiser endereçar uma pendência específica.
-- **Planos em aberto** (lista do passo 4.6, quando não-vazia): bloco separado listando `<slug>: <Pendente|Abortado>` por entrada. Lista vazia → omitir o bloco. Planos em aberto **não competem** no enum a seguir — top 3 segue do BACKLOG; operador escolhe via `Other` se quiser priorizar um plano específico (ex.: `/run-plan <slug>` pra plano `Pendente`).
+- **Planos em aberto** (bloco informativo): lista todos os `Abortado` + planos `Pendente` residuais (além do cap-2 do top-3, quando aplicável), na ordenação do §4.6. Operador escolhe via `Other` se quiser priorizar um `Abortado` ou um `Pendente` residual específico (ex.: `/run-plan <slug>`). Bloco omitido quando lista vazia (nenhum `Abortado` E N_Pendente ≤ 2).
 
 **Cutucada de descoberta.** Antes do enum a seguir, executar a cutucada conforme `${CLAUDE_PLUGIN_ROOT}/docs/procedures/cutucada-descoberta.md` (emitir como última linha informacional, imediatamente antes do enum).
 
@@ -127,6 +127,6 @@ Com a intenção confirmada (item escolhido ou texto livre), executar o fluxo de
 
 ## O que NÃO fazer
 
-- Não apresentar mais de 3 sugestões no top.
+- Não apresentar mais de 3 opções nomeadas no enum (Other é automático e fora do cap).
 - Não iniciar `/triage` sem escolha explícita do operador.
 - Não paralelizar quando `N < 5` — cold-start de subagent perde para grep direto do main thread (per [ADR-059](../../docs/decisions/ADR-059-subagent-em-loop-interno-de-skill-per-item-probe-threshold.md)).
