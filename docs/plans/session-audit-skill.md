@@ -88,6 +88,10 @@ Surface não-determinística (skill LLM audita transcript) — cenários enumera
 
 6. **Cenário paths.backlog: forge** (TJPA-style — per F5 cutucada): invocar `/session-audit` em projeto com `paths.backlog: forge` declarado, sessão com substância candidata a BACKLOG entry. Esperado: skill detecta mode forge + marca finding como **pendente para `/triage` subsequent** (`tipo: captura_backlog`, `artefato_sugerido: '/triage step 4 - modo forge cobre mutação remota per ADR-058 § (e) 1ª instância'`); NÃO propõe `gh/glab issue create` direto. YAGNI — `/triage` step 4 já tem policy codificada; skill não duplica mecânica granular per-mutation.
 
+## Pendências de validação
+
+- Smoke comportamental real dos 6 cenários do `## Verificação manual` pós-merge + `/reload-plugins` em sessão CC real exercitando: (1) positivo — substância pendente detectável; (2) negativo — sessão sem substância; (3) borderline — pós-`/run-plan` bem-fechado; (4) sem papéis declarados; (5) Other subset; (6) modo `paths.backlog: forge`. Não simulável mecanicamente nesta execução do `/run-plan` — skill aplica julgamento LLM sobre transcript (paralelo aos demais planos shippados nesta sessão com validação comportamental pendente).
+
 ## Notas operacionais
 
 - Modo canonical (sem `**Modo:**` — feature contida em 1 repo toolkit; sem cross-repo system-surgery). `/run-plan` executa em worktree isolada com micro-commits per bloco. **`/run-plan` a partir de cwd `~/Projects/pragmatic-dev-toolkit` (NÃO de meta-system).**
