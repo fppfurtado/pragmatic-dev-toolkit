@@ -2,6 +2,18 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.9.0] - 2026-06-12
+
+### Added
+- `/session-audit` — new sessional capture audit skill (manual invocation before closing a CC session). Reads the current transcript and identifies generated substance (decisions, classifications, drift, findings) not yet persisted in a canonical artifact (BACKLOG, `.claude/local/NOTES.md`, ADRs, `CLAUDE.md`/`philosophy.md`). Reports gaps grouped by type with a single batched cutucada (Aplicar tudo / Aplicar parcial / Cancelar). Preview-first, non-destructive. Salvaguarda worktree-probe inherited from ADR-057 (BACKLOG mutations defer to NOTES.md signal queue when there's an additional worktree). 6 steps: parse arg + forge mode detection + transcript analysis with detective heuristics + artifact resolution via Resolution Protocol + batched report + apply captures per operator choice. (PR #120)
+- ADR-061 — new editorial category "audit captura pendente sessional" (sessional trigger, multi-artifact scope), parallel to ADR-057 periodic `/curate-backlog` and ADR-022 `/archive-plans`. Sucessor parcial lateral cond 4+5 ADR-034. Override of the N=3 criterion analogous to ADR-057 § Override (memory `feedback_editorial_patterns_emergentes` as flagger). Sub-decisão (b) "extension hint cross-skill no done" demoted to `CLAUDE.md` § Editing conventions as tactical decision (paves future category when ≥2 analog instances emerge per ADR-061 § Gatilhos #4) — design-reviewer F6 absorbed via path (b2). (PR #120)
+- `/run-plan` §3.6 — extension hint informativo 1-line non-blocking before the canonical marker `[PRAGMATIC: plan-done]`: `Considere /session-audit antes de fechar a sessão pra verificar captura pendente.` (PR #120)
+- `CLAUDE.md` § Editing conventions — 2 new bullets: `/session-audit` skill summary + "Extension hint cross-skill no done" as tactical decision. (PR #120)
+
+### Notes
+- BACKLOG entry registered: `/curate-backlog` missing entry in README § What's inside (pre-existing gap flagged during /run-plan §3.3 of the session-audit-skill plan). Captured for future editorial wave.
+- Plan `session-audit-skill` carries deferred behavioral smoke (6 scenarios: positive / negative / borderline / no-roles / Other-subset / forge-mode) as `## Pendências de validação` — not mechanically simulable in the same session (skill applies LLM judgment over transcript).
+
 ## [3.8.0] - 2026-06-12
 
 ### Added
