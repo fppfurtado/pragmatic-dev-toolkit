@@ -1,9 +1,5 @@
 # Plano — `/next` planos em aberto competem no enum top-3
 
-## Status
-
-Pendente
-
 ## Contexto
 
 A `/next` ganhou §4.6 hoje (commit `3626d64`, PR #117) materializando o bloco "Planos em aberto" via consumo do campo `## Status` codificado em [ADR-060](../decisions/ADR-060-heuristica-completude-planos-via-status.md). A redação herdou de §4.5 (pendências de validação) a regra "**não competem no enum** — operador escolhe via `Other` se quiser priorizar". A simetria foi adotada sem decisão independente sobre planos em aberto.
