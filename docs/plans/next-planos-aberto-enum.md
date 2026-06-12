@@ -1,9 +1,5 @@
 # Plano — `/next` planos em aberto competem no enum top-3
 
-## Status
-
-Pendente
-
 ## Contexto
 
 A `/next` ganhou §4.6 hoje (commit `3626d64`, PR #117) materializando o bloco "Planos em aberto" via consumo do campo `## Status` codificado em [ADR-060](../decisions/ADR-060-heuristica-completude-planos-via-status.md). A redação herdou de §4.5 (pendências de validação) a regra "**não competem no enum** — operador escolhe via `Other` se quiser priorizar". A simetria foi adotada sem decisão independente sobre planos em aberto.
@@ -75,6 +71,10 @@ Smoke real pós-`/reload-plugins` em consumer com fixtures controladas. Cada cen
 7. **Cenário 6 — Ordenação por mtime:** consumer com 2 planos Pendente; um arquivo mais recente que o outro. `/next` lista o mais-recente antes no enum top-3.
 
 8. **Cenário 7 — Plano em aberto em-curso:** consumer com worktree ativa cujo slug bate em plano com `Status: Pendente`. Plano é tratado como "em curso" via filtro §4.5 (worktree-active) e NÃO entra no §4.6 nem no top-3.
+
+## Pendências de validação
+
+- Smoke comportamental real dos 5 cenários do `## Verificação manual` não exercitados nesta sessão (1, 3, 4, 4b, 5) pós-merge + `/reload-plugins` em consumer com fixtures controladas (planos Pendente/Abortado em `plans_dir`). Cenários 2/6/7 já exercitados mecanicamente sobre estado real desta worktree durante §3.2; cenário 4b cobre residual `Pendente` no bloco informativo (não exercitado por ausência de fixture N_Pendente=3). Paralelo aos planos `next-varrer-planos-em-aberto` e `wiring-adr-060-ciclo-completo` que também ficaram com smoke comportamental pendente.
 
 ## Notas operacionais
 
