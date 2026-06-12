@@ -1,9 +1,5 @@
 # Plano — Skill `/session-audit` (audit de captura pendente pré-encerramento)
 
-## Status
-
-Pendente
-
 ## Contexto
 
 Pedido recorrente do operador: "verifique se todos os itens de backlog e respectivos contextos necessários foram devidamente registrados nos artefatos adequados" antes de invocar `/journal-close`. Substância universal cross-projeto (meta-system, h3-finance-agent, TJPA workflows, etc.). Cristaliza pattern editorial novo: **audit de captura pendente sessional** (não periódica como `/curate-backlog`).
