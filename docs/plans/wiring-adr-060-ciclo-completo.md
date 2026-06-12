@@ -1,9 +1,5 @@
 # Plano — Wiring de ADR-060 (`## Status` field) em `/triage` + `/run-plan`
 
-## Status
-
-Pendente
-
 ## Contexto
 
 **ADRs candidatos:** ADR-060 (decisão central — § Wiring nas skills prescreve `/triage` step 4 cria `Pendente` + `/run-plan §3.4` remove no done), ADR-049 (fronteira § Decisão (a) state-em-git preservada — wiring respeita); ADR-022 (cadeia editorial preservada — mutação em plano body não toca BACKLOG cadeia).
