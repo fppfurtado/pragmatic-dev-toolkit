@@ -1,9 +1,5 @@
 # Plano — `/next` varrer planos em aberto via ADR-060
 
-## Status
-
-Pendente
-
 ## Contexto
 
 **ADRs candidatos:** ADR-060 (decisão central que codifica state machine `Pendente`/`Abortado` + signal canonical field-or-git cross-reference), ADR-049 (fronteira § Decisão (a) state-em-git preservada — `Em execução` derivado de worktree+PR, não de markdown), ADR-022 (cadeia preservada como fallback de `Concluído`).
