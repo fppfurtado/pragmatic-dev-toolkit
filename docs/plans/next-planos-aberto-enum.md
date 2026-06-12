@@ -72,6 +72,10 @@ Smoke real pós-`/reload-plugins` em consumer com fixtures controladas. Cada cen
 
 8. **Cenário 7 — Plano em aberto em-curso:** consumer com worktree ativa cujo slug bate em plano com `Status: Pendente`. Plano é tratado como "em curso" via filtro §4.5 (worktree-active) e NÃO entra no §4.6 nem no top-3.
 
+## Pendências de validação
+
+- Smoke comportamental real dos 5 cenários do `## Verificação manual` não exercitados nesta sessão (1, 3, 4, 4b, 5) pós-merge + `/reload-plugins` em consumer com fixtures controladas (planos Pendente/Abortado em `plans_dir`). Cenários 2/6/7 já exercitados mecanicamente sobre estado real desta worktree durante §3.2; cenário 4b cobre residual `Pendente` no bloco informativo (não exercitado por ausência de fixture N_Pendente=3). Paralelo aos planos `next-varrer-planos-em-aberto` e `wiring-adr-060-ciclo-completo` que também ficaram com smoke comportamental pendente.
+
 ## Notas operacionais
 
 - Ordem de edit dentro do Bloco 1 não é crítica — todos os edits são cirúrgicos no mesmo arquivo; code-reviewer cobre coerência.
