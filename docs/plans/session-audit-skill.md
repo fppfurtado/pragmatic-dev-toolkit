@@ -1,9 +1,5 @@
 # Plano — Skill `/session-audit` (audit de captura pendente pré-encerramento)
 
-## Status
-
-Pendente
-
 ## Contexto
 
 Pedido recorrente do operador: "verifique se todos os itens de backlog e respectivos contextos necessários foram devidamente registrados nos artefatos adequados" antes de invocar `/journal-close`. Substância universal cross-projeto (meta-system, h3-finance-agent, TJPA workflows, etc.). Cristaliza pattern editorial novo: **audit de captura pendente sessional** (não periódica como `/curate-backlog`).
@@ -91,6 +87,10 @@ Surface não-determinística (skill LLM audita transcript) — cenários enumera
 5. **Cenário Other (operator descreve subset)**: cutucada batched dispara com 5 gaps; operator escolhe `Aplicar parcial` via Other com prosa "aplicar gaps 1 e 3, cancelar os outros". Esperado: subset aplicado; cancelados ficam no relatório como referência informativa da sessão (sem persistência editorial).
 
 6. **Cenário paths.backlog: forge** (TJPA-style — per F5 cutucada): invocar `/session-audit` em projeto com `paths.backlog: forge` declarado, sessão com substância candidata a BACKLOG entry. Esperado: skill detecta mode forge + marca finding como **pendente para `/triage` subsequent** (`tipo: captura_backlog`, `artefato_sugerido: '/triage step 4 - modo forge cobre mutação remota per ADR-058 § (e) 1ª instância'`); NÃO propõe `gh/glab issue create` direto. YAGNI — `/triage` step 4 já tem policy codificada; skill não duplica mecânica granular per-mutation.
+
+## Pendências de validação
+
+- Smoke comportamental real dos 6 cenários do `## Verificação manual` pós-merge + `/reload-plugins` em sessão CC real exercitando: (1) positivo — substância pendente detectável; (2) negativo — sessão sem substância; (3) borderline — pós-`/run-plan` bem-fechado; (4) sem papéis declarados; (5) Other subset; (6) modo `paths.backlog: forge`. Não simulável mecanicamente nesta execução do `/run-plan` — skill aplica julgamento LLM sobre transcript (paralelo aos demais planos shippados nesta sessão com validação comportamental pendente).
 
 ## Notas operacionais
 
