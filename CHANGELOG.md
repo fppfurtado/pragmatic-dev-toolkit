@@ -2,6 +2,20 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.8.0] - 2026-06-12
+
+### Added
+- `/next` step 5 — plans with `Status: Pendente` now compete in the top-3 enum with `## Próximos` under a cap-2 composition rule (BACKLOG keeps ≥1 slot). N_Pendente=0→3 BACKLOG (status quo); =1→1 plan + 2 BACKLOG; ≥2→2 plans + 1 BACKLOG. Ordering: `Pendente > Abortado`, mtime desc, slug asc. Resolves friction in first real invocation of step 4.6 (PR #117) where Pendente plans (e.g. triggers of recently-shipped ADRs) required `Other` to be prioritized. Per ADR-043 § Ockham operacionalizado #1, only `Pendente` competes; `Abortado` + residual `Pendente` stay in informational "Planos em aberto" block. (PR #119)
+
+### Changed
+- `/next` step 4.6 sub-step 3 — accumulator now stores `(slug, estado, mtime)` tuples ordered canonically; consumed by both top-3 composition and informational block.
+- `skills/next/SKILL.md` § O que NÃO fazer line 130: "Não apresentar mais de 3 sugestões no top" → "Não apresentar mais de 3 opções nomeadas no enum (Other é automático e fora do cap)".
+- `README.md:14` — `/next` description reflects new composition.
+
+### Notes
+- BACKLOG: 1 item marked concluded (`/next planos em aberto competem no enum top-3`).
+- Plan `next-planos-aberto-enum` carries 5 deferred verification scenarios (post-`/reload-plugins` smoke) as `## Pendências de validação`.
+
 ## [3.7.0] - 2026-06-12
 
 ### Added
