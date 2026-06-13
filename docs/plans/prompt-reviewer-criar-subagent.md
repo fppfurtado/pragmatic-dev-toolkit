@@ -1,9 +1,5 @@
 # Plano — Criar subagent reviewer `prompt-reviewer`
 
-## Status
-
-Pendente
-
 ## Contexto
 
 Substância capturada em sessão CC `prompts` do `h3-finance-agent` (2026-06-13): em projetos agentic, inconsistências de algoritmo em prompts (passos conflitantes, vagos, ambíguos, contraditórios) tornam a resposta do modelo imprecisa/imprevisível. Classe nomeável, recorrente, e ortogonal aos 5 reviewers existentes (`code/design/qa/security/doc-reviewer`) — nenhum cobre o eixo "consistência interna do algoritmo prompt-como-instrução-ao-agente".
@@ -79,6 +75,10 @@ Smoke-test do agent em invocação manual:
 5. Validar: nenhum finding sobrepõe escopo de `code-reviewer` (YAGNI/abstração) ou `doc-reviewer` (drift doc-código).
 
 Surface não-determinística (LLM judging prompts) — re-rodar smoke-test 2× se primeira passagem não converge nas 4 heurísticas, e flagrar drift para refinamento.
+
+## Pendências de validação
+
+- [ ] Smoke-test do `prompt-reviewer` em sessão CC nova pós-merge invocando `@prompt-reviewer skills/triage/SKILL.md` — validar findings categorizados nas 4 heurísticas seed (passos conflitantes/vagos/ambíguos/contraditórios) OR close-clean wording; template 4-field; sem sobreposição com escopo de `code-reviewer` ou `doc-reviewer`. Re-rodar 2× se primeira passagem não converge. (Capturado por `/run-plan §3.2` desta execução — agent não descobrível no Task dispatcher da sessão de criação.)
 
 ## Notas operacionais
 
