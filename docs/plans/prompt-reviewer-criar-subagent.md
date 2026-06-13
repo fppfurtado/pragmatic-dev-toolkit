@@ -1,9 +1,5 @@
 # Plano — Criar subagent reviewer `prompt-reviewer`
 
-## Status
-
-Pendente
-
 ## Contexto
 
 Substância capturada em sessão CC `prompts` do `h3-finance-agent` (2026-06-13): em projetos agentic, inconsistências de algoritmo em prompts (passos conflitantes, vagos, ambíguos, contraditórios) tornam a resposta do modelo imprecisa/imprevisível. Classe nomeável, recorrente, e ortogonal aos 5 reviewers existentes (`code/design/qa/security/doc-reviewer`) — nenhum cobre o eixo "consistência interna do algoritmo prompt-como-instrução-ao-agente".
