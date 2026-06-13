@@ -76,6 +76,10 @@ Smoke-test do agent em invocação manual:
 
 Surface não-determinística (LLM judging prompts) — re-rodar smoke-test 2× se primeira passagem não converge nas 4 heurísticas, e flagrar drift para refinamento.
 
+## Pendências de validação
+
+- [ ] Smoke-test do `prompt-reviewer` em sessão CC nova pós-merge invocando `@prompt-reviewer skills/triage/SKILL.md` — validar findings categorizados nas 4 heurísticas seed (passos conflitantes/vagos/ambíguos/contraditórios) OR close-clean wording; template 4-field; sem sobreposição com escopo de `code-reviewer` ou `doc-reviewer`. Re-rodar 2× se primeira passagem não converge. (Capturado por `/run-plan §3.2` desta execução — agent não descobrível no Task dispatcher da sessão de criação.)
+
 ## Notas operacionais
 
 - **Ordem dos blocos importa.** Bloco 1 (agent file) precede Bloco 2 (wiring `CLAUDE.md` + `skills/run-plan/SKILL.md`). Wiring sem agent file = referência morta; dispatch logic estendida sem agent file = invocação de agent inexistente.
