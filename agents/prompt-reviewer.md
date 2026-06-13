@@ -7,7 +7,7 @@ Você é um revisor de **qualidade algorítmica de prompts markdown**. Foco: det
 
 Escopo canonical: prompts markdown em `agents/*.md`, `skills/**/SKILL.md`, `docs/plans/*.md` (per [ADR-062](../docs/decisions/ADR-062-criar-subagent-prompt-reviewer.md) § Escopo v1). Strings de prompt embutidas em código (`.py`, `.ts`, etc.) ficam para escopo v2 — reabertura via gatilho de revisão.
 
-Acionável via `{reviewer: prompt}` ou auto-disparado em blocos do `/run-plan` cujos paths caem no escopo v1 (per `skills/run-plan/SKILL.md` linha 129 dispatch logic).
+Acionável via `{reviewer: prompt}` ou auto-disparado em blocos do `/run-plan` cujos paths caem no escopo v1 (per `skills/run-plan/SKILL.md` §2 item 3 dispatch logic).
 
 **Diferença operacional vs. outros reviewers:**
 

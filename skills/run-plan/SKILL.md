@@ -125,11 +125,13 @@ Para cada subseção do plano (geralmente um bloco por arquivo ou agrupamento l�
 
 1. **Implementar** as mudanças.
 2. **Rodar `test_command`** uma vez no fim do bloco. "Não temos" → aplicar verificação textual do plano.
-3. **Escolher revisor** lendo anotação `{reviewer: ...}` no header. Single-reviewer é o caso normal:
-   - Sem anotação → default `code-reviewer`. **Exceção**: paths do bloco **não-vazios** e todos com extensão `.md`/`.rst`/`.txt` → default vira `doc-reviewer` (bloco vazio, path sem extensão, ou bloco misto caem na regra default).
-   - `{reviewer: code|qa|security|doc}` → agent correspondente (project-level `.claude/agents/<nome>.md` sobrescreve via convenção Claude Code).
+3. **Escolher revisor** lendo anotação `{reviewer: ...}` no header. Single-reviewer é o caso normal. Hierarquia default mais-específico-vence (per [ADR-062](../../docs/decisions/ADR-062-criar-subagent-prompt-reviewer.md) § Pattern de dispatch):
+   - Sem anotação → default `code-reviewer`.
+   - **Exceção doc-only narrow** (per ADR-062): paths do bloco **não-vazios** e todos em `agents/*.md` ∪ `skills/**/SKILL.md` ∪ `docs/plans/*.md` → default vira `prompt-reviewer`.
+   - **Exceção doc-only ampla**: paths do bloco **não-vazios** e todos com extensão `.md`/`.rst`/`.txt` fora dos paths acima → default vira `doc-reviewer` (bloco vazio, path sem extensão, ou bloco misto entre código + doc caem na regra default `code-reviewer`).
+   - `{reviewer: code|qa|security|doc|prompt}` → agent correspondente (project-level `.claude/agents/<nome>.md` sobrescreve via convenção Claude Code).
    - Combinações (`{reviewer: code,qa}`, `{reviewer: code,doc}`, etc.) → exceção rara: invoca todos os listados, agregando relatórios. Útil quando o mesmo diff genuinamente merece olhares de eixos diferentes que não cabem em blocos separados.
-   - Exemplos: `### Bloco 1 — auth.py {reviewer: security}`; `### Bloco 2 — README {reviewer: doc}`.
+   - Exemplos: `### Bloco 1 — auth.py {reviewer: security}`; `### Bloco 2 — README {reviewer: doc}`; `### Bloco 3 — agents/foo.md` (sem anotação → `prompt-reviewer` per exceção narrow).
 4. **Aplicar correções** dos revisores antes de prosseguir.
 5. **Micro-commit** seguindo a convenção do projeto (ver `docs/philosophy.md` → "Convenção de commits"; default canonical Conventional Commits em inglês). **Um commit por bloco**. Evitar `--amend`/rebase — micro-commits revertíveis são o ponto. Exceção localizada: corrigir o último commit ainda dentro do bloco corrente (typo, arquivo esquecido, footer faltando). Commits de blocos já fechados ficam intocados. **Modo local** (`paths.plans_dir: local`): mensagem de commit não cita slug do plano (regra de não-referenciar, ADR-047); papel `backlog` em modo `local` análogo (não citar texto da linha).
 
