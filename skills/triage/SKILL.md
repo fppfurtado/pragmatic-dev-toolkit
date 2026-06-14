@@ -66,7 +66,7 @@ Se o operador já forneceu o necessário, pular as perguntas. Se houver 1–3 ga
 
 **Itens fora de escopo emergidos.** Coisas que o operador menciona mas não pertencem a esta feature (TODO adjacente, tech-debt revelado, bug menor avistado): capturar como candidatos. Papel `backlog` resolvido normalmente → linhas separadas em `## Próximos`. Papel "não temos" → reportadas no passo 5. "Deixa pra lá" → descartar.
 
-**Bifurcação detectada → pergunta nominal-comparativa obrigatória antes do plano.** Modo: enum com opções `(a) caminho-default-barato` e `(b) caminho-rico`, `description` carregando o trade-off concreto. Operador escolhe ou usa "Other". Escolha vai para `## Contexto` ou `## Resumo da mudança`. Se o operador já citou explicitamente uma opção na frase original (`/triage exportar CSV usando streaming`), pular a pergunta e registrar direto.
+**Bifurcação detectada → pergunta nominal-comparativa obrigatória antes do plano.** Modo: enum com opções `(a) caminho-default-barato` e `(b) caminho-rico`, `description` carregando o trade-off concreto. Operador escolhe ou usa "Other". Escolha vai para `## Contexto` ou `## Resumo da mudança`. Se o operador já citou explicitamente uma opção na frase original (`/triage exportar CSV usando streaming`), pular a pergunta e registrar direto. **Dispatch:** quando bifurcação coexiste com outros gaps enum-áveis, integra a chamada unificada da regra de agrupamento acima — não sequenciar como chamada separada (preserva a invariante de unificação preferida sobre sequência).
 
 ### 3. Decidir o artefato
 
@@ -133,6 +133,8 @@ Bloco que **contém testes** (saída (i) da heurística de cobertura) recebe `{r
 
 Bloco **doc-only** (paths todos `.md`/`.rst`/`.txt`) recebe `doc-reviewer` como default — omitir anotação ou usar `{reviewer: doc}` para deixar explícito. Diff que toca código E doc adjacente — preferir separar em dois blocos (`{reviewer: code}` e `{reviewer: doc}`); `{reviewer: code,doc}` no mesmo bloco continua válido como exceção rara quando a separação não faz sentido lógico.
 
+**Exceção do path-set** (per [ADR-062](../../docs/decisions/ADR-062-criar-subagent-prompt-reviewer.md)): bloco doc-only cujos paths caem em `agents/*.md`/`skills/**/SKILL.md`/`docs/plans/*.md` recebe `prompt-reviewer` como default (regra mais-específico-vence sobre doc-only ampla; dispatch logic literal em `skills/run-plan/SKILL.md` §2 item 3). Usar `{reviewer: prompt}` para explicitar; `{reviewer: doc}` continua válido como override do operador quando a mudança é puramente editorial-doc (typo, reordenação) e não toca substância algorítmica.
+
 **ADR:** chamar a tool `Skill` com `name="pragmatic-dev-toolkit:new-adr"` e `args=<título>` (não duplicar lógica nem criar arquivo manualmente). Reportar e seguir. `/new-adr` aplica o modo do `decisions_dir` automaticamente — em modo `local`, ADR criado em `.claude/local/decisions/`.
 
 **`docs/domain.md` / `docs/design.md`:** edit cirúrgico, preservar tom e estrutura.
@@ -175,7 +177,11 @@ Propor commit único agrupando os artefatos. Mensagem segue a convenção do pro
 Após confirmação:
 
 - **Caminho sem plano:** apenas `git commit -m "…"`. Push não exigido.
-- **Caminho com plano:** confirmação cobre **commit + push como unidade atômica**. Verificar `git rev-parse --abbrev-ref HEAD` — se não for branch principal (default `main`), parar e reportar. Se for, **um único** `Bash` com `git commit -m "…" && git push origin <branch-atual>` — sem flags. Push falho → reportar erro literal e parar; commit local permanece, `/run-plan` recusará até o operador resolver. Push imediato materializa o plano como state visível ao restante do sistema — `/run-plan` parte de origin (não local), próximos `/triage` veem o plano em `<plans_dir>` para detectar trabalho em curso, e operador em outra máquina reconcilia. Sem o push, plano existe só localmente e o sistema não tem como reconciliar.
+- **Caminho com plano:** confirmação cobre **commit + push como unidade atômica**. **Resolver branch designada:** principal (`git symbolic-ref refs/remotes/origin/HEAD`, fallback `main`) OR campo `**Branch:**` do plano (passo 4) quando set. Verificar `git rev-parse --abbrev-ref HEAD`:
+  - Branch corrente == designada → **um único** `Bash` com `git commit -m "…" && git push origin <branch-atual>` — sem flags. Regra única cobre fluxo default (designada = principal) e fluxo issue-first (designada = campo Branch, per ADR-049 § Decisão (b)).
+  - Branch corrente ≠ designada → parar e reportar drift (caso anômalo: operador moveu de branch entre passo 4 e passo 5; reconciliação manual).
+
+  Push falho → reportar erro literal e parar; commit local permanece, `/run-plan` recusará até o operador resolver. Push imediato materializa o plano como state visível ao restante do sistema — `/run-plan` parte de origin (não local), próximos `/triage` veem o plano em `<plans_dir>` para detectar trabalho em curso, e operador em outra máquina reconcilia. Sem o push, plano existe só localmente e o sistema não tem como reconciliar.
 - **Caminho com plano em modo `local`** (regra de não-referenciar, ADR-047, aplicada por-papel): se `plans_dir: local`, omitir slug do plano na mensagem de commit; se `backlog: local`, omitir texto da linha do backlog. Papéis em modo canonical seguem referenciados normalmente. Artefatos em modo local não entram no commit (gitignored).
 
 Se não há alterações para commitar (ADR-only que já commitou via `/new-adr`, ou nada alterado), pular.
