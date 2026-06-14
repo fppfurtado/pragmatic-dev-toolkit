@@ -1,9 +1,5 @@
 # Plano — Wiring ADR-063: caminho atômico em path-set com trigger prompt-reviewer pré-commit
 
-## Status
-
-Pendente
-
 ## Contexto
 
 Materializar decisão de [ADR-063](../decisions/ADR-063-caminho-atomico-trigger-prompt-reviewer.md) no ciclo runtime: tabela do `/triage` step 3 ganha 6ª linha + step 5 ganha parágrafo de Revisão pré-commit (caminho-atômico em path-set narrow) invocando `@prompt-reviewer`; `agents/prompt-reviewer.md` description reflete 2ª trajetória de auto-trigger; `CLAUDE.md` ganha bullet cross-ref.
