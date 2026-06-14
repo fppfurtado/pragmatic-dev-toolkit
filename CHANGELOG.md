@@ -2,6 +2,31 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.10.0] - 2026-06-14
+
+### Added
+- `prompt-reviewer` — new 6th reviewer agent specialized in algorithmic quality of markdown prompts (conflicting/vague/ambiguous/contradictory steps, polarity inversions). Auto-dispatched as default for blocks whose paths fall in `agents/*.md` / `skills/**/SKILL.md` / `docs/plans/*.md` (path-set narrow) per ADR-062; manually via `@prompt-reviewer`. (PR #121)
+- ADR-062 — codifies the prompt-reviewer category (sucessor parcial lateral cond 4+5 ADR-034). Path-set narrow as gate for the dispatch. Override of the N=3 criterion analogous to ADR-057/-061.
+- `/triage` step 3 — new 6th caminho **"Edit atômico em SKILL/agent/plano"** in the artifact table with scope path-set narrow + mechanical ⊆-strict discrimination criterion + path misto clause. Step 5 gains paragraph "Revisão pré-commit (caminho-atômico em path-set narrow)" that auto-dispatches `@prompt-reviewer` pre-commit. 2nd auto-trigger trajectory of `prompt-reviewer` beyond `/run-plan` per-block. (PR #122)
+- ADR-063 — codifies the new caminho-atômico trigger as sucessor parcial primário of ADR-053 § Decisão (b) + sucessor parcial lateral of ADR-062 § Pattern de dispatch. Mapeamento por analogia of the 3 conditions of ADR-053 over the 4 seed heuristics of ADR-062. Override of N=3 (4th consecutive; gatilho #7 of ADR-062 deliberately abdicated).
+- `CLAUDE.md` § Editing conventions — 2 new bullets cross-referencing ADR-062 (prompt-reviewer dispatch) and ADR-063 (caminho-atômico with prompt-reviewer pre-commit).
+- `docs/install.md:41` — smoke-test 5b for `prompt-reviewer` covering 2 auto-trigger trajectories (`/run-plan` per-block + `/triage` step 5 caminho-atômico).
+
+### Changed
+- `skills/triage/SKILL.md` passo 2 refined across 3 iterations of dogfood-recursive smoke-test (9 findings absorbed total):
+  - "Surface não-determinística" — antecedent of "primeira pergunta" replaced by explicit reference to the parent question `Validação manual?`.
+  - "Bifurcação arquitetural" — explicit precedence clause (Intenção vaga precedes; bifurcation presupposes crystallized intent) + dispatch clause unifying with other enum-able gaps.
+  - "Tamanho/decomposição" — follow-up of `Manter como plano único` enumerated (parallel to `Enumerar`).
+  - `{reviewer:}` schema — exception of the path-set narrow per ADR-062 with `prompt-reviewer` default + `{reviewer: doc}` operator override.
+  - Branch check passo 5 — abstraction "branch designada" (principal OR `**Branch:**` set) replacing binary check; probe option 2 now gates `git checkout principal` (caminho (a) over (b)/(c) in 3-path bifurcation). Issue-first flow per ADR-049 § Decisão (b) fully covered.
+  - Path-set override reference plural with enumeration ("exceções: doc-only ampla + override do path-set per ADR-062").
+- `README.md:28` — prompt-reviewer agent entry rewritten to reflect 2 auto-trigger trajectories (ADR-062 + ADR-063).
+
+### Notes
+- BACKLOG: 6 items marked concluded (3 iterations of `/triage` passo 2 refinement + ADR-063 wiring).
+- Plan `wiring-adr-063-caminho-atomico-prompt-reviewer` carries deferred validation as `## Pendências de validação`: smoke real `@prompt-reviewer` over `skills/triage/SKILL.md` in fresh CC session (workaround inline general-purpose applied per NOTES 2026-06-13; `/reload-plugins` mid-session doesn't update Agent tool dispatcher).
+- 4th consecutive application of Override N=3 (ADR-057 → -061 → -062 → -063) in <4 days — gatilho #7 of ADR-062 prescribes reopening as meta-pattern editorial on 5th application; deliberately abdicated this 4th iteration.
+
 ## [3.9.0] - 2026-06-12
 
 ### Added
