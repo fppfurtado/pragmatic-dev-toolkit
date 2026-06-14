@@ -1,9 +1,5 @@
 # Plano — Wiring ADR-063: caminho atômico em path-set com trigger prompt-reviewer pré-commit
 
-## Status
-
-Pendente
-
 ## Contexto
 
 Materializar decisão de [ADR-063](../decisions/ADR-063-caminho-atomico-trigger-prompt-reviewer.md) no ciclo runtime: tabela do `/triage` step 3 ganha 6ª linha + step 5 ganha parágrafo de Revisão pré-commit (caminho-atômico em path-set narrow) invocando `@prompt-reviewer`; `agents/prompt-reviewer.md` description reflete 2ª trajetória de auto-trigger; `CLAUDE.md` ganha bullet cross-ref.
@@ -68,6 +64,10 @@ Smoke comportamental pós-`/reload-plugins` em consumer:
 - Linha 169 do `skills/triage/SKILL.md` é a parte mais delicada — verificar que o parágrafo adicional de "caminho-atômico DISPARA" não cria ambiguidade com a lista de exclusões. Reviewer do Bloco 1 (`@prompt-reviewer`) é o detector natural desse risco.
 - **Bloco 1 unificado é deliberado:** acumula 4 edits semanticamente distintos no mesmo arquivo (tabela step 3 + parágrafo de critério mecânico + parágrafo de Revisão pré-commit no step 5 + edit cirúrgico linha 169). Decisão preserva invariante "1 reviewer = visão sistêmica do prompt" (per `agents/prompt-reviewer.md` linha 21 "Analise o arquivo alvo na íntegra"). Reviewer deve tratar como sistema integrado — passos conflitantes potenciais entre linha 6 da tabela, parágrafo de critério, parágrafo do step 5, e exclusão da linha 169 são o ponto mais crítico de coerência.
 - **Meta-pattern Override N=3 — decisão deliberada de não-ação:** 4ª aplicação consecutiva do Override em <4 dias (ADR-057 → ADR-061 → ADR-062 → ADR-063). Gatilho #7 de ADR-062 prescreve reabertura na 5ª aplicação. Esta 4ª aplicação **reconhece a pressão e abdica conscientemente** de disparar o gatilho agora — substância de meta-pattern (Override N=3 como categoria editorial) fica para gatilho na 5ª. Honestidade epistêmica sem pré-comprometer ADR sucessor.
+
+## Pendências de validação
+
+- Smoke real `@prompt-reviewer` sobre `skills/triage/SKILL.md` pós-merge em sessão CC nova. Workaround inline (general-purpose subagent simulando prompt-reviewer per NOTES.md 2026-06-13) aplicado no Bloco 1 desta execução por agent não-discoverable no dispatcher (registrado pós-session-start; reload mid-sessão não atualizou Agent tool registry — pattern confirmado empiricamente). Smoke real exige sessão CC nova pra validar que workaround capturou findings reais (não missed substantivos ou drift por simulação general-purpose).
 
 ## Decisões absorvidas
 
