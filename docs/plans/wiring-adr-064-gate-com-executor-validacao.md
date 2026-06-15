@@ -1,9 +1,5 @@
 # Plano — Wiring de ADR-064: gate-com-executor-validacao em /run-plan §3.2 e /session-audit
 
-## Status
-
-Pendente
-
 ## Contexto
 
 Materialização do ciclo runtime de [ADR-064](../decisions/ADR-064-gate-com-executor-validacao-2-sites.md) — categoria nova `gate-com-executor-validacao` wired em 2 sites paralelos (`/run-plan §3.2` gate manual + `/session-audit` passo 6). Pattern emergeu empiricamente em 2 instâncias da sessão CC `next-2026-06-14` (Lotes 2/3/4 do `/session-audit` + pivôt do `/next`) + auto-relato do operador como hábito frequente.
