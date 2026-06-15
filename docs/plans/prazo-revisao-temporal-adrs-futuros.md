@@ -1,9 +1,5 @@
 # Plano — Prazo canonical de revisão temporal em ADRs futuros
 
-## Status
-
-Pendente
-
 ## Contexto
 
 Operacionaliza a 3ª/última follow-up deferida em [meta-system ADR-021 § Limitações](https://github.com/fppfurtado/meta-system/blob/main/docs/decisions/ADR-021-auto-critica-permanente-4o-principio-fundamental.md) — 4º princípio fundamental "Auto-crítica permanente". Predecessoras shipped 2026-06-15:
