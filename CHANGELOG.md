@@ -2,6 +2,12 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.10.1] - 2026-06-15
+
+### Notes
+- `skills/triage/SKILL.md` — 3 edits absorbing F1-F3 from the first real `@prompt-reviewer` smoke (close-clean convergence on 5th consecutive iteration via conscious override of over-correção guard). Targets: linha 149 (Consolidação `forge` cross-assignee duplicate flag), linha 84 (4th critério mecânico discriminating create-new vs. edit-existing plan when target is `docs/plans/*.md`; criteria count 3 → 4), linha 188 (Mirror — categorical claim replaced by mechanical reasoning about caminho-atômico vs. caminho-com-plano).
+- 6 plan validation pendencies closed via `/session-audit` smokes: real `@prompt-reviewer` agent runtime (closes 2 plans); `@doc-reviewer` retroactive on Onda F Bloco 1 (0 findings); AST parse 3 hooks (all OK); fixture-based simulation of `/next` §4.6+§5 across 6 cenários.
+
 ## [3.10.0] - 2026-06-14
 
 ### Added
