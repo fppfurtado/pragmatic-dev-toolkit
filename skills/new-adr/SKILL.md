@@ -59,6 +59,22 @@ Sem título → pedir antes de prosseguir.
 
 4. **Criar arquivo** `<decisions_dir>/ADR-<NNN>-<slug>.md` com o template abaixo. Preencher conteúdo derivado de inputs explícitos do operador (ROADMAP, plano upstream, conversa recente, entrevista) — sintetizar substância já decidida em estrutura canonical. Placeholders explícitos apenas quando nenhum input substantivo existe; nunca inventar substância sem base (ver `## O que NÃO fazer` para a fronteira completa).
 
+4.5. **Bloco metadata de revisão temporal** (per [ADR-065](../../docs/decisions/ADR-065-prazo-canonical-revisao-temporal-adrs-futuros.md)). O template carrega 3 campos canonical entre `**Status:** Proposto` e `## Origem`: `**Próxima revisão:**`, `**Cadência:**`, `**Critério de erosão auditável:**`. Preencher conforme:
+
+   - **`**Próxima revisão:**`** — default canonical auto-preenchido: `currentDate + 6 meses` (paralelo ao uso de `currentDate` no step 3). Sem cutucada; operador pode editar pós-criação.
+   - **`**Cadência:**`** — default canonical auto-preenchido: `trimestral`. Sem cutucada; operador pode editar pós-criação.
+   - **`**Critério de erosão auditável:**`** — **cutucada per-novo-ADR obrigatória** em **prosa-livre direta** (sem `AskUserQuestion` — bifurcação ausente; resposta esperada é prosa livre per `philosophy.md` → "Convenção de pergunta ao operador" → "Quando todas as respostas comuns são livres, o modo é prosa desde o início"). Prompt direto: "Que condição auditável reabriria este ADR? Substância semântica per-ADR — cite ADR/feature/restrição específica do conteúdo deste ADR, OR condição genérica mas auditável (e.g., 'inversão de doutrina X em § Decisão de outro ADR', '≥N incidentes em pattern Y'). Não aceitar placeholder cosmético (Goodhart guard — derrota o propósito do campo)."
+
+   **Critério de aceitação tri-state mecânico** (inlinado de ADR-065 § Gatilhos #3):
+
+   - (i) **Substantivo per-ADR** — cita conteúdo específico do ADR sendo criado (ADR/feature/restrição nomeados). Aceitar.
+   - (ii) **Genérico mas auditável** — não cita conteúdo específico mas tem predicado mecânico verificável (inversão de doutrina X / ≥N incidentes em pattern Y). Aceitar.
+   - (iii) **Cosmético** — paráfrase de "reavaliar quando relevante" / "revisar em N meses" / "verificar se faz sentido" / "quando o pattern empírico não bater" (vago + ausência de predicado verificável). Rejeitar.
+
+   **Fallback de rejeição:** resposta vazia OR classificada em (iii) → re-perguntar **uma única vez** explicitando o Goodhart guard inline ("a resposta anterior é cosmética sob critério tri-state — categoria (iii) [cite trecho]; refine para substantivo per-ADR ou genérico mas auditável"). Segunda resposta ainda cosmética → registrar a resposta literal no campo + anexar flag inline `<!-- TODO: Critério a refinar — Goodhart guard fallback -->` no fim da linha do Critério. Operador pode revisar pós-criação.
+
+   Pular o sub-passo (não chamar o prompt direto) é proibido. Saída `git log` ou `Doutrina canonical` no step 3.5 já fizeram pare; sub-passo 4.5 dispara apenas no caminho que efetivamente cria o ADR.
+
 5. **Revisão pré-retorno.** Invocar `@design-reviewer` apontando para o ADR draft recém-criado. Sem cutucada de pré-execução — o reviewer dispara automaticamente conforme [ADR-053](../../docs/decisions/ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md) § Decisão (b). Ao compor o prompt da invocação, seguir `${CLAUDE_PLUGIN_ROOT}/docs/procedures/reviewer-invocation-read.md` (instrução defensiva de `Read` do ADR draft antes da análise). Para cada finding, aplicar critério de [ADR-053](../../docs/decisions/ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md) § Decisão (c):
 
    - **Cutucar operador** via `AskUserQuestion` se finding satisfaz ≥1 das 3 condições: (i) ≥2 alternativas legítimas competindo (alternativa rebatida descritivamente pelo reviewer conta como 1 caminho; só conta como ≥2 quando o reviewer apresenta caminhos competindo sem rebater); (ii) contradiz decisão documentada em ADR/`philosophy.md`/`CLAUDE.md`; (iii) exige contexto fora do diff/plano/ADR. Cláusula default-conservadora: dúvida na classificação → cutucar.
@@ -79,6 +95,10 @@ Idioma: espelhar ADRs existentes no projeto. Diretório vazio → default canoni
 
 **Data:** <YYYY-MM-DD>
 **Status:** Proposto
+
+**Próxima revisão:** <currentDate + 6 meses>
+**Cadência:** <trimestral|semestral|anual>
+**Critério de erosão auditável:** <condição substantiva per-ADR; Goodhart guard explícito — não placeholder cosmético tipo "reavaliar em 6 meses">
 
 ## Origem
 
@@ -116,3 +136,4 @@ Idioma: espelhar ADRs existentes no projeto. Diretório vazio → default canoni
 
 - Não inventar conteúdo de Contexto/Decisão **sem base em input explícito do operador**. Preencher com conteúdo derivado de inputs disponíveis (ROADMAP, plano upstream, conversa recente, entrevista). Placeholders apenas quando nenhum input substantivo existe — quem decide a substância é o operador, a skill sintetiza/estrutura. `design-reviewer` (per [ADR-053](../../docs/decisions/ADR-053-alinhamento-triage-ecosistema-design-reviewer-consolidado.md) § Decisão (b)) audita drift entre input e síntese.
 - Não alterar ADRs existentes.
+- Não aceitar placeholder cosmético em `**Critério de erosão auditável:**` (Goodhart guard per [ADR-065](../../docs/decisions/ADR-065-prazo-canonical-revisao-temporal-adrs-futuros.md) § Decisão § Mecânica de preenchimento). Cutucada do step 4.5 rejeita respostas tipo `"reavaliar em 6 meses"`, `"revisar quando relevante"`, `"verificar se faz sentido"` — exige condição substantiva per-ADR auditável (cita ADR/feature/restrição específica do conteúdo do ADR sendo criado, OR condição genérica mas auditável como "inversão de doutrina X em § Decisão de outro ADR" / "≥N incidentes em pattern Y").
