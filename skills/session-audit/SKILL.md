@@ -13,6 +13,8 @@ Audit de **captura pendente sessional**: lê transcript da sessão corrente, ide
 
 Skill irmã de `/curate-backlog` (ADR-057) e `/archive-plans` (ADR-022) — mesma natureza editorial não-mutativa por design, escopo diferente. `/curate-backlog` cura periódica do BACKLOG; `/archive-plans` arquiva planos antigos; `/session-audit` fecha o ciclo no fim de sessão antes que substância gerada se perca.
 
+**Tensão com ADR-061 § Limitações reconciliada** (per [ADR-064](../../docs/decisions/ADR-064-gate-com-executor-validacao-2-sites.md) § Contexto). ADR-061 § Limitações declara side-effects executados (commits, mutações remotas, file edits aplicados) fora de escopo. ADR-064 abre exceção controlada para o tipo derivado `executar_validacao_pendente` (passos 2, 4, 5, 6 abaixo): mutação restrita ao marker `Encerrada YYYY-MM-DD` no plan body como signal de validação concluída — não cobre commits novos, mutações remotas, ou edits arbitrários em arquivos do projeto. Escopo declarado de ADR-061 sobre commits e mutações remotas permanece intacto.
+
 ## Argumentos
 
 - Sem argumentos (default): audit completo dos 4 destinos.
@@ -41,6 +43,7 @@ Ler transcript da sessão CC corrente. Aplicar heurísticas detectivas — sinai
 - **Findings de cutucadas (design-reviewer/code-reviewer/etc.) resolvidos via prosa sem entry derivada** em ADR ou em BACKLOG (caminho-único absorvido em commit message é OK; caminho-cutucada decidido sem registro = gap).
 - **Cross-refs declarados em commit messages mas não materializados** em ADRs ou no índice cross-reference correspondente.
 - **Snapshots ou observações de drift mencionados em prosa** sem entry de capturas (ex.: "drift detectado em X" sem follow-up).
+- **Planos com `## Pendências de validação` cuja sessão tocou direta ou indiretamente** (via `/run-plan`, refs explícitas em prosa, ou trace de file edits em paths do plano) — detectar para tipo derivado `executar_validacao_pendente` (per [ADR-064](../../docs/decisions/ADR-064-gate-com-executor-validacao-2-sites.md)); classificação ocorre no passo 4.
 
 Heurísticas são detectivas (qualitativas), não predicados mecânicos. Skill aplica julgamento sobre a substância — não conta tool calls.
 
@@ -73,6 +76,8 @@ Para cada substância detectada no passo 2, produzir um finding com schema:
 
 Cross-refs faltantes em ADRs **ficam fora de escopo** desta skill. Side-effects executados (commits, mutações remotas) **também ficam fora de escopo** — categoria distinta, sem dor materializada hoje (YAGNI; reabrir se ≥3 sessões com gaps deste tipo emergirem).
 
+**Tipo derivado `executar_validacao_pendente`** (per [ADR-064](../../docs/decisions/ADR-064-gate-com-executor-validacao-2-sites.md)) — **extensão informal** que não entra no enum formal 4-tipos acima; vai como **addendum** "**Pendências de validação executáveis**" no relatório do passo 5. Para cada plano detectado no passo 2 (heurística "Planos com `## Pendências de validação` tocados pela sessão"), classificar bullets via `${CLAUDE_PLUGIN_ROOT}/docs/procedures/gate-com-executor-validacao.md` em **[executável-pra-mim]** vs **[exige-operador]** (cláusula default-conservadora: ambíguo → [exige-operador]). Citação_transcript obrigatória aqui também: identificar a entrada do transcript (`/run-plan` invocado sobre o plano, ref explícita, edit em path do plano) que liga a sessão à pendência.
+
 ### 5. Relatório markdown + cutucada batched
 
 Reportar em formato markdown agrupado por tipo (4 grupos, omitir os vazios):
@@ -93,7 +98,20 @@ Reportar em formato markdown agrupado por tipo (4 grupos, omitir os vazios):
 
 Cada linha cita `citação_transcript` para auditabilidade. Lista vazia → relatório enxuto "0 gaps detectados; encerramento limpo" (Cenário 2 da Verificação manual).
 
-Em seguida, **uma única cutucada batched** via `AskUserQuestion` (header `Captura`, opções `Aplicar tudo (Recommended)` / `Aplicar parcial (Other)` / `Cancelar`). `description` carrega contagem total de gaps + breakdown por tipo. Operador via `Other` descreve subset em prosa ("aplicar gaps 1 e 3, cancelar 2"). Pattern paralelo a `/curate-backlog` (preview-first batched) e `/archive-plans` (write-local não-destrutivo) — sem mutação remota, sem cutucada granular.
+**Addendum "Pendências de validação executáveis"** (per [ADR-064](../../docs/decisions/ADR-064-gate-com-executor-validacao-2-sites.md)): quando passo 4 produziu findings tipo derivado `executar_validacao_pendente`, adicionar bloco após o relatório dos 4 tipos formais (omitido se 0 planos detectados):
+
+```
+## Pendências de validação executáveis
+- [executável] <slug do plano> — Cenário N: <texto do bullet>. Razão: <heurística do procedure §3>.
+- [exige-operador] <slug do plano> — Cenário M: <texto do bullet>. Razão: <heurística do procedure §3>.
+```
+
+Em seguida, **uma única cutucada batched** via `AskUserQuestion` (header `Captura`). Opções condicionais ao addendum:
+
+- **0 cenários [executável]** (addendum ausente OU sem [executável] após classificação): cutucada mantém 3 opções `Aplicar tudo (Recommended)` / `Aplicar parcial (Other)` / `Cancelar` — preserva ADR-002 § Decisão anti-gate-cerimônia (sem oferta cosmética sem decisão genuína; paralelo a `/run-plan §3.2` per ADR-064).
+- **≥1 cenário [executável]**: cutucada apresenta 4 opções: `Aplicar tudo (Recommended)` / `Aplicar parcial (Other)` / `Cancelar` / `Executar [executável] também` (4ª opção). `description` da 4ª opção carrega contagem dos cenários [executável] + slug dos planos tocados.
+
+`description` carrega contagem total de gaps + breakdown por tipo. Operador via `Other` descreve subset em prosa ("aplicar gaps 1 e 3, cancelar 2"). Pattern paralelo a `/curate-backlog` (preview-first batched) e `/archive-plans` (write-local não-destrutivo) — sem mutação remota, sem cutucada granular.
 
 ### 6. Aplicar capturas
 
@@ -104,6 +122,7 @@ Para cada finding aceito pela cutucada do passo 5, executar a `ação_sugerida_p
 - **`captura_notes`:** `Edit` (append) em `.claude/local/NOTES.md` com timestamp (paralelo a `/note`).
 - **`cristalizacao_adr`:** sugestão textual de invocar `/new-adr <título>` no encerramento — skill **não** chama `/new-adr` aninhado (operador decide; ADR-009 design-reviewer entra no fluxo via /new-adr standalone).
 - **`atualizacao_doutrina`:** sugestão textual de edit em `CLAUDE.md` / `philosophy.md` no encerramento — operador aplica manualmente; salvaguarda contra automação de mudança apex.
+- **Tipo derivado `executar_validacao_pendente`** (per [ADR-064](../../docs/decisions/ADR-064-gate-com-executor-validacao-2-sites.md)): quando operador escolhe 4ª opção `Executar [executável] também` no passo 5, rodar cenários [executável] de cada plano detectado conforme cláusula de execução de `${CLAUDE_PLUGIN_ROOT}/docs/procedures/gate-com-executor-validacao.md` §4. Reportar verdict per cenário; **marcar cada bullet [executável] exercitado** como `Encerrada YYYY-MM-DD: <síntese do verdict>` no plan body (granularidade per-bullet, não per-seção; paralelo ao pattern manual aplicado em commits `e2e135f` + `10c256c` da sessão CC `next-2026-06-14`). Cenários [exige-operador] tratados conforme procedure §4 item 3 (deferência explícita em prosa).
 
 Capturas canceladas (Other com subset) ficam no relatório como referência informativa da sessão, sem persistência editorial.
 
@@ -117,3 +136,4 @@ Sem capturas aceitas (operador escolhe `Cancelar` no passo 5) → reportar relat
 - **Não tratar Read defensivo como gap de captura** — `Read` sem `Edit` subsequente é validação per `philosophy.md` § Busca pela verdade, não decisão pendente. Gap requer **decisão emitida** (classificação, drift declarado, finding cristalizado em prosa).
 - **Não chamar `/new-adr` aninhado** no passo 6 — `cristalizacao_adr` vira sugestão textual; operador decide invocação separada. Wiring automático do design-reviewer via ADR-053 § Decisão (b) entra naturalmente quando operador roda `/new-adr` standalone.
 - **Não aplicar capturas em projetos sem `paths.*` declarados** sem oferta de criação canonical paralela ao sub-fluxo do `/triage` step 4 — papel "não temos" em todos os destinos = relatório informativo, skip silente da aplicação.
+- **Não classificar cenários como [executável-pra-mim]** no addendum "Pendências de validação executáveis" do passo 5 que mutam state remoto (push, gh release, glab issue) — mesmo se classificação automática errar, o bullet é cinto de segurança independente da cláusula blast-radius do `${CLAUDE_PLUGIN_ROOT}/docs/procedures/gate-com-executor-validacao.md`; remover este guarda risca regressão silenciosa em refactor futuro da heurística (per [ADR-064](../../docs/decisions/ADR-064-gate-com-executor-validacao-2-sites.md) § Limitações).
