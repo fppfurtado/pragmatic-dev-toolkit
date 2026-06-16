@@ -2,6 +2,14 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.11.1] - 2026-06-16
+
+### Changed
+- **`/run-plan §3.3` + `§3.4` dispatch refactor** — substitui prescrições literais "revisor `code`" por referência ao dispatch path-based de `§2 item 3` (mais-específico-vence per ADR-062). Estende `§2 item 3` com 6ª linha cobrindo bloco misto narrow+ampla → `doc-reviewer` (caso emergente: §3.4 edita BACKLOG ampla + plan body narrow em sequência atômica prescrita por ADR-060). Caminho-atômico em path-set narrow (linha 6 do `/triage` step 3 per ADR-063) — sem ADR novo nem adendo. F1 do `@prompt-reviewer` absorvido caminho-único.
+
+### Notes
+- `README.md § What's inside` — 2 entries adicionadas: `/curate-backlog` (manutenção editorial periódica de `BACKLOG.md` paralela a `/archive-plans` per ADR-057) + `docs/procedures/gate-com-executor-validacao.md` (shared procedure consumida por `/run-plan §3.2` + `/session-audit` codificando gate-with-executor pattern per ADR-064). Endereça gaps editoriais pré-existentes flagrados em invocações anteriores; `@doc-reviewer` close-clean (4ª instância empírica within-session do pattern de NOTES § (1) 2026-06-16).
+
 ## [3.11.0] - 2026-06-16
 
 ### Added
