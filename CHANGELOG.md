@@ -2,6 +2,15 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.11.0] - 2026-06-16
+
+### Added
+- **ADR-064 + wiring** — gate-com-executor-validacao codifies cross-skill manual-validation gate with automatic executor: `/run-plan §3.2` adds a conditional 3rd option `Executar o que for executável pra mim` over the baseline binary enum (`Validei` / `Falhou — descrever`) when classification detects ≥1 [executável-pra-mim] scenario; `/session-audit` adds derived type `executar_validacao_pendente` with addendum **Pendências de validação executáveis** + conditional 4th option in the batched cutucada. Shared mechanics codified in `docs/procedures/gate-com-executor-validacao.md` as cross-site canonical source (heurística [executável-pra-mim] vs [exige-operador] + blast-radius clause + canonical report format + execution clause). Sucessor parcial primário of ADR-049 § Decisão (b); sucessor parcial lateral of ADR-061 § Decisão. Anti-gate-cerimônia per ADR-002 preserved (3rd/4th option only with ≥1 [executável]). 5th consecutive application of the Override of the N=3 criterion with explicit epistemic fragility. (PR #123)
+- **ADR-065 + wiring** — prazo canonical de revisão temporal em ADRs futuros: `/new-adr` template gains a 3-field canonical metadata block (`**Próxima revisão:**` + `**Cadência:**` + `**Critério de erosão auditável:**`) between `**Status:**` and `## Origem`. `/new-adr` § Passos gains sub-passo 4.5 with per-new-ADR prompt in direct prose (no `AskUserQuestion`) for `**Critério de erosão auditável:**` + tri-state mechanical Goodhart guard inline (substantive per-ADR / generic-auditable / cosmetic rejected) + fallback re-ask + inline TODO if cosmetic persists. Canonical defaults auto-filled for the other 2 fields (`currentDate + 6 months`, `trimestral`). Proactive doctrinal clause parallel to the reactive wiring of ADR-053 § Decisão (b); ADR-053 vigente NOT mutated (cond 5 ADR-034 sucessor parcial editorial). Operationalizes the 3rd/last deferred follow-up in meta-system ADR-021 § Limitações (4th fundamental principle "Auto-crítica permanente"); predecessors 1st (`/doctrine-audit`) + 2nd (retrofit of 8 apex ADRs via PR #15 `92c1892`) both shipped 2026-06-15. 6th consecutive application of the Override of the N=3 criterion with high epistemic fragility (substance imported cross-project, not emergent from the plugin). (PR #124)
+
+### Notes
+- `BACKLOG.md ## Próximos` gains 5 entries from sessions `next-2026-06-14` + `next-2026-06-15`: empirical calibration of ADR-065 canonical defaults + quarterly post-mortem audit of Goodhart guard + tension between `/run-plan §3.3` reviewer `code` vs `doc-reviewer` for doc-only edits + dispatch logic skip `doc-reviewer` for conservative editorial edits (sub-N3) + refine `/triage` step 2 prose discriminating `[capture:backlog]` vs `[capture:validacao]` for post-shipping behavioral scenarios (sub-N3). Captures cross-classified by `/session-audit` into structural follow-up work.
+
 ## [3.10.1] - 2026-06-15
 
 ### Notes
