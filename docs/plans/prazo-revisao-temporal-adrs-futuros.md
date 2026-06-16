@@ -1,9 +1,5 @@
 # Plano — Prazo canonical de revisão temporal em ADRs futuros
 
-## Status
-
-Pendente
-
 ## Contexto
 
 Operacionaliza a 3ª/última follow-up deferida em [meta-system ADR-021 § Limitações](https://github.com/fppfurtado/meta-system/blob/main/docs/decisions/ADR-021-auto-critica-permanente-4o-principio-fundamental.md) — 4º princípio fundamental "Auto-crítica permanente". Predecessoras shipped 2026-06-15:
@@ -93,9 +89,8 @@ Cenários textuais validados in-flight (via `/run-plan §3.2` gate):
 
 ## Pendências de validação
 
-- **[capture:backlog]** Smoke comportamental `/new-adr` prazo-canonical pós-`/reload-plugins` em sessão CC nova com check-list mecânico: (1) cutucada `AskUserQuestion` dispara para `**Critério de erosão auditável:**` no §Passos passo 4; (2) Goodhart guard rejeita placeholder vago (resposta tipo "reavaliar em 6 meses" recusada com prompt de refinamento) e aceita condição substantiva per-ADR; (3) defaults canonical (`currentDate + 6 meses`, `trimestral`) auto-preenchidos sem prompt; (4) bloco metadata visível no ADR final com 3 campos preenchidos — `grep "^\*\*Próxima revisão:" docs/decisions/ADR-<saldo+1>-*.md` retorna ≥1 match; `grep -i "reavaliar em 6 meses" docs/decisions/ADR-<saldo+1>-*.md` retorna 0 (Goodhart guard funcionou).
-- **[capture:backlog]** Calibração empírica dos defaults canonical: após N=3 ADRs criados com defaults, sample dos campos `**Próxima revisão:**` + `**Cadência:**`; se ≥1 mostrar-se off-mark (operador edita pós-criação ≥2 vezes), refinar via novo `/triage`.
-- **[capture:backlog]** Auditoria post-mortem trimestral do Goodhart guard: sample dos `**Critério de erosão auditável:**` preenchidos em ADRs criados pós-shipping; ≥1 placeholder cosmético detectado retroativamente → reabrir mecanismo (refinar prompt da cutucada, escalar para `@design-reviewer` validar Critério como finding pré-commit, ou adicionar 2ª pergunta de checagem). Gatilho de revisão concreto.
+- Smoke comportamental `/new-adr` prazo-canonical pós-`/reload-plugins` em sessão CC nova com check-list mecânico: (1) cutucada prosa-livre direta dispara para `**Critério de erosão auditável:**` no sub-passo 4.5 (sem `AskUserQuestion`); (2) Goodhart guard tri-state mecânico rejeita resposta categoria (iii) cosmética ("reavaliar em 6 meses") com re-pergunta + fallback TODO inline se persistir; aceita (i) substantivo per-ADR e (ii) genérico-auditável; (3) defaults canonical (`currentDate + 6 meses`, `trimestral`) auto-preenchidos sem prompt; (4) bloco metadata visível no ADR final com 3 campos preenchidos — `grep "^\*\*Próxima revisão:" docs/decisions/ADR-<saldo+1>-*.md` retorna ≥1 match; `grep -i "reavaliar em 6 meses" docs/decisions/ADR-<saldo+1>-*.md` retorna 0 (Goodhart guard funcionou).
+- Spec bug do critério end-to-end "Placeholder `ADR-NNN` resolvido" (Task #8 captura): grep `-c "ADR-NNN" skills/new-adr/SKILL.md CLAUDE.md` retorna 2 matches em SKILL.md (template literal `# ADR-NNN: <Título>` + exemplo narrativo `git log --grep "ADR-NNN"`), ambos intencionais. Refinar critério para excluir contextos template/exemplo (amarrar a condição inversa: cross-refs em sub-passo 4.5 + bullet § O que NÃO fazer usam `ADR-065` confirmadamente).
 - Quando shipped: meta-system ADR-021 § Limitações 4ª linha ganha Adendo final "Restam **0 follow-ups deferidas** — princípio 4 plenamente operacionalizado"; entry em meta-system BACKLOG migra de Próximos para Concluídos. Pattern dual-entry (entry mensageira aqui + entry recíproca em meta-system BACKLOG) honrado.
 
 ## Notas operacionais
