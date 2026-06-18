@@ -2,6 +2,14 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.11.2] - 2026-06-18
+
+### Fixed
+- `docs/procedures/forge-auto-detect.md` — regex `^gitlab\.` ampliada para `^gitlab[.-]`, cobrindo instâncias GitLab corporativas com prefixo hífen (ex: `gitlab-ca.tjpa.jus.br`). Falsos positivos verificados ausentes em hosts não-gitlab conhecidos.
+
+### Notes
+- `BACKLOG.md` — 3 entries movidas para `## Concluídos` (cascade Ockham/YAGNI ✓ zero-edits; `block_gitignored` colisão `/note` ✓ whitelist pré-existente; regex forge-auto-detect ✓ esta sessão) + 2 entries capturadas de sessão cross-repo (bootstrap deadlock `/note --to` + hook colisão).
+
 ## [3.11.1] - 2026-06-16
 
 ### Changed
