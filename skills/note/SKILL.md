@@ -60,6 +60,15 @@ Mecânica idêntica ao step 4.5 do `/init-config` SKILL.md (linha `.claude/` da 
 
 Falha (qualquer um dos checks) → recusar com mensagem: `target <path> não inicializado para modo local; abra sessão CC em <target> e rode /note <msg> uma vez para inicializar gates.`
 
+**Bootstrap moment** — quando o target é repo recém-criado onde `.claude/local/` ainda não existe e o operador não tem sessão CC aberta nele (deadlock: `/note` exige init, mas init exige sessão no target), inicializar manualmente **antes** do primeiro cross-write (executado pelo operador, não pela skill — skill nunca muta `.gitignore` do target):
+
+```sh
+mkdir -p <path-absoluto-do-target>/.claude/local/
+echo '.claude/local/' >> <path-absoluto-do-target>/.gitignore
+```
+
+Após isso, `/note --to <target> <conteúdo>` passa a pré-condição. Ato one-time de bootstrap; mutação do `.gitignore` do target pela skill continua proibida per `§ O que NÃO fazer`.
+
 **Gates assimétricos em cross-write**:
 
 - **Gate `Gitignore`**: opera como **read-only probe** (já validado na pré-condição acima); **não escreve** em `.gitignore` do target em modo algum.
