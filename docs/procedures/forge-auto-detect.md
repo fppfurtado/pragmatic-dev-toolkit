@@ -9,7 +9,7 @@ Consumidores típicos: operações em PR/MR (listar/criar/checar status), em rel
 1. **Resolver remote origin:** `git remote get-url origin`. Sem remote → output `unsupported-host` (caller decide policy — geralmente skip silente da feature de forge).
 2. **Host detection:**
    - URL casando `github.com` → host = GitHub.
-   - URL casando regex `^gitlab\.` (gitlab.com OR GitLab corporativo `gitlab.<domínio>`) → host = GitLab.
+   - URL casando regex `^gitlab[.-]` (gitlab.com OR GitLab corporativo `gitlab.<domínio>` OR GitLab corporativo com prefixo hífen `gitlab-<algo>.<domínio>`) → host = GitLab.
    - Outros hosts (Bitbucket, Codeberg, custom) → output `unsupported-host`.
 3. **CLI probe pelo host detectado:**
    - GitHub + `command -v gh` retorna zero → output `gh`.
