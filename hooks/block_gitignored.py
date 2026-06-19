@@ -34,7 +34,11 @@ def main() -> int:
     if not file_path:
         return 0
 
-    abspath = os.path.abspath(file_path)
+    # Resolve symlinks: consumer layout can be symlink-mediated (e.g.,
+    # ~/Projects → /storage/dev/projects/) while `git --show-toplevel`
+    # returns canonical paths; mismatch makes the `.claude/` allowlist below
+    # unreachable. `realpath` on both sides keeps the comparison symmetric.
+    abspath = os.path.realpath(file_path)
 
     # The file's parent may not exist yet (Write creating a new tree under
     # a gitignored dir). Walk up to the nearest existing ancestor so
@@ -57,7 +61,7 @@ def main() -> int:
     lines = meta.stdout.splitlines()
     if len(lines) < 2 or lines[0].strip() != "true":
         return 0
-    toplevel = lines[1].strip()
+    toplevel = os.path.realpath(lines[1].strip())
     if not toplevel:
         return 0
 
