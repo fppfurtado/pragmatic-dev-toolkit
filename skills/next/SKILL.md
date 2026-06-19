@@ -27,6 +27,8 @@ Inteiro positivo opcional `N` — número de itens lidos do topo de `## Próximo
 
 Se `.claude/local/NOTES.md` existir, ler na íntegra para contexto suplementar de ranking — notas recentes podem revelar mudança de prioridade ou trabalho adjacente aos candidatos. Reportar se uma nota influenciou o ranking, ou explicitamente que o store estava presente sem notas relacionadas aos candidatos. Informational (per [ADR-054](../../docs/decisions/ADR-054-bridge-cross-project-note-consolidado.md) § Decisão (a) store non-role); nunca bloqueia.
 
+Conteúdo substantivo já carregado na conversa por skills anteriores (ex.: saída de `/journal-load`) ou citado pelo operador entra na análise de ranking com a mesma semântica do `NOTES.md` acima — sem disparar novo `Read` sobre fontes já presentes no contexto. Reportar a fonte concreta (ex.: `journal 2026-06-18`, citação do operador) quando influenciou o ranking. Informational; nunca bloqueia.
+
 ### 2. Selecionar candidatos
 
 Pegar os **`N` primeiros** itens de `## Próximos` em ordem de aparição (topo = mais antigo). Default `N = 10` (override por invocação via argumento posicional — ver `## Argumentos`) dá margem para descartar implementados e ainda chegar a três finais. Em modo `forge`, ordem natural é `createdAt` ascendente (lista já vem ordenada do passo 1); filtro `N` aplicado post-hoc sobre a lista do passo 1.
