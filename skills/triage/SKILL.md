@@ -138,6 +138,15 @@ Bloco **doc-only** (paths todos `.md`/`.rst`/`.txt`) recebe `doc-reviewer` como 
 
 **Exceção do path-set** (per [ADR-062](../../docs/decisions/ADR-062-criar-subagent-prompt-reviewer.md)): bloco doc-only cujos paths caem em `agents/*.md`/`skills/**/SKILL.md`/`docs/plans/*.md` recebe `prompt-reviewer` como default (regra mais-específico-vence sobre doc-only ampla; dispatch logic literal em `skills/run-plan/SKILL.md` §2 item 3). Usar `{reviewer: prompt}` para explicitar; `{reviewer: doc}` continua válido como override do operador quando a mudança é puramente editorial-doc (typo, reordenação) e não toca substância algorítmica.
 
+**Pendências de validação (pré-escrita com markers).** Quando o passo 2 identifica cenário que exige verificação pós-shipping (ex.: smoke comportamental pós-`/reload-plugins` em sessão CC nova) ou trabalho adjacente que emergiu do escopo do plano, pré-escrever bullet em `## Pendências de validação` do plan body (criar a seção se ausente) com prefixo discriminante:
+
+- **`[capture:validacao]`** — cenário comportamental pós-shipping/`/reload-plugins` que exige o operador executar a verificação em sessão futura. Permanece como pendência do próprio plano após materialização do `/run-plan` (sem comportamento a observar agora; depende do plugin recarregado).
+- **`[capture:backlog]`** — trabalho future independente (feature/fix/regra/refinamento) adjacente ao escopo do plano mas sem comportamento a observar. Materializa como linha em `## Próximos` do papel `backlog` (modo arquivo) ou em `## Capturas backlog em modo forge` (modo forge).
+
+Markers consumidos pelo `/run-plan §3.5` per [ADR-049](../../docs/decisions/ADR-049-execucao-run-plan-consolidado.md) § Decisão (c). Plano sem cenários pendentes pós-shipping omite a seção.
+
+**Fronteira com "Itens fora de escopo emergidos" (passo 2).** A subseção do passo 2 trata de TODOs/tech-debt adjacentes ao **`/triage` corrente** — gravação direta como linhas em `## Próximos` antes do plano existir. Aqui é diferente: pré-escrita em `## Pendências de validação` do **plan body** alimenta materialização runtime via `/run-plan §3.5` no done. Quando o item future independente é claramente desacoplado do plano, prefira linhas em `## Próximos` (passo 2); quando emerge no contexto do plano e o operador quer matrícula no done, use `[capture:backlog]`.
+
 **ADR:** chamar a tool `Skill` com `name="pragmatic-dev-toolkit:new-adr"` e `args=<título>` (não duplicar lógica nem criar arquivo manualmente). Reportar e seguir. `/new-adr` aplica o modo do `decisions_dir` automaticamente — em modo `local`, ADR criado em `.claude/local/decisions/`.
 
 **`docs/domain.md` / `docs/design.md`:** edit cirúrgico, preservar tom e estrutura.
