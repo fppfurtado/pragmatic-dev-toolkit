@@ -157,6 +157,7 @@ Consumer projects declare path-contract variants in a fenced YAML block marked b
 <!-- pragmatic-toolkit:config -->
 ```yaml
 paths:
+  backlog: forge  # GitHub issues sem assignee; BACKLOG.md ## Concluídos preservado como histórico (per ADR-058 + migração 2026-06-19)
   version_files: [".claude-plugin/plugin.json", ".claude-plugin/marketplace.json"]
 test_command: null  # repo has no test suite; /run-plan falls back to plan's `## Verificação end-to-end`
 ```
