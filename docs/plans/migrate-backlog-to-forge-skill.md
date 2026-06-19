@@ -1,9 +1,5 @@
 # Plano — `/migrate-backlog-to-forge` v0
 
-## Status
-
-Pendente
-
 ## Contexto
 
 Materializa o helper canonical anchored em [#125](https://github.com/fppfurtado/pragmatic-dev-toolkit/issues/125). N=3 da fricção do gap foi materializada em 2026-06-19:
@@ -118,3 +114,7 @@ Sem mutação remota nestes — verificação fica em parse + boundary + gates, 
 
 - design-reviewer F4 (revisão plano 2026-06-19): alternativa "trim determinístico ≤80 chars" para geração de títulos rebatida em § Resumo da mudança com exemplo concreto (caminho-único).
 - design-reviewer F5 (revisão plano 2026-06-19): discoverability via README + docs/install.md por design declarada em § Notas operacionais (caminho-único).
+
+## Capturas backlog em modo forge
+
+- #134: Plan `docs/plans/migrate-backlog-to-forge-skill.md` linhas 19+25 referenciam ADR-017 do meta-bridge com path relativo local inexistente.
