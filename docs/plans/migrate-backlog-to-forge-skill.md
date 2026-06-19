@@ -1,9 +1,5 @@
 # Plano — `/migrate-backlog-to-forge` v0
 
-## Status
-
-Pendente
-
 ## Contexto
 
 Materializa o helper canonical anchored em [#125](https://github.com/fppfurtado/pragmatic-dev-toolkit/issues/125). N=3 da fricção do gap foi materializada em 2026-06-19:
