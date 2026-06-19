@@ -2,6 +2,13 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.11.3] - 2026-06-19
+
+### Notes
+- `skills/triage/SKILL.md` step 4 § Plano — 2 parágrafos novos: mecânica de pré-escrita textual em `## Pendências de validação` do plan body com prefixo discriminante `[capture:validacao]` (cenário comportamental pós-`/reload-plugins`, fica como pendência do plano) vs `[capture:backlog]` (trabalho future independente, materializa em `## Próximos`/`## Capturas backlog em modo forge`); cláusula adicional de fronteira com "Itens fora de escopo emergidos" do passo 2. Cross-ref ADR-049 § Decisão (c) sobre consumo por `/run-plan §3.5`. 4 prompt-reviewer findings convergentes contra a localização original (step 2) → meta-cutucada AskUserQuestion → mover para step 4 dissolveu os 4 simultaneamente.
+- `skills/next/SKILL.md` Passo 1 — parágrafo novo simétrico ao do NOTES.md: conteúdo substantivo já carregado na conversa por skills anteriores (ex.: saída de `/journal-load`) ou citado pelo operador entra na análise de ranking com a mesma semântica do `NOTES.md`, sem disparar novo `Read` sobre fontes já presentes no contexto; reporta fonte concreta quando influenciou ranking. 4 prompt-reviewer findings: F1+F2 cutucados (categoria semântica aberta + sessão CC inteira); F3+F4 absorvidos caminho-único.
+- `skills/note/SKILL.md` — parágrafo "Bootstrap moment" documenta workflow de cross-write em repo recém-criado: snippet `mkdir -p .claude/local` + entry `.claude/local/` no `.gitignore` como ato one-time do operador (skill nunca muta `.gitignore` do target — invariante preservada per ADR-047).
+
 ## [3.11.2] - 2026-06-18
 
 ### Fixed
