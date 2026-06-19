@@ -117,4 +117,4 @@ Sem mutação remota nestes — verificação fica em parse + boundary + gates, 
 
 ## Capturas backlog em modo forge
 
-- Plano `docs/plans/migrate-backlog-to-forge-skill.md` (linhas 19+25 versão original pré-execução) referenciava `[ADR-017](../decisions/ADR-017-decomposicao-skill-orquestrador-sub-tool.md)` com path relativo local — ADR-017 do meta-bridge é cross-project precedent (não ADR vigente neste repo). Direção: fixar para URL absoluta GitHub do meta-bridge OR remover link mantendo prosa "ADR-017 do meta-bridge" como cross-project precedent identificado por nome. Detectado por doc-reviewer no Bloco 1 do /run-plan migrate-backlog-to-forge-skill.
+- #134: Plan `docs/plans/migrate-backlog-to-forge-skill.md` linhas 19+25 referenciam ADR-017 do meta-bridge com path relativo local inexistente.
