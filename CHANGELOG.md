@@ -2,6 +2,21 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.12.0] - 2026-06-19
+
+### Added
+- Skill `/migrate-backlog-to-forge` v0 — orquestrador hybrid + sub-tool Python que migra `BACKLOG.md ## Próximos` → GitHub issues batched + flipa `paths.backlog: forge` em `CLAUDE.md` + commit unificado + push + comment automático em issue de gap. v0 gh-only (boundary glab declarada explicitamente; `glab` detection stops com mensagem orientando replay manual). Cutucada batched-com-confirmação per ADR-066 § Mecânica. Sub-tool Python determinístico em `skills/migrate-backlog-to-forge/sub-tools/migrate.py` com 2 subcomandos (parse + migrate); auto-gate `os.path.realpath`.
+- ADR-066 (`docs/decisions/ADR-066-migracao-inicial-cutucada-batched-modo-forge.md`) — sucessor parcial editorial de ADR-058 § (e). Codifica 3ª categoria editorial de cutucada por mutação no modo forge ("batched-com-confirmação" para migração inicial — 1 cutucada unificada autoriza N issues + drain + config + commit + push); paralela ao default per-mutação de ADR-058 § (e) (1ª) e ao sub-caso batched-com-seleção de `/run-plan §3.5` (2ª). Critério de discriminação cross-categoria: heterogeneidade decisional como eixo primário, origem do signal como secundário. 7ª aplicação consecutiva do Override do critério N=3 com calibração explícita reconhecendo fragilidade epistêmica.
+- `CLAUDE.md` § Plugin component naming — tabela ganha 4ª linha "Sub-tool (em skill)" codificando pattern `skills/<name>/sub-tools/<f>.py` (Python standalone CLI invocado pela skill prosa via `Bash`; JSON-over-stdout + exit codes como fronteira determinística entre orquestrador agentic e mecânica determinística). § Editing conventions ganha bullet companion cross-ref a precedent cross-project meta-bridge (`/wiki-compile` + `sub-tools/compile.py`, ADR-017 do meta-bridge) reconhecido explicitamente NÃO como doutrina vigente neste repo. 1ª instância materializada em `/migrate-backlog-to-forge` v0.
+- `paths.backlog: forge` declarado em `CLAUDE.md` do próprio toolkit (dogfood) — 7 entries de `BACKLOG.md ## Próximos` migradas para gh issues #127-#133 via script ad-hoc; 3ª materialização N=3 do gap do helper canonical fechado pelas adições acima.
+- `README.md` § What's inside + `docs/install.md` step 12 — entry e smoke procedural para `/migrate-backlog-to-forge` cobrindo pre-flight forge-auto-detect → parse → títulos batched → cutucada Migração → commit + push + comment automático + idempotência.
+
+### Fixed
+- `hooks/block_gitignored.py` — resolve symlinks via `os.path.realpath` em ambas linhas 37 (abspath do file_path) e 60 (output de `git rev-parse --show-toplevel`) garantindo simetria mesmo se git mudar comportamento futuro. Bug N=5 instâncias documentadas cross-sessão (`/note`, `/init-config` 3x, `/meta-status` writeback): em consumer com layout symlink-mediated, `os.path.abspath` não resolvia symlinks enquanto `git --show-toplevel` retornava canonical; mismatch fazia `relpath` escapar do toplevel e whitelist `.claude/` ficava inalcançável. Smoke 4/4 PASS. Closes #126. ADR-016 preservado.
+
+### Notes
+- `skills/triage/SKILL.md` — `/note` como escapatória adicional em `## Próximos passos` § 1 quando forge indisponível (no-detection/unsupported-host): instrução off-band para o operador via `/note "..."` em vez de stop hard com mensagem de erro. 3ª escapatória paralela.
+
 ## [3.11.3] - 2026-06-19
 
 ### Notes
