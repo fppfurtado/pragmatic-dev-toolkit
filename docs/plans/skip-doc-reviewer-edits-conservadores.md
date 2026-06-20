@@ -1,9 +1,5 @@
 # Plano — Skip silente doc-reviewer em edits conservadores
 
-## Status
-
-Pendente
-
 ## Contexto
 
 `/run-plan §2 item 3` codifica hierarquia mais-específico-vence para dispatch de reviewer per bloco (per ADR-062 § Pattern de dispatch). Atualmente toda invocação em doc-only ampla dispara `doc-reviewer`. Pattern empírico cross-week 2026-06-15 → 2026-06-20 (6 invocações em 4 sessões consecutivas, todas close-clean) sinaliza cerimônia per ADR-002 § Decisão.
@@ -42,7 +38,7 @@ Alternativas rebatidas no `/triage` + ADR-067 § Alternativas considerada: (a) s
 
 Repo sem suíte de testes automatizada (`test_command: null` per CLAUDE.md). Validação centralizada em `## Verificação manual` abaixo. Critérios end-to-end mecânicos pré-merge:
 
-- `grep -n "Exceção skip silente doc-reviewer" skills/run-plan/SKILL.md` retorna ≥1 linha (cláusula codificada).
+- `grep -n "Filtro pós-resolução skip silente.*doc-reviewer" skills/run-plan/SKILL.md` retorna ≥1 linha (cláusula codificada; cláusula renomeada via prompt-reviewer F2 absorção pré-commit Bloco 1).
 - `grep -n "ADR-067" skills/run-plan/SKILL.md` retorna ≥1 linha (cross-ref ao ADR).
 - `awk` extrai posicionamento da cláusula §2 item 3 — confirmar APÓS as 3 exceções pré-existentes (narrow/ampla/misto), não antes.
 
