@@ -1,9 +1,5 @@
 # Plano — Skip silente doc-reviewer em edits conservadores
 
-## Status
-
-Pendente
-
 ## Contexto
 
 `/run-plan §2 item 3` codifica hierarquia mais-específico-vence para dispatch de reviewer per bloco (per ADR-062 § Pattern de dispatch). Atualmente toda invocação em doc-only ampla dispara `doc-reviewer`. Pattern empírico cross-week 2026-06-15 → 2026-06-20 (6 invocações em 4 sessões consecutivas, todas close-clean) sinaliza cerimônia per ADR-002 § Decisão.
@@ -42,7 +38,7 @@ Alternativas rebatidas no `/triage` + ADR-067 § Alternativas considerada: (a) s
 
 Repo sem suíte de testes automatizada (`test_command: null` per CLAUDE.md). Validação centralizada em `## Verificação manual` abaixo. Critérios end-to-end mecânicos pré-merge:
 
-- `grep -n "Exceção skip silente doc-reviewer" skills/run-plan/SKILL.md` retorna ≥1 linha (cláusula codificada).
+- `grep -n "Filtro pós-resolução skip silente.*doc-reviewer" skills/run-plan/SKILL.md` retorna ≥1 linha (cláusula codificada; cláusula renomeada via prompt-reviewer F2 absorção pré-commit Bloco 1).
 - `grep -n "ADR-067" skills/run-plan/SKILL.md` retorna ≥1 linha (cross-ref ao ADR).
 - `awk` extrai posicionamento da cláusula §2 item 3 — confirmar APÓS as 3 exceções pré-existentes (narrow/ampla/misto), não antes.
 
@@ -83,6 +79,10 @@ Para cada cenário, executar `/run-plan` sobre plano sintético em worktree de t
 - ADR-067 já criado neste `/triage` via `/new-adr` delegada (status Proposto). Plano + ADR commitados como unidade atômica no `/triage` step 5.
 - Edit em `skills/run-plan/SKILL.md` cai em path-set narrow (ADR-062 § Pattern de dispatch) → `prompt-reviewer` disparará no `/run-plan` per bloco. Findings sobre qualifiers semânticos do predicado podem emergir; absorver/cutucar per ADR-053 § Decisão (c) durante execução.
 - ADR-067 § Override do critério N=3 explicita 7ª aplicação consecutiva da onda Override; fragilidade epistêmica monitorada via critério de erosão auditável (3 cláusulas: false-positive + false-negative + over-fitting >80% same-cluster) em auditoria post-mortem semestral.
+
+## Pendências de validação
+
+- Smoke comportamental leve pós-`/reload-plugins` confirmando que `/run-plan` runtime aplica o filtro skip silente conforme cláusula "Filtro pós-resolução skip silente doc-reviewer" em `skills/run-plan/SKILL.md` §2 item 3 nos 9 cenários do `## Verificação manual` acima (C1-C8 + C5b). Manual simulation in-flight via leitura da worktree SKILL.md (não-autoritativa per dogfood-recursive limit) validou predicate logic 9/9 PASS; cache do plugin `~/.claude/plugins/cache/fppfurtado-pragmatic-dev-toolkit/pragmatic-dev-toolkit/3.12.0/skills/run-plan/SKILL.md` carrega versão pré-ADR-067 — pós-reload, comportamento real precisa confirmar.
 
 ## Decisões absorvidas
 
