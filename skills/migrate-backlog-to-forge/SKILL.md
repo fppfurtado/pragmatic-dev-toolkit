@@ -82,7 +82,7 @@ Disparar `AskUserQuestion`:
 Cobertura única: título + autorização de mutação remota juntos. Operador escolhe.
 
 - `Aplicar batch completo` → passo 7 direto.
-- `Revisar antes` → loop granular antes do passo 7 (per-item: mostrar entry + título proposto + cutucada com 4 opções: `Aprovar título` / `Editar título` (input livre via Other do AskUserQuestion) / `Pular esta entry` (drop — não migrar; entry permanece em ## Próximos pós-migração) / `Cancelar tudo` (abort sem mutações remotas; estado preserved)). Ao final do loop com ≥1 entry aprovada, re-disparar `AskUserQuestion` `Aplicar batch revisado` / `Cancelar` antes do passo 7. Loop com zero entries aprovadas (operador pulou todas) → para com mensagem `"loop revisado sem entries aprovadas — abortando sem mutações remotas"`.
+- `Revisar antes` → loop granular antes do passo 7 (per-item: mostrar entry + título proposto + cutucada com 4 opções: `Aprovar título` / `Editar título` (input livre via Other do AskUserQuestion) / `Pular esta entry` (drop — não migrar; entry permanece em ## Próximos pós-migração) / `Cancelar tudo` (abort sem mutações remotas; estado preserved)). Ao final do loop com ≥1 entry aprovada, re-disparar `AskUserQuestion` `Aplicar batch revisado` / `Cancelar` antes do passo 7. Loop com zero entries aprovadas (operador pulou todas) → para com mensagem `"loop revisado sem entries aprovadas — abortando sem mutações remotas"`. Confirmação batched revisado → passo 7 entra pelo sub-passo 1 (drift gate aplica em ambos os caminhos `Aplicar batch completo` e `Revisar antes`).
 - `Cancelar` → exit clean.
 
 ### 7. Execução via sub-tool
@@ -93,7 +93,18 @@ Executar `python3 ${CLAUDE_PLUGIN_ROOT}/skills/migrate-backlog-to-forge/sub-tool
 
 Pós-execução do sub-tool:
 
-1. **Commit unificado** com mensagem template:
+1. **Cutucada de drift na prosa** (pré-commit, gate explícito anti-drift): sub-tool flipa apenas o bloco YAML `<!-- pragmatic-toolkit:config -->`; prosa humana do `CLAUDE.md` (descrições de roles, exemplos, capítulos narrativos) pode conter menções stale a backlog file-mode (`BACKLOG.md` como source-of-truth, `## Próximos` como lista narrativa, `paths.backlog: file`). Disparar `AskUserQuestion`:
+
+   - Header: `Drift`
+   - Question: `"Prosa do CLAUDE.md (fora do bloco YAML) revisada por menções stale pós-flip canonical→forge?"`
+   - Opções:
+     - **`Confirmar prosa OK`** — `description`: `"Prosa revisada / projeto sem prosa custom relevante. Segue para commit unificado."`
+     - **`Pausar p/ editar`** — `description`: `"Skill para; operador edita CLAUDE.md inline (mid-turn, mesma sessão CC) preservando edits unstaged do sub-tool; após salvar, responde 'pronto'/'continuar' e skill reentra direto no sub-passo 2 do passo 7."`
+
+   - `Confirmar prosa OK` → segue para sub-passo 2.
+   - `Pausar p/ editar` → skill para sem mutar working tree (edits unstaged preservados); operador edita inline mid-turn (mesma sessão CC) e responde com retomada (`pronto`/`continuar` ou equivalente); skill reentra direto no sub-passo 2 do passo 7 sem re-traversar passos 1-6. **Re-invocação via slash command NÃO é o caminho** — cairia no fast-path do passo 2 (`paths.backlog: forge já declarado`) e abortaria incorretamente porque sub-tool já flipou o YAML. Sub-passos 2-4 executam normalmente (commit captura todos os edits unstaged agrupados).
+
+2. **Commit unificado** com mensagem template:
    ```
    feat(config): migrar backlog para paths.backlog: forge
 
@@ -109,13 +120,14 @@ Pós-execução do sub-tool:
    ```
    Editorial — ajustar template per convenção do projeto consumidor (idioma + estilo de commits — `docs/philosophy.md` → "Convenção de commits").
 
-2. **Push imediato** (`git push origin HEAD`). Falha (branch protegida, sem upstream, rede etc.) → reportar erro literal; commit local permanece pra operador resolver manualmente (e.g., `git push -u origin <nome-desejado>` ou abrir PR via branch separada).
+3. **Push imediato** (`git push origin HEAD`). Falha (branch protegida, sem upstream, rede etc.) → reportar erro literal; commit local permanece pra operador resolver manualmente (e.g., `git push -u origin <nome-desejado>` ou abrir PR via branch separada).
 
-3. **Comment automático em #125 se aberta**: `gh issue list --state open --search "#125 in:title"` retorna match → `gh issue comment 125 --body "<glosa apontando para esta migração + N entries + commit hash + repo>"`. Sem match → skip silente.
+4. **Comment automático em #125 se aberta**: `gh issue list --state open --search "#125 in:title"` retorna match → `gh issue comment 125 --body "<glosa apontando para esta migração + N entries + commit hash + repo>"`. Sem match → skip silente.
 
 ## O que NÃO fazer
 
 - **Não rodar sem `## Próximos` populado** — gate em passo 4 zero entries para com mensagem clara. Bypass manual via Edit em CLAUDE.md preserva integridade do contrato.
 - **Não pular cutucada batched-com-confirmação** — ADR-066 § Mecânica codifica 1 cutucada unificada como invariante editorial. Pular = silent divergence anti-ADR-058 § (e).
+- **Não pular cutucada de drift na prosa** (passo 7 sub-passo 1) — gate explícito anti-drift sobre prosa humana do CLAUDE.md que sub-tool não toca; bypass = silent stale prose pós-flip.
 - **Não tentar glab inline** — boundary v0 gh-only é explícita per ADR-066 § Limitações. Implementação speculative cross-forge violaria YAGNI doutrinal.
-- **Não citar #125 no comment se a issue já estiver fechada** — passo 7 sub-passo 3 gate verifica `--state open` antes de tentar `gh issue comment`. Comment em issue fechada gera ruído editorial.
+- **Não citar #125 no comment se a issue já estiver fechada** — passo 7 sub-passo 4 gate verifica `--state open` antes de tentar `gh issue comment`. Comment em issue fechada gera ruído editorial.
