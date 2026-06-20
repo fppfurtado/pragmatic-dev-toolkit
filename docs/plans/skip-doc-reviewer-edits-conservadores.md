@@ -80,6 +80,10 @@ Para cada cenário, executar `/run-plan` sobre plano sintético em worktree de t
 - Edit em `skills/run-plan/SKILL.md` cai em path-set narrow (ADR-062 § Pattern de dispatch) → `prompt-reviewer` disparará no `/run-plan` per bloco. Findings sobre qualifiers semânticos do predicado podem emergir; absorver/cutucar per ADR-053 § Decisão (c) durante execução.
 - ADR-067 § Override do critério N=3 explicita 7ª aplicação consecutiva da onda Override; fragilidade epistêmica monitorada via critério de erosão auditável (3 cláusulas: false-positive + false-negative + over-fitting >80% same-cluster) em auditoria post-mortem semestral.
 
+## Pendências de validação
+
+- Smoke comportamental leve pós-`/reload-plugins` confirmando que `/run-plan` runtime aplica o filtro skip silente conforme cláusula "Filtro pós-resolução skip silente doc-reviewer" em `skills/run-plan/SKILL.md` §2 item 3 nos 9 cenários do `## Verificação manual` acima (C1-C8 + C5b). Manual simulation in-flight via leitura da worktree SKILL.md (não-autoritativa per dogfood-recursive limit) validou predicate logic 9/9 PASS; cache do plugin `~/.claude/plugins/cache/fppfurtado-pragmatic-dev-toolkit/pragmatic-dev-toolkit/3.12.0/skills/run-plan/SKILL.md` carrega versão pré-ADR-067 — pós-reload, comportamento real precisa confirmar.
+
 ## Decisões absorvidas
 
 - F2 Bloco 1 anotação `{reviewer: prompt}`: mantida explícita (valor informativo) — reviewer reconheceu como aceitável (caminho-único).
