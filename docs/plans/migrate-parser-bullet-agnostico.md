@@ -1,9 +1,5 @@
 # Plano — Parser bullet-agnóstico em /migrate-backlog-to-forge
 
-## Status
-
-Pendente
-
 ## Contexto
 
 Sub-tool determinístico de `/migrate-backlog-to-forge` (`skills/migrate-backlog-to-forge/sub-tools/migrate.py:26,57-60`) filtra entries exclusivamente por `ENTRY_PREFIX = "- plugin: "`. Items em `## Próximos` que não começam com esse prefix são silenciosamente dropados; quando 100% dos items são "non-matching", parser retorna `entries: []` e o gate "zero entries" do passo 4 do SKILL.md aborta com mensagem `"## Próximos vazio — config flip suficiente, sem entries pra migrar"`, falsamente reportando seção vazia.

@@ -23,7 +23,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-ENTRY_PREFIX = "- plugin: "
 DRAIN_MARKER = "_(drenado em"
 FOOTER_TEMPLATE = "\n\n---\nMigrado de `BACKLOG.md` em {date}."
 
@@ -31,7 +30,9 @@ FOOTER_TEMPLATE = "\n\n---\nMigrado de `BACKLOG.md` em {date}."
 def parse_proximos(backlog_path: Path) -> list[dict]:
     """Extrai entries de ## Próximos.
 
-    Retorna lista de {text: <prosa>}. Stripa prefix `- plugin: ` para limpar.
+    Aceita bullets markdown `- ` e `* `; texto restante após o bullet marker = entry.
+    Entries multi-line (continuation indentada) preservadas até próximo bullet.
+    Linhas não-bullet silenciosamente ignoradas (default seguro per Ockham operacionalizado, ADR-043 § critério 1).
     Marker DRAIN_MARKER em ## Próximos → exit 2 (idempotência detectada upstream).
     `## Concluídos` ancorado em ^ para evitar falso match em prosa meta-referencial.
     """
@@ -54,10 +55,11 @@ def parse_proximos(backlog_path: Path) -> list[dict]:
         sys.exit(2)
 
     entries = []
-    for raw in re.split(r"\n(?=- plugin: )", section):
+    for raw in re.split(r"\n(?=[-*] )", section):
         raw = raw.strip()
-        if raw.startswith(ENTRY_PREFIX):
-            entries.append({"text": raw[len(ENTRY_PREFIX):]})
+        bullet_match = re.match(r"^[-*] (.*)$", raw, re.DOTALL)
+        if bullet_match:
+            entries.append({"text": bullet_match.group(1).strip()})
     return entries
 
 
