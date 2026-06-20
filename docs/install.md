@@ -28,6 +28,20 @@ git clone git@github.com:fppfurtado/pragmatic-dev-toolkit.git
 /plugin install /caminho/para/pragmatic-dev-toolkit --scope project
 ```
 
+## Recovery em sessão CC já em curso
+
+Quando uma skill é instalada/atualizada via plugin update (e.g., `pragmatic-dev-toolkit@3.11.x → 3.12.0`) numa sessão CC já em curso, a skill **não aparece automaticamente no dispatcher** — operador precisa rodar:
+
+```
+/reload-plugins
+```
+
+(Mesmo comando do setup inicial em § Marketplace install, ângulo distinto: aqui é recovery, não setup.)
+
+Sintoma diagnóstico: tentativa de invocar a skill via `Skill` tool retorna `unknown skill`, mas o cache populado em `~/.claude/plugins/cache/<author>-<plugin>/<plugin>/<version>/skills/<name>/` confirma que a versão correta foi baixada. O dispatcher da sessão atual referencia a versão pré-update; `/reload-plugins` força refresh sem precisar restart da sessão.
+
+Comportamento canonical do Claude Code runtime — não é bug do plugin.
+
 ## Validação
 
 Use `claude plugin validate <path>` (ferramenta oficial) — aceita o caminho de `.claude-plugin/plugin.json` ou `.claude-plugin/marketplace.json` e reporta erros de schema mais warnings. Para validações adicionais não cobertas pelo subcomando (smoke das skills, edição de `.env`, hooks disparando), siga o checklist:

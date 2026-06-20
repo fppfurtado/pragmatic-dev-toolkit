@@ -20,6 +20,8 @@ Sem argumentos. Skill opera sobre `BACKLOG.md` resolvido pelo papel `backlog`.
 
 **gh-only em v0.** N=3 empíricas todas gh (operador-owned repos). glab N=0 estrutural — repos TJPA não têm `BACKLOG.md` (canonical já era issues GitLab). Implementação cross-forge speculative violaria YAGNI. Helper para com mensagem clara quando `forge-auto-detect` resolve glab; operador replica manualmente o pattern do sub-tool adaptando `gh issue create` → `glab issue create` se materialização emergir.
 
+**Pré-condição operacional:** skill recém-instalada/atualizada via plugin update (e.g., toolkit `3.11.x → 3.12.0`) numa sessão CC já em curso requer `/reload-plugins` para aparecer no dispatcher. Sintoma: invocação via `Skill` tool retorna `unknown skill`. Recovery: rodar `/reload-plugins`. Comportamento canonical do Claude Code runtime; detalhes em [`docs/install.md` § Recovery em sessão CC já em curso](../../docs/install.md).
+
 ## Passos
 
 ### 1. Pre-flight forge-auto-detect
