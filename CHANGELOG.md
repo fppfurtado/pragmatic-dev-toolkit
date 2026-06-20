@@ -2,6 +2,18 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.13.0] - 2026-06-20
+
+### Added
+- Filtro skip silente `doc-reviewer` em `/run-plan §2 item 3` para edits editoriais conservadores per [ADR-067](docs/decisions/ADR-067-skip-silente-doc-reviewer-em-edits-conservadores-via-predicado-de-sibling-pattern.md): pós-resolução sobre hierarquia ADR-062 + ativa só quando resolvido para `doc-reviewer` + predicado heurístico-semântico (predominantemente additive + bullet em ≥2 siblings adjacentes de mesmo gabarito sintático). 7ª aplicação consecutiva onda Override critério N=3 — § Override dedicada reconhece fragilidade epistêmica; critério de erosão auditável 3 cláusulas (false-positive + false-negative + over-fitting >80% same-cluster). Implementação: edit prose-only em `skills/run-plan/SKILL.md §2 item 3` (5 prompt-reviewer findings absorvidos pré-commit) + bullet sibling em `CLAUDE.md § Editing conventions` (meta-recursive — doc-reviewer close-clean valida pattern in-flight) + note em `README.md` doc-reviewer entry. Anotação explícita `{reviewer: doc}` é override do operador e NÃO ativa o filter.
+
+### Fixed
+- Parser `migrate.py:parse_proximos` de `/migrate-backlog-to-forge` aceita qualquer bullet markdown (`- ` ou `* `) em vez de filter exclusivo `ENTRY_PREFIX = "- plugin: "`. Bug per #136: parser dropava silenciosamente itens sem prefix legacy + reportava falsamente "## Próximos vazio" quando consumer projects usam bullets markdown puros. Multi-line entries preservadas via `re.DOTALL`; linhas não-bullet drop silente per Ockham operacionalizado (ADR-043 § critério 1). Backward-compat: `- plugin: <texto>` legacy migra como `plugin: <texto>` (cosmético; operador edita no batch). Smoke C1-C6 6/6 PASS. `docs/install.md step 12` pré-condição generalizada.
+
+### Notes
+- ADR-067 (`docs/decisions/ADR-067-skip-silente-doc-reviewer-em-edits-conservadores-via-predicado-de-sibling-pattern.md`) — sucessor parcial editorial de ADR-062 § Pattern de dispatch. 7ª aplicação consecutiva onda Override N=3 (após ADR-057/-061/-062/-063/-064/-065); cluster cross-week 2026-06-15 → 2026-06-20 com 6 instâncias empíricas observadas (3 cross-session). § Override dedicada reconhece fragilidade epistêmica (contexto homogêneo); § Implementação F6 prediz dogfood meta-loop (prompt-reviewer disparará em edits SKILL.md alvo) — predicted⟹confirmed in-flight com 5 findings sobre qualifiers semânticos absorvidos pré-commit.
+- 2 planos via `/triage` + `/run-plan` end-to-end shipped (PR #140 migrate-parser-bullet-agnostico + PR #141 skip-doc-reviewer-edits-conservadores) — pipeline dogfood 5ª-6ª intra-week + 1ª intra-day. Issues #136 + #131 closed no GitHub com comentários cross-ref aos commits + branches.
+
 ## [3.12.0] - 2026-06-19
 
 ### Added
