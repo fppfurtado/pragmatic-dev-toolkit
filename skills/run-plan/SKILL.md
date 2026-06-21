@@ -78,6 +78,8 @@ Ativado pela pré-condição 0 quando o plano declara `**Modo:** runbook` no `##
 
 **Reviewer per bloco ausente é intencional** — invariantes do bloco ficam por conta do gate humano de confirmação inline + revisão upstream manual por `@design-reviewer` sobre o plano-documento antes de invocar `/run-plan` (operador é responsável). Reviewer automático sobre diff inexistente não tem trabalho a fazer.
 
+**Fronteira inversa (canonical = single-repo).** Modo canonical opera sobre single-repo por construção — `test_command` resolve do `CLAUDE.md` do repo onde o plano vive (§1 item 3 baseline / §2 item 2 per-bloco / §3 item 1 gate final). Não há detecção dinâmica de paths em outros repos no `## Arquivos a alterar`; gates não rodam `test_command` do repo afetado. Planos com edits coordenados em múltiplos repos caem em runbook por design (multi-repo é caso canonical de system-surgery listado acima). Reabertura desta fronteira gated por dor empírica concreta (skip de teste relevante levando a regressão).
+
 ## Passos
 
 ### 1. Setup da worktree
