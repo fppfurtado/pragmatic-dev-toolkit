@@ -104,14 +104,14 @@ Pós-execução do sub-tool:
      - **`Pausar p/ editar`** — `description`: `"Skill para; operador edita CLAUDE.md inline (mid-turn, mesma sessão CC) preservando edits unstaged do sub-tool; após salvar, responde 'pronto'/'continuar' e skill reentra direto no sub-passo 2 do passo 7."`
 
    - `Confirmar prosa OK` → segue para sub-passo 2.
-   - `Pausar p/ editar` → skill para sem mutar working tree (edits unstaged preservados); operador edita inline mid-turn (mesma sessão CC) e responde com retomada (`pronto`/`continuar` ou equivalente); skill reentra direto no sub-passo 2 do passo 7 sem re-traversar passos 1-6. **Re-invocação via slash command NÃO é o caminho** — cairia no fast-path do passo 2 (`paths.backlog: forge já declarado`) e abortaria incorretamente porque sub-tool já flipou o YAML. Sub-passos 2-4 executam normalmente (commit captura todos os edits unstaged agrupados).
+   - `Pausar p/ editar` → skill para sem mutar working tree (edits unstaged preservados); operador edita inline mid-turn (mesma sessão CC) e responde com retomada (`pronto`/`continuar` ou equivalente); skill reentra direto no sub-passo 2 do passo 7 sem re-traversar passos 1-6. **Re-invocação via slash command NÃO é o caminho** — cairia no fast-path do passo 2 (`paths.backlog: forge já declarado`) e abortaria incorretamente porque sub-tool já flipou o YAML. Sub-passos 2-3 executam normalmente (commit captura todos os edits unstaged agrupados).
 
 2. **Commit unificado** com mensagem template:
    ```
    feat(config): migrar backlog para paths.backlog: forge
 
-   Materialização do migration helper /migrate-backlog-to-forge (#125 → N=4
-   empírica gh). N entries de BACKLOG.md ## Próximos migradas para gh issues:
+   Materialização do migration helper /migrate-backlog-to-forge. N entries de
+   BACKLOG.md ## Próximos migradas para gh issues:
    - #<n1>: <title1>
    - #<n2>: <title2>
    ...
@@ -124,12 +124,9 @@ Pós-execução do sub-tool:
 
 3. **Push imediato** (`git push origin HEAD`). Falha (branch protegida, sem upstream, rede etc.) → reportar erro literal; commit local permanece pra operador resolver manualmente (e.g., `git push -u origin <nome-desejado>` ou abrir PR via branch separada).
 
-4. **Comment automático em #125 se aberta**: `gh issue list --state open --search "#125 in:title"` retorna match → `gh issue comment 125 --body "<glosa apontando para esta migração + N entries + commit hash + repo>"`. Sem match → skip silente.
-
 ## O que NÃO fazer
 
 - **Não rodar sem `## Próximos` populado** — gate em passo 4 zero entries para com mensagem clara. Bypass manual via Edit em CLAUDE.md preserva integridade do contrato.
 - **Não pular cutucada batched-com-confirmação** — ADR-066 § Mecânica codifica 1 cutucada unificada como invariante editorial. Pular = silent divergence anti-ADR-058 § (e).
 - **Não pular cutucada de drift na prosa** (passo 7 sub-passo 1) — gate explícito anti-drift sobre prosa humana do CLAUDE.md que sub-tool não toca; bypass = silent stale prose pós-flip.
 - **Não tentar glab inline** — boundary v0 gh-only é explícita per ADR-066 § Limitações. Implementação speculative cross-forge violaria YAGNI doutrinal.
-- **Não citar #125 no comment se a issue já estiver fechada** — passo 7 sub-passo 4 gate verifica `--state open` antes de tentar `gh issue comment`. Comment em issue fechada gera ruído editorial.
