@@ -172,7 +172,7 @@ Campos `**Branch:**` (dimensão b) e `**Modo:**` (dimensão d) seguem **pattern 
 - Presença = opt-in revertível por plano.
 - Documentação canonical em `templates/plan.md` bloco "campos especiais".
 - Mensageiros para `/run-plan` consumir no setup (§1.1 detecção + pré-condição 0 detecção).
-- Pattern paralelo a `**Linha do backlog:**` (mensageiro de matching para transições de estado) + `**Termos ubíquos tocados:**` (mensageiro para reviewer) + `**ADRs candidatos:**` (mensageiro para curadoria de free-read — ADR-048).
+- Pattern paralelo a `**Linha do backlog:**` (mensageiro de matching para transições de estado) + `**Termos ubíquos tocados:**` (mensageiro para reviewer) + `**ADRs candidatos:**` (mensageiro para curadoria de free-read — ADR-048) + `**TestCommand:**` (override de `test_command` por plano para casos cross-repo — [ADR-068](ADR-068-campo-testcommand-declarativo-plano-override-cross-repo.md)).
 
 **Critério de promoção a campo opcional canonical** (gatilho de admissão futura, paralelo ao admission policy de ADR-045): nova dimensão de execução-do-plano que (i) afeta `/run-plan` ou `/triage`, (ii) tem comportamento default natural, (iii) é revertível por plano sem cerimônia, (iv) cabe em 1 linha de `## Contexto`.
 
@@ -201,7 +201,7 @@ ADR-010 preservado como ADR clássico vigente codificando categoria distinta (pr
 ### Razões
 
 - **Doutrina consolidada com clareza editorial.** Reader único navega thread completo (state em git/forge + campo `**Branch:**` + Task tool state-keeping + campo `**Modo:** runbook` + pattern campos paralelos + tensões resolvidas) em ADR único; não precisa saltar 4 ADRs nem inferir relações por leitura cruzada.
-- **Pattern editorial unificado dos campos opcionais codificado** — § Decisão (e) reconhece pattern paralelo de `**Branch:** + **Modo:** + **Linha do backlog:** + **Termos ubíquos tocados:** + **ADRs candidatos:**` como família coerente; critério de promoção futura registrado.
+- **Pattern editorial unificado dos campos opcionais codificado** — § Decisão (e) reconhece pattern paralelo de `**Branch:** + **Modo:** + **Linha do backlog:** + **Termos ubíquos tocados:** + **ADRs candidatos:** + **TestCommand:**` como família coerente; critério de promoção futura registrado. Campo `**TestCommand:**` adicionado como adendo per [ADR-068](ADR-068-campo-testcommand-declarativo-plano-override-cross-repo.md).
 - **Tensões resolvidas explicitamente** — § Decisão (f) absorve substância de ADR-041 § Tensões com ADR-002 + ADR-004 + integra com ADR-010 (state-keeping vs progress display). Ancestrais preservados vigentes com escopos delimitados sem revogação.
 - **Sem procedure file — toda mecânica vive em docs vivos.** Cluster execução não tem procedure pré-existente per ADR-024. Mecânica opera distribuída: `skills/run-plan/SKILL.md` (executor primário; pré-condições + warnings + loop + gate final + modo runbook) + `skills/triage/SKILL.md` (caminho-com-plano + campo `**Branch:**` upstream) + CLAUDE.md (bullet meta-doutrinal) + templates/plan.md (campos opcionais).
 - **Pattern de migração validado em quarta instância com refinamento editorial documentado.** Onda F estabelece pattern para ondas G-X que enfrentarem composição imperfeita do sketch original (exclusão de ADR + preservação de ADR ancestral fora do cluster).
