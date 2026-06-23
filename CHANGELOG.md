@@ -2,6 +2,21 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.14.0] - 2026-06-23
+
+### Added
+- Campo declarativo `**TestCommand:**` no `## Contexto` do plano (ADR-068): substitui o `test_command` resolvido do CLAUDE.md local nos 3 sites de gate automático do `/run-plan` (pré-condição 3 baseline + §2 item 2 per-bloco + §3 item 1 gate final); `null` literal → skip de gate por plano (override local — não afeta outros planos); ausência = resolve normalmente; no-op em modo runbook (#147).
+
+### Fixed
+- Template da skill `/migrate-backlog-to-forge` não emite mais self-refs toolkit-internos (#125) no template gerado para consumer projects (#143).
+
+### Notes
+- Bullet `**TestCommand:**` em `CLAUDE.md § Editing conventions` (#146) (#148); plano + ADR-068 para o campo em planos canonical cross-repo.
+- `/run-plan`: fronteira canonical = single-repo clarificada (#144).
+- `/next`: qualifier de skepticism `match LITERAL` no contrato do subagent §3 (#142).
+- `/migrate-backlog-to-forge` + `docs/install`: documentado recovery via `/reload-plugins` para skills recém-instaladas (#139); gate de drift de prosa pré-commit (#137).
+- Duas pendências de validação fechadas no plano `prazo-revisao-temporal-adrs-futuros` (smoke `/new-adr` prazo-canonical 4/4 PASS + spec-bug grep `ADR-NNN`).
+
 ## [3.13.0] - 2026-06-20
 
 ### Added
