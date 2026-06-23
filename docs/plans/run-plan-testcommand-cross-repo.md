@@ -64,4 +64,4 @@ Smoke comportamental após `/reload-plugins` em sessão CC nova com plano fixtur
 
 ## Pendências de validação
 
-- [capture:validacao] Smoke comportamental dos cenários C1/C2/C3 pós-`/reload-plugins` em sessão CC nova com plano fixture — verificação comportamental do campo declarativo (não exercitável nesta execução).
+- [capture:validacao] Smoke comportamental dos cenários C1/C2/C3 pós-`/reload-plugins` em sessão CC nova com plano fixture — verificação comportamental do campo declarativo (não exercitável nesta execução). **Encerrada 2026-06-23:** 3/3 PASS contra a prosa shipada v3.14.0 (resolução determinística da pré-condição 3 + 3 sites de gate via 3 fixtures) — C1 `**TestCommand:** echo "consumer-test"` usa o override (não o `null` global) ✓ / C2 ausente herda do CLAUDE.md ✓ / C3 `null` literal faz override local skip. Discriminação null-local vs global confirmada via cenário simulado com global não-nulo (`make test`): C2 herda, C3 ignora e skipa. Não exercitado `/run-plan` ao vivo end-to-end com worktree (resolução determinística cobre o coração da feature).
