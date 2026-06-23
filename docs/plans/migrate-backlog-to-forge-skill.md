@@ -12,13 +12,13 @@ Cobertura forge atual: **gh N=3, glab N=0 estrutural** — repos TJPA não têm 
 
 Script ad-hoc preservado em `/tmp/migrate-backlog-to-forge.py` (~50 linhas) é a base concreta: parse `## Próximos`, batched `gh issue create` com título + body integral + footer migração, captura issue numbers. As 3 invocações desta sessão validaram o algoritmo end-to-end.
 
-**ADRs candidatos:** [ADR-066](../decisions/ADR-066-migracao-inicial-cutucada-batched-modo-forge.md) (3ª categoria editorial de cutucada por mutação — modelo canonical da migração; sucessor parcial de ADR-058 § (e); criado neste /triage), [ADR-058](../decisions/ADR-058-role-backlog-aceitar-forge.md) (modo forge do role backlog — operação canonical sob este modo), [ADR-017](../decisions/ADR-017-decomposicao-skill-orquestrador-sub-tool.md) (orquestrador heurístico + sub-tool determinístico — *cross-project precedent em meta-bridge*, não ADR vigente neste repo; padrão formalizado neste repo via adendo CLAUDE.md no Bloco 1), [ADR-011](../decisions/ADR-011-skill-vs-funcao-utilitaria.md) (skill ≠ função utilitária — informa por que skill markdown + sub-tool em vez de script-só), [ADR-050](../decisions/ADR-050-componentes-plugin-consolidado.md) (componentes plugin — informa naming + `disable-model-invocation` per § (e)).
+**ADRs candidatos:** [ADR-066](../decisions/ADR-066-migracao-inicial-cutucada-batched-modo-forge.md) (3ª categoria editorial de cutucada por mutação — modelo canonical da migração; sucessor parcial de ADR-058 § (e); criado neste /triage), [ADR-058](../decisions/ADR-058-role-backlog-aceitar-forge.md) (modo forge do role backlog — operação canonical sob este modo), ADR-017 do meta-bridge (orquestrador heurístico + sub-tool determinístico — *cross-project precedent*, não ADR vigente neste repo nem link clicável local; padrão formalizado neste repo via adendo CLAUDE.md no Bloco 1), [ADR-011](../decisions/ADR-011-skill-vs-funcao-utilitaria.md) (skill ≠ função utilitária — informa por que skill markdown + sub-tool em vez de script-só), [ADR-050](../decisions/ADR-050-componentes-plugin-consolidado.md) (componentes plugin — informa naming + `disable-model-invocation` per § (e)).
 
 **Linha do backlog:** `#125: \`/init-config\` migration helper pra forge switch — gap descoberto in vivo`
 
 ## Resumo da mudança
 
-Cria skill `/migrate-backlog-to-forge` como **orquestrador hybrid + sub-tool Python determinístico** per [ADR-017](../decisions/ADR-017-decomposicao-skill-orquestrador-sub-tool.md) § decomposição (precedent em meta-bridge; pattern formalizado neste repo via adendo CLAUDE.md no Bloco 1). Skill prosa decide cutucadas + AskUserQuestion (heurístico-semantico, agentic); sub-tool faz parse + `gh issue create` + drain marker + config flip + commit (mecânico, determinístico). Pattern paralelo a `/wiki-compile` em meta-bridge.
+Cria skill `/migrate-backlog-to-forge` como **orquestrador hybrid + sub-tool Python determinístico** per ADR-017 do meta-bridge § decomposição (precedent em meta-bridge; pattern formalizado neste repo via adendo CLAUDE.md no Bloco 1). Skill prosa decide cutucadas + AskUserQuestion (heurístico-semantico, agentic); sub-tool faz parse + `gh issue create` + drain marker + config flip + commit (mecânico, determinístico). Pattern paralelo a `/wiki-compile` em meta-bridge.
 
 **Decisões pré-tomadas (deste /triage):**
 
@@ -114,7 +114,3 @@ Sem mutação remota nestes — verificação fica em parse + boundary + gates, 
 
 - design-reviewer F4 (revisão plano 2026-06-19): alternativa "trim determinístico ≤80 chars" para geração de títulos rebatida em § Resumo da mudança com exemplo concreto (caminho-único).
 - design-reviewer F5 (revisão plano 2026-06-19): discoverability via README + docs/install.md por design declarada em § Notas operacionais (caminho-único).
-
-## Capturas backlog em modo forge
-
-- #134: Plan `docs/plans/migrate-backlog-to-forge-skill.md` linhas 19+25 referenciam ADR-017 do meta-bridge com path relativo local inexistente.
