@@ -19,6 +19,7 @@ Campos especiais (incluir só quando aplicáveis):
 **Linha do backlog:** <texto exato> — incluir quando há linha no BACKLOG; mensageiro pra /run-plan operar transições.
 **Branch:** <nome-da-branch> — incluir quando a branch já existe (issue-first GitLab, retrabalho de PR, etc.); ausência = /run-plan cria <slug> a partir do HEAD (ADR-049 § Decisão (b)).
 **Modo:** runbook — incluir em planos de system-surgery (operações fora de diff git: `mv`, `systemctl`, edits em `~/`, ops em múltiplos repos coordenados, etc.); **tipicamente hand-written, não derivado de /triage**; bypassa worktree + micro-commit + reviewer per bloco + validação centralizada do /run-plan (ADR-049 § Decisão (d)). Ausência = fluxo default. Único valor aceito: `runbook`.
+**TestCommand:** <comando> — incluir quando o plano altera arquivos em outro repo e o test_command do CLAUDE.md local não é o correto; ausência = resolve do CLAUDE.md local normalmente (ADR-049 § Decisão (e) / ADR-068). Valor `null` literal → skip de gate automático para este plano; campo no-op em **Modo:** runbook.
 -->
 
 ## Resumo da mudança

@@ -1,9 +1,5 @@
 # Plano — Campo `**TestCommand:**` declarativo no plano para override cross-repo
 
-## Status
-
-Pendente
-
 ## Contexto
 
 `/run-plan` resolve `test_command` do `CLAUDE.md` do repo onde o plano vive — comportamento documentado como "canonical = single-repo" em ADR-049 § Fronteira inversa. O gap: planos no toolkit que alteram arquivos em consumer projects (ex.: `h3-finance-agent`, `scaffold-kit`) rodam o `test_command: null` do toolkit em vez do suite do consumer. A instrução atual é que tais planos usem `**Modo:** runbook`, mas o fluxo canonical (worktree isolada + reviewer por bloco) é desejável quando o plano é pequeno e cirúrgico.
