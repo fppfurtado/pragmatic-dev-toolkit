@@ -64,6 +64,8 @@ Para cada path declarado, detectar formato por extensão:
 
 Computar transformação **em memória**. Reportar progressão (`version_files preparados: <paths>`). Escrita acontece no gate do passo 4.
 
+**Detecção stack-gated de `uv.lock` (uv-only).** Após computar os `version_files`, probe `uv.lock` na raiz do repo (`test -f "$(git rev-parse --show-toplevel)/uv.lock"`). Presente → planejar re-lock no passo 4 (o `uv.lock` carrega o self-version do pacote editável, que espelha o `pyproject.toml` e fica defasado após o bump) e marcar `uv.lock` para inclusão no commit — **estado referido adiante (passo 4 itens 4 e 5.4) como _gate uv ativo_**. Ausente → skip silente. **Invariante de acoplamento:** por este probe viver dentro do passo 2, o gate uv só ativa quando `version_files` está ativo e inclui o `pyproject.toml` cujo bump defasa o `uv.lock` — `version_files` desativado (skip silente acima) ⇒ gate uv nunca ativa, coerente porque sem bump de `pyproject.toml` não há defasagem a corrigir. A execução do re-lock e a escrita só acontecem no gate do passo 4 (consistente com a regra acima — nada toca o disco no passo 2). Gate análogo ao hook auto-gating triplo (ADR-050 § hook auto-gating triplo), mas aqui vive em skill, não hook: o sync é conveniência stack-gated, nunca invariante de release.
+
 ### 3. Compor entrada de changelog
 
 Disparar **apenas** se papel resolvido. "Não temos" → skip silente.
@@ -115,7 +117,7 @@ Disparar **apenas** se papel resolvido. "Não temos" → skip silente.
    Linhas das categorias vazias omitidas. Headers (`Added`/`Changed`/`Fixed`/`Notes`) ficam em EN sempre — rótulos canônicos do toolkit alinhados ao Keep-a-Changelog; conteúdo (subjects) acompanha o idioma dos commits.
 
 4. **Mostrar bloco consolidado** com seções nomeadas:
-   - **Arquivos de versão** — diffs do passo 2 (omitida se `version_files` desativado).
+   - **Arquivos de versão** — diffs do passo 2 (omitida se `version_files` desativado). Quando o gate uv do passo 2 ativou (`uv.lock` presente), listar `uv.lock` aqui com nota "re-lock via `uv lock --offline`, entra no mesmo commit do bump".
    - **Changelog** — entrada do passo 3 (omitida se `changelog` desativado).
    - **Commit** — mensagem composta no item 3.
    - **Tag** — `<tag>` (annotated). Mensagem multilinha do item 3.5 (ou `Release <tag>` literal no fallback).
@@ -131,7 +133,7 @@ Disparar **apenas** se papel resolvido. "Não temos" → skip silente.
 
      3. **Reportar ao operador** a ref-atual encontrada no início, o branch esperado, o nome da stash se criada, e o número de commits trazidos pelo pull se aplicável (operador roda `git stash pop` manualmente após release se desejar).
 
-     4. **Aplicar sequência:** (a) escrever cada `version_file`; (b) inserir entrada no changelog; (c) `git add <paths-específicos>` (**não** `git add -A` — risco de capturar arquivos não-relacionados); (d) `git commit -m "<msg>"`; (e) `git tag -a <tag>` com **um `-m` por linha** da mensagem composta no item 3.5 (`-m "Release <tag>" -m "Added: ..." -m "Changed: ..." ...`); fallback (sem síntese) usa `-m "Release <tag>"` único.
+     4. **Aplicar sequência:** (a) escrever cada `version_file`; (b) inserir entrada no changelog; **(b-uv) re-lock `uv.lock` (stack-gated, só se o gate uv do passo 2 ativou)** — após (a)/(b) e **imediatamente antes** de (c): o `uv lock` precisa do `pyproject.toml` já escrito (depende de (a)); (b) não toca `pyproject.toml`, então a posição relativa a (b) é inócua mas fixada aqui para evitar ambiguidade. Rodar `uv lock --offline` (re-resolve do cache — suficiente quando a única mudança é o self-version bump). **Gate de toolchain:** `uv` ausente do PATH (`command -v uv` falha) → skip + nota informativa ao operador ("`uv.lock` presente mas `uv` indisponível — re-lock pulado; re-locke manualmente se desejar"), a release **segue** sem o sync. **Falha do comando** (cache-miss raro com offline, etc.) → reportar stderr literal, seguir a release **sem** incluir `uv.lock` (não abortar). Sucesso → incluir `uv.lock` na lista de paths-específicos do item (c); (c) `git add <paths-específicos>` (**não** `git add -A` — risco de capturar arquivos não-relacionados); (d) `git commit -m "<msg>"`; (e) `git tag -a <tag>` com **um `-m` por linha** da mensagem composta no item 3.5 (`-m "Release <tag>" -m "Added: ..." -m "Changed: ..." ...`); fallback (sem síntese) usa `-m "Release <tag>"` único.
    - **`Editar`** — prosa livre. Operador descreve ajuste em qualquer elemento (bullet do changelog, mensagem do commit, nome da tag). Skill aplica no rascunho em memória, volta ao item 4 e re-pergunta.
    - **`Cancelar`** — abort silente. Nada para reverter em disco. Reportar.
 
@@ -164,3 +166,4 @@ Sem remote configurado → skip auto-detect (release pronta localmente, push nã
 - Não tocar arquivos de versão fora dos paths declarados em `version_files`.
 - Não inferir bump de log que não segue Conventional Commits sem perguntar — falsa-confiança gera versionamento errado.
 - Não sobrescrever tag existente — colisão é gap report, não merge.
+- Não abortar a release quando o re-lock de `uv.lock` falhar ou `uv` não estiver disponível — o sync de `uv.lock` é conveniência stack-gated (degrada silenciosamente, análogo ao hook auto-gating triplo), não invariante de release; abortar regrediria releases em ambientes sem uv ou com cache-miss offline.
