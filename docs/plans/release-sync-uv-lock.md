@@ -1,9 +1,5 @@
 # Plano — `/release` sincroniza `uv.lock` após bump (stack-gated, uv-only)
 
-## Status
-
-Pendente
-
 ## Contexto
 
 `/release` passo 2 atualiza os `version_files` declarados (`.json`/`.toml`) mas **não** toca o lockfile. Em projetos Python que usam **uv**, o `uv.lock` carrega uma entrada do pacote editável self-referenciado (`[[package]]` com `source = { editable = "." }`) cujo `version` espelha o `pyproject.toml`. Após o bump, esse `version` fica defasado; o próximo `uv run`/`uv sync` re-sincroniza o lock, modificando a working tree e forçando um commit extra `chore: sync uv.lock`.
