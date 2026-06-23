@@ -1,9 +1,5 @@
 # Plano — Bullet `**TestCommand:**` em CLAUDE.md § Editing conventions
 
-## Status
-
-Pendente
-
 ## Contexto
 
 `**TestCommand:**` foi implementado em `/run-plan` via PR #147 (ADR-068). O CLAUDE.md § Editing conventions não foi atualizado com o bullet correspondente — gap identificado durante o gate final do plano anterior e capturado como issue #146.
