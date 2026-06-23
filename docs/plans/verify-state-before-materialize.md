@@ -1,9 +1,5 @@
 # Plano — Gate verificar-estado-antes-de-materializar (NOTES.md-sourced) em session-audit/triage
 
-## Status
-
-Pendente
-
 ## Contexto
 
 Captura originada de entry pré-existente do `.claude/local/NOTES.md` (store que persiste e decai, [ADR-054](../decisions/ADR-054-bridge-cross-project-note-consolidado.md)) pode virar issue-fantasma: `/session-audit` (`captura_backlog`) e `/triage` (linha de backlog) materializam o gap sem re-verificar se a pendência ainda é real. Incidente kl-score 2026-06-23: 2 issues forge criadas de entries stale, fechadas no `/next` seguinte sem código. Decisão e doutrina em [ADR-069](../decisions/ADR-069-gate-verificacao-estado-antes-materializar-captura-notes.md).
