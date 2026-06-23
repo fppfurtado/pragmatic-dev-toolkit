@@ -2,6 +2,17 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.15.0] - 2026-06-23
+
+### Added
+- Gate verificar-estado-antes-de-materializar (ADR-069): `/session-audit` e `/triage` probam o artefato citado por uma entry pré-existente do NOTES.md antes de filar a captura; já-resolvido → baixa via append (preserva ADR-054 append-only) + pula filing; pendente/indeterminado → default-conservador. Shared procedure `verify-state-before-materialize.md`. Previne issues-fantasma de entries stale (#150).
+- `/release` re-locka `uv.lock` após o bump em projetos uv (stack-gated, `uv lock --offline`), incluindo-o no commit do bump — elimina o `chore: sync uv.lock` extra (#149).
+
+### Notes
+- Plano + ADR-069 para o gate verify-state; plano `release-sync-uv-lock`.
+- Fix de dead links ADR-017 no plano `migrate-backlog-to-forge`.
+- Fechada pendência C1/C2/C3 do plano `run-plan-testcommand-cross-repo`.
+
 ## [3.14.0] - 2026-06-23
 
 ### Added
