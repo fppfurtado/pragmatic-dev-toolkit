@@ -91,6 +91,8 @@ Idioma de saída: per `CLAUDE.md` → 'Reviewer/skill report idioma'.
 
 **BACKLOG (papel: `backlog`):**
 
+**Gate verificar-estado-antes-de-materializar** (per [ADR-069](../../docs/decisions/ADR-069-gate-verificacao-estado-antes-materializar-captura-notes.md)). Antes de gravar/criar **qualquer** linha cuja origem seja rastreável a uma entry pré-existente do `.claude/local/NOTES.md` (lida no step 1) — tanto (a) a linha da feature-em-curso quanto (b) cada item fora-de-escopo do passo 2 derivado de entry NOTES.md — aplicar `${CLAUDE_PLUGIN_ROOT}/docs/procedures/verify-state-before-materialize.md`: já-resolvido → append da baixa no NOTES.md + **pular o filing daquele item** (reportar no passo 5 conforme procedure §5); pendente/indeterminado → filing segue. Itens fora-de-escopo do passo 2 são tipicamente o que o operador menciona **fresh** na sessão — esses **não** disparam o gate (fresh por construção, per ADR-069 escopo); (b) só é elegível quando deriva de entry NOTES.md pré-existente. O gate **precede o canal** (arquivo/forge/local) — aplica em todos os modos do papel `backlog`.
+
 - **Papel resolvido normalmente:** uma linha para a feature em curso (frase de intenção, sem detalhamento).
   - Caminho com plano → não grava no BACKLOG (state vivo é a worktree/PR aberto, ADR-049 § Decisão (a)); a linha em `**Linha do backlog:**` no `## Contexto` do plano alimenta `/run-plan` para registrar conclusão em `## Concluídos` no done.
   - Caminho sem plano (linha pura, ADR-only, atualização de domínio) → grava em `## Próximos`.
