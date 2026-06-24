@@ -1,9 +1,5 @@
 # Plano — Passo de prior-art scan no /triage
 
-## Status
-
-Pendente
-
 ## Contexto
 
 Materializa a faceta mecânica A2 da doutrina cross-cutting do meta-system ADR-023 (`prior-art scan canonical pré-build — build-vs-adopt no inception`) no repo dono do `/triage`, conforme decidido em ADR-071. A doutrina (what/why) mora upstream; este plano wira só a mecânica (how) no fluxo do `/triage`, na forma inline-prosa (target-aware per meta-system ADR-016 — scan é heurístico-semântico dominante; sub-tool determinístico foi descartado por Ockham).
