@@ -1,9 +1,5 @@
 # Plano — session-audit cria issue forge direto para substância cristalizada
 
-## Status
-
-Pendente
-
 ## Contexto
 
 `/session-audit` em modo `paths.backlog: forge` sempre defere findings `captura_backlog` para `/triage` (passo 1.5 + passo 6 da `skills/session-audit/SKILL.md`), com a justificativa "duplicar a mecânica de forge quebraria a fronteira editorial". Na prática, quando a substância já está cristalizada, isso cria um passo extra desnecessário (encerrar audit → re-invocar `/triage` → repassar substância), como materializado no incidente `triage-chamado` 2026-06-22 (finding "GLPI_HOST duplicado" exigiu `gh issue create` manual). [ADR-070](../decisions/ADR-070-session-audit-forge-direto-substancia-cristalizada.md) decide discriminar substância cristalizada (criação direta na cutucada batched do passo 5) vs não-cristalizada (defer, status quo).
