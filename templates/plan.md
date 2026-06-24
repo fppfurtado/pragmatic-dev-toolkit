@@ -16,6 +16,7 @@ Campos especiais (incluir só quando aplicáveis):
 
 **Termos ubíquos tocados:** <Termo> (<categoria>) — bounded context|agregado|entidade|RN|conceito ubíquo; omitir em refactor/doc-only.
 **ADRs candidatos:** ADR-NNN (motivo) — opcional; reviewer prioriza esses, scan cobre os demais (ADR-048).
+**Prior-art scan:** <construir|adotar inteiro|estender parcial|inspirar-se em parte> — <razão> — incluir quando o /triage disparou o prior-art scan (build-vs-adopt); trail grepável que alimenta o § Critério de erosão de meta-system ADR-023 (ADR-071). Omitir quando o gatilho proporcional não bateu.
 **Linha do backlog:** <texto exato> — incluir quando há linha no BACKLOG; mensageiro pra /run-plan operar transições.
 **Branch:** <nome-da-branch> — incluir quando a branch já existe (issue-first GitLab, retrabalho de PR, etc.); ausência = /run-plan cria <slug> a partir do HEAD (ADR-049 § Decisão (b)).
 **Modo:** runbook — incluir em planos de system-surgery (operações fora de diff git: `mv`, `systemctl`, edits em `~/`, ops em múltiplos repos coordenados, etc.); **tipicamente hand-written, não derivado de /triage**; bypassa worktree + micro-commit + reviewer per bloco + validação centralizada do /run-plan (ADR-049 § Decisão (d)). Ausência = fluxo default. Único valor aceito: `runbook`.
