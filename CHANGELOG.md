@@ -2,6 +2,14 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.16.0] - 2026-06-24
+
+### Added
+- `/session-audit` em modo `paths.backlog: forge` cria issue direto para substância cristalizada ([ADR-070](docs/decisions/ADR-070-session-audit-forge-direto-substancia-cristalizada.md)): discrimina finding `captura_backlog` cristalizado (criação forge direta via pergunta `Forge` distinta na cutucada batched do passo 5; execução no passo 6) vs não-cristalizado (defer pra `/triage`, status quo); default-conservador ambíguo → defer. Caminho cristalizado internaliza o gate ADR-069 antes do `issue create`; criação forge é opção distinta (não absorvida no `Aplicar tudo`, ADR-058 § (e)) — 3ª instância do sub-caso batched-com-seleção; worktree-probe N/A em forge (ADR-058 § (g)). 8ª aplicação da onda Override critério N=3 + débito de meta-avaliação (ADR-064 § Override) registrado. Drift doc↔doc corrigido em `verify-state-before-materialize.md` §6 (#145, #153).
+
+### Notes
+- ADR-070 + plano para a discriminação cristalizado-vs-defer (alinhamento via `/triage`).
+
 ## [3.15.0] - 2026-06-23
 
 ### Added
