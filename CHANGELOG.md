@@ -2,6 +2,14 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.17.0] - 2026-06-24
+
+### Added
+- Passo de prior-art scan (build-vs-adopt) no step 2 do `/triage` ([ADR-071](docs/decisions/ADR-071-prior-art-scan-triage-operacionaliza-adr-023.md)): gate prosa-heurística (forma inline-prosa target-aware) que opera a faceta mecânica da doutrina cross-cutting do meta-system ADR-023. Gatilho proporcional por natureza-do-trabalho (dispara em nova capacidade / formato-protocolo / build não-trivial; não dispara em bugfix/refactor/doc/glue), resposta em espectro (construir / adotar / estender / inspirar-se em parte), trail auditável via campo nomeado `**Prior-art scan:**` no `## Contexto` do plano. Precede a bifurcação arquitetural e o step 3. 4ª trajetória de wiring na família triage-ecosystem (ADR-036/-053/-063) (#155, #156).
+
+### Notes
+- ADR-071 + plano para o prior-art scan (alinhamento via `/triage`; doc do wiring em `CLAUDE.md`).
+
 ## [3.16.0] - 2026-06-24
 
 ### Added
