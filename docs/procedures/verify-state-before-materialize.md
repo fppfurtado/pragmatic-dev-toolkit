@@ -54,7 +54,7 @@ Operador ciente sem interrupção (sem `AskUserQuestion` — é decisão mecâni
 
 ## 6. Consumidores
 
-- **`skills/session-audit/SKILL.md` passo 6** (`captura_backlog`, modo arquivo): antes do `Edit` em `## Próximos`, se a `citação_transcript` aponta para entry NOTES.md pré-existente, aplicar gate. Modo forge: `captura_backlog` já é deferido a `/triage` (step 1.5) — o gate aplica lá.
+- **`skills/session-audit/SKILL.md` passo 6** (`captura_backlog`): se a `citação_transcript` aponta para entry NOTES.md pré-existente, aplicar gate antes de materializar. **Modo arquivo:** antes do `Edit` em `## Próximos`. **Modo forge** (per [ADR-070](../decisions/ADR-070-session-audit-forge-direto-substancia-cristalizada.md)): ramo **cristalizado** **internaliza** o gate localmente antes do `issue create` (a session-audit roda o probe — não delega); ramo **não-cristalizado** defere a `/triage` (step 1.5) e o gate aplica lá.
 - **`skills/triage/SKILL.md` passo 4** (filing em `## Próximos`/forge): aplicar gate antes de gravar/criar a qualquer ramo cuja origem seja rastreável a entry NOTES.md lida no step 1 — (a) linha da feature-em-curso; (b) item fora-de-escopo do passo 2 **com origem rastreável a entry NOTES.md**. Nota: itens fora-de-escopo do passo 2 são tipicamente o que o operador menciona **fresh** na sessão corrente — esses **não** disparam o gate (per §1, fresh por construção); (b) só é elegível quando o item deriva de uma entry NOTES.md pré-existente. Gate precede o canal (arquivo/forge/local).
 
 Mudança da heurística (gatilho, probe por tipo, classificação, baixa-via-append) vive **aqui** — SKILL.mds referenciam o procedure literalmente, não duplicam substância.
