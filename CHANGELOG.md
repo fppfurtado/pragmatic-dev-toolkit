@@ -2,6 +2,15 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.19.0] - 2026-06-25
+
+### Added
+- Signal-queue worktree-defer em arquivo de coordenação dedicado `.claude/local/defer-queue.md` ([ADR-072](docs/decisions/ADR-072-role-annotations-plugavel-backend-por-projeto.md) escopo (c)): separa fisicamente o mecanismo de concorrência (ADR-057) do conteúdo de anotação (role `annotations`) em `/curate-backlog` e `/session-audit`. A baixa-append do gate ADR-069 fica no annotation store (annotation-adjacent, segue o backend); só o worktree-defer puro migra. Completa o trabalho do role `annotations`. (#157, #160)
+- `catalog-info.yaml` + ponteiro no `CLAUDE.md`: auto-declaração de pertencimento + relações cross-repo da constelação (meta-system ADR-024 faceta i). (meta-system#52)
+
+### Notes
+- Plano `signal-queue-arquivo-dedicado` (alinhamento via `/triage`).
+
 ## [3.18.0] - 2026-06-25
 
 ### Added
