@@ -1,9 +1,5 @@
 # Plano — Separar signal-queue worktree-defer num arquivo dedicado
 
-## Status
-
-Pendente
-
 ## Contexto
 
 Materializa o escopo (c) de [ADR-072](../decisions/ADR-072-role-annotations-plugavel-backend-por-projeto.md) (rastreado como #157): migrar a **signal-queue worktree-defer** de `.claude/local/NOTES.md` para um arquivo de coordenação dedicado (`.claude/local/defer-queue.md`), separando **fisicamente** o mecanismo de concorrência (ADR-057) do conteúdo de anotação (role `annotations`). A decisão estrutural "separar" já foi tomada em ADR-072 escopo (a); este plano é a implementação.

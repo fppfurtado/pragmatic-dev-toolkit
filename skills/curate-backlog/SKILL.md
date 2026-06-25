@@ -9,7 +9,7 @@ roles:
 
 # curate-backlog
 
-Manutenção editorial periódica do papel `backlog` (default `BACKLOG.md`). Aplica 4 heurísticas cumulativas, oferece preview com mutações propostas, e aplica via commit unificado ou defere via signal queue (`.claude/local/NOTES.md`, local-fixed) conforme estado de concorrência. **Não-destrutivo, preview-first, sob demanda.**
+Manutenção editorial periódica do papel `backlog` (default `BACKLOG.md`). Aplica 4 heurísticas cumulativas, oferece preview com mutações propostas, e aplica via commit unificado ou defere via signal queue (`.claude/local/defer-queue.md`, local-fixed) conforme estado de concorrência. **Não-destrutivo, preview-first, sob demanda.**
 
 Mecânica per [ADR-057](../../docs/decisions/ADR-057-curate-backlog-manutencao-editorial-periodica.md). Skill irmã de `/archive-plans` (ADR-022) — mesma natureza editorial, escopo `BACKLOG.md` em vez de `docs/plans/`.
 
@@ -39,7 +39,7 @@ Store ausente (backend `local` sem arquivo, ou `null`/`logseq`) → H4 vira no-o
 **Em modo arquivo** (canonical ou `local`): `git worktree list --porcelain` → classificar:
 
 - **Só worktree main** (`main-só`): mutações cross-seção em `BACKLOG.md` autorizadas. ADR-049 § Decisão (a) preservado (sem concorrência multi-PR).
-- **≥1 worktree adicional ativa** (`worktree-adicional`): mutações cross-seção **deferidas** via signal queue (formato no passo 6). A signal-queue grava sempre em `.claude/local/NOTES.md` (destino local-fixed, **fora do role** `annotations` — é mecanismo de coordenação de concorrência, não conteúdo de anotação; escopo (a) per [ADR-072](../../docs/decisions/ADR-072-role-annotations-plugavel-backend-por-projeto.md), separação física deferida a #157). Independe do backend declarado.
+- **≥1 worktree adicional ativa** (`worktree-adicional`): mutações cross-seção **deferidas** via signal queue (formato no passo 6). A signal-queue grava sempre em `.claude/local/defer-queue.md` (arquivo de coordenação dedicado, **fora do role** `annotations` — mecanismo de concorrência, não conteúdo de anotação; escopo (c) materializado per [ADR-072](../../docs/decisions/ADR-072-role-annotations-plugavel-backend-por-projeto.md) + #157). Independe do backend declarado.
 
 **Em modo `forge`**: salvaguarda **não aplica** — state vive em forge remoto idempotente, sem arquivo local concorrente para merge artifact (per ADR-058 § (g)). Classificação sempre vira `main-só` em modo forge (mutações remotas aplicáveis diretamente).
 
@@ -95,7 +95,7 @@ Findings desta heurística são **informacionais** — não geram ação direta 
 
 Reportar ao operador em formato compacto:
 
-- **Estado da salvaguarda:** `main-só: mutações diretas` ou `worktree-adicional: mutações deferidas via signal queue (.claude/local/NOTES.md, local-fixed)` (literal).
+- **Estado da salvaguarda:** `main-só: mutações diretas` ou `worktree-adicional: mutações deferidas via signal queue (.claude/local/defer-queue.md, local-fixed)` (literal).
 - **H1 — Gatilhos temporais vencidos** (N findings): cada um como `BACKLOG.md:<linha>: <texto> [marca <data>] → <ação>`.
 - **H2 — Redação stale** (M findings): cada um como `BACKLOG.md:<linha>: <texto curto> → <ação>; cross-ref: <evidência>`.
 - **H3 — Mergeable items** (K pares): cada par como `BACKLOG.md:<linha-A> + <linha-B>: termos compartilhados <termo1, termo2, termo3> → consolidar`.
@@ -148,7 +148,7 @@ Sem `Recommended` — operador decide após ver preview; ambos `Aplicar tudo` e 
 
 **Caminho `worktree-adicional` (mutações deferidas):**
 
-1. Escrever entry estruturada em `.claude/local/NOTES.md`. Formato:
+1. Escrever entry estruturada em `.claude/local/defer-queue.md` (arquivo append-created; primeiro write cria o arquivo). Formato:
 
    ```
    ## curate-backlog deferred YYYY-MM-DD
@@ -173,11 +173,11 @@ Executar conforme `${CLAUDE_PLUGIN_ROOT}/docs/procedures/cutucada-descoberta.md`
 
 ## Sub-fluxo: aplicar mutações deferidas
 
-Operador invocando `/curate-backlog` em estado `main-só` com entries `## curate-backlog deferred YYYY-MM-DD` existentes na signal-queue. A signal-queue write/drain opera sempre em `.claude/local/NOTES.md` (local-fixed, **fora do role** `annotations` — independe do backend declarado; sob `null` não há no-op da queue, só do H4 read):
+Operador invocando `/curate-backlog` em estado `main-só` com entries `## curate-backlog deferred YYYY-MM-DD` existentes na signal-queue. A signal-queue write/drain opera sempre em `.claude/local/defer-queue.md` (arquivo de coordenação dedicado local-fixed, **fora do role** `annotations` — independe do backend declarado; sob `null` não há no-op da queue, só do H4 read):
 
 1. Skill lê entries pendentes; apresenta preview de cada entry (linhas propostas + data da deferral original).
 2. Gate `AskUserQuestion` (header `Deferred`, opções `Aplicar pendentes` / `Aplicar pendentes + nova curagem` / `Cancelar`).
-3. `Aplicar pendentes` → aplica mutações exatamente como descritas na entry; remove entry de NOTES.md; commit unificado `chore(backlog): apply <N> deferred editorial signals`.
+3. `Aplicar pendentes` → aplica mutações exatamente como descritas na entry; remove entry de `.claude/local/defer-queue.md`; commit unificado `chore(backlog): apply <N> deferred editorial signals`.
 4. `Aplicar pendentes + nova curagem` → aplica deferidas, executa novamente passos 3-5 sobre o estado pós-aplicação, gate consolidado.
 
 ## O que NÃO fazer
