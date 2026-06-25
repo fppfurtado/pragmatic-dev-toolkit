@@ -9,7 +9,7 @@ roles:
 
 # curate-backlog
 
-Manutenção editorial periódica do papel `backlog` (default `BACKLOG.md`). Aplica 4 heurísticas cumulativas, oferece preview com mutações propostas, e aplica via commit unificado ou defere via NOTES.md signal queue conforme estado de concorrência. **Não-destrutivo, preview-first, sob demanda.**
+Manutenção editorial periódica do papel `backlog` (default `BACKLOG.md`). Aplica 4 heurísticas cumulativas, oferece preview com mutações propostas, e aplica via commit unificado ou defere via signal queue (`.claude/local/NOTES.md`, local-fixed) conforme estado de concorrência. **Não-destrutivo, preview-first, sob demanda.**
 
 Mecânica per [ADR-057](../../docs/decisions/ADR-057-curate-backlog-manutencao-editorial-periodica.md). Skill irmã de `/archive-plans` (ADR-022) — mesma natureza editorial, escopo `BACKLOG.md` em vez de `docs/plans/`.
 
@@ -30,16 +30,16 @@ Sem argumentos. Skill é low-frequency operator-initiated; toda invocação é p
 
 **Em modo `forge`** (`paths.backlog: forge`, per [ADR-058](../../docs/decisions/ADR-058-role-backlog-aceitar-forge.md)): seguir `${CLAUDE_PLUGIN_ROOT}/docs/procedures/forge-auto-detect.md`. Output `gh` → `gh issue list --state open --search "no:assignee" --json number,title,body,createdAt --jq '.[]'`; output `glab` → `glab issue list --opened --not-assignee --output json | jq -r '.[] | {number: .iid, title, body: .description, createdAt: .created_at}'`. Output `no-detection` ou `unsupported-host` → **parar com erro explícito** orientando setup (`gh auth login` / `glab auth login` / `dnf install jq`) ou declarar `paths.backlog: null` ou path canonical (policy do caller per ADR-058 § (d)). Lista de issues retornada substitui o conteúdo de `## Próximos` no fluxo subsequente; cada item carrega identificador `#<número>: <título>` + body (consumido por H2/H3).
 
-Ler também `.claude/local/NOTES.md` se existir (ortogonal ao modo do backlog).
+Ler também o store do role `annotations` (per [ADR-072](../../docs/decisions/ADR-072-role-annotations-plugavel-backend-por-projeto.md), ortogonal ao modo do backlog) para H4: backend `local`/ausente → ler `.claude/local/NOTES.md` se existir; `null` → H4 no-op silente; `logseq` → graceful-degrade (deferido a meta-bridge#41).
 
-NOTES.md ausente → H4 vira no-op silente (sem fonte de sinais).
+Store ausente (backend `local` sem arquivo, ou `null`/`logseq`) → H4 vira no-op silente (sem fonte de sinais).
 
 ### 2. Salvaguarda de concorrência (worktree-probe)
 
 **Em modo arquivo** (canonical ou `local`): `git worktree list --porcelain` → classificar:
 
 - **Só worktree main** (`main-só`): mutações cross-seção em `BACKLOG.md` autorizadas. ADR-049 § Decisão (a) preservado (sem concorrência multi-PR).
-- **≥1 worktree adicional ativa** (`worktree-adicional`): mutações cross-seção **deferidas** via NOTES.md signal queue (formato no passo 6).
+- **≥1 worktree adicional ativa** (`worktree-adicional`): mutações cross-seção **deferidas** via signal queue (formato no passo 6). A signal-queue grava sempre em `.claude/local/NOTES.md` (destino local-fixed, **fora do role** `annotations` — é mecanismo de coordenação de concorrência, não conteúdo de anotação; escopo (a) per [ADR-072](../../docs/decisions/ADR-072-role-annotations-plugavel-backend-por-projeto.md), separação física deferida a #157). Independe do backend declarado.
 
 **Em modo `forge`**: salvaguarda **não aplica** — state vive em forge remoto idempotente, sem arquivo local concorrente para merge artifact (per ADR-058 § (g)). Classificação sempre vira `main-só` em modo forge (mutações remotas aplicáveis diretamente).
 
@@ -81,25 +81,25 @@ Finding `Redação stale`, ação `refinar texto OR remover linha/issue`. **Limi
 
 Apresentar pares no preview com termos compartilhados destacados; operador decide redação do merge se aceitar. **Em modo `forge`:** similaridade por title funciona bem; por body é mais frágil (issues frequentemente têm body livre/conversacional). Limitação documentada em ADR-058 § Limitações.
 
-#### 3.4. NOTES.md sinais editoriais (informacional refinado)
+#### 3.4. Sinais editoriais do store `annotations` (informacional refinado)
 
-Varredura textual de `.claude/local/NOTES.md` (scan completo na 1ª iteração). Sinais alvo:
+Varredura textual do store do role `annotations` resolvido no passo 1 (backend `local` → `.claude/local/NOTES.md`; `null`/`logseq` → H4 já é no-op por aquele passo, pular esta varredura). Scan completo na 1ª iteração. Sinais alvo:
 
 - Menções de linha do BACKLOG como obsoleta/concluída ("já feito", "linha X cumprida", "cobrimos via Y").
 - Deadlines vencidos capturados via `/note`.
 - Work cross-projeto sinalizando convergência ou contradição com items registrados.
 
-Findings desta heurística são **informacionais** — não geram ação direta no gate `Aplicar tudo`. Listados como **contexto** para operador inspecionar antes de decidir sobre H1-H3 (alinhado a ADR-054 § Decisão (a); NOTES.md mantém status non-role).
+Findings desta heurística são **informacionais** — não geram ação direta no gate `Aplicar tudo`. Listados como **contexto** para operador inspecionar antes de decidir sobre H1-H3 (o store do role `annotations` é consumido aqui read-only — informacional neste consumidor; a classificação non-role de ADR-054 § Decisão (a) foi revisada para role por [ADR-072](../../docs/decisions/ADR-072-role-annotations-plugavel-backend-por-projeto.md), mas o caráter informacional de H4 permanece).
 
 ### 4. Apresentar preview estruturado
 
 Reportar ao operador em formato compacto:
 
-- **Estado da salvaguarda:** `main-só: mutações diretas` ou `worktree-adicional: mutações deferidas via NOTES.md` (literal).
+- **Estado da salvaguarda:** `main-só: mutações diretas` ou `worktree-adicional: mutações deferidas via signal queue (.claude/local/NOTES.md, local-fixed)` (literal).
 - **H1 — Gatilhos temporais vencidos** (N findings): cada um como `BACKLOG.md:<linha>: <texto> [marca <data>] → <ação>`.
 - **H2 — Redação stale** (M findings): cada um como `BACKLOG.md:<linha>: <texto curto> → <ação>; cross-ref: <evidência>`.
 - **H3 — Mergeable items** (K pares): cada par como `BACKLOG.md:<linha-A> + <linha-B>: termos compartilhados <termo1, termo2, termo3> → consolidar`.
-- **H4 — NOTES.md sinais (contexto informacional)** (J sinais): cada um como `NOTES.md:<linha>: <trecho> ← relaciona BACKLOG.md:<linha>`.
+- **H4 — sinais de anotações (contexto informacional)** (J sinais; só emitido sob backend `local`): cada um como `<store>:<linha>: <trecho> ← relaciona BACKLOG.md:<linha>` (`<store>` = backend resolvido, ex.: `.claude/local/NOTES.md`).
 - **Resumo final:** `H1: N | H2: M | H3: K (pares) | H4: J (info)`.
 
 H4 listado separado dos demais — operador entende que é contexto, não ação aplicável diretamente.
@@ -173,7 +173,7 @@ Executar conforme `${CLAUDE_PLUGIN_ROOT}/docs/procedures/cutucada-descoberta.md`
 
 ## Sub-fluxo: aplicar mutações deferidas
 
-Operador invocando `/curate-backlog` em estado `main-só` com entries `## curate-backlog deferred YYYY-MM-DD` existentes em NOTES.md:
+Operador invocando `/curate-backlog` em estado `main-só` com entries `## curate-backlog deferred YYYY-MM-DD` existentes na signal-queue. A signal-queue write/drain opera sempre em `.claude/local/NOTES.md` (local-fixed, **fora do role** `annotations` — independe do backend declarado; sob `null` não há no-op da queue, só do H4 read):
 
 1. Skill lê entries pendentes; apresenta preview de cada entry (linhas propostas + data da deferral original).
 2. Gate `AskUserQuestion` (header `Deferred`, opções `Aplicar pendentes` / `Aplicar pendentes + nova curagem` / `Cancelar`).
@@ -187,4 +187,4 @@ Operador invocando `/curate-backlog` em estado `main-só` com entries `## curate
 - **Não executar trabalho trivial inline** — heurística considerada e removida na 1ª iteração (per ADR-057 § Consequências › Limitações). Reabertura via gatilho concreto (≥3 instâncias auditadas).
 - **Não pushar** — operador decide publicação. Skill não invoca `git push`.
 - **Não adicionar items novos** — escopo de `/triage`.
-- **Não interpretar findings de H4 como acionáveis** — H4 é contexto informacional, não decisional; tratá-los como ação direta viola ADR-054 § Decisão (a) (NOTES.md non-role).
+- **Não interpretar findings de H4 como acionáveis** — H4 é contexto informacional, não decisional; tratá-los como ação direta fere o caráter read-only do consumo do role `annotations` aqui (per [ADR-072](../../docs/decisions/ADR-072-role-annotations-plugavel-backend-por-projeto.md), sucessor de ADR-054 § Decisão (a)).
