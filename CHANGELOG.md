@@ -2,6 +2,14 @@
 
 All notable changes to this plugin are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [3.18.0] - 2026-06-25
+
+### Added
+- Role `annotations` plugável (backends local/null) ([ADR-072](docs/decisions/ADR-072-role-annotations-plugavel-backend-por-projeto.md)): promove o store de anotações `.claude/local/NOTES.md` de non-role a role de primeira classe com backend plugável por projeto, resolvido pelas 5 skills consumidoras (`/note` write; `/next`, `/triage`, `/session-audit`, `/curate-backlog` H4 read) + role contract no `CLAUDE.md`/`README.md`. Backend `local` (default, comportamento atual) / `null` (desliga); `logseq` deferido a meta-bridge#41 (graceful-degrade até o write-path v2). Signal-queue de coordenação worktree-defer fica local-fixed fora do role (escopo (a); separação física deferida a #157). Operacionaliza o contrato pai meta-system ADR-025 (coerência de pendências cross-store). (#154, #159)
+
+### Notes
+- ADR-072 + plano `role-annotations-plugavel-local-null` (alinhamento via `/triage`; wiring documentado em `CLAUDE.md`).
+
 ## [3.17.0] - 2026-06-24
 
 ### Added
