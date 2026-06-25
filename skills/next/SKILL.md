@@ -25,7 +25,7 @@ Inteiro positivo opcional `N` — número de itens lidos do topo de `## Próximo
 
 `## Próximos` (modo arquivo) ou lista de issues (modo forge) vazia → informar e interromper.
 
-Se `.claude/local/NOTES.md` existir, ler na íntegra para contexto suplementar de ranking — notas recentes podem revelar mudança de prioridade ou trabalho adjacente aos candidatos. Reportar se uma nota influenciou o ranking, ou explicitamente que o store estava presente sem notas relacionadas aos candidatos. Informational (per [ADR-054](../../docs/decisions/ADR-054-bridge-cross-project-note-consolidado.md) § Decisão (a) store non-role); nunca bloqueia.
+Ler o store do role `annotations` (per [ADR-072](../../docs/decisions/ADR-072-role-annotations-plugavel-backend-por-projeto.md)) para contexto suplementar de ranking: backend `local`/ausente → ler `.claude/local/NOTES.md` na íntegra se existir; `null` → skip silente (sem store); `logseq` → graceful-degrade (deferido a meta-bridge#41, contexto vazio). Notas recentes podem revelar mudança de prioridade ou trabalho adjacente aos candidatos. Reportar se uma nota influenciou o ranking, ou explicitamente que o store estava presente sem notas relacionadas aos candidatos. Informational (per [ADR-054](../../docs/decisions/ADR-054-bridge-cross-project-note-consolidado.md) § Decisão (a), revisado para role por ADR-072); nunca bloqueia.
 
 Conteúdo substantivo já carregado na conversa por skills anteriores (ex.: saída de `/journal-load`) ou citado pelo operador entra na análise de ranking com a mesma semântica do `NOTES.md` acima — sem disparar novo `Read` sobre fontes já presentes no contexto. Reportar a fonte concreta (ex.: `journal 2026-06-18`, citação do operador) quando influenciou o ranking. Informational; nunca bloqueia.
 

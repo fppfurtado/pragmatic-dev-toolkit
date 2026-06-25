@@ -1,16 +1,18 @@
 ---
 name: note
-description: Append uma nota com timestamp em .claude/local/NOTES.md (store local-gitignored estendendo ADR-047, modo append-only)
+description: Append uma nota com timestamp no store do role annotations (default .claude/local/NOTES.md, local-gitignored, append-only)
 disable-model-invocation: false
+roles:
+  informational: [annotations]
 ---
 
 # note
 
-Append uma nota timestampada em `.claude/local/NOTES.md` — store doutrinário non-role para captura de contexto compartilhado entre sessões CC paralelas, intra-projeto e cross-project (este último via referência conversacional, sem auto-discovery). Per [ADR-054](../../docs/decisions/ADR-054-bridge-cross-project-note-consolidado.md) § Decisão (a) — extensão de [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md) para nova categoria *store doutrinário fixo non-role*.
+Append uma nota timestampada no store do role `annotations` (default backend `local` → `.claude/local/NOTES.md`) — captura de contexto compartilhado entre sessões CC paralelas, intra-projeto e cross-project (este último via referência conversacional, sem auto-discovery). Per [ADR-072](../../docs/decisions/ADR-072-role-annotations-plugavel-backend-por-projeto.md) o store é o role `annotations` (sucessor parcial de [ADR-054](../../docs/decisions/ADR-054-bridge-cross-project-note-consolidado.md) § Decisão (a), que o estabeleceu sobre [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md)); backends `local` (default), `logseq` (deferido a meta-bridge#41), `null` (desabilitado).
 
 Esta skill executa o append e devolve controle ao operador. **Não faz commit** — `.claude/local/` é gitignored por design.
 
-Skill opera **independente** de `CLAUDE.md` / role contract — usável em qualquer git repo. Cutucada de descoberta ([ADR-046](../../docs/decisions/ADR-046-cutucada-uniforme-descoberta-gaps-configuracao.md)) **não aplica** (skill não consome papel).
+Skill opera **standalone** — o default `local` resolve sem `CLAUDE.md` nem config, usável em qualquer git repo. Consome o role `annotations` (`informational`), mas não traversa o step 3 do Resolution protocol (default sempre resolve); a cutucada de descoberta ([ADR-046](../../docs/decisions/ADR-046-cutucada-uniforme-descoberta-gaps-configuracao.md)) **não aplica** — isenção preservada por ergonomia standalone (não mais por ausência de papel, per [ADR-072](../../docs/decisions/ADR-072-role-annotations-plugavel-backend-por-projeto.md)).
 
 ## Argumentos
 
@@ -40,6 +42,12 @@ Casos degenerados (recusa silenciosa): `--to` sem valor subsequente (sintaxe inv
 
 **Caminho local** (sem `--to`): não é um git repo (`git rev-parse` retorna não-zero) → recusar com mensagem `/note exige git repo (store mora em .claude/local/ relativo à raiz)`.
 
+**Resolução do backend `annotations`** (per [ADR-072](../../docs/decisions/ADR-072-role-annotations-plugavel-backend-por-projeto.md)) — resolver logo após o check de git repo acima (que permanece a pré-condição inicial do caminho local) e **antes dos gates de privacidade/replicação (Gitignore/Worktree) e de qualquer mutação FS**:
+
+- **`local` ou ausente** (default) → seguir o fluxo abaixo (`mkdir`, gates, append em `.claude/local/NOTES.md`). Comportamento idêntico ao pré-ADR-072.
+- **`null`** → informar que anotações estão desabilitadas no projeto (`paths.annotations: null`) e **retornar sem gravar, antes dos gates Gitignore/Worktree** — nenhuma mutação FS; o 2º dispatcher `.worktreeinclude` **não roda** (exceção consciente à universalidade de ADR-047 § Decisão (b): não há store a replicar).
+- **`logseq`** → backend deferido (write-path v2 não construído, meta-bridge#41); graceful-degrade — reportar que o backend `logseq` ainda não está disponível e **retornar sem gravar, antes dos gates Gitignore/Worktree** (mesmo tratamento de `null`: o 2º dispatcher `.worktreeinclude` **não roda** — não há store local a replicar).
+
 Criar diretório com `mkdir -p .claude/local/` se ausente.
 
 **Ordem dos gates determinística (caminho local apenas)** — gate `Gitignore` (per ADR-047 § Decisão (a)) executa **primeiro**; gate `Worktree replication` (per [ADR-047](../../docs/decisions/ADR-047-modo-local-paths-replicacao-cross-mode.md) § Decisão (b) `/note` 2º dispatcher) executa **em seguida**. Cancel no gate `Gitignore` aborta antes do segundo gate — evita estado inconsistente onde `.worktreeinclude` referencia path que o operador acabou de recusar versionar.
@@ -54,7 +62,7 @@ Criar diretório com `mkdir -p .claude/local/` se ausente.
 
 Mecânica idêntica ao step 4.5 do `/init-config` SKILL.md (linha `.claude/` da tabela composta) — `/note` é segundo dispatcher para a mesma invariante (per ADR-047 § Decisão (b)). Sincronizar mudanças manualmente se a mecânica evoluir num dos lados.
 
-**Caminho cross-write** (com `--to`, per [ADR-054](../../docs/decisions/ADR-054-bridge-cross-project-note-consolidado.md) § Decisão (b)): blast-radius compartilhado proíbe mutar `.gitignore`/`.worktreeinclude` do target a partir de sessão não-contextual — pré-condição substitui gates.
+**Caminho cross-write** (com `--to`, per [ADR-054](../../docs/decisions/ADR-054-bridge-cross-project-note-consolidado.md) § Decisão (b)): blast-radius compartilhado proíbe mutar `.gitignore`/`.worktreeinclude` do target a partir de sessão não-contextual — pré-condição substitui gates. **Backend (per [ADR-072](../../docs/decisions/ADR-072-role-annotations-plugavel-backend-por-projeto.md)):** cross-write opera sobre o backend `local` do target por construção (escreve em `<target>/.claude/local/NOTES.md`); a pré-condição de target inicializado abaixo já pressupõe modo local. O backend da origem (projeto corrente) **não é consultado** em `--to` — cross-write é governado exclusivamente pelo backend do target. Resolução de backend `null`/`logseq` do target é fora de escopo deste v1 — o caminho `--to` é local-NOTES-específico.
 
 **Pré-condição de target inicializado**: `.claude/local/` no target existe E `git -C <target-repo> check-ignore -q .claude/local/.probe` retorna 0. **Probe idêntico ao usado no caminho local** acima (mesma invariante de ADR-047 § Decisão (b) + § Decisão (a) mecânica — implementador **não deve inventar probe alternativo** tipo `.claude/local/NOTES.md.probe`).
 
