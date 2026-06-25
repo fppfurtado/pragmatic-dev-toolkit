@@ -1,9 +1,5 @@
 # Plano — Role `annotations` plugável (backends local/null)
 
-## Status
-
-Pendente
-
 ## Contexto
 
 Materializa [ADR-072](../decisions/ADR-072-role-annotations-plugavel-backend-por-projeto.md): promover o store de anotações de *non-role* (ADR-054 § Decisão (a)) → role `annotations` de primeira classe, com backend plugável por projeto. Escopo deste plano = backends `local` (default, = comportamento atual) + `null` (desliga); backend `logseq` **fora de escopo**, deferido a meta-bridge#41 (write-path v2 não-construído) — skill degrada graceful quando `logseq` declarado sem o write-path.
