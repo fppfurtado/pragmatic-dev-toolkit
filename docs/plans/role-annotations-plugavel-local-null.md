@@ -71,7 +71,7 @@ Surface não-determinística (comportamento de skill resolvendo role em runtime)
 
 ## Pendências de validação
 
-- `[capture:validacao]` Smoke comportamental C1–C5 do `## Verificação manual` pós-`/reload-plugins` em sessão CC real — exige plugin recarregado + julgamento sobre o fluxo das 5 skills; não exercitável na execução do `/run-plan`. Operador roda manual; promover ADR-072 `Proposto` → `Aceito (YYYY-MM-DD)` após ≥1 invocação real bem-sucedida (default-local idêntico + null skip).
+- `[capture:validacao]` ~~Smoke comportamental C1–C5 do `## Verificação manual` pós-`/reload-plugins` em sessão CC real — promover ADR-072 após ≥1 invocação real (default-local idêntico + null skip).~~ **Encerrada 2026-06-25:** pós-release v3.19.0 + `/reload-plugins`, C1 (default-local) validado real via `/note` instalado (append OK); C2 (null) / C3 (logseq) validados com config real deste repo (temp + revertido) → no-append correto; C4 trace-verificado. Critério cumprido → **ADR-072 promovido a `Aceito (2026-06-25)`**. (C5 session-audit-sob-null não exercitado isoladamente — coberto pela mesma resolução null de C2.)
 
 ## Notas operacionais
 

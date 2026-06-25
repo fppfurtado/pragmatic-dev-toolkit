@@ -1,7 +1,7 @@
 # ADR-072: Role `annotations` plugável (backends local/logseq/null) — sucessor parcial de ADR-054
 
 **Data:** 2026-06-25
-**Status:** Proposto
+**Status:** Aceito (2026-06-25)
 
 **Próxima revisão:** 2026-12-25
 **Cadência:** trimestral
