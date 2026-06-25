@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: pragmatic-dev-toolkit
+  annotations:
+    constelacao.io/cluster: dev-toolkit
+    constelacao.io/camada: bridge
+    constelacao.io/hub: github:fppfurtado/meta-system
+    constelacao.io/edges: |
+      []
+spec:
+  type: plugin
+  lifecycle: production
+  owner: fppfurtado
+  system: dev-toolkit
